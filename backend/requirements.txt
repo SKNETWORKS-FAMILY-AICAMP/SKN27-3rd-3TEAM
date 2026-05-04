@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+pymysql
+cryptography
+
+langchain
+langchain-core
+langchain-openai
+langchain-groq
+langgraph
+tavily-python
+python-dotenv
+openai
+groqai
