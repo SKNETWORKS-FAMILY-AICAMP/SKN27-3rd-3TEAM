@@ -13,3 +13,6 @@ tavily-python
 python-dotenv
 openai
 groq
+psycopg2  # PostgreSQL 연결
+
+
