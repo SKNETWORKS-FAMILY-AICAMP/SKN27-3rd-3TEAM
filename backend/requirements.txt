@@ -3,6 +3,7 @@ uvicorn
 pydantic
 sqlalchemy
 psycopg2-binary
+psycopg2
 
 langchain
 langchain-core

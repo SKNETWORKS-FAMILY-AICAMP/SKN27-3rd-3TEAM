@@ -1,12 +1,3 @@
 streamlit
 requests
 streamlit-cookies-controller
-
-fastapi
-sqlalchemy 
-psycopg2  # PostgreSQL 연결
-psycopg2-binary
-langgraph 
-langchain
-langchain-openai
-python-dotenv
