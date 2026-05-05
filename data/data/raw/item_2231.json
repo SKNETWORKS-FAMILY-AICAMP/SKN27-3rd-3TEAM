@@ -1,0 +1,37 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "evolution",
+    "url": "https://pokeapi.co/api/v2/item-category/10/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2231,
+  "machines": [],
+  "name": "peat-block",
+  "names": [
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Torfblock"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Peat Block"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}

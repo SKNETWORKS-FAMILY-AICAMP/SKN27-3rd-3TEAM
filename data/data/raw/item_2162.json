@@ -1,0 +1,63 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "all-machines",
+    "url": "https://pokeapi.co/api/v2/item-category/37/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2162,
+  "machines": [
+    {
+      "machine": {
+        "url": "https://pokeapi.co/api/v2/machine/1988/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "machine": {
+        "url": "https://pokeapi.co/api/v2/machine/2051/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    }
+  ],
+  "name": "tm173",
+  "names": [
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "CT173"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "TM173"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "わざマシン１７３"
+    }
+  ],
+  "sprites": {
+    "default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/tm-normal.png"
+  }
+}

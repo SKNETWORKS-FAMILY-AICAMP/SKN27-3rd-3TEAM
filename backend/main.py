@@ -1,16 +1,28 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from database import engine, Base
+from routers import pokemon
 
-app = FastAPI(title="Pokemon App Backend")
+# DB 테이블 생성 (schema.sql로 이미 생성되므로 안전한 no-op)
+Base.metadata.create_all(bind=engine)
 
-# CORS 설정 (프론트엔드와 통신을 위해 필요)
+app = FastAPI(
+    title="Pokemon App Backend",
+    description="FastAPI Backend for Pokemon Data & RAG",
+    version="1.0.0"
+)
+
+# CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 실제 배포 시에는 프론트엔드 주소로 제한하는 것이 좋습니다.
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 라우터 등록
+app.include_router(pokemon.router)
 
 @app.get("/")
 def read_root():

@@ -1,0 +1,212 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "plot-advancement",
+    "url": "https://pokeapi.co/api/v2/item-category/22/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "text": "ほうじょうのおうの　あいばが\nこのんで　たべる　さくもつ。\nゆきぶかい　はたけで　そだった。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "풍요의 왕의 애마가\n즐겨 먹는 작물.\n눈 덮인 밭에서 자랐다.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "text": "豐饒之王的愛馬喜歡吃的農作物。\n生長在積雪深厚的田地。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "text": "Un légume très apprécié du fidèle destrier\ndu Seigneur des récoltes. Il a été cultivé\ndans un champ entouré d’une neige épaisse.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "text": "Eine Karotte, die auf einem tief verschneiten Feld\nheranwuchs. Das treue Ross des Königs der reichen\nErnte mag sie besonders gern.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "text": "Una zanahoria cultivada en un huerto rebosante de\nnieve. Es la hortaliza preferida del amado corcel del\nRey de las Cosechas.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "text": "Un ortaggio molto apprezzato dal fedele destriero\ndel Re dell’abbondanza. Cresce in campi coperti\ndi neve.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "text": "Produce that the King of Bountiful Harvests’ beloved\nsteed likes to eat. It grew in a field covered in snow.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "text": "豊穣の王の　愛馬が\n好んで　食べる　作物。\n雪深い　畑で　育った。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "text": "丰饶之王的爱马\n喜欢吃的农作物。\n生长于白雪皑皑的田地。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    }
+  ],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [
+    {
+      "game_index": 1602,
+      "generation": {
+        "name": "generation-viii",
+        "url": "https://pokeapi.co/api/v2/generation/8/"
+      }
+    }
+  ],
+  "held_by_pokemon": [],
+  "id": 1653,
+  "machines": [],
+  "name": "iceroot-carrot",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "つめたいにんじん"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "차가운당근"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "冰蘿蔔"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Carotte Gelée"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Polarkarotte"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Zanahoria Nívea"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Carota algida"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Iceroot Carrot"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "つめたいにんじん"
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "name": "冰萝卜"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}
