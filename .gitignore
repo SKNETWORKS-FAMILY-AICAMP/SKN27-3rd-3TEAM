@@ -14,4 +14,7 @@ build/
 !.env.example
 !.env.sample
 env/
+
 venv/
+.venv
+.streamlit/
