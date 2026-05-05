@@ -1,0 +1,124 @@
+{
+  "effect_changes": [],
+  "effect_entries": [
+    {
+      "effect": "Augmente la puissance des capacités de type Roche utilisée par ce Pokémon de 50%.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Augmente la puissance des capacités de type Roche."
+    },
+    {
+      "effect": "Increases the power of Rock-type moves used by this Pokémon by 50%.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Powers up Rock-type moves."
+    }
+  ],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Augmente la puissance des capacités de type Roche.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "Powers up Rock-type moves.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "いわタイプの　技の\n威力が　上がる。",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 276,
+  "is_main_series": true,
+  "name": "rocky-payload",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "いわはこび"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Porte-Roche"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Steinträger"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Transportarrocas"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Portamassi"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Rocky Payload"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "いわはこび"
+    }
+  ],
+  "pokemon": [
+    {
+      "is_hidden": true,
+      "pokemon": {
+        "name": "bombirdier",
+        "url": "https://pokeapi.co/api/v2/pokemon/962/"
+      },
+      "slot": 3
+    }
+  ]
+}

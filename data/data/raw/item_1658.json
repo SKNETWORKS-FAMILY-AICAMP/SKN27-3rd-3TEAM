@@ -1,0 +1,212 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "plot-advancement",
+    "url": "https://pokeapi.co/api/v2/item-category/22/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "text": "ひかりに　かざすと　かがやく　ぬの。\nむかし　にんげんが　ほうじょうのおうに\nかんしゃの　きもちとして　ささげていた。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "빛에 비추면 반짝이는 천.\n과거에 인간들이 풍요의 왕에게\n감사하는 마음을 담아 바쳤다고 한다.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "text": "透光時會熠熠生輝的布料。\n人們曾經將它獻給豐饒之王，\n藉此表達感謝之意。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "text": "Une courroie faite d’un tissu qui scintille à la lumière.\nLes humains en offraient autrefois au Seigneur\ndes récoltes en gage de leur gratitude.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "text": "Zügel gewoben aus Stoff, der leuchtet, wenn man ihn\nins Licht hält. Einst schenkten die Menschen sie dem\nKönig der reichen Ernte als Zeichen ihrer Dankbarkeit.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "text": "Correas elaboradas con un tejido que brilla bajo la luz.\nEn el pasado, los humanos las entregaban como ofrenda\nal Rey de las Cosechas en señal de gratitud.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "text": "Nastri che risplendono se illuminati. Un tempo venivano\nofferti dagli esseri umani al Re dell’abbondanza in\nsegno di gratitudine.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "text": "Cords that shine when you hold them up to the light.\nThe people of old times presented these to the King of\nBountiful Harvests to express their gratitude.",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "text": "光に　かざすと　かがやく　布。\n昔　人間が　豊穣の王に\n感謝の　気持ちとして　捧げていた。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "text": "拿到光下即可生辉的布。\n人们曾经将其进献给\n丰饶之王以表感谢之意。",
+      "version_group": {
+        "name": "sword-shield",
+        "url": "https://pokeapi.co/api/v2/version-group/20/"
+      }
+    }
+  ],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [
+    {
+      "game_index": 1607,
+      "generation": {
+        "name": "generation-viii",
+        "url": "https://pokeapi.co/api/v2/generation/8/"
+      }
+    }
+  ],
+  "held_by_pokemon": [],
+  "id": 1658,
+  "machines": [],
+  "name": "reins-of-unity",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "キズナのタヅナ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "유대의고삐"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "牽絆韁繩"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Rênes de l’Unité"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Zügel des Bundes"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Riendas Unión"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Briglie legame"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Reins of Unity"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "キズナのタヅナ"
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "name": "牵绊缰绳"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}
