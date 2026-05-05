@@ -12,5 +12,6 @@ build/
 .env
 .env.*
 !.env.example
+!.env.sample
 env/
 venv/

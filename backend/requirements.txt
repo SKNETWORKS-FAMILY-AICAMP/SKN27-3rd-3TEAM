@@ -2,8 +2,7 @@ fastapi
 uvicorn
 pydantic
 sqlalchemy
-pymysql
-cryptography
+psycopg2-binary
 
 langchain
 langchain-core
@@ -13,4 +12,4 @@ langgraph
 tavily-python
 python-dotenv
 openai
-groqai
+groq
