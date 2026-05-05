@@ -91,15 +91,17 @@ landing_css = f"""
 @keyframes flyUL {{ from {{ left: 110%; top: 80%; }} to {{ left: -100px; top: 10%; }} }}
 @keyframes flyUR {{ from {{ left: -100px; top: 80%; }} to {{ left: 110%; top: 20%; }} }}
 
-/* ── Reveal Animations ── */
+/* ── Reveal Animations (Bulletproof System) ── */
 .reveal-up {{ opacity: 1; transform: translateY(0); }}
 .reveal-left {{ opacity: 1; transform: translateX(0); }}
 .reveal-right {{ opacity: 1; transform: translateX(0); }}
 
-.js-ready .reveal-up {{ transform: translateY(80px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }}
-.js-ready .reveal-left {{ transform: translateX(-80px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s; }}
-.js-ready .reveal-right {{ transform: translateX(80px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s; }}
+/* JS가 작동할 때만 숨김 처리 */
+.js-ready .reveal-up {{ transform: translateY(60px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }}
+.js-ready .reveal-left {{ transform: translateX(-60px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s; }}
+.js-ready .reveal-right {{ transform: translateX(60px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s; }}
 
+/* 화면에 들어오면 보여줌 */
 .js-ready .in-view .reveal-up {{ transform: translateY(0); opacity: 1; }}
 .js-ready .in-view .reveal-left {{ transform: translateX(0); opacity: 1; }}
 .js-ready .in-view .reveal-right {{ transform: translateX(0); opacity: 1; }}
@@ -134,7 +136,6 @@ landing_css = f"""
 }}
 </style>
 """
-st.write(landing_css, unsafe_allow_html=True)
 
 # ── Main Content HTML ──
 content_html = f"""
@@ -220,27 +221,51 @@ content_html = f"""
     Powered by Advanced AI & Data Analytics.
 </div>
 """
-st.write(content_html, unsafe_allow_html=True)
+
+# Streamlit Markdown/HTML 파싱 이슈 방지를 위해 인덴트 제거 후 주입
+full_html = landing_css + content_html
+clean_html = "\n".join([line.strip() for line in full_html.split("\n")])
+st.write(clean_html, unsafe_allow_html=True)
 
 # ── Page-Specific JS (Animations & Catch Interaction) ──
 components.html("""
 <script>
     const parentDoc = window.parent.document;
     
-    // 1. Visibility Logic (js-ready class)
-    parentDoc.body.classList.add('js-ready');
+    // 1. Visibility Logic (js-ready class 추가하여 애니메이션 대기 상태로 만듦)
+    // 약간의 딜레이를 주어 DOM이 완전히 렌더링된 후 작동하게 함
+    setTimeout(() => {
+        parentDoc.body.classList.add('js-ready');
+    }, 100);
 
-    // 2. IntersectionObserver
+    // 2. IntersectionObserver (화면 진입 시 in-view 클래스 추가)
     const scrollContainer = parentDoc.querySelector('.main') || parentDoc.querySelector('[data-testid="stAppViewContainer"]');
     const targets = parentDoc.querySelectorAll('.observer-target');
 
     if (scrollContainer && targets.length > 0) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('in-view');
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                }
             });
-        }, { root: scrollContainer, threshold: 0.1 });
+        }, { 
+            root: scrollContainer, 
+            threshold: 0.05, // 5%만 보여도 작동하게 낮춤 
+            rootMargin: '0px 0px -50px 0px' 
+        });
+        
         targets.forEach(t => observer.observe(t));
+        
+        // 스크롤 이벤트 백업 (Observer가 가끔 작동 안할 때를 대비)
+        scrollContainer.addEventListener('scroll', () => {
+            targets.forEach(t => {
+                const rect = t.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    t.classList.add('in-view');
+                }
+            });
+        }, { passive: true });
     }
     
     // 3. Click-to-Catch Interaction
