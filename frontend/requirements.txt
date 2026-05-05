@@ -1,3 +1,11 @@
 streamlit
 requests
 streamlit-cookies-controller
+
+fastapi
+sqlalchemy 
+psycopg2  # PostgreSQL 연결
+langgraph 
+langchain
+anthropic             # Claude API
+uvicorn               # 서버 실행
