@@ -9,7 +9,7 @@ USER     = os.getenv("POSTGRES_USER")
 PASSWORD = os.getenv("POSTGRES_PASSWORD")
 DB       = os.getenv("POSTGRES_DB")
 HOST     = os.getenv("POSTGRES_HOST", "localhost")
-PORT     = os.getenv("POSTGRES_PORT", "5432")
+PORT     = os.getenv("POSTGRES_PORT", "5433")
 
 engine = create_engine(
     f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DB}"
