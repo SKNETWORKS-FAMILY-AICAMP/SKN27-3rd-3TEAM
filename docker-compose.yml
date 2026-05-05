@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pokemon_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # 기존 pokemon_db 컨테이너 호스트명으로 직접 지정
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pokemon_db:5432/${POSTGRES_DB}
+    ports:
+      - "8000:8000"
+    networks:
+      - skn_net
+      - pokemon_db_collection_default
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pokemon_frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - skn_net
+    volumes:
+      - ./frontend:/app
+    command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+
+networks:
+  skn_net:
+    driver: bridge
+  # 기존 pokemon_db 컨테이너가 속한 네트워크 (외부에서 가져옴)
+  pokemon_db_collection_default:
+    external: true
