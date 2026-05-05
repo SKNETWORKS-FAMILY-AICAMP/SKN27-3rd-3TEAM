@@ -5,7 +5,8 @@ streamlit-cookies-controller
 fastapi
 sqlalchemy 
 psycopg2  # PostgreSQL 연결
+psycopg2-binary
 langgraph 
 langchain
-anthropic             # Claude API
-uvicorn               # 서버 실행
+langchain-openai
+python-dotenv
