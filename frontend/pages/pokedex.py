@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # Inject common UI (Header, Follower, Global Styles)
-inject_common_ui()
+inject_common_ui(spacer=True)
 
 st.title("포켓몬 도감")
 st.write("전국 도감의 모든 포켓몬 정보를 확인하세요.")

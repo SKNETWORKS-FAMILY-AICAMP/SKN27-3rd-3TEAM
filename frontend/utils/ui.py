@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-def inject_common_ui():
+def inject_common_ui(spacer=False):
     """
     Injects common UI elements (Header, Mouse Follower, Global Styles) 
     into a Streamlit page.
@@ -12,66 +12,119 @@ def inject_common_ui():
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
 
-    html, body, [data-testid="stAppViewContainer"] {
+    html, body, [data-testid="stAppViewContainer"], .stApp {
         margin: 0; padding: 0;
         font-family: 'Inter', sans-serif;
         background-color: #F8FAFF !important;
+        overflow-x: hidden;
     }
     
-    /* Hide Streamlit default elements */
-    #MainMenu, header, footer { visibility: hidden; }
-    [data-testid="stHeader"] { height: 0 !important; }
-    [data-testid="block-container"] { padding: 0 !important; max-width: 100% !important; }
-    [data-testid="stSidebar"] { display: none; }
+    /* 완벽한 최상단 밀착을 위해 기본 상단 여백 완전 제거 */
+    .block-container {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* Hide Streamlit default elements completely (사이드바, 툴바 등 완벽 제거) */
+    #MainMenu, header, footer, 
+    [data-testid="stHeader"], 
+    [data-testid="stToolbar"], 
+    [data-testid="stSidebar"], 
+    [data-testid="collapsedControl"] { 
+        display: none !important; 
+        height: 0 !important;
+        width: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
 
-    /* Header Navigation (상단 고정형 화이트 스타일) */
+    /* Header Navigation (Official Grid Style) */
     .top-nav {
-        position: absolute; top: 0; left: 0; right: 0; height: 80px;
-        background: #ffffff; /* 불투명 화이트 배경 */
-        border-bottom: 1px solid rgba(0,0,0,0.08);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 5%; z-index: 1000;
+        position: absolute; top: 0; 
+        left: 50%; transform: translateX(-50%); width: 100vw; 
+        height: 90px;
+        background: #ffffff;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex; align-items: stretch; justify-content: space-between;
+        padding: 0; z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
-    .nav-brand {
-        font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900;
-        background: linear-gradient(to right, #FFCB05, #EA580C);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-decoration: none !important; letter-spacing: -1px;
+    .nav-left { 
+        display: flex; align-items: center; padding: 0 30px; 
+        border-right: 1px solid #eee;
     }
-    .nav-brand:hover { text-decoration: none !important; }
+    .nav-brand-img { height: 45px; width: auto; transition: transform 0.3s; }
+    .nav-brand-img:hover { transform: scale(1.05); }
 
-    .nav-menu { display: flex; gap: 35px; }
-    .nav-item { 
-        display: flex; align-items: center; gap: 12px; 
-        color: #1f2937; font-weight: 700; text-decoration: none !important; 
-        font-size: 17px; transition: 0.2s; 
+    .nav-center { 
+        display: flex; flex: 1; justify-content: center; 
     }
-    .nav-item img { width: 40px; height: 40px; transition: transform 0.3s; object-fit: contain; }
-    .nav-item:hover { color: #3b82f6; text-decoration: none !important; }
-    .nav-item:hover img { transform: scale(1.1) rotate(-5deg); }
-    /* 메타몽 아이콘 슈퍼 스케일 보정 */
-    .nav-item[href="/teambuilding"] img { transform: scale(1.6); }
-    .nav-item[href="/teambuilding"]:hover img { transform: scale(1.8) rotate(-5deg); }
+    .nav-item { 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        padding: 0 25px; color: #000000 !important; font-weight: 500; text-decoration: none !important; 
+        font-size: 13px; transition: all 0.2s ease; 
+        border-right: 1px solid #eee;
+        min-width: 110px;
+    }
+    .nav-item:first-child { border-left: 1px solid #eee; }
+    .nav-item img { width: 38px; height: 38px; margin-bottom: 8px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); object-fit: contain; }
+    
+    /* 메타몽 특수 스케일 (공식 아트워크 기반) */
+    .nav-item[href="/teambuilding"] img { transform: scale(1.3); margin-bottom: 10px; }
+    
+    .nav-item:hover { background: #fafafa; color: #3b82f6 !important; }
+    .nav-item:hover img { transform: translateY(-5px) scale(1.1); }
+    .nav-item[href="/teambuilding"]:hover img { transform: scale(1.4) translateY(-5px); }
+
+    .nav-right { 
+        display: flex; align-items: stretch; 
+    }
+    .nav-aux {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 0 25px; color: #000000 !important; font-size: 12px; font-weight: 500;
+        text-decoration: none !important; border-left: 1px solid #eee;
+        transition: 0.2s;
+    }
+    .nav-aux:hover { background: #f9f9f9; color: #000; }
+    .nav-aux img { width: 32px; height: 32px; margin-bottom: 6px; }
     </style>
 
     <nav class="top-nav">
-        <a href="/" target="_self" class="nav-brand">POKÉMON WORLD</a>
-        <div class="nav-menu">
+        <div class="nav-left">
+            <a href="/" target="_self">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" class="nav-brand-img">
+            </a>
+        </div>
+        <div class="nav-center">
             <a href="/battle" target="_self" class="nav-item">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"> 배틀
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
+                <span>배틀</span>
             </a>
             <a href="/pokedex" target="_self" class="nav-item">
-                <img src="https://i.namu.wiki/i/FN4gFeempIO4XLhMWDyRSdgwt1cZqjhLoKWd9LWeuCYZDxtms3KI2SYFGu0aums30_gue9mPnRmKkO_K8v1mDQ.webp"> 도감
+                <img src="https://i.namu.wiki/i/FN4gFeempIO4XLhMWDyRSdgwt1cZqjhLoKWd9LWeuCYZDxtms3KI2SYFGu0aums30_gue9mPnRmKkO_K8v1mDQ.webp">
+                <span>도감</span>
             </a>
             <a href="/chatbot" target="_self" class="nav-item">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/exp-share.png"> AI 박사
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/exp-share.png">
+                <span>AI 박사</span>
             </a>
             <a href="/teambuilding" target="_self" class="nav-item">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"> 팀 빌더
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png">
+                <span>팀 빌더</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="/login" target="_self" class="nav-aux">
+                <img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png">
+                <span>로그인</span>
             </a>
         </div>
     </nav>
     """
+    
+    if spacer:
+        common_html += '<div style="height: 100px; width: 100%;"></div>'
+        
     st.write(common_html, unsafe_allow_html=True)
 
     # 2. Mouse Follower JS

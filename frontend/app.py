@@ -24,7 +24,7 @@ ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/
 GIF = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown"
 
 st.set_page_config(
-    page_title="Pokémon World",
+    page_title="포켓몬 비공식 사이트",
     page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -54,10 +54,14 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
     padding: 0 !important;
 }}
 
-/* ── Streamlit Container Reset ── */
-[data-testid="stAppViewContainer"] > .main {{
+/* Force Full Width Layout for Landing Page Only */
+.main .block-container, [data-testid="stAppViewBlockContainer"] {{
     padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
 }}
+
 .block-container {{
     padding: 0 !important;
     margin: 0 !important;
