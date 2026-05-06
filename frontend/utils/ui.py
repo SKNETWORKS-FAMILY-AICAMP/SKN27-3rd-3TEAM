@@ -24,31 +24,34 @@ def inject_common_ui():
     [data-testid="block-container"] { padding: 0 !important; max-width: 100% !important; }
     [data-testid="stSidebar"] { display: none; }
 
-    /* Header Navigation */
+    /* Header Navigation (상단 고정형 화이트 스타일) */
     .top-nav {
-        position: fixed; top: 0; left: 0; right: 0; height: 72px;
-        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(0,0,0,0.05);
+        position: absolute; top: 0; left: 0; right: 0; height: 80px;
+        background: #ffffff; /* 불투명 화이트 배경 */
+        border-bottom: 1px solid rgba(0,0,0,0.08);
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 5%; z-index: 1000;
     }
     .nav-brand {
-        font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 900;
-        background: linear-gradient(135deg, #FFCB05, #EA580C);
+        font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900;
+        background: linear-gradient(to right, #FFCB05, #EA580C);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-decoration: none !important; letter-spacing: -0.5px;
+        text-decoration: none !important; letter-spacing: -1px;
     }
     .nav-brand:hover { text-decoration: none !important; }
 
-    .nav-menu { display: flex; gap: 32px; }
+    .nav-menu { display: flex; gap: 35px; }
     .nav-item { 
-        display: flex; align-items: center; gap: 8px; 
-        color: #4B5563; font-weight: 700; text-decoration: none !important; 
-        font-size: 16px; transition: 0.3s; 
+        display: flex; align-items: center; gap: 12px; 
+        color: #1f2937; font-weight: 700; text-decoration: none !important; 
+        font-size: 17px; transition: 0.2s; 
     }
-    .nav-item img { width: 24px; height: 24px; transition: transform 0.3s; }
-    .nav-item:hover { color: #F59E0B; text-decoration: none !important; }
-    .nav-item:hover img { transform: scale(1.2) rotate(-10deg); }
+    .nav-item img { width: 40px; height: 40px; transition: transform 0.3s; object-fit: contain; }
+    .nav-item:hover { color: #3b82f6; text-decoration: none !important; }
+    .nav-item:hover img { transform: scale(1.1) rotate(-5deg); }
+    /* 메타몽 아이콘 슈퍼 스케일 보정 */
+    .nav-item[href="/teambuilding"] img { transform: scale(1.6); }
+    .nav-item[href="/teambuilding"]:hover img { transform: scale(1.8) rotate(-5deg); }
     </style>
 
     <nav class="top-nav">
@@ -61,10 +64,10 @@ def inject_common_ui():
                 <img src="https://i.namu.wiki/i/FN4gFeempIO4XLhMWDyRSdgwt1cZqjhLoKWd9LWeuCYZDxtms3KI2SYFGu0aums30_gue9mPnRmKkO_K8v1mDQ.webp"> 도감
             </a>
             <a href="/chatbot" target="_self" class="nav-item">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/potion.png"> AI 박사
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/exp-share.png"> AI 박사
             </a>
             <a href="/teambuilding" target="_self" class="nav-item">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"> 팀 빌더
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"> 팀 빌더
             </a>
         </div>
     </nav>
