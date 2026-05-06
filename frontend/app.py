@@ -1,52 +1,409 @@
 import streamlit as st
+import streamlit.components.v1 as components
+import base64
 import os
+from utils.ui import inject_common_ui
 
-# 페이지 설정
+def get_base64_img(file_name):
+    path = os.path.join(os.path.dirname(__file__), "img", file_name)
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            data = f.read()
+        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+    return ""
+
+bg1 = get_base64_img("main_8.png")
+bg2 = get_base64_img("main_2.png")
+bg3 = get_base64_img("main_3.png")
+bg4 = get_base64_img("main_4.png")
+bg5 = get_base64_img("main_5.png")
+obak = get_base64_img("Obak.png")
+
+# ── Image Assets ──
+ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
+GIF = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown"
+
 st.set_page_config(
-    page_title="Pokémon World",
-    page_icon="⚡",
+    page_title="포켓몬 비공식 사이트",
+    page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# 페이지 정의
-def home_page():
-    st.title("⚡ Pokémon Dashboard")
-    st.write("---")
+# ── Inject Common UI (Header, Follower, Global Styles) ──
+inject_common_ui()
+
+# ── Page-Specific Styles (Premium Pokémon Identity) ──
+landing_css = f"""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600&display=swap');
+
+:root {{
+    --poke-yellow: #FFCB05;
+    --poke-blue: #2A75BB;
+    --glass-bg: rgba(15, 15, 15, 0.45); /* 투명도 상향 */
+    --glass-border: rgba(255, 255, 255, 0.12);
+}}
+
+.stApp {{ background-color: #050505; }}
+
+/* ── Streamlit Container Reset (배경을 꽉 채우기 위함) ── */
+html, body, [data-testid="stAppViewContainer"], .stApp {{
+    background-color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}}
+
+/* Force Full Width Layout for Landing Page Only */
+.main .block-container, [data-testid="stAppViewBlockContainer"] {{
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}}
+
+.block-container {{
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}}
+[data-testid="stHeader"], footer, [data-testid="stToolbar"] {{
+    display: none !important;
+}}
+
+
+
+/* ── Global Utilities ── */
+.full-section {{
+    min-height: 100vh;
+    width: 100%;
+    padding: 60px 4%; /* 배경은 꽉 채우되, 내부 카드와의 간격 유지 */
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background-attachment: fixed;
+}}
+
+/* ── Pokedex Scanline & Grid Effect ── */
+.full-section::after {{
+    content: ''; position: absolute; inset: 0;
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none;
+    z-index: 2;
+}}
+
+/* ── Section Backgrounds & Overlays ── */
+.full-section::before {{
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+    z-index: 1;
+}}
+
+.sec-hero {{ background: url('{bg1}') center/cover no-repeat fixed; }}
+.sec-grass {{ background: url('{bg2}') center/cover no-repeat fixed; }}
+.sec-fire {{ background: url('{bg3}') center/cover no-repeat fixed; }}
+.sec-psychic {{ background: url('{bg4}') center/cover no-repeat fixed; }}
+.sec-ghost {{ background: url('{bg5}') center/cover no-repeat fixed; }}
+
+/* ── Holographic Card (콤팩트 디자인) ── */
+.section-inner {{
+    max-width: 1200px; width: 94%; /* 너비 축소 */
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px) saturate(180%); /* 블러 최소화 */
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 40px;
+    padding: 40px 60px; /* 상하좌우 패딩 대폭 다이어트 */
+    display: flex; align-items: center; justify-content: space-between; gap: 30px; /* 간격 축소 */
+    position: relative; z-index: 10;
+    box-shadow: 0 50px 150px rgba(0,0,0,0.9);
+}}
+
+.reverse .section-inner {{ flex-direction: row-reverse; }}
+
+/* ── Typography ── */
+.text-box {{ flex: 1.2; z-index: 2; }}
+.visual-box {{ flex: 1; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }}
+
+.sec-badge {{
+    display: inline-block; padding: 8px 20px; border-radius: 50px;
+    font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 24px;
+    background: rgba(255, 255, 255, 0.15); 
+    color: #fff; border: 1px solid rgba(255, 255, 255, 0.4);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}}
+
+.sec-title {{
+    font-family: 'Outfit', sans-serif; font-size: clamp(40px, 4.5vw, 64px);
+    font-weight: 900; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1.5px;
+    /* 색상은 테마별로 다시 부여 */
+}}
+
+.sec-desc {{ 
+    font-family: 'Inter', sans-serif; font-size: 19px; line-height: 1.6; 
+    margin-bottom: 40px; color: #ffffff; /* 순백색 본문 */
+    font-weight: 600; /* 두께 상향으로 가독성 극대화 */
+    max-width: 550px;
+    /* 사방으로 진한 검은색 외곽선(Stroke)을 둘러 절대 안 묻히게 함 */
+    text-shadow: 
+        1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000, 
+        0 5px 15px rgba(0,0,0,1);
+}}
+
+/* ── CTAs ── */
+.cta-btn {{
+    display: inline-flex; align-items: center; padding: 18px 45px; border-radius: 100px;
+    font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative; z-index: 60;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    border: 2px solid rgba(255,255,255,0.2);
+}}
+
+.cta-btn:hover {{ 
+    transform: scale(1.05) translateY(-5px); 
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    border-color: rgba(255,255,255,0.6);
+}}
+
+/* ── Interactive Artwork ── */
+.main-artwork {{
+    width: 100%; 
+    max-width: 420px; /* 너비 추가 축소 */
+    max-height: 380px; /* 세로 길이를 억제하여 카드 팽창 완전 차단 */
+    object-fit: contain; /* 비율 유지하며 억제 */
+    animation: float 6s ease-in-out infinite;
+    transition: all 0.5s ease;
+}}
+
+.main-artwork:hover {{ transform: scale(1.02); }}
+
+@keyframes float {{ 
+    0%, 100% {{ transform: translateY(0) rotate(0deg); }} 
+    50% {{ transform: translateY(-30px) rotate(2deg); }} 
+}}
+
+/* ── Decor Sprites ── */
+.decor-sprite {{
+    position: absolute; opacity: 0.7;
+    z-index: 5; transition: all 0.4s ease;
+    cursor: pointer;
+}}
+
+.decor-sprite:hover {{
+    opacity: 1; transform: scale(1.3) rotate(10deg);
+    filter: drop-shadow(0 0 25px var(--aura-color, #fff));
+}}
+
+/* ── Theme Styling (절대 가독성 버전) ── */
+.sec-hero .sec-badge {{ color: #000; border-color: var(--poke-yellow); background: var(--poke-yellow); }}
+.sec-hero .sec-title {{ 
+    color: #FFDE00; /* 더 밝고 쨍한 포켓몬 클래식 옐로우 */
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 8px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255, 222, 0, 0.6); 
+}}
+.sec-hero .cta-btn {{ background: var(--poke-yellow); color: #000; font-weight: 900; box-shadow: 0 10px 30px rgba(255, 203, 5, 0.3); }}
+
+.sec-hero .main-artwork {{ filter: drop-shadow(0 0 80px rgba(255, 203, 5, 0.5)); }}
+
+.sec-grass .sec-badge {{ color: #000; border-color: #4ADE80; background: #4ADE80; }}
+.sec-grass .sec-title {{ 
+    color: #4ADE80; 
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(74, 222, 128, 0.4); 
+}}
+.sec-grass .cta-btn {{ background: #22C55E; color: #fff; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3); }}
+.sec-grass .main-artwork {{ filter: drop-shadow(0 0 80px rgba(34, 197, 94, 0.5)); }}
+
+.sec-fire .sec-badge {{ color: #fff; border-color: #E11D48; background: #E11D48; }}
+.sec-fire .sec-title {{ 
+    color: #FB7185; 
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(251, 113, 133, 0.4); 
+}}
+.sec-fire .cta-btn {{ background: #E11D48; color: #fff; box-shadow: 0 10px 30px rgba(225, 29, 72, 0.3); }}
+.sec-fire .main-artwork {{ filter: drop-shadow(0 0 80px rgba(225, 29, 72, 0.5)); }}
+
+.sec-psychic .sec-badge {{ color: #fff; border-color: #9333EA; background: #9333EA; }}
+.sec-psychic .sec-title {{ 
+    color: #C084FC; 
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(192, 132, 252, 0.4); 
+}}
+.sec-psychic .cta-btn {{ background: #9333EA; color: #fff; box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3); }}
+.sec-psychic .main-artwork {{ filter: drop-shadow(0 0 80px rgba(147, 51, 234, 0.6)); }}
+
+.sec-ghost .sec-badge {{ color: #fff; border-color: #4F46E5; background: #4F46E5; }}
+.sec-ghost .sec-title {{ 
+    color: #818CF8; 
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(129, 140, 248, 0.4); 
+}}
+.sec-ghost .cta-btn {{ background: #4F46E5; color: #fff; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3); }}
+.sec-ghost .main-artwork {{ filter: drop-shadow(0 0 80px rgba(79, 70, 229, 0.6)); }}
+
+/* ── Reveal Animations ── */
+.js-ready .reveal-up {{ transform: translateY(80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }}
+.js-ready .reveal-left {{ transform: translateX(-80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s; }}
+.js-ready .reveal-right {{ transform: translateX(80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s; }}
+
+.js-ready .in-view .reveal-up,
+.js-ready .in-view .reveal-left,
+.js-ready .in-view .reveal-right {{ transform: translate(0); opacity: 1; }}
+
+@media (max-width: 1024px) {{
+    .section-inner {{ flex-direction: column !important; padding: 60px 30px; text-align: center; }}
+    .text-box {{ margin-bottom: 50px; order: 2; }}
+    .visual-box {{ order: 1; }}
+    .sec-title {{ font-size: 40px; }}
+}}
+</style>
+"""
+
+# ── Main Content HTML ──
+content_html = f"""
+<!-- Hero Section -->
+<div class="full-section sec-hero observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-up">
+            <div class="sec-badge">Next-Gen Trainer Platform</div>
+            <h1 class="sec-title">The <b>Ultimate</b><br>Pokémon Journey</h1>
+            <p class="sec-desc">최첨단 AI 기술과 데이터 분석을 통해 포켓몬 마스터로 거듭나세요. 배틀, 도감, 팀 빌딩까지 완벽하게 지원합니다.</p>
+            <a href="#explore" class="cta-btn">모험 시작하기</a>
+        </div>
+        <div class="visual-box reveal-right">
+            <img src="https://i.namu.wiki/i/gOpxkUizfW-MlHJwj2p6XLgp4gqX6cYZYagde8QyGOIWXkN_dbIOlNy8T-EPhhExfG9sZxkd0MI6z2heWKZfXzjX9Rh87waIitpf-pqUHXIv2T13eFfIpK67Zu3qu8cU7kpYgRGXprJxovrgrBUB3A.webp" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 1: Pokedex -->
+<div id="explore" class="full-section sec-grass observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-left">
+            <div class="sec-badge">Infinite Knowledge</div>
+            <h2 class="sec-title">전국 포켓몬 도감</h2>
+            <p class="sec-desc">1세대부터 최신 세대까지 모든 포켓몬의 상세 데이터를 확인하세요. 종족값, 속성, 진화 트리를 한눈에 파악하여 배틀의 기초를 다집니다.</p>
+            <a href="/pokedex" target="_self" class="cta-btn">도감 열람하기</a>
+        </div>
+        <div class="visual-box reveal-right">
+            <img src="{ART}/1.png" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Battle -->
+<div class="full-section sec-fire reverse observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-right">
+            <div class="sec-badge">Simulation Arena</div>
+            <h2 class="sec-title">실전 배틀 시뮬레이터</h2>
+            <p class="sec-desc">치열한 배틀 현장을 시뮬레이션 하세요. 상성 분석과 정밀한 데미지 계산기를 통해 상대의 허점을 찌르는 최적의 전략을 수립할 수 있습니다.</p>
+            <a href="/battle" target="_self" class="cta-btn">배틀 시뮬레이션</a>
+        </div>
+        <div class="visual-box reveal-left">
+            <img src="{ART}/6.png" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Chatbot -->
+<div class="full-section sec-psychic observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-left">
+            <div class="sec-badge">AI Assistant</div>
+            <h2 class="sec-title">AI 포켓몬 박사</h2>
+            <p class="sec-desc">어떤 질문이든 해결해 드립니다. 최신 메타와 랭크 배틀 통계를 학습한 AI 전문가에게 실시간으로 팀 조합과 전술을 상담받으세요.</p>
+            <a href="/chatbot" target="_self" class="cta-btn">박사님과 대화하기</a>
+        </div>
+        <div class="visual-box reveal-right">
+            <img src="{obak}" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 4: Team Builder -->
+<div class="full-section sec-ghost reverse observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-right">
+            <div class="sec-badge">Strategy Lab</div>
+            <h2 class="sec-title">최강 팀 빌더</h2>
+            <p class="sec-desc">나만의 6마리 드림팀을 구축하고 파티의 약점을 진단하세요. 타입 방어 상성을 시각적으로 분석하여 빈틈없는 스쿼드를 완성합니다.</p>
+            <a href="/teambuilding" target="_self" class="cta-btn">팀 빌딩 시작</a>
+        </div>
+        <div class="visual-box reveal-left">
+            <img src="{ART}/94.png" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<div style="padding: 50px 5% 60px; text-align: center; background: #000; color: rgba(255,255,255,0.3); font-size: 13px; font-family: 'Inter', sans-serif; letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.03);">
+    © 2024 POKÉMON WORLD. ALL RIGHTS RESERVED.<br>
+    <span style="display: inline-block; margin-top: 10px; opacity: 0.6;">Designed for the Next Generation of Trainers. Powered by Advanced AI.</span>
+</div>
+</div>
+"""
+
+# ── Render Page ──
+
+# 1. Inject CSS separately for reliability
+st.markdown(f"<style>{landing_css}</style>", unsafe_allow_html=True)
+
+# 2. Inject Content HTML
+st.markdown(content_html, unsafe_allow_html=True)
+
+# 3. Inject JS via a separate markdown block to avoid string issues
+# f-string 안의 중괄호를 이스케이프({{, }})하여 파이썬 오류 방지
+st.markdown(f"""
+<script>
+    const parentDoc = window.parent.document;
     
-    col1, col2 = st.columns(2)
+    // 1. Visibility Logic
+    setTimeout(() => {{
+        parentDoc.body.classList.add('js-ready');
+    }}, 100);
+
+    // 2. IntersectionObserver
+    const scrollContainer = parentDoc.querySelector('.main') || parentDoc.querySelector('[data-testid="stAppViewContainer"]');
+    const targets = parentDoc.querySelectorAll('.observer-target');
+
+    if (scrollContainer && targets.length > 0) {{
+        const observer = new IntersectionObserver((entries) => {{
+            entries.forEach(entry => {{
+                if (entry.isIntersecting) {{
+                    entry.target.classList.add('in-view');
+                }}
+            }});
+        }}, {{ 
+            root: scrollContainer, 
+            threshold: 0.05,
+            rootMargin: '0px 0px -50px 0px' 
+        }});
+        
+        targets.forEach(t => observer.observe(t));
+        
+        scrollContainer.addEventListener('scroll', () => {{
+            targets.forEach(t => {{
+                const rect = t.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {{
+                    t.classList.add('in-view');
+                }}
+            }});
+        }}, {{ passive: true }});
+    }}
     
-    with col1:
-        st.subheader("🔥 배틀 시뮬레이터")
-        st.write("전 세계 트레이너들과 실력을 겨뤄보세요!")
-        if st.button("배틀 하러 가기", key="go_battle"):
-            st.session_state.page = "Battle"
-            st.rerun()
+    // 3. Click-to-Catch Interaction
+    const sprites = parentDoc.querySelectorAll('.decor-sprite');
+    const pokeIds = [1,4,7,25,39,52,54,58,63,65,74,92,94,130,133,143,149,150,151,172,197,212,248,373,448,700];
 
-    with col2:
-        st.subheader("💬 AI 챗봇")
-        st.write("포켓몬 박사님에게 무엇이든 물어보세요.")
-        if st.button("챗봇과 대화하기", key="go_chatbot"):
-            st.session_state.page = "Chatbot"
-            st.rerun()
-
-    col3, col4 = st.columns(2)
-    
-    with col3:
-        st.subheader("📖 포켓몬 도감")
-        st.write("모든 포켓몬의 상세 데이터를 확인하세요.")
-        if st.button("도감 보기", key="go_pokedex"):
-            st.session_state.page = "Pokedex"
-            st.rerun()
-
-    with col4:
-        st.subheader("🛡️ 팀 빌더")
-        st.write("최강의 팀을 구성하고 전략을 세우세요.")
-        if st.button("팀 구성하기", key="go_team"):
-            st.session_state.page = "Team Building"
-            st.rerun()
-
-# 라우터 로직
-if 'page' not in st.session_state:
-    st.session_state.page = "Home"
-
+    sprites.forEach(sprite => {{
+        sprite.style.pointerEvents = 'auto';
+        sprite.addEventListener('click', function() {{
+            const randomId = pokeIds[Math.floor(Math.random() * pokeIds.length)];
+            this.style.opacity = '0';
+            setTimeout(() => {{
+                this.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/' + randomId + '.gif';
+                this.style.opacity = '0.8';
+            }}, 250);
+        }});
+    }});
+</script>
+""", unsafe_allow_html=True)

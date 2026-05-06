@@ -1,0 +1,30 @@
+# [Web Framework - Backend]
+fastapi
+uvicorn
+pydantic
+
+# [Database & ORM]
+sqlalchemy
+psycopg2-binary
+psycopg2
+pgvector
+
+# [AI & LLM Orchestration]
+langchain
+langchain-core
+langchain-openai
+langchain-groq
+langgraph
+tavily-python
+
+# [AI Models & API]
+openai
+groq
+
+# [Frontend - Streamlit]
+streamlit
+requests
+streamlit-cookies-controller
+
+# [Utilities]
+python-dotenv

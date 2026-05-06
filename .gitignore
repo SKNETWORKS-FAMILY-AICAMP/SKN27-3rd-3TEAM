@@ -18,3 +18,5 @@ env/
 venv/
 .venv
 .streamlit/
+.claude/
+CLAUDE.md
