@@ -9,14 +9,14 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./data/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - skn_net
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: pokemon_backend
     restart: unless-stopped
     env_file:
@@ -33,14 +33,15 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app
+      - ./requirements.txt:/app/requirements.txt
     command: >
       sh -c "pip install --no-cache-dir -r requirements.txt &&
              uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: pokemon_frontend
     restart: unless-stopped
     env_file:
@@ -55,9 +56,10 @@ services:
       - skn_net
     volumes:
       - ./frontend:/app
+      - ./requirements.txt:/app/requirements.txt
     command: >
       sh -c "pip install --no-cache-dir -r requirements.txt &&
-             streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+             streamlit run app.py --server.port 8501 --server.address 0.0.0.0 --server.fileWatcherType poll"
 
 networks:
   skn_net:
