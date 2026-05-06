@@ -1,0 +1,126 @@
+{
+  "accuracy": 85,
+  "contest_combos": null,
+  "contest_effect": null,
+  "contest_type": null,
+  "damage_class": {
+    "name": "special",
+    "url": "https://pokeapi.co/api/v2/move-damage-class/3/"
+  },
+  "effect_chance": null,
+  "effect_changes": [],
+  "effect_entries": [],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Le lanceur jette une bombe qui recouvre la cible de sirop gluant et fait progressivement baisser la Vitesse de la cible pendant trois tours.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "The user sets off an explosion of sticky candy syrup, which coats the target and causes the target's Speed stat to drop each turn for three turns.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 903,
+  "learned_by_pokemon": [
+    {
+      "name": "dipplin",
+      "url": "https://pokeapi.co/api/v2/pokemon/1011/"
+    },
+    {
+      "name": "hydrapple",
+      "url": "https://pokeapi.co/api/v2/pokemon/1019/"
+    }
+  ],
+  "machines": [],
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "unique",
+      "url": "https://pokeapi.co/api/v2/move-category/13/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": 3,
+    "min_hits": null,
+    "min_turns": 3,
+    "stat_chance": 100
+  },
+  "name": "syrup-bomb",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "みずあめボム"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Bombe au Sirop"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Syrup Bomb"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "みずあめボム"
+    }
+  ],
+  "past_values": [],
+  "power": 60,
+  "pp": 10,
+  "priority": 0,
+  "stat_changes": [
+    {
+      "change": -1,
+      "stat": {
+        "name": "speed",
+        "url": "https://pokeapi.co/api/v2/stat/6/"
+      }
+    }
+  ],
+  "super_contest_effect": null,
+  "target": {
+    "name": "selected-pokemon",
+    "url": "https://pokeapi.co/api/v2/move-target/10/"
+  },
+  "type": {
+    "name": "grass",
+    "url": "https://pokeapi.co/api/v2/type/12/"
+  }
+}

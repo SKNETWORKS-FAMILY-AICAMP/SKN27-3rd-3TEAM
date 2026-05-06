@@ -1,0 +1,153 @@
+{
+  "effect_changes": [],
+  "effect_entries": [
+    {
+      "effect": "Une odeur écœurante se répand sur le terrain la première fois que le Pokémon entre au combat, réduisant l'esquive des Pokémon adverses.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Une fois par combat, quand un Pokémon avec Nectar Mielleux entre au combat, il diminue la stat d’esquive de tous les adversaires adjacents d’un niveau."
+    },
+    {
+      "effect": "A sickly sweet scent spreads across the field the first time the Pokémon enters a battle, lowering the evasiveness of opposing Pokémon.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Once per battle, when a Pokémon with Supersweet Syrup enters the battle, it lowers the evasion stat of all adjacent opponents by one stage. "
+    }
+  ],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "La première fois que le Pokémon entre au combat,\\nune odeur de nectar sucré se répand sur le terrain,\\nce qui baisse l’Esquive de l’adversaire.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    },
+    {
+      "flavor_text": "Lowers the evasion of opposing Pokémon by 1 stage when first sent into battle",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    },
+    {
+      "flavor_text": "最初に　登場　したとき\n甘ったるい　蜜の香りを　ふりまいて\n相手の　回避率を　下げる。",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 300,
+  "is_main_series": true,
+  "name": "supersweet-syrup",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "かんろなミツ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "감미로운꿀"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "甘露之蜜"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Nectar Mielleux"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Süßer Nektar"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Néctar Dulce"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Sciroppo Sublime"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Supersweet Syrup"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "かんろなミツ"
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "name": "甘露之蜜"
+    }
+  ],
+  "pokemon": [
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "dipplin",
+        "url": "https://pokeapi.co/api/v2/pokemon/1011/"
+      },
+      "slot": 1
+    },
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "hydrapple",
+        "url": "https://pokeapi.co/api/v2/pokemon/1019/"
+      },
+      "slot": 1
+    }
+  ]
+}

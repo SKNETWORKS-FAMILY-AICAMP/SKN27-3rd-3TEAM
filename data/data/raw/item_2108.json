@@ -1,0 +1,51 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "held-items",
+    "url": "https://pokeapi.co/api/v2/item-category/12/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2108,
+  "machines": [],
+  "name": "cornerstone-mask",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "いしずえのめん"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Masque de la Pierre"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Cornerstone Mask"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "いしずえのめん"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}

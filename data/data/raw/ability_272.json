@@ -1,0 +1,140 @@
+{
+  "effect_changes": [],
+  "effect_entries": [
+    {
+      "effect": "Le sel pur du Pokémon le protège des conditions de statut et divise par deux les dégâts subis par les capacités de type Spectre.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Protège des conditions de statut et divise par deux les dégâts des capacités de type Spectre."
+    },
+    {
+      "effect": "The Pokémon’s pure salt protects it from status conditions and halves the damage taken from Ghost-type moves.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Protects from status conditions and halves damage from Ghost-type moves."
+    }
+  ],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Le sel pur immunise le Pokémon contre les altérations\\nde statut, et diminue de moitié les dégâts des capacités\\nde type Spectre.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "The Pokémon's pure salt protects it from status conditions and halves the damage taken from Ghost-type moves.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "清らかな塩で　状態異常に　ならない。\nゴーストタイプの　技の\nダメージを　半減させる。",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 272,
+  "is_main_series": true,
+  "name": "purifying-salt",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "きよめのしお"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Sel Purificateur"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Läutersalz"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Sal Purificadora"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Sale Purificante"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Purifying Salt"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "きよめのしお"
+    }
+  ],
+  "pokemon": [
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "nacli",
+        "url": "https://pokeapi.co/api/v2/pokemon/932/"
+      },
+      "slot": 1
+    },
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "naclstack",
+        "url": "https://pokeapi.co/api/v2/pokemon/933/"
+      },
+      "slot": 1
+    },
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "garganacl",
+        "url": "https://pokeapi.co/api/v2/pokemon/934/"
+      },
+      "slot": 1
+    }
+  ]
+}
