@@ -1,8 +1,8 @@
 import os
 import json
 
-RAW_DATA_DIR = "data/raw"
-PROCESSED_DATA_DIR = "data/processed"
+RAW_DATA_DIR = "data/data/raw"
+PROCESSED_DATA_DIR = "data/data/processed"
 
 def ensure_dir():
     if not os.path.exists(PROCESSED_DATA_DIR):
@@ -27,7 +27,7 @@ def get_korean_name(names_list, default_name):
 
 def get_korean_flavor_texts(flavor_text_entries):
     texts = []
-    seen = set() # To avoid exact duplicates if any
+    seen = set()  # 완전 중복 제거용
     for f in flavor_text_entries:
         if f['language']['name'] == 'ko':
             cleaned_text = f['flavor_text'].replace('\n', ' ').replace('\f', ' ').replace('\r', '')
@@ -44,34 +44,33 @@ def process_types():
     types_data = []
     type_efficacy = []
     
-    # 1 to 18 covers normal to fairy
+    # 1~18: 노말~페어리 타입
     for i in range(1, 19):
         t_data = load_json(os.path.join(RAW_DATA_DIR, f"type_{i}.json"))
         if not t_data: continue
-        
+
         type_id = t_data['id']
         name_ko = get_korean_name(t_data.get('names', []), t_data['name'])
         types_data.append({'id': type_id, 'name': name_ko})
-        
-        # Damage relations
+
+        # 타입 상성 관계 처리
         relations = t_data['damage_relations']
-        
+
         def add_efficacy(target_list, factor):
             for t in target_list:
-                # API returns URL, extract ID: https://pokeapi.co/api/v2/type/12/
+                # API가 URL 형태로 반환하므로 ID 추출
                 target_id = int(t['url'].split('/')[-2])
-                if target_id <= 18: # Limit to base 18 types
+                if target_id <= 18:  # 기본 18개 타입만 처리
                     type_efficacy.append({
                         'damage_type_id': type_id,
                         'target_type_id': target_id,
                         'damage_factor': factor
                     })
-        
+
         add_efficacy(relations['double_damage_to'], 2.0)
         add_efficacy(relations['half_damage_to'], 0.5)
         add_efficacy(relations['no_damage_to'], 0.0)
-        # Normal damage (1.0) is implicit, but could be computed if needed.
-        # DB typically expects all relations or we default to 1.0 in queries.
+        # 배율 1.0(보통 데미지)은 명시하지 않고 쿼리에서 기본값으로 처리
     
     save_json(types_data, "types.json")
     save_json(type_efficacy, "type_efficacy.json")
@@ -85,34 +84,33 @@ def process_pokemon():
     pokemon_abilities_list = []
     pokemon_moves_list = []
     
-    # Range covers base pokemon (1-1025) and variants (10001-10277)
-    ranges = list(range(1, 1026)) + list(range(10001, 10278))
-    
+    # 기본 포켓몬(1~1025) + 폼 변형(10001~10325)
+    ranges = list(range(1, 1026)) + list(range(10001, 10326))
+
     for i in ranges:
         p_data = load_json(os.path.join(RAW_DATA_DIR, f"pokemon_{i}.json"))
         if not p_data: continue
-        
-        # species data only exists for base pokemon in our current collection
-        # For variants, we need to link back to their base species ID
+
+        # 베이스 species ID 추출 (폼 변형도 베이스 포켓몬의 species를 참조)
         species_id = int(p_data['species']['url'].split('/')[-2])
         s_data = load_json(os.path.join(RAW_DATA_DIR, f"species_{species_id}.json"))
-        
+
         if not s_data: continue
-        
-        # Korean name extraction
-        # For variants, use the variety name if possible, or fallback to species Korean name
-        name_ko = get_korean_name(s_data.get('names', []), p_data['name'])
-        
-        # Image URL extraction
+
+        # 한국어 이름: 폼 변형은 collect_variants에서 저장한 korean_name 우선 사용
+        # 기본 포켓몬은 species names 목록에서 추출
+        name_ko = p_data.get('korean_name') or get_korean_name(s_data.get('names', []), p_data['name'])
+
+        # 공식 아트워크 이미지 URL 추출 (없으면 기본 스프라이트로 대체)
         sprites = p_data.get('sprites', {})
         image_url = sprites.get('other', {}).get('official-artwork', {}).get('front_default')
         if not image_url:
             image_url = sprites.get('front_default')
-            
-        # Cry URL extraction
+
+        # 울음소리 URL 추출
         cry_url = p_data.get('cries', {}).get('latest')
 
-        # 1. Pokemon
+        # 1. 포켓몬 기본 정보
         pokemon_list.append({
             'id': p_data['id'],
             'name': name_ko,
@@ -124,7 +122,7 @@ def process_pokemon():
             'is_default': p_data['is_default']
         })
         
-        # 2. Pokemon Stats
+        # 2. 종족값
         stats = {s['stat']['name']: s['base_stat'] for s in p_data['stats']}
         stats_list.append({
             'pokemon_id': p_data['id'],
@@ -136,7 +134,7 @@ def process_pokemon():
             'speed': stats.get('speed', 0)
         })
         
-        # 3. Pokemon Types
+        # 3. 타입
         for t in p_data['types']:
             type_id = int(t['type']['url'].split('/')[-2])
             pokemon_types_list.append({
@@ -145,7 +143,7 @@ def process_pokemon():
                 'slot': t['slot']
             })
             
-        # 4. Species (Only for base pokemon to avoid duplicates in species table)
+        # 4. 도감 정보 (기본 포켓몬만, 폼 변형 중복 방지)
         if i <= 1025:
             gen_id = int(s_data['generation']['url'].split('/')[-2])
             species_list.append({
@@ -154,8 +152,8 @@ def process_pokemon():
                 'generation': gen_id,
                 'capture_rate': s_data['capture_rate']
             })
-            
-            # 5. Flavor Texts (Only for base species)
+
+            # 5. 도감 설명 (기본 포켓몬 species 기준)
             ko_flavors = get_korean_flavor_texts(s_data.get('flavor_text_entries', []))
             for f in ko_flavors:
                 flavor_texts_list.append({
@@ -164,7 +162,7 @@ def process_pokemon():
                     'content': f['content']
                 })
             
-        # 6. Pokemon Abilities
+        # 6. 특성
         for a in p_data.get('abilities', []):
             ability_id = int(a['ability']['url'].split('/')[-2])
             pokemon_abilities_list.append({
@@ -174,11 +172,10 @@ def process_pokemon():
                 'slot': a['slot']
             })
             
-        # 7. Pokemon Moves Mapping
+        # 7. 습득 기술 목록
         for m in p_data.get('moves', []):
             move_id = int(m['move']['url'].split('/')[-2])
-            # Only take the latest or most relevant version group detail for simplicity
-            # For now, let's take all unique learn methods to be comprehensive
+            # 버전별 중복 제거: 습득 방법 + 레벨 조합 기준으로 유일한 항목만 저장
             seen_methods = set()
             for detail in m.get('version_group_details', []):
                 method = detail['move_learn_method']['name']
