@@ -156,7 +156,7 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 /* ── CTAs ── */
 .cta-btn {{
     display: inline-flex; align-items: center; padding: clamp(12px, 1.4vw, 18px) clamp(24px, 3.5vw, 45px); border-radius: 100px;
-    font-family: 'Outfit', sans-serif; font-size: clamp(14px, 1.3vw, 18px); font-weight: 800; text-decoration: none;
+    font-family: 'Outfit', sans-serif; font-size: clamp(14px, 1.3vw, 18px); font-weight: 800; text-decoration: none !important;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative; z-index: 60;
     text-transform: uppercase; letter-spacing: 1.2px;
@@ -198,12 +198,12 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 }}
 
 /* ── Theme Styling (절대 가독성 버전) ── */
-.sec-hero .sec-badge {{ color: #000; border-color: var(--poke-yellow); background: var(--poke-yellow); }}
+.sec-hero .sec-badge {{ color: #000; border-color: #FFCB05; background: #FFCB05 !important; opacity: 1; }}
 .sec-hero .sec-title {{ 
     color: #FFDE00; /* 더 밝고 쨍한 포켓몬 클래식 옐로우 */
     text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 8px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255, 222, 0, 0.6); 
 }}
-.sec-hero .cta-btn {{ background: var(--poke-yellow); color: #000; font-weight: 900; box-shadow: 0 10px 30px rgba(255, 203, 5, 0.3); }}
+.sec-hero .cta-btn {{ background: #FFCB05 !important; color: #000; font-weight: 900; box-shadow: 0 10px 30px rgba(255, 203, 5, 0.4); border-color: #FFCB05; opacity: 1; }}
 
 .sec-hero .main-artwork {{ filter: drop-shadow(0 0 80px rgba(255, 203, 5, 0.5)); width: clamp(220px, 38vw, 560px); max-height: clamp(200px, 36vw, 520px); }}
 
@@ -263,10 +263,10 @@ content_html = f"""
 <div class="full-section sec-hero observer-target">
     <div class="section-inner">
         <div class="text-box reveal-up">
-            <div class="sec-badge">Next-Gen Trainer Platform</div>
-            <h1 class="sec-title">The <b>Ultimate</b><br>Pokémon Journey</h1>
-            <p class="sec-desc">최첨단 AI 기술과 데이터 분석을 통해 포켓몬 마스터로 거듭나세요. 배틀, 도감, 팀 빌딩까지 완벽하게 지원합니다.</p>
-            <a href="#explore" class="cta-btn">모험 시작하기</a>
+            <div class="sec-badge">SKN 27기 3조 프로젝트</div>
+            <h1 class="sec-title">LLM, 너로 정했다!<br><b>Pokémon</b> AI 어시스턴트</h1>
+            <p class="sec-desc">단순한 검색을 넘어, AI가 포켓몬 세계의 모든 것을 분석합니다.<br>전략적 배틀부터 스마트 도감, 전술적인 팀 빌딩, 실시간 AI 챗봇까지<br> 완벽한 트레이너 가이드를 경험하세요.</p>
+            <a href="#explore" class="cta-btn">포켓몬 세상으로 이동</a>
         </div>
         <div class="visual-box reveal-right">
             <img src="{ART}/10199.png" class="main-artwork">
@@ -335,8 +335,8 @@ content_html = f"""
 </div>
 
 <div style="padding: 50px 5% 60px; text-align: center; background: #000; color: rgba(255,255,255,0.3); font-size: 13px; font-family: 'Inter', sans-serif; letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.03);">
-    © 2024 POKÉMON WORLD. ALL RIGHTS RESERVED.<br>
-    <span style="display: inline-block; margin-top: 10px; opacity: 0.6;">Designed for the Next Generation of Trainers. Powered by Advanced AI.</span>
+    © 2026 POKÉMON AI ASSISTANT. ALL RIGHTS RESERVED.<br>
+<span style="display: inline-block; margin-top: 10px; opacity: 0.6;">새로운 시대를 탐험하는 트레이너를 위한 지능형 가이드 · Powered by Advanced AI</span>
 </div>
 </div>
 """
