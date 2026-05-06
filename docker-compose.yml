@@ -1,4 +1,18 @@
 services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: pokemon_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - skn_net
+
   backend:
     build:
       context: ./backend
@@ -8,20 +22,19 @@ services:
     env_file:
       - .env
     environment:
-      # 기존 pokemon_db 컨테이너 호스트명으로 직접 지정
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@pokemon_db:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     ports:
       - "8080:8000"
+    depends_on:
+      - db
     networks:
       - skn_net
-      - pokemon_db_collection_default
     working_dir: /app
     volumes:
       - ./backend:/app
     command: >
       sh -c "pip install --no-cache-dir -r requirements.txt &&
              uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-
 
   frontend:
     build:
@@ -45,10 +58,9 @@ services:
       sh -c "pip install --no-cache-dir -r requirements.txt &&
              streamlit run app.py --server.port 8501 --server.address 0.0.0.0 --server.fileWatcherType poll"
 
-
 networks:
   skn_net:
     driver: bridge
-  # 기존 pokemon_db 컨테이너가 속한 네트워크 (외부에서 가져옴)
-  pokemon_db_collection_default:
-    external: true
+
+volumes:
+  postgres_data:
