@@ -1,6 +1,22 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import base64
+import os
 from utils.ui import inject_common_ui
+
+def get_base64_img(file_name):
+    path = os.path.join(os.path.dirname(__file__), "img", file_name)
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            data = f.read()
+        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+    return ""
+
+bg1 = get_base64_img("main_1.png")
+bg2 = get_base64_img("main_2.png")
+bg3 = get_base64_img("main_3.png")
+bg4 = get_base64_img("main_4.png")
+bg5 = get_base64_img("main_5.png")
 
 # ── Image Assets ──
 ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
@@ -37,7 +53,15 @@ landing_css = f"""
 
 .reverse .section-inner {{ flex-direction: row-reverse; }}
 
-.text-box {{ flex: 1; z-index: 2; }}
+.text-box {{ 
+    flex: 1; 
+    z-index: 2; 
+    background: rgba(0, 0, 0, 0.65); 
+    padding: 40px; 
+    border-radius: 24px; 
+    backdrop-filter: blur(12px); 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+}}
 .visual-box {{ flex: 1.2; display: flex; justify-content: center; position: relative; z-index: 2; }}
 
 .sec-badge {{
@@ -108,27 +132,33 @@ landing_css = f"""
 
 /* Themes */
 .sec-hero {{ padding-top: 120px; }}
-.sec-hero .section-inner {{ background: radial-gradient(circle at 50% 100%, #1a1a35 0%, #000 100%); color: #fff; }}
+.sec-hero .section-inner {{ background: url('{bg1}') center/cover no-repeat; color: #fff; }}
 .sec-hero .sec-badge {{ background: rgba(255,203,5,0.2); color: #FFCB05; border: 1px solid #FFCB05; }}
 .sec-hero .cta-btn {{ background: #FFCB05; color: #000; box-shadow: 0 10px 20px rgba(255,203,5,0.3); }}
 
-.sec-grass .section-inner {{ background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); color: #064e3b; }}
-.sec-grass .sec-badge {{ background: #bbf7d0; color: #166534; }}
-.sec-grass .cta-btn {{ background: #15803d; color: #fff; box-shadow: 0 10px 20px rgba(21,128,61,0.2); }}
+.sec-grass .section-inner {{ background: url('{bg2}') center/cover no-repeat; color: #fff; }}
+.sec-grass .sec-title {{ color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }}
+.sec-grass .sec-desc {{ color: #eee; text-shadow: 0 1px 5px rgba(0,0,0,0.7); font-weight: 500; }}
+.sec-grass .sec-badge {{ background: rgba(255,255,255,0.8); color: #166534; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }}
+.sec-grass .cta-btn {{ background: #15803d; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3); }}
 
-.sec-fire .section-inner {{ background: linear-gradient(135deg, #450a0a 0%, #171717 100%); color: #fecaca; }}
-.sec-fire .sec-title {{ color: #fff; }}
-.sec-fire .sec-badge {{ background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid #ef4444; }}
-.sec-fire .cta-btn {{ background: #dc2626; color: #fff; box-shadow: 0 10px 20px rgba(220,38,38,0.3); }}
+.sec-fire .section-inner {{ background: url('{bg3}') center/cover no-repeat; color: #fff; }}
+.sec-fire .sec-title {{ color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }}
+.sec-fire .sec-desc {{ color: #eee; text-shadow: 0 1px 5px rgba(0,0,0,0.7); font-weight: 500; }}
+.sec-fire .sec-badge {{ background: rgba(255,255,255,0.8); color: #ef4444; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: none; }}
+.sec-fire .cta-btn {{ background: #dc2626; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3); }}
 
-.sec-psychic .section-inner {{ background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); color: #4a044e; }}
-.sec-psychic .sec-badge {{ background: #f5d0fe; color: #86198f; }}
-.sec-psychic .cta-btn {{ background: #c026d3; color: #fff; box-shadow: 0 10px 20px rgba(192,38,211,0.2); }}
+.sec-psychic .section-inner {{ background: url('{bg4}') center/cover no-repeat; color: #fff; }}
+.sec-psychic .sec-title {{ color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }}
+.sec-psychic .sec-desc {{ color: #eee; text-shadow: 0 1px 5px rgba(0,0,0,0.7); font-weight: 500; }}
+.sec-psychic .sec-badge {{ background: rgba(255,255,255,0.8); color: #86198f; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }}
+.sec-psychic .cta-btn {{ background: #c026d3; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3); }}
 
-.sec-ghost .section-inner {{ background: linear-gradient(135deg, #1e1b4b 0%, #000 100%); color: #e0e7ff; }}
-.sec-ghost .sec-title {{ color: #fff; }}
-.sec-ghost .sec-badge {{ background: rgba(99,102,241,0.2); color: #818cf8; border: 1px solid #818cf8; }}
-.sec-ghost .cta-btn {{ background: #4f46e5; color: #fff; box-shadow: 0 10px 20px rgba(79,70,229,0.3); }}
+.sec-ghost .section-inner {{ background: url('{bg5}') center/cover no-repeat; color: #fff; }}
+.sec-ghost .sec-title {{ color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }}
+.sec-ghost .sec-desc {{ color: #eee; text-shadow: 0 1px 5px rgba(0,0,0,0.7); font-weight: 500; }}
+.sec-ghost .sec-badge {{ background: rgba(255,255,255,0.8); color: #4f46e5; box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: none; }}
+.sec-ghost .cta-btn {{ background: #4f46e5; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3); }}
 
 @media (max-width: 1024px) {{
     .section-inner {{ flex-direction: column !important; padding: 60px 40px; text-align: center; }}
@@ -141,8 +171,6 @@ landing_css = f"""
 content_html = f"""
 <!-- Hero Section -->
 <div class="full-section sec-hero observer-target">
-    <img src="{GIF}/172.gif" class="decor-sprite walk-right" style="bottom: 10%; width: 55px; animation-duration: 12s;">
-    <img src="{GIF}/133.gif" class="decor-sprite walk-left" style="top: 20%; width: 65px; animation-duration: 35s;">
     <div class="section-inner">
         <div class="text-box reveal-up">
             <div class="sec-badge">Next-Gen Trainer Platform</div>
@@ -151,7 +179,7 @@ content_html = f"""
             <a href="#explore" class="cta-btn">모험 시작하기</a>
         </div>
         <div class="visual-box reveal-right">
-            <img src="{ART}/25.png" class="main-artwork">
+            <!-- <img src="{ART}/25.png" class="main-artwork"> -->
         </div>
     </div>
 </div>
@@ -166,7 +194,7 @@ content_html = f"""
             <a href="/pokedex" target="_self" class="cta-btn">도감 열람하기 →</a>
         </div>
         <div class="visual-box reveal-right">
-            <img src="{ART}/1.png" class="main-artwork">
+            <!-- <img src="{ART}/1.png" class="main-artwork"> -->
         </div>
     </div>
 </div>
@@ -181,7 +209,7 @@ content_html = f"""
             <a href="/battle" target="_self" class="cta-btn">배틀 시뮬레이션 →</a>
         </div>
         <div class="visual-box reveal-left">
-            <img src="{ART}/6.png" class="main-artwork">
+            <!-- <img src="{ART}/6.png" class="main-artwork"> -->
         </div>
     </div>
 </div>
@@ -211,7 +239,7 @@ content_html = f"""
             <a href="/teambuilding" target="_self" class="cta-btn">팀 빌딩 시작 →</a>
         </div>
         <div class="visual-box reveal-left">
-            <img src="{ART}/94.png" class="main-artwork">
+            <!-- <img src="{ART}/94.png" class="main-artwork"> -->
         </div>
     </div>
 </div>
