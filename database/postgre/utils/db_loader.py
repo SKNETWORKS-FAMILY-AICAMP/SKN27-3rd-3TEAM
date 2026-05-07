@@ -190,14 +190,23 @@ def load_abilities(cursor):
 
 def load_pokemon_abilities(cursor):
     data = load_json("pokemon_abilities.json")
+    loaded_count = 0
+    skipped_count = 0
     for row in data:
+        cursor.execute("SELECT id FROM abilities WHERE id = %s", (row['ability_id'],))
+        if not cursor.fetchone():
+            skipped_count += 1
+            continue
         cursor.execute(
-            """INSERT INTO pokemon_abilities (pokemon_id, ability_id, is_hidden, slot) 
-               VALUES (%s, %s, %s, %s) 
+            """INSERT INTO pokemon_abilities (pokemon_id, ability_id, is_hidden, slot)
+               VALUES (%s, %s, %s, %s)
                ON CONFLICT (pokemon_id, ability_id) DO UPDATE SET is_hidden = EXCLUDED.is_hidden, slot = EXCLUDED.slot""",
             (row['pokemon_id'], row['ability_id'], row['is_hidden'], row['slot'])
         )
-    print(f"Loaded {len(data)} pokemon abilities.")
+        loaded_count += 1
+    if skipped_count:
+        print(f"경고: ability_id가 없는 레코드 {skipped_count}개 건너뜀")
+    print(f"Loaded {loaded_count} pokemon abilities.")
 
 def load_pokemon_moves(cursor):
     data = load_json("pokemon_moves.json")
