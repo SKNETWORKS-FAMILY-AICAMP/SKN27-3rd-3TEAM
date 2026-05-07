@@ -7,6 +7,7 @@ pydantic
 sqlalchemy
 psycopg2-binary
 pgvector
+neo4j
 
 # [AI & LLM Orchestration]
 langchain
