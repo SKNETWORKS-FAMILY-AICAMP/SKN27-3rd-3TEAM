@@ -62,6 +62,8 @@ class Species(Base):
     pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="CASCADE"))
     generation = Column(Integer)
     capture_rate = Column(Integer)
+    classification = Column(String(50))
+    gender_rate = Column(Integer)
 
     pokemon = relationship("Pokemon", back_populates="species")
     flavor_texts = relationship("FlavorText", back_populates="species", cascade="all, delete-orphan")

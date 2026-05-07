@@ -13,8 +13,8 @@ if root_dir not in sys.path:
 from utils.ui import inject_common_ui
 
 st.set_page_config(
-    page_title="Pokemon Detail",
-    page_icon="🐾",
+    page_title="포켓몬 상세정보",
+    page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -242,9 +242,8 @@ with st.spinner("데이터를 불러오는 중..."):
 name = data.get("name", "Unknown")
 img_url = data.get("image_url") or "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
 
-# Mock missing data from DB
-classification = "씨앗포켓몬"
-gender_ratio = "♂ 87.5% ♀ 12.5%"
+classification = data.get("classification") or "기록 없음"
+gender_ratio = data.get("gender_ratio") or "데이터 없음"
 
 height_m = (data.get("height") or 0) / 10.0
 weight_kg = (data.get("weight") or 0) / 10.0
@@ -274,7 +273,7 @@ st.markdown(f'''<div class="main-card">
 <div class="detail-name">{name}</div>
 <img src="{img_url}" class="detail-image" alt="{name}">
 <div class="detail-desc">
-태어났을 때부터 등에 식물의 씨앗이 있다. 태어날 때부터 등에 있는 이상한 씨앗과 함께 성장한다.
+{data.get('description', '설명이 없습니다.')}
 </div>
 <div class="info-grid">
 <div class="info-item">

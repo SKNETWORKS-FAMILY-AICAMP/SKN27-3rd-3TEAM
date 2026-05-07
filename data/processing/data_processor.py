@@ -40,6 +40,12 @@ def get_korean_flavor_texts(flavor_text_entries):
                 })
     return texts
 
+def get_korean_genus(genera_list):
+    for g in genera_list:
+        if g['language']['name'] == 'ko':
+            return g['genus']
+    return None
+
 def process_types():
     types_data = []
     type_efficacy = []
@@ -146,11 +152,16 @@ def process_pokemon():
         # 4. 도감 정보 (기본 포켓몬만, 폼 변형 중복 방지)
         if i <= 1025:
             gen_id = int(s_data['generation']['url'].split('/')[-2])
+            classification = get_korean_genus(s_data.get('genera', []))
+            gender_rate = s_data.get('gender_rate')
+
             species_list.append({
                 'id': species_id,
                 'pokemon_id': p_data['id'],
                 'generation': gen_id,
-                'capture_rate': s_data['capture_rate']
+                'capture_rate': s_data['capture_rate'],
+                'classification': classification,
+                'gender_rate': gender_rate
             })
 
             # 5. 도감 설명 (기본 포켓몬 species 기준)

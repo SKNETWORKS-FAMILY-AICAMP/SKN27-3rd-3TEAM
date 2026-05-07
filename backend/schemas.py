@@ -77,6 +77,8 @@ class PokemonDetailResponse(BaseModel):
     abilities: List[PokemonAbilityResponse] = []
     evolution_chain: List[EvolutionNode] = []
     description: Optional[str] = None
+    classification: Optional[str] = None
+    gender_ratio: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
