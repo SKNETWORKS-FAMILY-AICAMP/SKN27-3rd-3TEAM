@@ -44,23 +44,26 @@ CREATE CONSTRAINT item_id IF NOT EXISTS
 FOR (i:Item)
 REQUIRE i.item_id IS UNIQUE;
 
+// Nature 노드의 고유 ID
+// nature_id는 PokeAPI 기준 성격 ID를 의미한다.
+CREATE CONSTRAINT nature_id IF NOT EXISTS
+FOR (n:Nature)
+REQUIRE n.nature_id IS UNIQUE;
+
 // Generation 노드의 고유 ID
 // generation_id는 포켓몬 등장 세대 번호를 의미한다.
-// 초기 구현에서 Generation 노드를 만들지 않더라도, 나중에 사용하기 쉽도록 규칙만 미리 둘 수 있다.
 CREATE CONSTRAINT generation_id IF NOT EXISTS
 FOR (g:Generation)
 REQUIRE g.generation_id IS UNIQUE;
 
 // Team 노드의 고유 ID
 // team_id는 사용자가 저장한 팀 하나를 구분하는 ID를 의미한다.
-// 배틀 기능에서 팀 단위 데이터를 다룰 때 필요하다.
 CREATE CONSTRAINT team_id IF NOT EXISTS
 FOR (team:Team)
 REQUIRE team.team_id IS UNIQUE;
 
 // TeamMember 노드의 고유 ID
 // team_member_id는 팀 안에 들어간 특정 포켓몬 인스턴스 하나를 구분하는 ID를 의미한다.
-// 같은 포켓몬이라도 기술, 특성, 아이템이 다를 수 있으므로 Pokemon과 별도로 관리한다.
 CREATE CONSTRAINT team_member_id IF NOT EXISTS
 FOR (tm:TeamMember)
 REQUIRE tm.team_member_id IS UNIQUE;
@@ -96,8 +99,12 @@ CREATE INDEX item_name IF NOT EXISTS
 FOR (i:Item)
 ON (i.name);
 
+// 성격 이름 검색용 인덱스
+CREATE INDEX nature_name IF NOT EXISTS
+FOR (n:Nature)
+ON (n.name);
+
 // 팀 이름 검색용 인덱스
-// 사용자가 저장한 팀을 이름으로 찾는 기능을 만들 때 사용한다.
 CREATE INDEX team_name IF NOT EXISTS
 FOR (team:Team)
 ON (team.name);
@@ -125,3 +132,4 @@ ON (p.base_total);
 CREATE INDEX move_damage_class IF NOT EXISTS
 FOR (m:Move)
 ON (m.damage_class);
+

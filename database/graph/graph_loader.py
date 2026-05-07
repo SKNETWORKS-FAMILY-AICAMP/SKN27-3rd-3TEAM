@@ -2,7 +2,7 @@
 Pokemon Graph DB Loader
 
 목적:
-    data/data/processed/*.json 파일을 읽어서 Neo4j에 포켓몬 그래프를 적재합니다.
+    database/common/data/processed/*.json 파일을 읽어서 Neo4j에 포켓몬 그래프를 적재합니다.
 
 큰 흐름:
     1. Neo4j 연결
@@ -12,10 +12,10 @@ Pokemon Graph DB Loader
     5. 타입 상성을 이용한 파생 Relationship 생성
 
 실행 예시:
-    python data/database/graph/graph_loader.py
+    python database/graph/graph_loader.py
 
 초기화 후 다시 적재:
-    python data/database/graph/graph_loader.py --reset
+    python database/graph/graph_loader.py --reset
 """
 
 import argparse
@@ -31,13 +31,13 @@ from neo4j import GraphDatabase
 # ============================================
 # 1. 기본 경로와 환경변수 설정
 # ============================================
-# 이 파일은 data/database/graph/graph_loader.py 위치에 있습니다.
-# parents[3]은 프로젝트 루트(SKN27-3rd-3TEAM)를 의미합니다.
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+# 이 파일은 database/graph/graph_loader.py 위치에 있습니다.
+# parents[2]는 프로젝트 루트(SKN27-3rd-3TEAM)를 의미합니다.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # processed JSON 파일들이 저장된 위치입니다.
-# 기존 프로젝트 코드가 data/data/processed를 사용하고 있으므로 그대로 맞춥니다.
-PROCESSED_DATA_DIR = PROJECT_ROOT / "data" / "data" / "processed"
+# 현재 정리된 프로젝트 구조가 database/common/data/processed를 사용하므로 여기에 맞춥니다.
+PROCESSED_DATA_DIR = PROJECT_ROOT / "database" / "common" / "data" / "processed"
 
 # Neo4j 제약조건/인덱스가 들어있는 Cypher 파일입니다.
 CONSTRAINTS_PATH = Path(__file__).resolve().parent / "constraints.cypher"
@@ -391,6 +391,37 @@ def create_item_nodes(conn: Neo4jConnection) -> None:
     run_batched(conn, query, rows, "Item nodes")
 
 
+def create_nature_nodes(conn: Neo4jConnection) -> None:
+    """
+    Nature 노드를 생성합니다.
+
+    Source:
+        natures.json
+
+    설명:
+        성격은 포켓몬 종 자체의 정보가 아니라 실제 배틀 개체의 세팅입니다.
+        따라서 지금은 Nature 노드만 만들고, 나중에 TeamMember - HAS_NATURE -> Nature 관계로 연결합니다.
+    """
+    rows = [
+        {
+            "nature_id": row["id"],
+            "name": row["name"],
+            "increased_stat": row.get("increased_stat"),
+            "decreased_stat": row.get("decreased_stat"),
+        }
+        for row in load_json("natures.json")
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (n:Nature {nature_id: row.nature_id})
+    SET n.name = row.name,
+        n.increased_stat = row.increased_stat,
+        n.decreased_stat = row.decreased_stat
+    """
+    run_batched(conn, query, rows, "Nature nodes")
+
+
 def create_species_and_generation_nodes(conn: Neo4jConnection) -> None:
     """
     Species와 Generation 노드를 생성합니다.
@@ -644,10 +675,9 @@ def create_evolution_relationships(conn: Neo4jConnection) -> None:
     UNWIND $rows AS row
     MATCH (fromSpecies:Species {species_id: row.from_species_id})
     MATCH (toSpecies:Species {species_id: row.to_species_id})
-    MERGE (fromSpecies)-[r:EVOLVES_TO {
-        min_level: row.min_level,
-        trigger_item_id: row.trigger_item_id
-    }]->(toSpecies)
+    MERGE (fromSpecies)-[r:EVOLVES_TO]->(toSpecies)
+    SET r.min_level = row.min_level,
+        r.trigger_item_id = row.trigger_item_id
     """
 
     item_rows = [row for row in rows if row.get("trigger_item_id") is not None]
@@ -836,6 +866,7 @@ def create_all_nodes(conn: Neo4jConnection) -> None:
     create_move_nodes(conn)
     create_ability_nodes(conn)
     create_item_nodes(conn)
+    create_nature_nodes(conn)
     create_species_and_generation_nodes(conn)
 
 
@@ -941,4 +972,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
