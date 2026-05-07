@@ -4,7 +4,7 @@ import os
 import time
 from tqdm import tqdm
 
-RAW_DATA_DIR = "data/data/raw"
+RAW_DATA_DIR = "database/common/data/raw"
 BASE_URL = "https://pokeapi.co/api/v2"
 
 def ensure_dir():

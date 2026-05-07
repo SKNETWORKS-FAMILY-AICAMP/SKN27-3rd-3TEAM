@@ -55,7 +55,7 @@ def vectorize_table(cursor, table_name, text_column, id_column="id"):
 def update_processed_json(table_name, id_column="id"):
     """Fetch embeddings from DB and update the corresponding processed JSON file."""
     print(f"Syncing {table_name} embeddings back to JSON...")
-    PROCESSED_DATA_DIR = "data/data/processed"
+    PROCESSED_DATA_DIR = "database/common/data/processed"
     
     try:
         conn = get_connection()

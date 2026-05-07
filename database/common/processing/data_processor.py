@@ -1,8 +1,8 @@
 import os
 import json
 
-RAW_DATA_DIR = "data/data/raw"
-PROCESSED_DATA_DIR = "data/data/processed"
+RAW_DATA_DIR = "database/common/data/raw"
+PROCESSED_DATA_DIR = "database/common/data/processed"
 
 def ensure_dir():
     if not os.path.exists(PROCESSED_DATA_DIR):
