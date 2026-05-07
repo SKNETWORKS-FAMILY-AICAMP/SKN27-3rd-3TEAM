@@ -1,5 +1,5 @@
 services:
-  db:
+  postgres:
     image: pgvector/pgvector:pg16
     container_name: pokemon_db
     restart: always
@@ -9,7 +9,21 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./data/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./database/postgre/utils/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - skn_net
+  
+  neo4j:
+    image: neo4j:latest
+    container_name: pokemon_neo4j
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
     networks:
       - skn_net
 
@@ -22,11 +36,11 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     ports:
       - "8080:8000"
     depends_on:
-      - db
+      - postgres
     networks:
       - skn_net
     working_dir: /app
