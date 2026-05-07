@@ -285,7 +285,7 @@ def process_evolutions():
 
 def process_abilities():
     abilities_list = []
-    for i in range(1, 308):
+    for i in range(1, 400):
         a_data = load_json(os.path.join(RAW_DATA_DIR, f"ability_{i}.json"))
         if not a_data: continue
         
