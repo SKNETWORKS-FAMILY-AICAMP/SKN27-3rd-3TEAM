@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PROCESSED_DATA_DIR = "data/data/processed"
+PROCESSED_DATA_DIR = "database/common/data/processed"
 
 def get_connection():
     return psycopg2.connect(
