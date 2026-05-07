@@ -52,6 +52,12 @@ def ensure_schema_up_to_date(cursor):
                 ALTER TABLE pokemon ADD COLUMN is_default BOOLEAN DEFAULT TRUE;
             END IF;
 
+            -- pokemon 테이블에 species_id 추가
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='pokemon' AND column_name='species_id') THEN
+                ALTER TABLE pokemon ADD COLUMN species_id INTEGER;
+            END IF;
+
             -- species 테이블에 classification 추가
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='species' AND column_name='classification') THEN
@@ -106,14 +112,15 @@ def load_pokemon(cursor):
     data = load_json("pokemon.json")
     for row in data:
         cursor.execute(
-            """INSERT INTO pokemon (id, name, height, weight, base_exp, image_url, cry_url, is_default) 
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s) 
+            """INSERT INTO pokemon (id, name, height, weight, base_exp, image_url, cry_url, is_default, species_id) 
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) 
                ON CONFLICT (id) DO UPDATE SET 
                name = EXCLUDED.name, height = EXCLUDED.height, weight = EXCLUDED.weight, 
                base_exp = EXCLUDED.base_exp, image_url = EXCLUDED.image_url,
-               cry_url = EXCLUDED.cry_url, is_default = EXCLUDED.is_default""",
+               cry_url = EXCLUDED.cry_url, is_default = EXCLUDED.is_default,
+               species_id = EXCLUDED.species_id""",
             (row['id'], row['name'], row['height'], row['weight'], row['base_exp'], 
-             row['image_url'], row['cry_url'], row.get('is_default', True))
+             row['image_url'], row['cry_url'], row.get('is_default', True), row.get('species_id'))
         )
     print(f"Loaded {len(data)} pokemon.")
 

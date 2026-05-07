@@ -15,10 +15,11 @@ class Pokemon(Base):
     image_url = Column(String(255))
     cry_url = Column(String(255))
     is_default = Column(Boolean, default=True)
+    species_id = Column(Integer, ForeignKey("species.id", ondelete="SET NULL"), nullable=True)
 
     stats = relationship("PokemonStats", back_populates="pokemon", uselist=False, cascade="all, delete-orphan")
     types = relationship("PokemonType", back_populates="pokemon", cascade="all, delete-orphan")
-    species = relationship("Species", back_populates="pokemon", uselist=False, cascade="all, delete-orphan")
+    species = relationship("Species", back_populates="pokemon_varieties", foreign_keys=[species_id])
     abilities = relationship("PokemonAbility", back_populates="pokemon", cascade="all, delete-orphan")
 
 
@@ -65,7 +66,7 @@ class Species(Base):
     classification = Column(String(50))
     gender_rate = Column(Integer)
 
-    pokemon = relationship("Pokemon", back_populates="species")
+    pokemon_varieties = relationship("Pokemon", back_populates="species", foreign_keys="Pokemon.species_id")
     flavor_texts = relationship("FlavorText", back_populates="species", cascade="all, delete-orphan")
 
 

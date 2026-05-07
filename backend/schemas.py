@@ -54,14 +54,26 @@ class PokemonAbilityResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class PokemonVarietyResponse(BaseModel):
+    id: int
+    name: str
+    is_default: bool
+    image_url: Optional[str] = None
+    types: List[PokemonTypeResponse] = []
+
+    model_config = ConfigDict(from_attributes=True)
+
 # ── Evolutions ──
 class EvolutionNode(BaseModel):
     id: int
     name: str
     image_url: Optional[str] = None
     min_level: Optional[int] = None
+    evolves_to: List['EvolutionNode'] = []
+    varieties: List[PokemonVarietyResponse] = []
     
     model_config = ConfigDict(from_attributes=True)
+
 
 # ── Pokemon (Detail) ──
 class PokemonDetailResponse(BaseModel):
@@ -79,6 +91,7 @@ class PokemonDetailResponse(BaseModel):
     description: Optional[str] = None
     classification: Optional[str] = None
     gender_ratio: Optional[str] = None
+    varieties: List[PokemonVarietyResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
 

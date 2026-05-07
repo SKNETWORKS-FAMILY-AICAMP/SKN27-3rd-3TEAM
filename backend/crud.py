@@ -61,48 +61,64 @@ def get_pokemon_count(
 
 
 def get_evolution_chain(db: Session, species_id: int) -> List[dict]:
-    # Very basic linear evolution chain resolution for UI
-    # Finds the base species, then walks forward
-    chain = []
-    
-    # 1. Find base species (walk backwards)
-    current_species_id = species_id
+    """
+    재귀적으로 전체 진화 트리를 구축합니다. (분기 진화 지원)
+    """
+    # 1. 최하위(Base) 종 찾기 (뒤로 거슬러 올라감)
+    base_species_id = species_id
     while True:
-        prev_evo = db.query(models.Evolution).filter(models.Evolution.to_species_id == current_species_id).first()
+        prev_evo = db.query(models.Evolution).filter(models.Evolution.to_species_id == base_species_id).first()
         if not prev_evo:
             break
-        current_species_id = prev_evo.from_species_id
-        
-    # 2. Walk forwards and build chain
-    while current_species_id:
-        species = db.query(models.Species).filter(models.Species.id == current_species_id).first()
-        pokemon = db.query(models.Pokemon).filter(models.Pokemon.id == species.pokemon_id).first() if species else None
-        
-        if pokemon:
-            # Find how we got here to get min_level
-            min_level = None
-            if len(chain) > 0:
-                evo_link = db.query(models.Evolution).filter(
-                    models.Evolution.from_species_id == chain[-1]['species_id'],
-                    models.Evolution.to_species_id == current_species_id
-                ).first()
-                if evo_link:
-                    min_level = evo_link.min_level
+        base_species_id = prev_evo.from_species_id
+
+    # 2. 트리 구축을 위한 재귀 함수
+    def build_node(s_id: int, min_level: int = None) -> Optional[dict]:
+        species = db.query(models.Species).filter(models.Species.id == s_id).first()
+        if not species:
+            return None
             
-            chain.append({
-                "id": pokemon.id,
-                "name": pokemon.name,
-                "image_url": pokemon.image_url,
-                "min_level": min_level,
-                "species_id": current_species_id
-            })
-            
-        next_evo = db.query(models.Evolution).filter(models.Evolution.from_species_id == current_species_id).first()
-        if not next_evo:
-            break
-        current_species_id = next_evo.to_species_id
+        # 대표 포켓몬 찾기 (is_default 우선)
+        pokemon = db.query(models.Pokemon).filter(
+            models.Pokemon.species_id == s_id,
+            models.Pokemon.is_default == True
+        ).first()
+        if not pokemon:
+            pokemon = db.query(models.Pokemon).filter(models.Pokemon.species_id == s_id).first()
         
-    return chain
+        if not pokemon:
+            return None
+
+        # 해당 종의 모든 형태(Varieties) 가져오기
+        varieties = db.query(models.Pokemon).filter(models.Pokemon.species_id == s_id).all()
+        
+        # 다음 진화 단계들 찾기
+        next_evolutions = db.query(models.Evolution).filter(models.Evolution.from_species_id == s_id).all()
+        
+        return {
+            "id": pokemon.id,
+            "name": pokemon.name,
+            "image_url": pokemon.image_url,
+            "min_level": min_level,
+            "varieties": [
+                {
+                    "id": v.id, 
+                    "name": v.name, 
+                    "is_default": v.is_default, 
+                    "image_url": v.image_url,
+                    "types": v.types
+                }
+                for v in varieties
+            ],
+            "evolves_to": [
+                res for res in [build_node(evo.to_species_id, evo.min_level) for evo in next_evolutions]
+                if res is not None
+            ]
+        }
+
+    # 3. 루트(최하위 종)부터 트리 시작
+    root_node = build_node(base_species_id)
+    return [root_node] if root_node else []
 
 
 def get_pokemon_by_id(db: Session, pokemon_id: int):

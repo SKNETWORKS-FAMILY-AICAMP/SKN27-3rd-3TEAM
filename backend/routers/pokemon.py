@@ -4,6 +4,7 @@ from typing import Optional, List
 
 import crud
 import schemas
+import models
 from database import get_db
 
 router = APIRouter(
@@ -71,11 +72,24 @@ def read_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
             response_data["gender_ratio"] = f"♂ {male_percent}% ♀ {female_percent}%"
         else:
             response_data["gender_ratio"] = "데이터 없음"
+            
+        # 형태 전환(Varieties) 정보 주입
+        if db_pokemon.species_id:
+            varieties = db.query(models.Pokemon).filter(
+                models.Pokemon.species_id == db_pokemon.species_id
+            ).all()
+            response_data["varieties"] = [
+                {"id": v.id, "name": v.name, "is_default": v.is_default, "image_url": v.image_url}
+                for v in varieties
+            ]
+        else:
+            response_data["varieties"] = []
     else:
         response_data["description"] = "종 정보가 없습니다."
         response_data["evolution_chain"] = []
         response_data["classification"] = "기록 없음"
         response_data["gender_ratio"] = "데이터 없음"
+        response_data["varieties"] = []
         
     return response_data
 
