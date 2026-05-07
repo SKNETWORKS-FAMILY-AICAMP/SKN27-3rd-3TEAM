@@ -226,9 +226,10 @@ try:
         else:
             grid_html = '<div class="pokemon-grid">'
             for p in pokemon_list:
+                p_types_raw = sorted(p.get("types", []), key=lambda x: x.get("slot", 1))
                 p_types = [
                     (t["type_"]["name"], KO_TO_EN.get(t["type_"]["name"], "normal"))
-                    for t in p.get("types", [])
+                    for t in p_types_raw
                 ]
                 img_url = (
                     p.get("image_url")

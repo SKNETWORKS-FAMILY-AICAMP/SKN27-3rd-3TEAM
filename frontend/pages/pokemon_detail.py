@@ -22,7 +22,6 @@ st.set_page_config(
 
 # Inject common UI (Header)
 inject_common_ui(spacer=True)
-st.markdown(get_detail_styles(), unsafe_allow_html=True)
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://backend:8000")
 
@@ -44,6 +43,16 @@ with st.spinner("데이터를 불러오는 중..."):
         response = requests.get(f"{BACKEND_URL}/api/v1/pokemon/{pokemon_id}", timeout=5)
         response.raise_for_status()
         data = response.json()
+        
+        # 포켓몬의 타입 목록을 slot 순서대로 정렬
+        if data.get("types"):
+            data["types"] = sorted(data["types"], key=lambda x: x.get("slot", 1))
+            
+        # 포켓몬의 첫 번째 타입 추출 (배경용)
+        main_type = "노말"
+        if data.get("types"):
+            main_type = data["types"][0]["type_"]["name"]
+        st.markdown(get_detail_styles(main_type), unsafe_allow_html=True)
     except Exception as e:
         st.error(f"데이터를 불러오지 못했습니다: {e}")
         st.stop()
