@@ -26,9 +26,9 @@ def get_pokemon_list(
         query = query.filter(models.Type.name.in_(type_names))
         
     if min_id is not None:
-        query = query.filter(models.Pokemon.id >= min_id)
+        query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
-        query = query.filter(models.Pokemon.id <= max_id)
+        query = query.filter(models.Pokemon.species_id <= max_id)
         
     return query.order_by(models.Pokemon.species_id, models.Pokemon.id).offset(skip).limit(limit).all()
 
@@ -53,9 +53,9 @@ def get_pokemon_count(
         query = query.filter(models.Type.name.in_(type_names))
         
     if min_id is not None:
-        query = query.filter(models.Pokemon.id >= min_id)
+        query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
-        query = query.filter(models.Pokemon.id <= max_id)
+        query = query.filter(models.Pokemon.species_id <= max_id)
         
     return query.count()
 

@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import os
 import sys
-import base64
+import urllib.parse
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -289,23 +289,23 @@ TYPE_IMG_DIR = os.path.join(current_dir, "..", "img", "type")
 # API name → filename (대부분 동일, 얼음만 예외)
 TYPE_FILE_MAP = {"얼음": "아이스"}
 
-def get_type_img(ko_name: str) -> str:
+def get_type_img_src(ko_name: str) -> str:
     filename = TYPE_FILE_MAP.get(ko_name, ko_name)
     path = os.path.join(TYPE_IMG_DIR, f"{filename}.svg")
     try:
-        with open(path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode()
-        return f"data:image/svg+xml;base64,{b64}"
+        with open(path, "r", encoding="utf-8") as f:
+            svg = f.read()
+        return f"data:image/svg+xml,{urllib.parse.quote(svg)}"
     except FileNotFoundError:
         return ""
 
 def type_badge_html(ko: str) -> str:
-    src = get_type_img(ko)
+    src = get_type_img_src(ko)
     if src:
         return (
             f'<div style="display:inline-flex;flex-direction:column;align-items:center;'
             f'gap:4px;margin-right:10px;">'
-            f'<img src="{src}" style="width:22px;height:22px;object-fit:contain;">'
+            f'<img src="{src}" width="30" height="30">'
             f'<span style="font-size:0.78rem;font-weight:600;color:#444;">{ko}</span>'
             f'</div>'
         )
