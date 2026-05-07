@@ -19,6 +19,8 @@ class Pokemon(Base):
     stats = relationship("PokemonStats", back_populates="pokemon", uselist=False, cascade="all, delete-orphan")
     types = relationship("PokemonType", back_populates="pokemon", cascade="all, delete-orphan")
     species = relationship("Species", back_populates="pokemon", uselist=False, cascade="all, delete-orphan")
+    abilities = relationship("PokemonAbility", back_populates="pokemon", cascade="all, delete-orphan")
+
 
 
 class PokemonStats(Base):
@@ -77,9 +79,44 @@ class FlavorText(Base):
     species = relationship("Species", back_populates="flavor_texts")
 
 
+class Ability(Base):
+    __tablename__ = "abilities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    effect_text = Column(Text)
+    embedding = Column(Vector(1536), nullable=True)
+
+
+class PokemonAbility(Base):
+    __tablename__ = "pokemon_abilities"
+
+    pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="CASCADE"), primary_key=True)
+    ability_id = Column(Integer, ForeignKey("abilities.id", ondelete="CASCADE"), primary_key=True)
+    is_hidden = Column(Boolean, nullable=False)
+    slot = Column(Integer, nullable=False)
+
+    pokemon = relationship("Pokemon", back_populates="abilities")
+    ability = relationship("Ability", lazy="joined")
+
+
+class Evolution(Base):
+    __tablename__ = "evolutions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    from_species_id = Column(Integer, ForeignKey("species.id", ondelete="CASCADE"))
+    to_species_id = Column(Integer, ForeignKey("species.id", ondelete="CASCADE"))
+    min_level = Column(Integer, nullable=True)
+    trigger_item_id = Column(Integer, nullable=True)
+
+    from_species = relationship("Species", foreign_keys=[from_species_id], backref="evolves_to")
+    to_species = relationship("Species", foreign_keys=[to_species_id], backref="evolves_from")
+
+
 class PokemonKnowledge(Base):
     __tablename__ = "pokemon_knowledge"
 
     pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="CASCADE"), primary_key=True)
     content = Column(Text, nullable=False)
     embedding = Column(Vector(1536), nullable=True)
+
