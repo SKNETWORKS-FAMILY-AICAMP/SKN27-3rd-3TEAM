@@ -32,9 +32,9 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app
-      - ./requirements.txt:/app/requirements.txt
+      - ./requirements.txt:/requirements.txt
     command: >
-      sh -c "pip install --no-cache-dir -r requirements.txt &&
+      sh -c "pip install --no-cache-dir -r /requirements.txt &&
              uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
@@ -55,9 +55,9 @@ services:
       - skn_net
     volumes:
       - ./frontend:/app
-      - ./requirements.txt:/app/requirements.txt
+      - ./requirements.txt:/requirements.txt
     command: >
-      sh -c "pip install --no-cache-dir -r requirements.txt &&
+      sh -c "pip install --no-cache-dir -r /requirements.txt &&
              streamlit run app.py --server.port 8501 --server.address 0.0.0.0 --server.fileWatcherType poll"
 
 networks:
