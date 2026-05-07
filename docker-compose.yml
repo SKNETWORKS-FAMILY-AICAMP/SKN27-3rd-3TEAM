@@ -12,20 +12,6 @@ services:
       - ./database/postgre/utils/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - skn_net
-  
-  neo4j:
-    image: neo4j:latest
-    container_name: pokemon_neo4j
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - neo4j_data:/data
-    networks:
-      - skn_net
 
   backend:
     build:
