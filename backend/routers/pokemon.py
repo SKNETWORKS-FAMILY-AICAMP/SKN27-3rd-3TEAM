@@ -48,12 +48,19 @@ def read_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
     # Pydantic's from_attributes=True will handle the rest
     response_data = schemas.PokemonDetailResponse.model_validate(db_pokemon).model_dump()
     
-    # Resolve evolution chain if species exists
+    # Resolve evolution chain and description if species exists
     if db_pokemon.species:
         evo_chain = crud.get_evolution_chain(db, db_pokemon.species.id)
         response_data["evolution_chain"] = evo_chain
+        
+        # Get the first flavor text as description
+        if db_pokemon.species.flavor_texts:
+            response_data["description"] = db_pokemon.species.flavor_texts[0].content
+        else:
+            response_data["description"] = "설명이 없습니다."
     else:
         response_data["evolution_chain"] = []
+        response_data["description"] = "설명이 없습니다."
         
     return response_data
 

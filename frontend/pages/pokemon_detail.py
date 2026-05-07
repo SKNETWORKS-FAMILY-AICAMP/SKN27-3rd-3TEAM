@@ -24,13 +24,26 @@ inject_common_ui(spacer=True)
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://backend:8000")
 
-# Hide sidebar completely for detail page to match mockup
+# Custom Styles
 st.markdown("""
 <style>
+/* Hide sidebar only */
 [data-testid="collapsedControl"] { display: none; }
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+
+/* Custom Detail Header Style - 45 degree White-Black-Red gradient */
+.pokemon-detail-header {
+    background: linear-gradient(45deg, #ffffff 30%, #000000 30%, #000000 70%, #E3350D 70%);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
 /* Background pattern */
 .stApp {
@@ -45,9 +58,6 @@ header {visibility: hidden;}
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: -60px;
-    margin-left: -50px;
-    margin-right: -50px;
     margin-bottom: 40px;
 }
 
