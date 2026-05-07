@@ -75,12 +75,13 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 
 /* ── Global Utilities ── */
 .full-section {{
-    min-height: 100vh;
     width: 100%;
     padding: clamp(30px, 5vw, 60px) 4%;
     display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
     background-attachment: fixed;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }}
 
 /* ── Pokedex Scanline & Grid Effect ── */
@@ -354,7 +355,26 @@ st.markdown(content_html, unsafe_allow_html=True)
 st.markdown(f"""
 <script>
     const parentDoc = window.parent.document;
-    
+
+    // 0. Scroll Snap + Dynamic Height Setup
+    const snapContainer = parentDoc.querySelector('.main') || parentDoc.querySelector('[data-testid="stAppViewContainer"]');
+    if (snapContainer) {{
+        snapContainer.style.scrollSnapType = 'y mandatory';
+        snapContainer.style.overflowY = 'scroll';
+    }}
+
+    function applySnapHeights() {{
+        const vh = window.parent.innerHeight;
+        parentDoc.querySelectorAll('.full-section').forEach(el => {{
+            el.style.height = vh + 'px';
+            el.style.scrollSnapAlign = 'start';
+            el.style.scrollSnapStop = 'always';
+        }});
+    }}
+
+    applySnapHeights();
+    window.parent.addEventListener('resize', applySnapHeights);
+
     // 1. Visibility Logic
     setTimeout(() => {{
         parentDoc.body.classList.add('js-ready');

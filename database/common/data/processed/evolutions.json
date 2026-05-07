@@ -1,0 +1,2906 @@
+[
+  {
+    "from_species_id": 1,
+    "to_species_id": 2,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 2,
+    "to_species_id": 3,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 4,
+    "to_species_id": 5,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 5,
+    "to_species_id": 6,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 7,
+    "to_species_id": 8,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 8,
+    "to_species_id": 9,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 10,
+    "to_species_id": 11,
+    "min_level": 7,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 11,
+    "to_species_id": 12,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 13,
+    "to_species_id": 14,
+    "min_level": 7,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 14,
+    "to_species_id": 15,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 16,
+    "to_species_id": 17,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 17,
+    "to_species_id": 18,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 19,
+    "to_species_id": 20,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 21,
+    "to_species_id": 22,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 23,
+    "to_species_id": 24,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 172,
+    "to_species_id": 25,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 25,
+    "to_species_id": 26,
+    "min_level": null,
+    "trigger_item_id": 83
+  },
+  {
+    "from_species_id": 27,
+    "to_species_id": 28,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 29,
+    "to_species_id": 30,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 30,
+    "to_species_id": 31,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 32,
+    "to_species_id": 33,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 33,
+    "to_species_id": 34,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 173,
+    "to_species_id": 35,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 35,
+    "to_species_id": 36,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 37,
+    "to_species_id": 38,
+    "min_level": null,
+    "trigger_item_id": 82
+  },
+  {
+    "from_species_id": 174,
+    "to_species_id": 39,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 39,
+    "to_species_id": 40,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 41,
+    "to_species_id": 42,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 42,
+    "to_species_id": 169,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 43,
+    "to_species_id": 44,
+    "min_level": 21,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 44,
+    "to_species_id": 45,
+    "min_level": null,
+    "trigger_item_id": 85
+  },
+  {
+    "from_species_id": 44,
+    "to_species_id": 182,
+    "min_level": null,
+    "trigger_item_id": 80
+  },
+  {
+    "from_species_id": 46,
+    "to_species_id": 47,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 48,
+    "to_species_id": 49,
+    "min_level": 31,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 50,
+    "to_species_id": 51,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 52,
+    "to_species_id": 53,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 52,
+    "to_species_id": 863,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 54,
+    "to_species_id": 55,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 56,
+    "to_species_id": 57,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 57,
+    "to_species_id": 979,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 58,
+    "to_species_id": 59,
+    "min_level": null,
+    "trigger_item_id": 82
+  },
+  {
+    "from_species_id": 60,
+    "to_species_id": 61,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 61,
+    "to_species_id": 62,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 61,
+    "to_species_id": 186,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 63,
+    "to_species_id": 64,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 64,
+    "to_species_id": 65,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 66,
+    "to_species_id": 67,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 67,
+    "to_species_id": 68,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 69,
+    "to_species_id": 70,
+    "min_level": 21,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 70,
+    "to_species_id": 71,
+    "min_level": null,
+    "trigger_item_id": 85
+  },
+  {
+    "from_species_id": 72,
+    "to_species_id": 73,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 74,
+    "to_species_id": 75,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 75,
+    "to_species_id": 76,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 77,
+    "to_species_id": 78,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 79,
+    "to_species_id": 80,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 79,
+    "to_species_id": 199,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 81,
+    "to_species_id": 82,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 82,
+    "to_species_id": 462,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 83,
+    "to_species_id": 865,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 84,
+    "to_species_id": 85,
+    "min_level": 31,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 86,
+    "to_species_id": 87,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 88,
+    "to_species_id": 89,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 90,
+    "to_species_id": 91,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 92,
+    "to_species_id": 93,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 93,
+    "to_species_id": 94,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 95,
+    "to_species_id": 208,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 96,
+    "to_species_id": 97,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 98,
+    "to_species_id": 99,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 100,
+    "to_species_id": 101,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 102,
+    "to_species_id": 103,
+    "min_level": null,
+    "trigger_item_id": 85
+  },
+  {
+    "from_species_id": 104,
+    "to_species_id": 105,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 236,
+    "to_species_id": 106,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 236,
+    "to_species_id": 107,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 236,
+    "to_species_id": 237,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 108,
+    "to_species_id": 463,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 109,
+    "to_species_id": 110,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 111,
+    "to_species_id": 112,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 112,
+    "to_species_id": 464,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 440,
+    "to_species_id": 113,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 113,
+    "to_species_id": 242,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 114,
+    "to_species_id": 465,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 116,
+    "to_species_id": 117,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 117,
+    "to_species_id": 230,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 118,
+    "to_species_id": 119,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 120,
+    "to_species_id": 121,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 439,
+    "to_species_id": 122,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 122,
+    "to_species_id": 866,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 123,
+    "to_species_id": 212,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 123,
+    "to_species_id": 900,
+    "min_level": null,
+    "trigger_item_id": 2230
+  },
+  {
+    "from_species_id": 238,
+    "to_species_id": 124,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 239,
+    "to_species_id": 125,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 125,
+    "to_species_id": 466,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 240,
+    "to_species_id": 126,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 126,
+    "to_species_id": 467,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 129,
+    "to_species_id": 130,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 134,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 135,
+    "min_level": null,
+    "trigger_item_id": 83
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 136,
+    "min_level": null,
+    "trigger_item_id": 82
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 196,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 197,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 470,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 471,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 133,
+    "to_species_id": 700,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 137,
+    "to_species_id": 233,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 233,
+    "to_species_id": 474,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 138,
+    "to_species_id": 139,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 140,
+    "to_species_id": 141,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 446,
+    "to_species_id": 143,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 147,
+    "to_species_id": 148,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 148,
+    "to_species_id": 149,
+    "min_level": 55,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 152,
+    "to_species_id": 153,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 153,
+    "to_species_id": 154,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 155,
+    "to_species_id": 156,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 156,
+    "to_species_id": 157,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 158,
+    "to_species_id": 159,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 159,
+    "to_species_id": 160,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 161,
+    "to_species_id": 162,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 163,
+    "to_species_id": 164,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 165,
+    "to_species_id": 166,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 167,
+    "to_species_id": 168,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 170,
+    "to_species_id": 171,
+    "min_level": 27,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 175,
+    "to_species_id": 176,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 176,
+    "to_species_id": 468,
+    "min_level": null,
+    "trigger_item_id": 107
+  },
+  {
+    "from_species_id": 177,
+    "to_species_id": 178,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 179,
+    "to_species_id": 180,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 180,
+    "to_species_id": 181,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 298,
+    "to_species_id": 183,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 183,
+    "to_species_id": 184,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 438,
+    "to_species_id": 185,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 187,
+    "to_species_id": 188,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 188,
+    "to_species_id": 189,
+    "min_level": 27,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 190,
+    "to_species_id": 424,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 191,
+    "to_species_id": 192,
+    "min_level": null,
+    "trigger_item_id": 80
+  },
+  {
+    "from_species_id": 193,
+    "to_species_id": 469,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 194,
+    "to_species_id": 195,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 194,
+    "to_species_id": 980,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 198,
+    "to_species_id": 430,
+    "min_level": null,
+    "trigger_item_id": 108
+  },
+  {
+    "from_species_id": 200,
+    "to_species_id": 429,
+    "min_level": null,
+    "trigger_item_id": 108
+  },
+  {
+    "from_species_id": 360,
+    "to_species_id": 202,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 203,
+    "to_species_id": 981,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 204,
+    "to_species_id": 205,
+    "min_level": 31,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 206,
+    "to_species_id": 982,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 207,
+    "to_species_id": 472,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 209,
+    "to_species_id": 210,
+    "min_level": 23,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 211,
+    "to_species_id": 904,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 215,
+    "to_species_id": 461,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 215,
+    "to_species_id": 903,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 216,
+    "to_species_id": 217,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 217,
+    "to_species_id": 901,
+    "min_level": null,
+    "trigger_item_id": 2231
+  },
+  {
+    "from_species_id": 218,
+    "to_species_id": 219,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 220,
+    "to_species_id": 221,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 221,
+    "to_species_id": 473,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 222,
+    "to_species_id": 864,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 223,
+    "to_species_id": 224,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 458,
+    "to_species_id": 226,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 228,
+    "to_species_id": 229,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 231,
+    "to_species_id": 232,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 234,
+    "to_species_id": 899,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 246,
+    "to_species_id": 247,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 247,
+    "to_species_id": 248,
+    "min_level": 55,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 252,
+    "to_species_id": 253,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 253,
+    "to_species_id": 254,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 255,
+    "to_species_id": 256,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 256,
+    "to_species_id": 257,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 258,
+    "to_species_id": 259,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 259,
+    "to_species_id": 260,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 261,
+    "to_species_id": 262,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 263,
+    "to_species_id": 264,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 264,
+    "to_species_id": 862,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 265,
+    "to_species_id": 266,
+    "min_level": 7,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 265,
+    "to_species_id": 268,
+    "min_level": 7,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 266,
+    "to_species_id": 267,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 268,
+    "to_species_id": 269,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 270,
+    "to_species_id": 271,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 271,
+    "to_species_id": 272,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 273,
+    "to_species_id": 274,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 274,
+    "to_species_id": 275,
+    "min_level": null,
+    "trigger_item_id": 85
+  },
+  {
+    "from_species_id": 276,
+    "to_species_id": 277,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 278,
+    "to_species_id": 279,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 280,
+    "to_species_id": 281,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 281,
+    "to_species_id": 282,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 281,
+    "to_species_id": 475,
+    "min_level": null,
+    "trigger_item_id": 109
+  },
+  {
+    "from_species_id": 283,
+    "to_species_id": 284,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 285,
+    "to_species_id": 286,
+    "min_level": 23,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 287,
+    "to_species_id": 288,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 288,
+    "to_species_id": 289,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 290,
+    "to_species_id": 291,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 290,
+    "to_species_id": 292,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 293,
+    "to_species_id": 294,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 294,
+    "to_species_id": 295,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 296,
+    "to_species_id": 297,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 299,
+    "to_species_id": 476,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 300,
+    "to_species_id": 301,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 304,
+    "to_species_id": 305,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 305,
+    "to_species_id": 306,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 307,
+    "to_species_id": 308,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 309,
+    "to_species_id": 310,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 406,
+    "to_species_id": 315,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 315,
+    "to_species_id": 407,
+    "min_level": null,
+    "trigger_item_id": 107
+  },
+  {
+    "from_species_id": 316,
+    "to_species_id": 317,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 318,
+    "to_species_id": 319,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 320,
+    "to_species_id": 321,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 322,
+    "to_species_id": 323,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 325,
+    "to_species_id": 326,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 328,
+    "to_species_id": 329,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 329,
+    "to_species_id": 330,
+    "min_level": 45,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 331,
+    "to_species_id": 332,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 333,
+    "to_species_id": 334,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 339,
+    "to_species_id": 340,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 341,
+    "to_species_id": 342,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 343,
+    "to_species_id": 344,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 345,
+    "to_species_id": 346,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 347,
+    "to_species_id": 348,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 349,
+    "to_species_id": 350,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 353,
+    "to_species_id": 354,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 355,
+    "to_species_id": 356,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 356,
+    "to_species_id": 477,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 433,
+    "to_species_id": 358,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 361,
+    "to_species_id": 362,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 361,
+    "to_species_id": 478,
+    "min_level": null,
+    "trigger_item_id": 109
+  },
+  {
+    "from_species_id": 363,
+    "to_species_id": 364,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 364,
+    "to_species_id": 365,
+    "min_level": 44,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 366,
+    "to_species_id": 367,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 366,
+    "to_species_id": 368,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 371,
+    "to_species_id": 372,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 372,
+    "to_species_id": 373,
+    "min_level": 50,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 374,
+    "to_species_id": 375,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 375,
+    "to_species_id": 376,
+    "min_level": 45,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 387,
+    "to_species_id": 388,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 388,
+    "to_species_id": 389,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 390,
+    "to_species_id": 391,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 391,
+    "to_species_id": 392,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 393,
+    "to_species_id": 394,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 394,
+    "to_species_id": 395,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 396,
+    "to_species_id": 397,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 397,
+    "to_species_id": 398,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 399,
+    "to_species_id": 400,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 401,
+    "to_species_id": 402,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 403,
+    "to_species_id": 404,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 404,
+    "to_species_id": 405,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 408,
+    "to_species_id": 409,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 410,
+    "to_species_id": 411,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 412,
+    "to_species_id": 413,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 412,
+    "to_species_id": 414,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 415,
+    "to_species_id": 416,
+    "min_level": 21,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 418,
+    "to_species_id": 419,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 420,
+    "to_species_id": 421,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 422,
+    "to_species_id": 423,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 425,
+    "to_species_id": 426,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 427,
+    "to_species_id": 428,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 431,
+    "to_species_id": 432,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 434,
+    "to_species_id": 435,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 436,
+    "to_species_id": 437,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 443,
+    "to_species_id": 444,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 444,
+    "to_species_id": 445,
+    "min_level": 48,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 447,
+    "to_species_id": 448,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 449,
+    "to_species_id": 450,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 451,
+    "to_species_id": 452,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 453,
+    "to_species_id": 454,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 456,
+    "to_species_id": 457,
+    "min_level": 31,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 459,
+    "to_species_id": 460,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 489,
+    "to_species_id": 490,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 495,
+    "to_species_id": 496,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 496,
+    "to_species_id": 497,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 498,
+    "to_species_id": 499,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 499,
+    "to_species_id": 500,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 501,
+    "to_species_id": 502,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 502,
+    "to_species_id": 503,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 504,
+    "to_species_id": 505,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 506,
+    "to_species_id": 507,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 507,
+    "to_species_id": 508,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 509,
+    "to_species_id": 510,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 511,
+    "to_species_id": 512,
+    "min_level": null,
+    "trigger_item_id": 85
+  },
+  {
+    "from_species_id": 513,
+    "to_species_id": 514,
+    "min_level": null,
+    "trigger_item_id": 82
+  },
+  {
+    "from_species_id": 515,
+    "to_species_id": 516,
+    "min_level": null,
+    "trigger_item_id": 84
+  },
+  {
+    "from_species_id": 517,
+    "to_species_id": 518,
+    "min_level": null,
+    "trigger_item_id": 81
+  },
+  {
+    "from_species_id": 519,
+    "to_species_id": 520,
+    "min_level": 21,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 520,
+    "to_species_id": 521,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 522,
+    "to_species_id": 523,
+    "min_level": 27,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 524,
+    "to_species_id": 525,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 525,
+    "to_species_id": 526,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 527,
+    "to_species_id": 528,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 529,
+    "to_species_id": 530,
+    "min_level": 31,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 532,
+    "to_species_id": 533,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 533,
+    "to_species_id": 534,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 535,
+    "to_species_id": 536,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 536,
+    "to_species_id": 537,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 540,
+    "to_species_id": 541,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 541,
+    "to_species_id": 542,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 543,
+    "to_species_id": 544,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 544,
+    "to_species_id": 545,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 546,
+    "to_species_id": 547,
+    "min_level": null,
+    "trigger_item_id": 80
+  },
+  {
+    "from_species_id": 548,
+    "to_species_id": 549,
+    "min_level": null,
+    "trigger_item_id": 80
+  },
+  {
+    "from_species_id": 550,
+    "to_species_id": 902,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 551,
+    "to_species_id": 552,
+    "min_level": 29,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 552,
+    "to_species_id": 553,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 554,
+    "to_species_id": 555,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 557,
+    "to_species_id": 558,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 559,
+    "to_species_id": 560,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 562,
+    "to_species_id": 563,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 562,
+    "to_species_id": 867,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 564,
+    "to_species_id": 565,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 566,
+    "to_species_id": 567,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 568,
+    "to_species_id": 569,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 570,
+    "to_species_id": 571,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 572,
+    "to_species_id": 573,
+    "min_level": null,
+    "trigger_item_id": 107
+  },
+  {
+    "from_species_id": 574,
+    "to_species_id": 575,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 575,
+    "to_species_id": 576,
+    "min_level": 41,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 577,
+    "to_species_id": 578,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 578,
+    "to_species_id": 579,
+    "min_level": 41,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 580,
+    "to_species_id": 581,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 582,
+    "to_species_id": 583,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 583,
+    "to_species_id": 584,
+    "min_level": 47,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 585,
+    "to_species_id": 586,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 588,
+    "to_species_id": 589,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 590,
+    "to_species_id": 591,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 592,
+    "to_species_id": 593,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 595,
+    "to_species_id": 596,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 597,
+    "to_species_id": 598,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 599,
+    "to_species_id": 600,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 600,
+    "to_species_id": 601,
+    "min_level": 49,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 602,
+    "to_species_id": 603,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 603,
+    "to_species_id": 604,
+    "min_level": null,
+    "trigger_item_id": 83
+  },
+  {
+    "from_species_id": 605,
+    "to_species_id": 606,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 607,
+    "to_species_id": 608,
+    "min_level": 41,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 608,
+    "to_species_id": 609,
+    "min_level": null,
+    "trigger_item_id": 108
+  },
+  {
+    "from_species_id": 610,
+    "to_species_id": 611,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 611,
+    "to_species_id": 612,
+    "min_level": 48,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 613,
+    "to_species_id": 614,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 616,
+    "to_species_id": 617,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 619,
+    "to_species_id": 620,
+    "min_level": 50,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 622,
+    "to_species_id": 623,
+    "min_level": 43,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 624,
+    "to_species_id": 625,
+    "min_level": 52,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 625,
+    "to_species_id": 983,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 627,
+    "to_species_id": 628,
+    "min_level": 54,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 629,
+    "to_species_id": 630,
+    "min_level": 54,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 633,
+    "to_species_id": 634,
+    "min_level": 50,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 634,
+    "to_species_id": 635,
+    "min_level": 64,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 636,
+    "to_species_id": 637,
+    "min_level": 59,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 650,
+    "to_species_id": 651,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 651,
+    "to_species_id": 652,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 653,
+    "to_species_id": 654,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 654,
+    "to_species_id": 655,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 656,
+    "to_species_id": 657,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 657,
+    "to_species_id": 658,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 659,
+    "to_species_id": 660,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 661,
+    "to_species_id": 662,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 662,
+    "to_species_id": 663,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 664,
+    "to_species_id": 665,
+    "min_level": 9,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 665,
+    "to_species_id": 666,
+    "min_level": 12,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 667,
+    "to_species_id": 668,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 669,
+    "to_species_id": 670,
+    "min_level": 19,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 670,
+    "to_species_id": 671,
+    "min_level": null,
+    "trigger_item_id": 107
+  },
+  {
+    "from_species_id": 672,
+    "to_species_id": 673,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 674,
+    "to_species_id": 675,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 677,
+    "to_species_id": 678,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 679,
+    "to_species_id": 680,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 680,
+    "to_species_id": 681,
+    "min_level": null,
+    "trigger_item_id": 108
+  },
+  {
+    "from_species_id": 682,
+    "to_species_id": 683,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 684,
+    "to_species_id": 685,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 686,
+    "to_species_id": 687,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 688,
+    "to_species_id": 689,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 690,
+    "to_species_id": 691,
+    "min_level": 48,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 692,
+    "to_species_id": 693,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 694,
+    "to_species_id": 695,
+    "min_level": null,
+    "trigger_item_id": 80
+  },
+  {
+    "from_species_id": 696,
+    "to_species_id": 697,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 698,
+    "to_species_id": 699,
+    "min_level": 39,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 704,
+    "to_species_id": 705,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 705,
+    "to_species_id": 706,
+    "min_level": 50,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 708,
+    "to_species_id": 709,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 710,
+    "to_species_id": 711,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 712,
+    "to_species_id": 713,
+    "min_level": 37,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 714,
+    "to_species_id": 715,
+    "min_level": 48,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 722,
+    "to_species_id": 723,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 723,
+    "to_species_id": 724,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 725,
+    "to_species_id": 726,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 726,
+    "to_species_id": 727,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 728,
+    "to_species_id": 729,
+    "min_level": 17,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 729,
+    "to_species_id": 730,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 731,
+    "to_species_id": 732,
+    "min_level": 14,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 732,
+    "to_species_id": 733,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 734,
+    "to_species_id": 735,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 736,
+    "to_species_id": 737,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 737,
+    "to_species_id": 738,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 739,
+    "to_species_id": 740,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 742,
+    "to_species_id": 743,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 744,
+    "to_species_id": 745,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 747,
+    "to_species_id": 748,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 749,
+    "to_species_id": 750,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 751,
+    "to_species_id": 752,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 753,
+    "to_species_id": 754,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 755,
+    "to_species_id": 756,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 757,
+    "to_species_id": 758,
+    "min_level": 33,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 759,
+    "to_species_id": 760,
+    "min_level": 27,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 761,
+    "to_species_id": 762,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 762,
+    "to_species_id": 763,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 767,
+    "to_species_id": 768,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 769,
+    "to_species_id": 770,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 772,
+    "to_species_id": 773,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 782,
+    "to_species_id": 783,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 783,
+    "to_species_id": 784,
+    "min_level": 45,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 789,
+    "to_species_id": 790,
+    "min_level": 43,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 790,
+    "to_species_id": 791,
+    "min_level": 53,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 790,
+    "to_species_id": 792,
+    "min_level": 53,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 803,
+    "to_species_id": 804,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 810,
+    "to_species_id": 811,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 811,
+    "to_species_id": 812,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 813,
+    "to_species_id": 814,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 814,
+    "to_species_id": 815,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 816,
+    "to_species_id": 817,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 817,
+    "to_species_id": 818,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 819,
+    "to_species_id": 820,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 821,
+    "to_species_id": 822,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 822,
+    "to_species_id": 823,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 824,
+    "to_species_id": 825,
+    "min_level": 10,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 825,
+    "to_species_id": 826,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 827,
+    "to_species_id": 828,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 829,
+    "to_species_id": 830,
+    "min_level": 20,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 831,
+    "to_species_id": 832,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 833,
+    "to_species_id": 834,
+    "min_level": 22,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 835,
+    "to_species_id": 836,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 837,
+    "to_species_id": 838,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 838,
+    "to_species_id": 839,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 840,
+    "to_species_id": 841,
+    "min_level": null,
+    "trigger_item_id": 1175
+  },
+  {
+    "from_species_id": 840,
+    "to_species_id": 842,
+    "min_level": null,
+    "trigger_item_id": 1174
+  },
+  {
+    "from_species_id": 840,
+    "to_species_id": 1011,
+    "min_level": null,
+    "trigger_item_id": 2109
+  },
+  {
+    "from_species_id": 1011,
+    "to_species_id": 1019,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 843,
+    "to_species_id": 844,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 846,
+    "to_species_id": 847,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 848,
+    "to_species_id": 849,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 850,
+    "to_species_id": 851,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 852,
+    "to_species_id": 853,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 854,
+    "to_species_id": 855,
+    "min_level": null,
+    "trigger_item_id": 1311
+  },
+  {
+    "from_species_id": 856,
+    "to_species_id": 857,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 857,
+    "to_species_id": 858,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 859,
+    "to_species_id": 860,
+    "min_level": 32,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 860,
+    "to_species_id": 861,
+    "min_level": 42,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 868,
+    "to_species_id": 869,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 872,
+    "to_species_id": 873,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 878,
+    "to_species_id": 879,
+    "min_level": 34,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 884,
+    "to_species_id": 1018,
+    "min_level": null,
+    "trigger_item_id": 2232
+  },
+  {
+    "from_species_id": 885,
+    "to_species_id": 886,
+    "min_level": 50,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 886,
+    "to_species_id": 887,
+    "min_level": 60,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 891,
+    "to_species_id": 892,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 906,
+    "to_species_id": 907,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 907,
+    "to_species_id": 908,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 909,
+    "to_species_id": 910,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 910,
+    "to_species_id": 911,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 912,
+    "to_species_id": 913,
+    "min_level": 16,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 913,
+    "to_species_id": 914,
+    "min_level": 36,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 915,
+    "to_species_id": 916,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 917,
+    "to_species_id": 918,
+    "min_level": 15,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 919,
+    "to_species_id": 920,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 921,
+    "to_species_id": 922,
+    "min_level": 18,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 922,
+    "to_species_id": 923,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 924,
+    "to_species_id": 925,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 926,
+    "to_species_id": 927,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 928,
+    "to_species_id": 929,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 929,
+    "to_species_id": 930,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 932,
+    "to_species_id": 933,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 933,
+    "to_species_id": 934,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 935,
+    "to_species_id": 936,
+    "min_level": null,
+    "trigger_item_id": 2045
+  },
+  {
+    "from_species_id": 935,
+    "to_species_id": 937,
+    "min_level": null,
+    "trigger_item_id": 1677
+  },
+  {
+    "from_species_id": 938,
+    "to_species_id": 939,
+    "min_level": null,
+    "trigger_item_id": 83
+  },
+  {
+    "from_species_id": 940,
+    "to_species_id": 941,
+    "min_level": 25,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 942,
+    "to_species_id": 943,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 944,
+    "to_species_id": 945,
+    "min_level": 28,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 946,
+    "to_species_id": 947,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 948,
+    "to_species_id": 949,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 951,
+    "to_species_id": 952,
+    "min_level": null,
+    "trigger_item_id": 82
+  },
+  {
+    "from_species_id": 953,
+    "to_species_id": 954,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 955,
+    "to_species_id": 956,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 957,
+    "to_species_id": 958,
+    "min_level": 24,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 958,
+    "to_species_id": 959,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 960,
+    "to_species_id": 961,
+    "min_level": 26,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 963,
+    "to_species_id": 964,
+    "min_level": 38,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 965,
+    "to_species_id": 966,
+    "min_level": 40,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 969,
+    "to_species_id": 970,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 971,
+    "to_species_id": 972,
+    "min_level": 30,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 974,
+    "to_species_id": 975,
+    "min_level": null,
+    "trigger_item_id": 885
+  },
+  {
+    "from_species_id": 996,
+    "to_species_id": 997,
+    "min_level": 35,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 997,
+    "to_species_id": 998,
+    "min_level": 54,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 999,
+    "to_species_id": 1000,
+    "min_level": null,
+    "trigger_item_id": null
+  },
+  {
+    "from_species_id": 1012,
+    "to_species_id": 1013,
+    "min_level": null,
+    "trigger_item_id": 2110
+  }
+]

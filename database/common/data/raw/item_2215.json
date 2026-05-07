@@ -1,0 +1,63 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "all-machines",
+    "url": "https://pokeapi.co/api/v2/item-category/37/"
+  },
+  "cost": 0,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2215,
+  "machines": [
+    {
+      "machine": {
+        "url": "https://pokeapi.co/api/v2/machine/2041/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "machine": {
+        "url": "https://pokeapi.co/api/v2/machine/2209/"
+      },
+      "version_group": {
+        "name": "the-indigo-disk",
+        "url": "https://pokeapi.co/api/v2/version-group/27/"
+      }
+    }
+  ],
+  "name": "tm226",
+  "names": [
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "CT226"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "TM226"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "わざマシン２２６"
+    }
+  ],
+  "sprites": {
+    "default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/tm-normal.png"
+  }
+}

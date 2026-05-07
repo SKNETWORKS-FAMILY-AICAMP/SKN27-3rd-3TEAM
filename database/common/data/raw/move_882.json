@@ -1,0 +1,144 @@
+{
+  "accuracy": null,
+  "contest_combos": null,
+  "contest_effect": null,
+  "contest_type": null,
+  "damage_class": {
+    "name": "status",
+    "url": "https://pokeapi.co/api/v2/move-damage-class/1/"
+  },
+  "effect_chance": null,
+  "effect_changes": [],
+  "effect_entries": [],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Le lanceur fait le ménage sur le terrain, ce qui annule les effets de Picots, Piège de Roc, Toile Gluante, Pics Toxik, et Clonage. Augmente l'Attaque et la Vitesse du lanceur.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "The user tidies up and removes the effects of Spikes, Stealth Rock, Sticky Web, Toxic Spikes, and Substitute. This also boosts the user’s Attack and Speed stats.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 882,
+  "learned_by_pokemon": [
+    {
+      "name": "sentret",
+      "url": "https://pokeapi.co/api/v2/pokemon/161/"
+    },
+    {
+      "name": "furret",
+      "url": "https://pokeapi.co/api/v2/pokemon/162/"
+    },
+    {
+      "name": "minccino",
+      "url": "https://pokeapi.co/api/v2/pokemon/572/"
+    },
+    {
+      "name": "cinccino",
+      "url": "https://pokeapi.co/api/v2/pokemon/573/"
+    },
+    {
+      "name": "maushold-family-of-four",
+      "url": "https://pokeapi.co/api/v2/pokemon/925/"
+    },
+    {
+      "name": "maushold-family-of-three",
+      "url": "https://pokeapi.co/api/v2/pokemon/10257/"
+    }
+  ],
+  "machines": [],
+  "meta": null,
+  "name": "tidy-up",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "おかたづけ"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "大扫除"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Grand Nettoyage"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Pulizie"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Tidy Up"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "おかたづけ"
+    }
+  ],
+  "past_values": [],
+  "power": 0,
+  "pp": 10,
+  "priority": 0,
+  "stat_changes": [
+    {
+      "change": 1,
+      "stat": {
+        "name": "attack",
+        "url": "https://pokeapi.co/api/v2/stat/2/"
+      }
+    },
+    {
+      "change": 1,
+      "stat": {
+        "name": "speed",
+        "url": "https://pokeapi.co/api/v2/stat/6/"
+      }
+    }
+  ],
+  "super_contest_effect": null,
+  "target": {
+    "name": "user",
+    "url": "https://pokeapi.co/api/v2/move-target/7/"
+  },
+  "type": {
+    "name": "normal",
+    "url": "https://pokeapi.co/api/v2/type/1/"
+  }
+}

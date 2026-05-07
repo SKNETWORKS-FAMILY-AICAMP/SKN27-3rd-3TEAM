@@ -1,0 +1,58 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "picnic",
+    "url": "https://pokeapi.co/api/v2/item-category/55/"
+  },
+  "cost": 1000,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2092,
+  "machines": [],
+  "name": "sunset-flower-pick",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "ゆうやけおはなピック"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "夕阳花三明治签"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Pique Fleur du Ponant"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Sunset Flower Pick"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "ゆうやけおはなピック"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}

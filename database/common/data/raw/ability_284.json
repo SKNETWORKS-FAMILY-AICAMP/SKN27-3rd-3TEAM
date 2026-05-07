@@ -1,0 +1,124 @@
+{
+  "effect_changes": [],
+  "effect_entries": [
+    {
+      "effect": "La puissance du récipient destructeur du Pokémon réduit les stats d'Attaque Spéciale de tous les Pokémon excepté lui-même.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Diminue l’Attaque Spéciale de tous les Pokémon excepté lui-même."
+    },
+    {
+      "effect": "The power of the Pokémon’s ruinous vessel lowers the Sp. Atk stats of all Pokémon except itself.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Lowers Special Attack of all Pokémon except itself."
+    }
+  ],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Le pouvoir de l’urne qui appelle le fléau affaiblit\\nl’Attaque Spéciale de tous les autres Pokémon.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "The power of the Pokémon's ruinous vessel lowers the Sp. Atk stats of all Pokémon except itself.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "災厄を　呼ぶ　器の力で\n自分以外の　特攻が　弱くなる。",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 284,
+  "is_main_series": true,
+  "name": "vessel-of-ruin",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "わざわいのうつわ"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Urne du Fléau"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Unheilsgefäß"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Caldero Debacle"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Vaso Nefasto"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Vessel of Ruin"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "わざわいのうつわ"
+    }
+  ],
+  "pokemon": [
+    {
+      "is_hidden": false,
+      "pokemon": {
+        "name": "ting-lu",
+        "url": "https://pokeapi.co/api/v2/pokemon/1003/"
+      },
+      "slot": 1
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "held-items",
+    "url": "https://pokeapi.co/api/v2/item-category/12/"
+  },
+  "cost": 750,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2105,
+  "machines": [],
+  "name": "fairy-feather",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "ようせいのハネ"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Plume Enchantée"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Fairy Feather"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "ようせいのハネ"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}
