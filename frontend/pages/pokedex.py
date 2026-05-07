@@ -13,7 +13,7 @@ if frontend_dir not in sys.path:
     sys.path.append(frontend_dir)
 
 from utils.ui import inject_common_ui
-from utils.pokedex_styles import get_pokedex_styles, render_pokemon_card
+from pages.style.pokedex_styles import get_pokedex_styles, render_pokemon_card
 
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
 API_V1_STR = "/api/v1/pokemon"
@@ -100,6 +100,18 @@ def do_reset():
 def load_more():
     st.session_state.pokemon_limit += 20
 
+
+def handle_search():
+    """검색 및 필터 적용 로직을 한 곳에서 처리"""
+    # 폼 위젯의 현재 값들을 session_state에 저장
+    st.session_state.search_query = st.session_state.search_input
+    if "region_sel" in st.session_state:
+        st.session_state.region_filter = st.session_state.region_sel
+    if "dex_start_input" in st.session_state:
+        st.session_state.dex_start = int(st.session_state.dex_start_input)
+    if "dex_end_input" in st.session_state:
+        st.session_state.dex_end = int(st.session_state.dex_end_input)
+
 with st.container():
     st.markdown('<div class="dex-top-bg-marker"></div>', unsafe_allow_html=True)
     # ── Search bar (full width) ──────────────────────────────────
@@ -109,6 +121,7 @@ with st.container():
         placeholder="포켓몬 이름 또는 설명, 특성 키워드를 입력하세요.",
         label_visibility="collapsed",
         key="search_input",
+        on_change=handle_search,
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -176,10 +189,7 @@ with st.container():
     with bc1:
         st.markdown('<div class="dex-btn-search">', unsafe_allow_html=True)
         if st.button("검색", key="btn_search", use_container_width=True):
-            st.session_state.search_query = search_val
-            st.session_state.region_filter = region_val
-            st.session_state.dex_start = int(dex_start_val)
-            st.session_state.dex_end = int(dex_end_val)
+            handle_search()
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
     with bc2:

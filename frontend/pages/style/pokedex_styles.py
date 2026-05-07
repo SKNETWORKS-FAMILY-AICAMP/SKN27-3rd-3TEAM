@@ -4,6 +4,14 @@ import streamlit as st
 def get_pokedex_styles():
     return """
     <style>
+    /* ── Top Background ────────────────────────────── */
+    [data-testid="stAppViewContainer"] {
+        background-color: #ffffff !important;
+    }
+    .main {
+        background: transparent !important;
+    }
+    
     /* 동적 높이 컨테이너 배경 (검색/필터/버튼 영역만 정확하게 감싸기) */
     .main div[data-testid="stVerticalBlock"]:has(.dex-top-bg-marker) {
         background-color: #393939;
@@ -24,6 +32,11 @@ def get_pokedex_styles():
         padding: 14px 30px;
         margin-bottom: 0;
     }
+    .dex-filter-section {
+        background: transparent;
+        padding: 24px 30px 20px;
+        margin-bottom: 30px;
+    }
     .dex-header-icon { width: 28px; height: 28px; object-fit: contain; }
     .dex-header-title {
         font-family: 'Inter', sans-serif;
@@ -32,54 +45,57 @@ def get_pokedex_styles():
         color: white;
     }
 
-    /* ── Filter Section ────────────────────────────── */
-    .dex-filter-section {
-        background: transparent;
-        padding: 24px 30px 20px;
-        margin-bottom: 30px;
+    /* ── Search Section ────────────────────────────── */
+    .dex-search-header {
+        background: #1a1a1a;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 14px 20px 10px;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        padding-left: calc(50vw - 50% + 20px);
+        padding-right: calc(50vw - 50% + 20px);
     }
 
-    /* Dark theme overrides for Streamlit inputs */
-    .dex-filter-section [data-testid="stTextInput"] input {
+    /* Dark text input */
+    [data-testid="stTextInput"] > div {
+        background: #1a1a1a !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+    [data-testid="stTextInput"] input {
         background: #1a1a1a !important;
         color: white !important;
         border: none !important;
         border-radius: 0 !important;
         padding: 14px 16px !important;
         font-size: 0.95rem !important;
+        caret-color: white !important;
     }
-    .dex-filter-section [data-testid="stTextInput"] input::placeholder { color: #888 !important; }
-    .dex-filter-section [data-testid="stTextInput"] > div { border-radius: 0 !important; }
+    [data-testid="stTextInput"] input::placeholder { color: #888 !important; }
 
-    .dex-filter-section [data-testid="stSelectbox"] > div > div {
-        background: #2d2d2d !important;
-        color: white !important;
-        border: 1px solid #555 !important;
-        border-radius: 0 !important;
-    }
-    .dex-filter-section [data-testid="stSelectbox"] label { color: #ccc !important; font-size: 0.85rem !important; }
-
-    .dex-filter-section [data-testid="stNumberInput"] input {
-        background: #1a1a1a !important;
-        color: white !important;
-        border: 1px solid #555 !important;
-        border-radius: 0 !important;
-        text-align: center !important;
-    }
-    .dex-filter-section [data-testid="stNumberInput"] button {
-        background: #2d2d2d !important;
+    /* Red 🔍 icon button */
+    .dex-filter-section [data-testid="stSelectbox"] label { color: #ffffff !important; font-size: 0.85rem !important; }
+    .dex-search-icon-btn [data-testid="stBaseButton-secondary"] {
+        background: #E3350D !important;
         color: white !important;
         border: none !important;
+        border-radius: 0 !important;
+        min-height: 3.2rem !important;
+        font-size: 1.1rem !important;
+        padding: 0 !important;
     }
 
+    /* ── Filter Section ────────────────────────────── */
     .dex-numrange-label {
-        color: #ffffff;
+        color: #888;
         font-size: 0.85rem;
         margin-bottom: 4px;
         margin-top: 8px;
     }
     .dex-range-sep {
-        color: #ffffff;
+        color: #888;
         text-align: center;
         padding-top: 10px;
         font-size: 1.1rem;
@@ -87,7 +103,7 @@ def get_pokedex_styles():
 
     /* ── Type Icon Grid ─────────────────────────────── */
     .dex-type-label {
-        color: #ffffff;
+        color: #888;
         font-size: 0.85rem;
         margin-bottom: 16px;
     }
