@@ -6,7 +6,6 @@ pydantic
 # [Database & ORM]
 sqlalchemy
 psycopg2-binary
-psycopg2
 pgvector
 
 # [AI & LLM Orchestration]

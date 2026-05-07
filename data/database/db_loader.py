@@ -18,7 +18,7 @@ def get_connection():
 
 def ensure_schema_up_to_date(cursor):
     print("Checking database schema...")
-    # 1. Add missing columns to existing tables
+    # 1. 기존 테이블에 누락 컬럼 추가
     cursor.execute("""
         DO $$ 
         BEGIN 
@@ -54,7 +54,7 @@ def ensure_schema_up_to_date(cursor):
         END $$;
     """)
     
-    # 2. Run schema.sql to create new tables if they don't exist
+    # 2. schema.sql 실행으로 신규 테이블 생성 (이미 존재하면 무시)
     schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
     if os.path.exists(schema_path):
         with open(schema_path, 'r', encoding='utf-8') as f:
@@ -141,7 +141,7 @@ def load_species(cursor):
     print(f"Loaded {len(data)} species.")
 
 def load_flavor_text(cursor):
-    # Check if split files exist
+    # 분할 파일 존재 여부 확인
     import glob
     split_files = glob.glob(os.path.join(PROCESSED_DATA_DIR, "flavor_text_part*.json"))
     
@@ -155,7 +155,7 @@ def load_flavor_text(cursor):
         data = load_json("flavor_text.json")
 
     for row in data:
-        # flavor_text uses SERIAL for ID, so we insert without conflict handling for simplicity
+        # ID가 SERIAL이므로 충돌 처리 없이 단순 삽입 (TRUNCATE 후 재적재 방식)
         embedding = row.get('embedding')
         cursor.execute(
             """INSERT INTO flavor_text (species_id, version_name, content, embedding) 
@@ -241,12 +241,12 @@ def load_evolutions(cursor):
     data = load_json("evolutions.json")
     loaded_count = 0
     for row in data:
-        # Check if item exists if trigger_item_id is provided
+        # 진화 트리거 아이템이 DB에 없으면 NULL 처리 (FK 오류 방지)
         if row['trigger_item_id']:
             cursor.execute("SELECT id FROM items WHERE id = %s", (row['trigger_item_id'],))
             if not cursor.fetchone():
-                print(f"Warning: Item {row['trigger_item_id']} not found in DB. Skipping evolution trigger.")
-                row['trigger_item_id'] = None # Or skip the record, but setting to None is safer for the chain
+                print(f"경고: 아이템 {row['trigger_item_id']} 없음, 진화 트리거 제외")
+                row['trigger_item_id'] = None
         
         cursor.execute(
             """INSERT INTO evolutions (from_species_id, to_species_id, min_level, trigger_item_id) 

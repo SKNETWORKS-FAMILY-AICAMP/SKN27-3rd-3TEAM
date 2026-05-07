@@ -4,7 +4,7 @@ import os
 import time
 from tqdm import tqdm
 
-RAW_DATA_DIR = "data/raw"
+RAW_DATA_DIR = "data/data/raw"
 BASE_URL = "https://pokeapi.co/api/v2"
 
 def ensure_dir():
@@ -29,17 +29,17 @@ def fetch_data(endpoint):
 def collect_pokemon(start_id, end_id):
     print("Collecting Pokemon and Species data...")
     for i in tqdm(range(start_id, end_id + 1)):
-        # Fetch Pokemon data
+        # 포켓몬 데이터 수집
         poke_data = fetch_data(f"pokemon/{i}")
         if poke_data:
             save_json(poke_data, f"pokemon_{i}.json")
-        
-        # Fetch Species data (contains Korean name and flavor text)
+
+        # 도감 데이터 수집 (한국어 이름 및 도감 설명 포함)
         species_data = fetch_data(f"pokemon-species/{i}")
         if species_data:
             save_json(species_data, f"species_{i}.json")
-            
-        time.sleep(0.1) # Be polite to API
+
+        time.sleep(0.1)  # API 요청 속도 제한
 
 def collect_types(start_id, end_id):
     print("Collecting Types data...")
@@ -89,12 +89,64 @@ def collect_natures(start_id, end_id):
             save_json(nature_data, f"nature_{i}.json")
         time.sleep(0.1)
 
+VARIANT_PREFIX_MAP = {
+    "mega":       "메가",
+    "gmax":       "거다이맥스",
+    "alola":      "알로라",
+    "galar":      "가라르",
+    "hisui":      "히스이",
+    "paldea":     "팔데아",
+    "origin":     "오리진",
+    "therian":    "영물",
+    "primal":     "원시회귀",
+    "totem":      "토템",
+    "eternamax":  "에테르나맥스",
+    "bloodmoon":  "블러드문",
+}
+
+def build_korean_variant_name(poke_name, korean_base):
+    # poke_name 예: "charizard-mega-x", "pikachu-gmax", "raichu-alola"
+    suffixes = poke_name.split("-")[1:]  # 베이스 이름 제거
+    prefix = None
+    extra = []
+    for s in suffixes:
+        if s in VARIANT_PREFIX_MAP:
+            prefix = VARIANT_PREFIX_MAP[s]
+        else:
+            extra.append(s.upper())  # X, Y 같은 구분자
+    if not prefix:
+        return f"{korean_base} ({'-'.join(suffixes)})"
+    name = f"{prefix} {korean_base}"
+    if extra:
+        name += " " + " ".join(extra)
+    return name
+
 def collect_variants(start_id, end_id):
     print("Collecting Pokemon Variants (Regional forms, Mega, etc)...")
     for i in tqdm(range(start_id, end_id + 1)):
         poke_data = fetch_data(f"pokemon/{i}")
-        if poke_data:
-            save_json(poke_data, f"pokemon_{i}.json")
+        if not poke_data:
+            time.sleep(0.1)
+            continue
+
+        # species URL에서 엔드포인트만 추출해 한국어 베이스 이름 조회
+        species_url = poke_data.get("species", {}).get("url", "")
+        if species_url:
+            endpoint = species_url.replace(BASE_URL + "/", "")
+            time.sleep(0.1)
+            species_data = fetch_data(endpoint)
+            if species_data:
+                korean_base = next(
+                    (n["name"] for n in species_data.get("names", [])
+                     if n["language"]["name"] == "ko"),
+                    None
+                )
+                if korean_base:
+                    poke_data["korean_name"] = build_korean_variant_name(
+                        poke_data["name"], korean_base
+                    )
+
+        save_json(poke_data, f"pokemon_{i}.json")
         time.sleep(0.1)
 
 if __name__ == "__main__":
@@ -113,6 +165,6 @@ if __name__ == "__main__":
     collect_abilities(1, 307)
     # 모든 성격 수집 (25개)
     collect_natures(1, 25)
-    # 리전폼 및 특수 폼 수집 (ID 10001 ~ 10277)
-    collect_variants(10001, 10277)
+    # 리전폼 및 특수 폼 수집 (ID 10001 ~ 10325)
+    collect_variants(10001, 10325)
     print("All Generations & Variants Collection Complete.")

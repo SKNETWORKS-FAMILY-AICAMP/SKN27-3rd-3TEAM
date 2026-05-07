@@ -5,7 +5,6 @@ import os
 def run_script(script_path):
     print(f"\n--- Running {script_path} ---")
     try:
-        # Use current python executable to run the scripts
         result = subprocess.run([sys.executable, script_path], check=True)
         return True
     except subprocess.CalledProcessError as e:
