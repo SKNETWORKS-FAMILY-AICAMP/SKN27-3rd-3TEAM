@@ -30,7 +30,7 @@ def get_pokemon_list(
     if max_id is not None:
         query = query.filter(models.Pokemon.id <= max_id)
         
-    return query.order_by(models.Pokemon.id).offset(skip).limit(limit).all()
+    return query.order_by(models.Pokemon.species_id, models.Pokemon.id).offset(skip).limit(limit).all()
 
 
 def get_pokemon_count(
