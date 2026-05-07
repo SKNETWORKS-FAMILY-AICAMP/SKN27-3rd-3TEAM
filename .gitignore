@@ -7,6 +7,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.ipynb
 
 # Env
 .env
@@ -20,3 +21,9 @@ venv/
 .streamlit/
 .claude/
 CLAUDE.md
+
+# neo4j
+database/neo4j/neo4j_data
+database/neo4j/neo4j_import
+database/neo4j/neo4j_logs
+database/neo4j/neo4j_plugins
