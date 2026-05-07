@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
+from graph.neo4j_client import neo4j_client
 from routers import pokemon
 
 # DB 테이블 생성 (schema.sql로 이미 생성되므로 안전한 no-op)
@@ -31,3 +32,14 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+@app.on_event("shutdown")
+def shutdown_event():
+    """
+    FastAPI 앱 종료 시 Neo4j driver 연결을 닫습니다.
+
+    목적:
+        백엔드 컨테이너가 재시작되거나 종료될 때
+        Neo4j 연결 리소스가 남지 않도록 정리합니다.
+    """
+    neo4j_client.close()
