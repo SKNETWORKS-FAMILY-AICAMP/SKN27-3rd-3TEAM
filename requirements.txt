@@ -7,7 +7,8 @@ pydantic
 sqlalchemy
 psycopg2-binary
 pgvector
-neo4j
+neo4j==5.28.2
+graphdatascience==1.17
 
 # [AI & LLM Orchestration]
 langchain
