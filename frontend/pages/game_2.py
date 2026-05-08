@@ -7,6 +7,7 @@ import sys
 import base64
 import html as htmllib
 import json
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.ui import inject_common_ui
@@ -71,15 +72,15 @@ def speech_bubble(text: str, tail: str = "left",
             f'<div style="position:absolute;{arrow}width:0;height:0;"></div>'
             f'{content}</div>')
 
-def pk_card(img_id: int, name: str, size: int = 190) -> str:
-    return (f'<div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);'
-            f'border-radius:24px;padding:18px 12px 14px;text-align:center;'
-            f'box-shadow:0 12px 40px rgba(0,0,0,0.65);">'
+def pk_card(img_id: int, name: str, size: int = 700) -> str:
+    # 카드 상자를 제거하고 이미지만 웅장하게 노출
+    return (f'<div style="text-align:center; transition: transform 0.3s ease;">'
             f'<img src="{ART_URL}/{img_id}.png" '
-            f'style="width:{size}px;height:{size}px;object-fit:contain;'
-            f'filter:drop-shadow(0 10px 28px rgba(0,0,0,0.6));">'
-            f'<div style="color:#fff;font-family:Outfit,sans-serif;font-weight:700;'
-            f'font-size:1.05rem;margin-top:8px;letter-spacing:.5px;">'
+            f'style="width:{size}px; height:auto; max-width:110%; object-fit:contain;'
+            f'filter:drop-shadow(0 15px 45px rgba(0,0,0,0.9));">'
+            f'<div style="color:#fff; font-family:Outfit,sans-serif; font-weight:900;'
+            f'font-size:1.6rem; margin-top:5px; letter-spacing:2px; text-transform:uppercase;'
+            f'text-shadow: 0 0 15px rgba(255,0,255,0.6);">'
             f'{htmllib.escape(name)}</div></div>')
 
 def inject_floating_panel(script: str, p1: str, p2: str):
@@ -294,7 +295,7 @@ def show_game():
             p1_id = pk_map[p1_name]
             card1_col, bub1_col = st.columns([4, 1.5])
             with card1_col:
-                st.markdown(pk_card(p1_id, p1_name, 300), unsafe_allow_html=True)
+                st.markdown(pk_card(p1_id, p1_name, 500), unsafe_allow_html=True)
             with bub1_col:
                 bubble1 = st.empty()
 
@@ -317,7 +318,7 @@ def show_game():
             with bub2_col:
                 bubble2 = st.empty()
             with card2_col:
-                st.markdown(pk_card(p2_id, p2_name, 300), unsafe_allow_html=True)
+                st.markdown(pk_card(p2_id, p2_name, 500), unsafe_allow_html=True)
 
         # 이전 배틀 말풍선 복원
         bubble1.markdown(
@@ -377,19 +378,23 @@ def show_game():
                                         if vr:
                                             cur1 = vr
                                             bubble1.markdown(speech_bubble(cur1, "left"), unsafe_allow_html=True)
+                                            time.sleep(1.2) # 대사 간 딜레이 추가
                                     elif p2_name in sp:
                                         current_speaker = "p2"
                                         if vr:
                                             cur2 = vr
                                             bubble2.markdown(speech_bubble(cur2, "right", "#00FFFF"), unsafe_allow_html=True)
+                                            time.sleep(1.2) # 대사 간 딜레이 추가
                                     else:
                                         current_speaker = None
                                 elif current_speaker == "p1" and clean.strip():
                                     cur1 = clean.strip()
                                     bubble1.markdown(speech_bubble(cur1, "left"), unsafe_allow_html=True)
+                                    time.sleep(1.2)
                                 elif current_speaker == "p2" and clean.strip():
                                     cur2 = clean.strip()
                                     bubble2.markdown(speech_bubble(cur2, "right", "#00FFFF"), unsafe_allow_html=True)
+                                    time.sleep(1.2)
             except requests.exceptions.ConnectionError:
                 st.error("백엔드 서버에 연결할 수 없습니다.")
                 error_occurred = True
