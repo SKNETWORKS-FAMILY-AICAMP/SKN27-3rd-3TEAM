@@ -65,6 +65,15 @@ def get_detail_styles(main_type="노말"):
 
     return f"""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600&display=swap');
+
+:root {{
+    --poke-yellow: #FFCB05;
+    --poke-blue: #2A75BB;
+    --glass-bg: rgba(15, 15, 15, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.12);
+}}
+
 [data-testid="collapsedControl"] {{ display: none; }}
 #MainMenu {{ visibility: hidden; }}
 footer {{ visibility: hidden; }}
@@ -72,10 +81,12 @@ footer {{ visibility: hidden; }}
 /* 최상위 컨테이너에 배경 적용 */
 .stApp, [data-testid="stAppViewContainer"] {{
     {bg_style}
+    background-color: #050505 !important;
 }}
 
 .pk-nav {{
-    background-color: #2e2e2e;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: stretch;
     min-height: 72px;
@@ -83,7 +94,8 @@ footer {{ visibility: hidden; }}
     margin-left: calc(50% - 50vw);
     margin-top: 0;
     margin-bottom: 28px;
-    font-family: sans-serif;
+    font-family: 'Outfit', sans-serif;
+    border-bottom: 1px solid var(--glass-border);
 }}
 .pk-nav-left, .pk-nav-right {{
     display: flex;
@@ -94,179 +106,219 @@ footer {{ visibility: hidden; }}
     color: white !important;
     gap: 14px;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.3s ease;
 }}
-.pk-nav-left:hover, .pk-nav-right:hover {{ background-color: #3d3d3d; }}
+.pk-nav-left:hover, .pk-nav-right:hover {{ background-color: rgba(255, 255, 255, 0.1); }}
 .pk-nav-right {{ justify-content: flex-end; text-align: right; }}
-.pk-nav-sep {{ width: 1px; background: #555; margin: 14px 0; flex-shrink: 0; }}
+.pk-nav-sep {{ width: 1px; background: rgba(255, 255, 255, 0.1); margin: 14px 0; flex-shrink: 0; }}
 .nav-circle {{
     width: 38px; height: 38px; border-radius: 50%;
-    border: 2px solid #666;
+    border: 2px solid rgba(255, 255, 255, 0.3);
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; flex-shrink: 0; color: white;
 }}
-.pk-nav-name {{ font-size: 0.95rem; font-weight: 500; }}
-.pk-nav-num  {{ font-size: 0.78rem; color: #aaa; }}
+.pk-nav-name {{ font-size: 0.95rem; font-weight: 600; }}
+.pk-nav-num  {{ font-size: 0.78rem; color: rgba(255, 255, 255, 0.5); }}
 
+/* ── Premium Glass Card ── */
 .pk-card {{
-    background: white;
-    border-radius: 10px;
-    border: 2px solid #2e2e2e;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    max-width: 900px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+    max-width: 1000px;
     margin: 0 auto 36px auto;
     display: flex;
     overflow: hidden;
-    font-family: sans-serif;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }}
-.pk-card-left {{
-    width: 320px; flex-shrink: 0;
-    background: #f0f0f0;
-    display: flex; align-items: center; justify-content: center;
-    padding: 48px 24px;
-    background-image: radial-gradient(circle, #ddd 1px, transparent 1px);
-    background-size: 18px 18px;
-}}
-.pk-card-img {{
-    width: 250px; height: 250px;
-    object-fit: contain;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
-}}
-.pk-card-right {{
-    flex: 1; padding: 36px 40px 52px 40px;
-    display: flex; flex-direction: column; gap: 14px;
-}}
-.pk-id   {{ color: #aaa; font-size: 0.88rem; }}
-.pk-name {{ font-size: 2.4rem; font-weight: 900; color: #1a1a1a; margin: 0; line-height: 1.1; }}
+.pk-card:hover {{ transform: translateY(-5px); }}
 
-.pk-badges {{ display: flex; flex-wrap: wrap; gap: 7px; }}
+.pk-card-left {{
+    width: 380px; flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+}}
+.pk-card-left::before {{
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+}}
+
+.pk-card-img {{
+    width: 300px; height: 300px;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+    animation: float 6s ease-in-out infinite;
+}}
+
+@keyframes float {{ 
+    0%, 100% {{ transform: translateY(0); }} 
+    50% {{ transform: translateY(-15px); }} 
+}}
+
+.pk-card-right {{
+    flex: 1; padding: 48px 50px 60px 50px;
+    display: flex; flex-direction: column; gap: 20px;
+    background: rgba(0, 0, 0, 0.2);
+}}
+.pk-id   {{ color: var(--poke-yellow); font-size: 1.1rem; font-weight: 800; font-family: 'Outfit', sans-serif; }}
+.pk-name {{ 
+    font-family: 'Outfit', sans-serif;
+    font-size: 3.2rem; font-weight: 900; color: #fff; margin: 0; line-height: 1;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}}
+
+.pk-badges {{ display: flex; flex-wrap: wrap; gap: 8px; }}
 .v-badge {{
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #efefef; border-radius: 999px;
-    padding: 5px 13px; font-size: 0.82rem; color: #555; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 6px 16px; font-size: 0.85rem; color: #eee; font-weight: 600;
 }}
 .v-check {{
-    width: 17px; height: 17px; border-radius: 50%;
-    background: #bbb; display: inline-flex; align-items: center;
-    justify-content: center; font-size: 10px; color: white; flex-shrink: 0;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--poke-yellow); display: inline-flex; align-items: center;
+    justify-content: center; font-size: 11px; color: #000; flex-shrink: 0; font-weight: 900;
 }}
 
-.pk-desc {{ color: #555; font-size: 0.92rem; line-height: 1.75; }}
+.pk-desc {{ 
+    color: rgba(255, 255, 255, 0.8); 
+    font-size: 1.05rem; line-height: 1.8; 
+    font-weight: 400;
+}}
 
 .pk-stats {{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    border: 1px solid #e8e8e8;
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
 }}
 .pk-stat-cell {{
-    padding: 14px 18px;
-    border-right: 1px solid #e8e8e8;
-    border-bottom: 1px solid #e8e8e8;
+    padding: 18px 22px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }}
 .pk-stat-cell:nth-child(3n)  {{ border-right: none; }}
 .pk-stat-cell:nth-child(n+4) {{ border-bottom: none; }}
-.pk-stat-label {{ color: #aaa; font-size: 0.77rem; margin-bottom: 7px; }}
-.pk-stat-value {{ color: #222; font-weight: 600; font-size: 0.9rem; display: flex; flex-wrap: wrap; align-items: center; }}
+.pk-stat-label {{ color: rgba(255, 255, 255, 0.4); font-size: 0.8rem; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }}
+.pk-stat-value {{ color: #fff; font-weight: 600; font-size: 1rem; display: flex; flex-wrap: wrap; align-items: center; }}
 
-.gender-male   {{ color: #4a90d9; font-size: 1.25rem; margin-right: 4px; }}
-.gender-female {{ color: #e0507a; font-size: 1.25rem; }}
+.gender-male   {{ color: #60a5fa; font-size: 1.4rem; margin-right: 6px; }}
+.gender-female {{ color: #f472b6; font-size: 1.4rem; }}
 
-.ability-row {{ display: flex; flex-direction: column; gap: 3px; }}
-.ability-item {{ display: flex; align-items: center; gap: 5px; }}
+.ability-row {{ display: flex; flex-direction: column; gap: 5px; }}
+.ability-item {{ display: flex; align-items: center; gap: 8px; }}
 .ability-help {{
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #666; color: white; font-size: 10px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2); color: white; font-size: 11px;
     display: inline-flex; align-items: center; justify-content: center;
-    cursor: default; flex-shrink: 0;
+    cursor: help; flex-shrink: 0;
 }}
 
 .pk-cta {{
-    display: block; background: #E3350D; color: white !important;
-    text-align: center; padding: 15px 30px;
-    border-radius: 6px; font-size: 1rem; font-weight: 700;
-    text-decoration: none !important; margin-top: 4px;
-    transition: background 0.2s;
+    display: block; background: var(--poke-yellow); color: #000 !important;
+    text-align: center; padding: 18px 30px;
+    border-radius: 12px; font-size: 1.1rem; font-weight: 800;
+    text-decoration: none !important; margin-top: 10px;
+    transition: all 0.3s ease;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }}
-.pk-cta:hover {{ background: #c22b09 !important; }}
+.pk-cta:hover {{ 
+    background: #fff !important; 
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 203, 5, 0.3);
+}}
 
-.evo-section {{
-    max-width: 900px; margin: 0 auto 40px auto;
-    background: white; border-radius: 16px; padding: 30px 36px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    font-family: sans-serif;
+/* ── Evolution & Forms Sections ── */
+.evo-section, .forms-section {{
+    max-width: 1000px; margin: 0 auto 40px auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px; padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    font-family: 'Outfit', sans-serif;
 }}
-.evo-title {{
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 22px; display: flex; align-items: center; gap: 8px;
-    color: #1a1a1a;
+.evo-title, .forms-title {{
+    font-size: 1.2rem; font-weight: 800;
+    margin-bottom: 30px; display: flex; align-items: center; gap: 10px;
+    color: #fff; text-transform: uppercase; letter-spacing: 1.5px;
 }}
-.evo-chain {{
-    display: flex; justify-content: center;
-    align-items: center; gap: 16px; flex-wrap: wrap;
+.forms-grid {{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
 }}
-.evo-card {{
-    text-align: center; border: 1px solid #eee;
-    border-radius: 12px; padding: 16px; width: 130px;
-    transition: box-shadow 0.2s;
+.evo-card, .form-card {{
+    text-align: center; border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 18px; padding: 20px; width: 150px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
 }}
-.evo-card:hover {{ box-shadow: 0 4px 16px rgba(0,0,0,0.12); }}
-.evo-img   {{ width: 90px; height: 90px; object-fit: contain; }}
-.evo-arrow {{ color: #ccc; font-size: 22px; }}
+.evo-card:hover, .form-card:hover {{ 
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}}
+.evo-img, .form-img {{ 
+    width: 110px; height: 110px; object-fit: contain; 
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+}}
+.evo-arrow {{ color: rgba(255, 255, 255, 0.2); font-size: 24px; }}
 
 .variety-section {{
-    max-width: 900px; margin: 0 auto 20px auto;
-    display: flex; flex-direction: column; gap: 10px;
-    font-family: sans-serif;
+    max-width: 1000px; margin: 0 auto 20px auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px 30px;
+    display: flex; flex-direction: column; gap: 12px;
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }}
 .variety-title {{
-    font-size: 0.9rem; font-weight: 700; color: #666;
-    display: flex; align-items: center; gap: 6px;
+    font-size: 0.95rem; font-weight: 800; color: #fff;
+    display: flex; align-items: center; gap: 8px;
+    text-transform: uppercase; letter-spacing: 1px;
 }}
 .variety-list {{
     display: flex; flex-wrap: wrap; gap: 8px;
 }}
 .variety-btn {{
-    background: white; border: 1px solid #ddd;
-    padding: 6px 16px; border-radius: 20px;
-    font-size: 0.85rem; color: #444; text-decoration: none !important;
-    transition: all 0.2s; cursor: pointer;
+    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 20px; border-radius: 25px;
+    font-size: 0.9rem; color: #fff !important; text-decoration: none !important;
+    transition: all 0.3s ease; cursor: pointer;
+    display: inline-block;
 }}
-.variety-btn:hover {{ background: #f5f5f5; border-color: #bbb; }}
+.variety-btn:visited {{ color: #fff !important; }}
+.variety-btn:hover {{ background: rgba(255, 255, 255, 0.2); color: #fff !important; }}
 .variety-btn.active {{
-    background: #2e2e2e; color: white; border-color: #2e2e2e;
-    font-weight: 600;
+    background: var(--poke-yellow); color: #000 !important;
+    font-weight: 800;
 }}
 
-.forms-section {{
-    max-width: 900px; margin: 0 auto 60px auto;
-    background: white; border-radius: 16px; padding: 30px 36px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    font-family: sans-serif;
-}}
-.forms-title {{
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 22px; display: flex; align-items: center; gap: 8px;
-    color: #1a1a1a;
-}}
-.forms-grid {{
-    display: flex; justify-content: center;
-    align-items: center; gap: 16px; flex-wrap: wrap;
-}}
-.form-card {{
-    text-align: center; border: 1px solid #eee;
-    border-radius: 12px; padding: 16px; width: 140px;
-    transition: all 0.2s; position: relative;
-}}
-.form-card:hover {{ box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-3px); }}
-.form-card.active {{ border: 2px solid #E3350D; background: #fff8f8; }}
-.form-img {{ width: 100px; height: 100px; object-fit: contain; }}
-.form-name {{ font-weight: 700; font-size: 0.85rem; color: #1a1a1a; margin-top: 8px; line-height: 1.2; }}
+.form-card.active {{ border: 2px solid var(--poke-yellow); background: rgba(255, 203, 5, 0.05); }}
+.form-name {{ font-weight: 700; font-size: 0.95rem; color: #fff; margin-top: 10px; line-height: 1.2; }}
 .form-label {{ 
-    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    background: #E3350D; color: white; font-size: 0.65rem; padding: 2px 8px;
-    border-radius: 10px; font-weight: 800;
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--poke-yellow); color: #000; font-size: 0.7rem; padding: 3px 12px;
+    border-radius: 12px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }}
 </style>
 """

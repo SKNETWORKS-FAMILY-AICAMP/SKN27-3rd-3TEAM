@@ -105,10 +105,10 @@ def type_badge_html(ko: str) -> str:
             f'<div style="display:inline-flex;flex-direction:column;align-items:center;'
             f'gap:4px;margin-right:10px;">'
             f'<img src="{src}" width="30" height="30">'
-            f'<span style="font-size:0.78rem;font-weight:600;color:#444;">{ko}</span>'
+            f'<span style="font-size:0.78rem;font-weight:600;color:#eee;">{ko}</span>'
             f'</div>'
         )
-    return f'<span style="font-size:0.9rem;font-weight:600;color:#444;">{ko}</span>'
+    return f'<span style="font-size:0.9rem;font-weight:600;color:#eee;">{ko}</span>'
 
 types_html = "".join(
     type_badge_html(t["type_"]["name"]) for t in data.get("types", [])
@@ -168,7 +168,7 @@ if len(varieties) > 1:
         v_items += f'<a href="?id={v_id}" target="_self" class="variety-btn {is_active}">{v_name}</a>'
     
     st.markdown(
-        f'<div class="variety-section"><div class="variety-title">✨ 다른 모습</div><div class="variety-list">{v_items}</div></div>',
+        f'<div class="variety-section"><div class="variety-title">다른 모습</div><div class="variety-list">{v_items}</div></div>',
         unsafe_allow_html=True
     )
 
@@ -269,6 +269,6 @@ if len(varieties) > 1:
         )
     
     st.markdown(
-        f'<div class="forms-section"><div class="forms-title">✨ 다양한 모습</div><div class="forms-grid">{form_items}</div></div>',
+        f'<div class="forms-section"><div class="forms-title">다양한 모습</div><div class="forms-grid">{form_items}</div></div>',
         unsafe_allow_html=True
     )
