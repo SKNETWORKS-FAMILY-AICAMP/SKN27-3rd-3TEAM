@@ -51,6 +51,24 @@ def ensure_schema_up_to_date(cursor):
                            WHERE table_name='pokemon' AND column_name='is_default') THEN
                 ALTER TABLE pokemon ADD COLUMN is_default BOOLEAN DEFAULT TRUE;
             END IF;
+
+            -- pokemon 테이블에 species_id 추가
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='pokemon' AND column_name='species_id') THEN
+                ALTER TABLE pokemon ADD COLUMN species_id INTEGER;
+            END IF;
+
+            -- species 테이블에 classification 추가
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='species' AND column_name='classification') THEN
+                ALTER TABLE species ADD COLUMN classification VARCHAR(50);
+            END IF;
+
+            -- species 테이블에 gender_rate 추가
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='species' AND column_name='gender_rate') THEN
+                ALTER TABLE species ADD COLUMN gender_rate INTEGER;
+            END IF;
         END $$;
     """)
     
@@ -94,14 +112,15 @@ def load_pokemon(cursor):
     data = load_json("pokemon.json")
     for row in data:
         cursor.execute(
-            """INSERT INTO pokemon (id, name, height, weight, base_exp, image_url, cry_url, is_default) 
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s) 
+            """INSERT INTO pokemon (id, name, height, weight, base_exp, image_url, cry_url, is_default, species_id) 
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) 
                ON CONFLICT (id) DO UPDATE SET 
                name = EXCLUDED.name, height = EXCLUDED.height, weight = EXCLUDED.weight, 
                base_exp = EXCLUDED.base_exp, image_url = EXCLUDED.image_url,
-               cry_url = EXCLUDED.cry_url, is_default = EXCLUDED.is_default""",
+               cry_url = EXCLUDED.cry_url, is_default = EXCLUDED.is_default,
+               species_id = EXCLUDED.species_id""",
             (row['id'], row['name'], row['height'], row['weight'], row['base_exp'], 
-             row['image_url'], row['cry_url'], row.get('is_default', True))
+             row['image_url'], row['cry_url'], row.get('is_default', True), row.get('species_id'))
         )
     print(f"Loaded {len(data)} pokemon.")
 
@@ -133,10 +152,16 @@ def load_species(cursor):
     data = load_json("species.json")
     for row in data:
         cursor.execute(
-            """INSERT INTO species (id, pokemon_id, generation, capture_rate) 
-               VALUES (%s, %s, %s, %s) 
-               ON CONFLICT (id) DO UPDATE SET pokemon_id = EXCLUDED.pokemon_id, generation = EXCLUDED.generation, capture_rate = EXCLUDED.capture_rate""",
-            (row['id'], row['pokemon_id'], row['generation'], row['capture_rate'])
+            """INSERT INTO species (id, pokemon_id, generation, capture_rate, classification, gender_rate) 
+               VALUES (%s, %s, %s, %s, %s, %s) 
+               ON CONFLICT (id) DO UPDATE SET 
+               pokemon_id = EXCLUDED.pokemon_id, 
+               generation = EXCLUDED.generation, 
+               capture_rate = EXCLUDED.capture_rate,
+               classification = EXCLUDED.classification,
+               gender_rate = EXCLUDED.gender_rate""",
+            (row['id'], row['pokemon_id'], row['generation'], row['capture_rate'], 
+             row.get('classification'), row.get('gender_rate'))
         )
     print(f"Loaded {len(data)} species.")
 
