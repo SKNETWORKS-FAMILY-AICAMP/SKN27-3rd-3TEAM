@@ -110,7 +110,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp
     box-shadow: 0 30px 100px rgba(0,0,0,0.6);
 }}
 
-.game-card:hover {{
+div[data-testid="stColumn"]:hover .game-card {{
     transform: translateY(-15px) scale(1.02);
     border-color: var(--poke-red);
     box-shadow: 0 30px 80px rgba(227, 53, 53, 0.3);
@@ -141,7 +141,20 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp
     font-size: 1.0rem;
     line-height: 1.5;
     font-weight: 400;
-    letter-spacing: -0.2px;
+    max-height: 0; /* 초기 상태 높이 제한 */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}}
+
+div[data-testid="stColumn"]:hover .game-desc {{
+    max-height: 150px; /* 호버 시 높이 확장 */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    margin-top: 20px;
 }}
 
 /* ── Silhouette Game Styles ── */
@@ -265,7 +278,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp
     transition: opacity 0.3s;
     letter-spacing: 2px;
 }}
-.game-card:hover::after {{
+div[data-testid="stColumn"]:hover .game-card::after {{
     opacity: 1;
 }}
 
@@ -322,14 +335,13 @@ def show_selector():
     with col2:
         st.markdown(f"""
         <div class="game-card">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png">
-            <div class="game-title">기억력 게임</div>
-            <div class="game-desc">뒤집힌 카드들 속에서 짝을 찾으세요.<br>당신의 기억력은 어느 정도인가요?</div>
+            <img src="https://pokemonkorea.co.kr/img/_con.ico" style="filter: hue-rotate(150deg) brightness(1.2);">
+            <div class="game-title">영혼의 랩 배틀</div>
+            <div class="game-desc">포켓몬들의 찰진 디스전!<br>상성과 설정을 이용한 영혼의 랩 배틀을 감상하세요.</div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Start Memory", key="start_mem"):
-            set_game_mode("memory")
-            st.rerun()
+        if st.button("게임 시작하기", key="start_cry", use_container_width=True):
+            st.switch_page("pages/game_2.py")
     
     st.markdown('</div>', unsafe_allow_html=True)
 

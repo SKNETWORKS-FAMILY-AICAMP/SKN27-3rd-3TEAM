@@ -17,7 +17,7 @@ ART_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/poke
 
 # ── Page Config ───────────────────────────────────────────────
 st.set_page_config(
-    page_title="실루엣 퀴즈 - Who's That Pokémon?",
+    page_title="포켓몬 비공식 실루엣",
     page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
     initial_sidebar_state="collapsed"
