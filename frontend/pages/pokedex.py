@@ -111,6 +111,7 @@ def do_reset():
     st.session_state.region_filter = "전체"
     st.session_state.dex_start = 1
     st.session_state.dex_end = 1025
+    st.session_state.dex_range_slider = (1, 1025)
     st.session_state.ability_filter = "전체"
 
 
@@ -133,21 +134,24 @@ REGION_RANGES = {
 
 def handle_search():
     """검색 및 필터 적용 로직을 한 곳에서 처리"""
-    # 폼 위젯의 현재 값들을 session_state에 저장
     st.session_state.search_query = st.session_state.search_input
-    
+
     if "ability_sel" in st.session_state:
         st.session_state.ability_filter = st.session_state.ability_sel
 
+    # 슬라이더 현재값을 필터에 반영 (검색 버튼 클릭 시에만)
+    if "dex_range_slider" in st.session_state:
+        st.session_state.dex_start = st.session_state.dex_range_slider[0]
+        st.session_state.dex_end = st.session_state.dex_range_slider[1]
+
     if "region_sel" in st.session_state:
         new_region = st.session_state.region_sel
-        # 지방이 변경되었을 때만 도감번호 범위 자동 조정
         if new_region != st.session_state.region_filter:
             st.session_state.region_filter = new_region
             start, end = REGION_RANGES.get(new_region, (1, 1025))
             st.session_state.dex_start = start
             st.session_state.dex_end = end
-        # 지방이 그대로면 슬라이더 값이 이미 session_state에 반영되어 있음
+            st.session_state.dex_range_slider = (start, end)
 
 with st.container(border=True):
     st.markdown('<div class="dex-search-card"></div>', unsafe_allow_html=True)
@@ -180,14 +184,13 @@ with st.container(border=True):
             "지방", REGIONS, index=region_idx, key="region_sel", label_visibility="visible"
         )
 
-        dex_range = st.slider(
+        st.slider(
             "도감번호",
             min_value=1,
             max_value=1025,
             value=(st.session_state.dex_start, st.session_state.dex_end),
+            key="dex_range_slider",
         )
-        st.session_state.dex_start = dex_range[0]
-        st.session_state.dex_end = dex_range[1]
 
     # ── Type icon grid ───────────────────────────────────────────
     type_icons = load_type_icons()
