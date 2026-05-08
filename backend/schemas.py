@@ -35,6 +35,7 @@ class PokemonListResponse(BaseModel):
     name: str
     image_url: Optional[str] = None
     types: List[PokemonTypeResponse] = []
+    species_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -60,6 +61,7 @@ class PokemonVarietyResponse(BaseModel):
     is_default: bool
     image_url: Optional[str] = None
     types: List[PokemonTypeResponse] = []
+    species_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -92,6 +94,7 @@ class PokemonDetailResponse(BaseModel):
     classification: Optional[str] = None
     gender_ratio: Optional[str] = None
     varieties: List[PokemonVarietyResponse] = []
+    species_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 

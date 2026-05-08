@@ -16,7 +16,7 @@ router = APIRouter(
 @router.get("/", response_model=schemas.PaginatedPokemonResponse)
 def read_pokemon_list(
     skip: int = Query(0, ge=0, description="건너뛸 항목 수"),
-    limit: int = Query(1025, ge=1, le=1025, description="가져올 항목 수 (최대 1025)"),
+    limit: int = Query(2000, ge=1, le=2000, description="가져올 항목 수 (최대 2000)"),
     search: Optional[str] = Query(None, description="이름 또는 ID로 검색"),
     types: Optional[List[str]] = Query(None, description="타입 이름 목록 (예: '불꽃', '물')"),
     min_id: Optional[int] = Query(None, description="최소 도감 번호"),

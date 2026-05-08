@@ -185,7 +185,7 @@ st.markdown(
     f'<div class="pk-card">'
     f'<div class="pk-card-left"><img src="{img_url}" class="pk-card-img" alt="{name}"></div>'
     f'<div class="pk-card-right">'
-    f'<div class="pk-id">No.{pokemon_id:04d}</div>'
+    f'<div class="pk-id">No.{data.get("species_id") or pokemon_id:04d}</div>'
     f'<div class="pk-name">{name}</div>'
     f'{badges_block}'
     f'<div class="pk-desc">{description}</div>'
@@ -229,7 +229,7 @@ def render_evo_node(node, is_root=True):
             for t in sorted_types
         ])
         
-        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card {is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v_id:04d}</div><div style="font-weight:800; font-size:0.95rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif; word-break:keep-all; overflow-wrap:break-word; max-width:170px;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
+        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card {is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v.get("species_id") or v_id:04d}</div><div style="font-weight:800; font-size:0.95rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif; word-break:keep-all; overflow-wrap:break-word; max-width:170px;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
     
     varieties_block = "".join(var_htmls)
     

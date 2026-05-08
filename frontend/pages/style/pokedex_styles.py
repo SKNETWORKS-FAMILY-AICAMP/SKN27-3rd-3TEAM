@@ -260,7 +260,8 @@ def get_pokedex_styles():
     """
 
 
-def render_pokemon_card(id, name, image_url, types_ko_en):
+def render_pokemon_card(id, name, image_url, types_ko_en, display_id=None):
+    d_id = display_id if display_id is not None else id
     type_badges = "".join(
         [f'<span class="type-badge type-{en.lower()}">{ko}</span>' for ko, en in types_ko_en]
     )
@@ -269,7 +270,7 @@ def render_pokemon_card(id, name, image_url, types_ko_en):
 <img src="{image_url}" class="pokemon-image" alt="{name}" loading="lazy">
 </div>
 <div class="pokemon-info">
-<div class="pokemon-id-badge">No.{id:04d}</div>
+<div class="pokemon-id-badge">No.{d_id:04d}</div>
 <div class="pokemon-name">{name}</div>
 <div class="type-container">{type_badges}</div>
 </div>

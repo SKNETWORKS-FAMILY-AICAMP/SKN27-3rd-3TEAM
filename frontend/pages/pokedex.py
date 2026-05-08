@@ -70,12 +70,12 @@ st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # ── Session state defaults ───────────────────────────────────
 for key, default in [
-    ("pokemon_limit", 1025),
+    ("pokemon_limit", 2000),
     ("search_query", ""),
     ("selected_types", []),
     ("region_filter", "전체"),
     ("dex_start", 1),
-    ("dex_end", 1025),
+    ("dex_end", 2000),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -94,7 +94,7 @@ def do_reset():
     st.session_state.selected_types = []
     st.session_state.region_filter = "전체"
     st.session_state.dex_start = 1
-    st.session_state.dex_end = 1025
+    st.session_state.dex_end = 2000
 
 
 def load_more():
@@ -141,7 +141,7 @@ with st.container():
         nc1, nc2, nc3 = st.columns([1, 0.18, 1])
         with nc1:
             dex_start_val = st.number_input(
-                "시작", min_value=1, max_value=1025,
+                "시작", min_value=1, max_value=2000,
                 value=st.session_state.dex_start,
                 label_visibility="collapsed", key="dex_start_input",
             )
@@ -149,7 +149,7 @@ with st.container():
             st.markdown('<div class="dex-range-sep">-</div>', unsafe_allow_html=True)
         with nc3:
             dex_end_val = st.number_input(
-                "끝", min_value=1, max_value=1025,
+                "끝", min_value=1, max_value=2000,
                 value=st.session_state.dex_end,
                 label_visibility="collapsed", key="dex_end_input",
             )
@@ -212,6 +212,12 @@ try:
         data = response.json()
         total_count = data.get("total", 0)
         pokemon_list = data.get("items", [])
+        
+        # ID range filter (Use species_id for varieties, fall back to id)
+        pokemon_list = [
+            p for p in pokemon_list
+            if st.session_state.dex_start <= (p.get("species_id") or p["id"]) <= st.session_state.dex_end
+        ]
 
         if st.session_state.selected_types:
             selected_ko = {EN_TO_KO[en] for en in st.session_state.selected_types}
@@ -219,6 +225,8 @@ try:
                 p for p in pokemon_list
                 if any(t.get("type_", {}).get("name") in selected_ko for t in p.get("types", []))
             ]
+            total_count = len(pokemon_list)
+        else:
             total_count = len(pokemon_list)
 
         if not pokemon_list:
@@ -235,7 +243,7 @@ try:
                     p.get("image_url")
                     or "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
                 )
-                grid_html += render_pokemon_card(p["id"], p["name"], img_url, p_types)
+                grid_html += render_pokemon_card(p["id"], p["name"], img_url, p_types, display_id=p.get("species_id"))
             grid_html += "</div>"
             st.markdown(grid_html, unsafe_allow_html=True)
 
