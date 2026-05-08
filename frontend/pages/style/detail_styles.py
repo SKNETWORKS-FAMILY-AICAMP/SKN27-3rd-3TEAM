@@ -45,11 +45,33 @@ def get_detail_styles(main_type="노말"):
             if main_type in rev_map:
                 bg_data = get_base64_img(f"bg_{rev_map[main_type]}.png")
 
+    # 타입별 대표 색상 맵핑
+    TYPE_COLORS = {
+        "불꽃": "rgba(255, 68, 34, 0.15)", "물": "rgba(51, 153, 255, 0.15)", "풀": "rgba(119, 204, 85, 0.15)", 
+        "전기": "rgba(255, 204, 51, 0.15)", "얼음": "rgba(102, 204, 255, 0.15)", "격투": "rgba(187, 85, 68, 0.15)", 
+        "독": "rgba(170, 85, 153, 0.15)", "땅": "rgba(221, 187, 85, 0.15)", "비행": "rgba(136, 153, 255, 0.15)", 
+        "에스퍼": "rgba(255, 85, 153, 0.15)", "벌레": "rgba(170, 187, 34, 0.15)", "바위": "rgba(187, 170, 102, 0.15)", 
+        "고스트": "rgba(102, 102, 187, 0.15)", "드래곤": "rgba(119, 102, 238, 0.15)", "악": "rgba(119, 85, 68, 0.15)", 
+        "강철": "rgba(170, 170, 187, 0.15)", "페어리": "rgba(238, 153, 238, 0.15)", "노말": "rgba(170, 170, 153, 0.15)"
+    }
+    
+    # 타입별 테두리/포인트 색상
+    TYPE_POINTS = {
+        "불꽃": "#ff4422", "물": "#3399ff", "풀": "#77cc55", "전기": "#ffcc33",
+        "얼음": "#66ccff", "격투": "#bb5544", "독": "#aa5599", "땅": "#ddbb55",
+        "비행": "#8899ff", "에스퍼": "#ff5599", "벌레": "#aabb22", "바위": "#bbaa66",
+        "고스트": "#6666bb", "드래곤": "#7766ee", "악": "#775544", "강철": "#aaaabb",
+        "페어리": "#ee99ee", "노말": "#aaaa99"
+    }
+
+    type_aura = TYPE_COLORS.get(main_type, "rgba(255, 255, 255, 0.05)")
+    type_point = TYPE_POINTS.get(main_type, "#ffffff")
+
     # 배경 스타일 설정
     if bg_data:
         # linear-gradient 투명도를 0.75에서 0.3으로 낮춰 이미지를 더 선명하게 표시
         bg_style = f"""
-            background-image: linear-gradient(rgba(240, 240, 240, 0.5), rgba(240, 240, 240, 0.5)), url('{bg_data}') !important;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('{bg_data}') !important;
             background-size: cover !important;
             background-attachment: fixed !important;
             background-position: center !important;
@@ -58,9 +80,7 @@ def get_detail_styles(main_type="노말"):
     else:
         # 기본 배경
         bg_style = """
-            background-color: #e8e8e8 !important;
-            background-image: radial-gradient(circle, #d0d0d0 1px, transparent 1px) !important;
-            background-size: 24px 24px !important;
+            background-color: #050505 !important;
         """
 
     return f"""
@@ -72,6 +92,8 @@ def get_detail_styles(main_type="노말"):
     --poke-blue: #2A75BB;
     --glass-bg: rgba(15, 15, 15, 0.65);
     --glass-border: rgba(255, 255, 255, 0.12);
+    --type-aura: {type_aura};
+    --type-point: {type_point};
 }}
 
 [data-testid="collapsedControl"] {{ display: none; }}
@@ -242,47 +264,63 @@ footer {{ visibility: hidden; }}
 /* ── Evolution & Forms Sections ── */
 .evo-section, .forms-section {{
     max-width: 1000px; margin: 0 auto 40px auto;
-    background: var(--glass-bg);
+    background: linear-gradient(135deg, var(--glass-bg), var(--type-aura));
     backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 24px; padding: 40px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), inset 0 0 40px rgba(255,255,255,0.02);
     font-family: 'Outfit', sans-serif;
+    position: relative;
+    overflow: hidden;
 }}
+.evo-section::after, .forms-section::after {{
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, var(--type-aura) 0%, transparent 70%);
+    opacity: 0.3; pointer-events: none; z-index: 0;
+}}
+
 .evo-title, .forms-title {{
-    font-size: 1.2rem; font-weight: 800;
-    margin-bottom: 30px; display: flex; align-items: center; gap: 10px;
-    color: #fff; text-transform: uppercase; letter-spacing: 1.5px;
+    font-size: 1.3rem; font-weight: 900;
+    margin-bottom: 30px; display: flex; align-items: center; gap: 12px;
+    color: #fff; text-transform: uppercase; letter-spacing: 2px;
+    position: relative; z-index: 1;
 }}
+.evo-title::before, .forms-title::before {{
+    content: ''; width: 6px; height: 24px; background: var(--type-point); border-radius: 3px;
+    box-shadow: 0 0 15px var(--type-point);
+}}
+
 .forms-grid {{
     display: flex;
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
     flex-wrap: wrap;
+    position: relative; z-index: 1;
 }}
 .evo-card, .form-card {{
-    text-align: center; border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    text-align: center; border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(5px);
     border-radius: 18px; padding: 20px; width: 150px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
+    position: relative; z-index: 1;
 }}
 .evo-card:hover, .form-card:hover {{ 
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-8px) scale(1.05);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    border-color: var(--type-point);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px var(--type-aura);
 }}
 .evo-img, .form-img {{ 
     width: 110px; height: 110px; object-fit: contain; 
     filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
 }}
-.evo-arrow {{ color: rgba(255, 255, 255, 0.2); font-size: 24px; }}
+.evo-arrow {{ color: var(--type-point); font-size: 24px; opacity: 0.6; }}
 
 .variety-section {{
     max-width: 1000px; margin: 0 auto 20px auto;
-    background: var(--glass-bg);
+    background: linear-gradient(90deg, var(--glass-bg), var(--type-aura));
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
     border-radius: 20px;
@@ -292,12 +330,16 @@ footer {{ visibility: hidden; }}
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }}
 .variety-title {{
-    font-size: 0.95rem; font-weight: 800; color: #fff;
-    display: flex; align-items: center; gap: 8px;
-    text-transform: uppercase; letter-spacing: 1px;
+    font-size: 1rem; font-weight: 900; color: #fff;
+    display: flex; align-items: center; gap: 10px;
+    text-transform: uppercase; letter-spacing: 1.5px;
 }}
+.variety-title::before {{
+    content: ''; width: 4px; height: 18px; background: var(--type-point); border-radius: 2px;
+}}
+
 .variety-list {{
-    display: flex; flex-wrap: wrap; gap: 8px;
+    display: flex; flex-wrap: wrap; gap: 10px;
 }}
 .variety-btn {{
     background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15);
@@ -307,14 +349,20 @@ footer {{ visibility: hidden; }}
     display: inline-block;
 }}
 .variety-btn:visited {{ color: #fff !important; }}
-.variety-btn:hover {{ background: rgba(255, 255, 255, 0.2); color: #fff !important; }}
+.variety-btn:hover {{ 
+    background: var(--type-aura); 
+    border-color: var(--type-point);
+    color: #fff !important; 
+    transform: translateY(-2px);
+}}
 .variety-btn.active {{
-    background: var(--poke-yellow); color: #000 !important;
-    font-weight: 800;
+    background: var(--type-point); color: #fff !important;
+    font-weight: 900;
+    box-shadow: 0 0 15px var(--type-aura);
 }}
 
-.form-card.active {{ border: 2px solid var(--poke-yellow); background: rgba(255, 203, 5, 0.05); }}
-.form-name {{ font-weight: 700; font-size: 0.95rem; color: #fff; margin-top: 10px; line-height: 1.2; }}
+.form-card.active {{ border: 2px solid var(--type-point); background: var(--type-aura); }}
+.form-name {{ font-weight: 800; font-size: 1.05rem; color: #fff; margin-top: 12px; line-height: 1.2; font-family: 'Outfit', sans-serif; }}
 .form-label {{ 
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
     background: var(--poke-yellow); color: #000; font-size: 0.7rem; padding: 3px 12px;

@@ -220,7 +220,7 @@ def render_evo_node(node, is_root=True):
             for t in v.get("types", [])
         ])
         
-        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card" style="{is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.75rem; color:#aaa; margin-top:8px;">No.{v_id:04d}</div><div style="font-weight:700; font-size:0.88rem; color:#1a1a1a; margin-bottom:8px;">{v_name}</div><div style="display:flex; justify-content:center; gap:4px;">{v_types_html}</div></div></a>''')
+        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card" style="{is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v_id:04d}</div><div style="font-weight:800; font-size:1.05rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
     
     varieties_block = "".join(var_htmls)
     
@@ -244,7 +244,7 @@ if evo_chain:
     # Start rendering from root nodes
     evo_items = "".join([render_evo_node(root) for root in evo_chain])
     st.markdown(
-        f'<div class="evo-section"><div class="evo-title">🔴 진화</div>'
+        f'<div class="evo-section"><div class="evo-title">진화</div>'
         f'<div style="display:flex; justify-content:center; padding:30px 0; overflow-x:auto; min-width: 100%;">{evo_items}</div>'
         f'</div>',
         unsafe_allow_html=True,
