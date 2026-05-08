@@ -11276,7 +11276,7 @@
   },
   {
     "id": 10001,
-    "name": "테오키스 (attack)",
+    "name": "테오키스(attack)",
     "height": 17,
     "weight": 608,
     "base_exp": 270,
@@ -11287,7 +11287,7 @@
   },
   {
     "id": 10002,
-    "name": "테오키스 (defense)",
+    "name": "테오키스(defense)",
     "height": 17,
     "weight": 608,
     "base_exp": 270,
@@ -11298,7 +11298,7 @@
   },
   {
     "id": 10003,
-    "name": "테오키스 (speed)",
+    "name": "테오키스(speed)",
     "height": 17,
     "weight": 608,
     "base_exp": 270,
@@ -11309,7 +11309,7 @@
   },
   {
     "id": 10004,
-    "name": "도롱마담 (sandy)",
+    "name": "도롱마담(sandy)",
     "height": 5,
     "weight": 65,
     "base_exp": 148,
@@ -11320,7 +11320,7 @@
   },
   {
     "id": 10005,
-    "name": "도롱마담 (trash)",
+    "name": "도롱마담(trash)",
     "height": 5,
     "weight": 65,
     "base_exp": 148,
@@ -11331,7 +11331,7 @@
   },
   {
     "id": 10006,
-    "name": "쉐이미 (sky)",
+    "name": "쉐이미(스카이폼)",
     "height": 4,
     "weight": 52,
     "base_exp": 270,
@@ -11342,7 +11342,7 @@
   },
   {
     "id": 10007,
-    "name": "오리진 기라티나",
+    "name": "기라티나(오리진)",
     "height": 69,
     "weight": 6500,
     "base_exp": 340,
@@ -11353,7 +11353,7 @@
   },
   {
     "id": 10008,
-    "name": "로토무 (heat)",
+    "name": "로토무(히트로토무)",
     "height": 3,
     "weight": 3,
     "base_exp": 182,
@@ -11364,7 +11364,7 @@
   },
   {
     "id": 10009,
-    "name": "로토무 (wash)",
+    "name": "로토무(워시로토무)",
     "height": 3,
     "weight": 3,
     "base_exp": 182,
@@ -11375,7 +11375,7 @@
   },
   {
     "id": 10010,
-    "name": "로토무 (frost)",
+    "name": "로토무(프로스트로토무)",
     "height": 3,
     "weight": 3,
     "base_exp": 182,
@@ -11386,7 +11386,7 @@
   },
   {
     "id": 10011,
-    "name": "로토무 (fan)",
+    "name": "로토무(스핀로토무)",
     "height": 3,
     "weight": 3,
     "base_exp": 182,
@@ -11397,7 +11397,7 @@
   },
   {
     "id": 10012,
-    "name": "로토무 (mow)",
+    "name": "로토무(커트로토무)",
     "height": 3,
     "weight": 3,
     "base_exp": 182,
@@ -11408,7 +11408,7 @@
   },
   {
     "id": 10013,
-    "name": "캐스퐁 (sunny)",
+    "name": "캐스퐁(태양)",
     "height": 3,
     "weight": 8,
     "base_exp": 147,
@@ -11419,7 +11419,7 @@
   },
   {
     "id": 10014,
-    "name": "캐스퐁 (rainy)",
+    "name": "캐스퐁(빗방울)",
     "height": 3,
     "weight": 8,
     "base_exp": 147,
@@ -11430,7 +11430,7 @@
   },
   {
     "id": 10015,
-    "name": "캐스퐁 (snowy)",
+    "name": "캐스퐁(설운)",
     "height": 3,
     "weight": 8,
     "base_exp": 147,
@@ -11441,7 +11441,7 @@
   },
   {
     "id": 10016,
-    "name": "배쓰나이 (blue-striped)",
+    "name": "배쓰나이(청색근)",
     "height": 10,
     "weight": 180,
     "base_exp": 161,
@@ -11452,7 +11452,7 @@
   },
   {
     "id": 10017,
-    "name": "불비달마 (zen)",
+    "name": "불비달마(달마모드)",
     "height": 13,
     "weight": 929,
     "base_exp": 189,
@@ -11463,7 +11463,7 @@
   },
   {
     "id": 10018,
-    "name": "메로엣타 (pirouette)",
+    "name": "메로엣타(스텝폼)",
     "height": 6,
     "weight": 65,
     "base_exp": 270,
@@ -11474,7 +11474,7 @@
   },
   {
     "id": 10019,
-    "name": "영물 토네로스",
+    "name": "토네로스(영물)",
     "height": 14,
     "weight": 630,
     "base_exp": 290,
@@ -11485,7 +11485,7 @@
   },
   {
     "id": 10020,
-    "name": "영물 볼트로스",
+    "name": "볼트로스(영물)",
     "height": 30,
     "weight": 610,
     "base_exp": 290,
@@ -11496,7 +11496,7 @@
   },
   {
     "id": 10021,
-    "name": "영물 랜드로스",
+    "name": "랜드로스(영물)",
     "height": 13,
     "weight": 680,
     "base_exp": 300,
@@ -11507,7 +11507,7 @@
   },
   {
     "id": 10022,
-    "name": "큐레무 (black)",
+    "name": "큐레무(블랙)",
     "height": 33,
     "weight": 3250,
     "base_exp": 350,
@@ -11518,7 +11518,7 @@
   },
   {
     "id": 10023,
-    "name": "큐레무 (white)",
+    "name": "큐레무(화이트)",
     "height": 36,
     "weight": 3250,
     "base_exp": 350,
@@ -11529,7 +11529,7 @@
   },
   {
     "id": 10024,
-    "name": "케르디오 (resolute)",
+    "name": "케르디오(각오)",
     "height": 14,
     "weight": 485,
     "base_exp": 290,
@@ -11540,7 +11540,7 @@
   },
   {
     "id": 10025,
-    "name": "냐오닉스 (female)",
+    "name": "냐오닉스(암컷)",
     "height": 6,
     "weight": 85,
     "base_exp": 163,
@@ -11551,7 +11551,7 @@
   },
   {
     "id": 10026,
-    "name": "킬가르도 (blade)",
+    "name": "킬가르도(블레이드폼)",
     "height": 17,
     "weight": 530,
     "base_exp": 250,
@@ -11562,7 +11562,7 @@
   },
   {
     "id": 10027,
-    "name": "호바귀 (small)",
+    "name": "호바귀(작은 사이즈)",
     "height": 3,
     "weight": 35,
     "base_exp": 67,
@@ -11573,7 +11573,7 @@
   },
   {
     "id": 10028,
-    "name": "호바귀 (large)",
+    "name": "호바귀(큰 사이즈)",
     "height": 5,
     "weight": 75,
     "base_exp": 67,
@@ -11584,7 +11584,7 @@
   },
   {
     "id": 10029,
-    "name": "호바귀 (super)",
+    "name": "호바귀(특대 사이즈)",
     "height": 8,
     "weight": 150,
     "base_exp": 67,
@@ -11595,7 +11595,7 @@
   },
   {
     "id": 10030,
-    "name": "펌킨인 (small)",
+    "name": "펌킨인(작은 사이즈)",
     "height": 7,
     "weight": 95,
     "base_exp": 173,
@@ -11606,7 +11606,7 @@
   },
   {
     "id": 10031,
-    "name": "펌킨인 (large)",
+    "name": "펌킨인(큰 사이즈)",
     "height": 11,
     "weight": 140,
     "base_exp": 173,
@@ -11617,7 +11617,7 @@
   },
   {
     "id": 10032,
-    "name": "펌킨인 (super)",
+    "name": "펌킨인(특대 사이즈)",
     "height": 17,
     "weight": 390,
     "base_exp": 173,
@@ -11936,7 +11936,7 @@
   },
   {
     "id": 10061,
-    "name": "플라엣테 (eternal)",
+    "name": "플라엣테(영원의 꽃)",
     "height": 2,
     "weight": 9,
     "base_exp": 243,
@@ -12145,7 +12145,7 @@
   },
   {
     "id": 10080,
-    "name": "피카츄 (rock-star)",
+    "name": "피카츄(rock-star)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12156,7 +12156,7 @@
   },
   {
     "id": 10081,
-    "name": "피카츄 (belle)",
+    "name": "피카츄(belle)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12167,7 +12167,7 @@
   },
   {
     "id": 10082,
-    "name": "피카츄 (pop-star)",
+    "name": "피카츄(pop-star)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12178,7 +12178,7 @@
   },
   {
     "id": 10083,
-    "name": "피카츄 (phd)",
+    "name": "피카츄(phd)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12189,7 +12189,7 @@
   },
   {
     "id": 10084,
-    "name": "피카츄 (libre)",
+    "name": "피카츄(libre)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12200,7 +12200,7 @@
   },
   {
     "id": 10085,
-    "name": "피카츄 (cosplay)",
+    "name": "피카츄(cosplay)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12211,7 +12211,7 @@
   },
   {
     "id": 10086,
-    "name": "후파 (unbound)",
+    "name": "후파(굴레를 벗어난)",
     "height": 65,
     "weight": 4900,
     "base_exp": 306,
@@ -12266,7 +12266,7 @@
   },
   {
     "id": 10091,
-    "name": "알로라 꼬렛",
+    "name": "꼬렛(알로라)",
     "height": 3,
     "weight": 38,
     "base_exp": 51,
@@ -12277,7 +12277,7 @@
   },
   {
     "id": 10092,
-    "name": "알로라 레트라",
+    "name": "레트라(알로라)",
     "height": 7,
     "weight": 255,
     "base_exp": 145,
@@ -12287,19 +12287,8 @@
     "species_id": 20
   },
   {
-    "id": 10093,
-    "name": "알로라 레트라",
-    "height": 14,
-    "weight": 1050,
-    "base_exp": 145,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10093.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10093.ogg",
-    "is_default": false,
-    "species_id": 20
-  },
-  {
     "id": 10094,
-    "name": "피카츄 (original-cap)",
+    "name": "피카츄(500년 전의 색 CAP)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12310,7 +12299,7 @@
   },
   {
     "id": 10095,
-    "name": "피카츄 (hoenn-cap)",
+    "name": "피카츄(hoenn-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12321,7 +12310,7 @@
   },
   {
     "id": 10096,
-    "name": "피카츄 (sinnoh-cap)",
+    "name": "피카츄(sinnoh-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12332,7 +12321,7 @@
   },
   {
     "id": 10097,
-    "name": "피카츄 (unova-cap)",
+    "name": "피카츄(unova-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12343,7 +12332,7 @@
   },
   {
     "id": 10098,
-    "name": "피카츄 (kalos-cap)",
+    "name": "피카츄(kalos-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12354,7 +12343,7 @@
   },
   {
     "id": 10099,
-    "name": "알로라 피카츄 CAP",
+    "name": "피카츄(알로라 CAP)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12365,7 +12354,7 @@
   },
   {
     "id": 10100,
-    "name": "알로라 라이츄",
+    "name": "라이츄(알로라)",
     "height": 7,
     "weight": 210,
     "base_exp": 243,
@@ -12376,7 +12365,7 @@
   },
   {
     "id": 10101,
-    "name": "알로라 모래두지",
+    "name": "모래두지(알로라)",
     "height": 7,
     "weight": 400,
     "base_exp": 60,
@@ -12387,7 +12376,7 @@
   },
   {
     "id": 10102,
-    "name": "알로라 고지",
+    "name": "고지(알로라)",
     "height": 12,
     "weight": 550,
     "base_exp": 158,
@@ -12398,7 +12387,7 @@
   },
   {
     "id": 10103,
-    "name": "알로라 식스테일",
+    "name": "식스테일(알로라)",
     "height": 6,
     "weight": 99,
     "base_exp": 60,
@@ -12409,7 +12398,7 @@
   },
   {
     "id": 10104,
-    "name": "알로라 나인테일",
+    "name": "나인테일(알로라)",
     "height": 11,
     "weight": 199,
     "base_exp": 177,
@@ -12420,7 +12409,7 @@
   },
   {
     "id": 10105,
-    "name": "알로라 디그다",
+    "name": "디그다(알로라)",
     "height": 2,
     "weight": 10,
     "base_exp": 53,
@@ -12431,7 +12420,7 @@
   },
   {
     "id": 10106,
-    "name": "알로라 닥트리오",
+    "name": "닥트리오(알로라)",
     "height": 7,
     "weight": 666,
     "base_exp": 149,
@@ -12442,7 +12431,7 @@
   },
   {
     "id": 10107,
-    "name": "알로라 나옹",
+    "name": "나옹(알로라)",
     "height": 4,
     "weight": 42,
     "base_exp": 58,
@@ -12453,7 +12442,7 @@
   },
   {
     "id": 10108,
-    "name": "알로라 페르시온",
+    "name": "페르시온(알로라)",
     "height": 11,
     "weight": 330,
     "base_exp": 154,
@@ -12464,7 +12453,7 @@
   },
   {
     "id": 10109,
-    "name": "알로라 꼬마돌",
+    "name": "꼬마돌(알로라)",
     "height": 4,
     "weight": 203,
     "base_exp": 60,
@@ -12475,7 +12464,7 @@
   },
   {
     "id": 10110,
-    "name": "알로라 데구리",
+    "name": "데구리(알로라)",
     "height": 10,
     "weight": 1100,
     "base_exp": 137,
@@ -12486,7 +12475,7 @@
   },
   {
     "id": 10111,
-    "name": "알로라 딱구리",
+    "name": "딱구리(알로라)",
     "height": 17,
     "weight": 3160,
     "base_exp": 223,
@@ -12497,7 +12486,7 @@
   },
   {
     "id": 10112,
-    "name": "알로라 질퍽이",
+    "name": "질퍽이(알로라)",
     "height": 7,
     "weight": 420,
     "base_exp": 65,
@@ -12508,7 +12497,7 @@
   },
   {
     "id": 10113,
-    "name": "알로라 질뻐기",
+    "name": "질뻐기(알로라)",
     "height": 10,
     "weight": 520,
     "base_exp": 175,
@@ -12519,7 +12508,7 @@
   },
   {
     "id": 10114,
-    "name": "알로라 나시",
+    "name": "나시(알로라)",
     "height": 109,
     "weight": 4156,
     "base_exp": 186,
@@ -12530,7 +12519,7 @@
   },
   {
     "id": 10115,
-    "name": "알로라 텅구리",
+    "name": "텅구리(알로라)",
     "height": 10,
     "weight": 340,
     "base_exp": 149,
@@ -12541,7 +12530,7 @@
   },
   {
     "id": 10116,
-    "name": "개굴닌자 (battle-bond)",
+    "name": "지우의 개굴닌자(변신전)",
     "height": 15,
     "weight": 400,
     "base_exp": 239,
@@ -12552,7 +12541,7 @@
   },
   {
     "id": 10117,
-    "name": "개굴닌자 (ash)",
+    "name": "지우의 개굴닌자(변신후)",
     "height": 15,
     "weight": 400,
     "base_exp": 288,
@@ -12563,7 +12552,7 @@
   },
   {
     "id": 10118,
-    "name": "지가르데 (10-power-construct)",
+    "name": "지가르데(10%)",
     "height": 12,
     "weight": 335,
     "base_exp": 243,
@@ -12574,7 +12563,7 @@
   },
   {
     "id": 10119,
-    "name": "지가르데 (50-power-construct)",
+    "name": "지가르데(50%)",
     "height": 50,
     "weight": 3050,
     "base_exp": 300,
@@ -12585,7 +12574,7 @@
   },
   {
     "id": 10120,
-    "name": "지가르데 (complete)",
+    "name": "지가르데(퍼펙트폼)",
     "height": 45,
     "weight": 6100,
     "base_exp": 354,
@@ -12595,30 +12584,8 @@
     "species_id": 718
   },
   {
-    "id": 10121,
-    "name": "토템 형사구스",
-    "height": 14,
-    "weight": 600,
-    "base_exp": 146,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10121.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10121.ogg",
-    "is_default": false,
-    "species_id": 735
-  },
-  {
-    "id": 10122,
-    "name": "토템 투구뿌논",
-    "height": 26,
-    "weight": 1475,
-    "base_exp": 225,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10122.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10122.ogg",
-    "is_default": false,
-    "species_id": 738
-  },
-  {
     "id": 10123,
-    "name": "춤추새 (pom-pom)",
+    "name": "춤추새(파츽파츽)",
     "height": 6,
     "weight": 34,
     "base_exp": 167,
@@ -12629,7 +12596,7 @@
   },
   {
     "id": 10124,
-    "name": "춤추새 (pau)",
+    "name": "춤추새(훌라훌라)",
     "height": 6,
     "weight": 34,
     "base_exp": 167,
@@ -12640,7 +12607,7 @@
   },
   {
     "id": 10125,
-    "name": "춤추새 (sensu)",
+    "name": "춤추새(하늘하늘)",
     "height": 6,
     "weight": 34,
     "base_exp": 167,
@@ -12651,7 +12618,7 @@
   },
   {
     "id": 10126,
-    "name": "루가루암 (midnight)",
+    "name": "루가루암(한밤중)",
     "height": 11,
     "weight": 250,
     "base_exp": 170,
@@ -12662,7 +12629,7 @@
   },
   {
     "id": 10127,
-    "name": "약어리 (school)",
+    "name": "약어리(school)",
     "height": 82,
     "weight": 786,
     "base_exp": 217,
@@ -12672,30 +12639,8 @@
     "species_id": 746
   },
   {
-    "id": 10128,
-    "name": "토템 라란티스",
-    "height": 15,
-    "weight": 580,
-    "base_exp": 168,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10128.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10128.ogg",
-    "is_default": false,
-    "species_id": 754
-  },
-  {
-    "id": 10129,
-    "name": "토템 염뉴트",
-    "height": 21,
-    "weight": 810,
-    "base_exp": 168,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10129.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10129.ogg",
-    "is_default": false,
-    "species_id": 758
-  },
-  {
     "id": 10130,
-    "name": "메테노 (orange-meteor)",
+    "name": "메테노(주황색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12706,7 +12651,7 @@
   },
   {
     "id": 10131,
-    "name": "메테노 (yellow-meteor)",
+    "name": "메테노(노란색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12717,7 +12662,7 @@
   },
   {
     "id": 10132,
-    "name": "메테노 (green-meteor)",
+    "name": "메테노(초록색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12728,7 +12673,7 @@
   },
   {
     "id": 10133,
-    "name": "메테노 (blue-meteor)",
+    "name": "메테노(옥색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12739,7 +12684,7 @@
   },
   {
     "id": 10134,
-    "name": "메테노 (indigo-meteor)",
+    "name": "메테노(파란색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12750,7 +12695,7 @@
   },
   {
     "id": 10135,
-    "name": "메테노 (violet-meteor)",
+    "name": "메테노(보라색 코어)",
     "height": 3,
     "weight": 400,
     "base_exp": 154,
@@ -12761,7 +12706,7 @@
   },
   {
     "id": 10136,
-    "name": "메테노 (red)",
+    "name": "메테노(빨간색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12772,7 +12717,7 @@
   },
   {
     "id": 10137,
-    "name": "메테노 (orange)",
+    "name": "메테노(주황색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12783,7 +12728,7 @@
   },
   {
     "id": 10138,
-    "name": "메테노 (yellow)",
+    "name": "메테노(노란색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12794,7 +12739,7 @@
   },
   {
     "id": 10139,
-    "name": "메테노 (green)",
+    "name": "메테노(초록색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12805,7 +12750,7 @@
   },
   {
     "id": 10140,
-    "name": "메테노 (blue)",
+    "name": "메테노(옥색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12816,7 +12761,7 @@
   },
   {
     "id": 10141,
-    "name": "메테노 (indigo)",
+    "name": "메테노(파란색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12827,7 +12772,7 @@
   },
   {
     "id": 10142,
-    "name": "메테노 (violet)",
+    "name": "메테노(보라색 코어)",
     "height": 3,
     "weight": 3,
     "base_exp": 175,
@@ -12838,7 +12783,7 @@
   },
   {
     "id": 10143,
-    "name": "따라큐 (busted)",
+    "name": "따라큐(틀킨 모습)",
     "height": 2,
     "weight": 7,
     "base_exp": 167,
@@ -12848,41 +12793,8 @@
     "species_id": 778
   },
   {
-    "id": 10144,
-    "name": "토템 따라큐 DISGUISED",
-    "height": 4,
-    "weight": 28,
-    "base_exp": 167,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10144.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10144.ogg",
-    "is_default": false,
-    "species_id": 778
-  },
-  {
-    "id": 10145,
-    "name": "토템 따라큐 BUSTED",
-    "height": 4,
-    "weight": 28,
-    "base_exp": 167,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10145.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10145.ogg",
-    "is_default": false,
-    "species_id": 778
-  },
-  {
-    "id": 10146,
-    "name": "토템 짜랑고우거 O",
-    "height": 24,
-    "weight": 2075,
-    "base_exp": 270,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10146.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10146.ogg",
-    "is_default": false,
-    "species_id": 784
-  },
-  {
     "id": 10147,
-    "name": "마기아나 (original)",
+    "name": "마기아나(500년 전의 색)",
     "height": 10,
     "weight": 805,
     "base_exp": 300,
@@ -12893,7 +12805,7 @@
   },
   {
     "id": 10148,
-    "name": "피카츄 (partner-cap)",
+    "name": "피카츄(partner-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -12903,30 +12815,8 @@
     "species_id": 25
   },
   {
-    "id": 10149,
-    "name": "토템 텅구리",
-    "height": 17,
-    "weight": 980,
-    "base_exp": 149,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10149.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10149.ogg",
-    "is_default": false,
-    "species_id": 105
-  },
-  {
-    "id": 10150,
-    "name": "토템 에리본",
-    "height": 4,
-    "weight": 20,
-    "base_exp": 162,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10150.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10150.ogg",
-    "is_default": false,
-    "species_id": 743
-  },
-  {
     "id": 10151,
-    "name": "암멍이 (own-tempo)",
+    "name": "암멍이(마이페이스)",
     "height": 5,
     "weight": 92,
     "base_exp": 56,
@@ -12937,7 +12827,7 @@
   },
   {
     "id": 10152,
-    "name": "루가루암 (dusk)",
+    "name": "루가루암(황혼)",
     "height": 8,
     "weight": 250,
     "base_exp": 170,
@@ -12947,30 +12837,8 @@
     "species_id": 745
   },
   {
-    "id": 10153,
-    "name": "토템 깨비물거미",
-    "height": 31,
-    "weight": 2175,
-    "base_exp": 159,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10153.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10153.ogg",
-    "is_default": false,
-    "species_id": 752
-  },
-  {
-    "id": 10154,
-    "name": "토템 토게데마루",
-    "height": 6,
-    "weight": 130,
-    "base_exp": 152,
-    "image_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10154.png",
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10154.ogg",
-    "is_default": false,
-    "species_id": 777
-  },
-  {
     "id": 10155,
-    "name": "네크로즈마 (dusk)",
+    "name": "네크로즈마(황혼)",
     "height": 38,
     "weight": 4600,
     "base_exp": 340,
@@ -12981,7 +12849,7 @@
   },
   {
     "id": 10156,
-    "name": "네크로즈마 (dawn)",
+    "name": "네크로즈마(dawn)",
     "height": 42,
     "weight": 3500,
     "base_exp": 340,
@@ -12992,7 +12860,7 @@
   },
   {
     "id": 10157,
-    "name": "네크로즈마 (ultra)",
+    "name": "울트라 네크로즈마",
     "height": 75,
     "weight": 2300,
     "base_exp": 339,
@@ -13003,7 +12871,7 @@
   },
   {
     "id": 10158,
-    "name": "피카츄 (starter)",
+    "name": "피카츄(starter)",
     "height": 4,
     "weight": 60,
     "base_exp": 86,
@@ -13014,7 +12882,7 @@
   },
   {
     "id": 10159,
-    "name": "이브이 (starter)",
+    "name": "이브이(starter)",
     "height": 3,
     "weight": 65,
     "base_exp": 87,
@@ -13025,7 +12893,7 @@
   },
   {
     "id": 10160,
-    "name": "피카츄 (world-cap)",
+    "name": "피카츄(world-cap)",
     "height": 4,
     "weight": 60,
     "base_exp": 112,
@@ -13036,7 +12904,7 @@
   },
   {
     "id": 10161,
-    "name": "가라르 나옹",
+    "name": "나옹(가라르)",
     "height": 4,
     "weight": 75,
     "base_exp": 58,
@@ -13047,7 +12915,7 @@
   },
   {
     "id": 10162,
-    "name": "가라르 포니타",
+    "name": "포니타(가라르)",
     "height": 8,
     "weight": 240,
     "base_exp": 82,
@@ -13058,7 +12926,7 @@
   },
   {
     "id": 10163,
-    "name": "가라르 날쌩마",
+    "name": "날쌩마(가라르)",
     "height": 17,
     "weight": 800,
     "base_exp": 175,
@@ -13069,7 +12937,7 @@
   },
   {
     "id": 10164,
-    "name": "가라르 야돈",
+    "name": "야돈(가라르)",
     "height": 12,
     "weight": 360,
     "base_exp": 63,
@@ -13080,7 +12948,7 @@
   },
   {
     "id": 10165,
-    "name": "가라르 야도란",
+    "name": "야도란(가라르)",
     "height": 16,
     "weight": 705,
     "base_exp": 172,
@@ -13091,7 +12959,7 @@
   },
   {
     "id": 10166,
-    "name": "가라르 파오리",
+    "name": "파오리(가라르)",
     "height": 8,
     "weight": 420,
     "base_exp": 132,
@@ -13102,7 +12970,7 @@
   },
   {
     "id": 10167,
-    "name": "가라르 또도가스",
+    "name": "또도가스(가라르)",
     "height": 30,
     "weight": 160,
     "base_exp": 172,
@@ -13113,7 +12981,7 @@
   },
   {
     "id": 10168,
-    "name": "가라르 마임맨 MIME",
+    "name": "마임맨(가라르 MIME)",
     "height": 14,
     "weight": 568,
     "base_exp": 161,
@@ -13124,7 +12992,7 @@
   },
   {
     "id": 10169,
-    "name": "가라르 프리져",
+    "name": "프리져(가라르)",
     "height": 17,
     "weight": 509,
     "base_exp": 290,
@@ -13135,7 +13003,7 @@
   },
   {
     "id": 10170,
-    "name": "가라르 썬더",
+    "name": "썬더(가라르)",
     "height": 16,
     "weight": 582,
     "base_exp": 290,
@@ -13146,7 +13014,7 @@
   },
   {
     "id": 10171,
-    "name": "가라르 파이어",
+    "name": "파이어(가라르)",
     "height": 20,
     "weight": 660,
     "base_exp": 290,
@@ -13157,7 +13025,7 @@
   },
   {
     "id": 10172,
-    "name": "가라르 야도킹",
+    "name": "야도킹(가라르)",
     "height": 18,
     "weight": 795,
     "base_exp": 172,
@@ -13168,7 +13036,7 @@
   },
   {
     "id": 10173,
-    "name": "가라르 코산호",
+    "name": "코산호(가라르)",
     "height": 6,
     "weight": 5,
     "base_exp": 144,
@@ -13179,7 +13047,7 @@
   },
   {
     "id": 10174,
-    "name": "가라르 지그제구리",
+    "name": "지그제구리(가라르)",
     "height": 4,
     "weight": 175,
     "base_exp": 56,
@@ -13190,7 +13058,7 @@
   },
   {
     "id": 10175,
-    "name": "가라르 직구리",
+    "name": "직구리(가라르)",
     "height": 5,
     "weight": 325,
     "base_exp": 147,
@@ -13201,7 +13069,7 @@
   },
   {
     "id": 10176,
-    "name": "가라르 달막화",
+    "name": "달막화(가라르)",
     "height": 7,
     "weight": 400,
     "base_exp": 63,
@@ -13212,7 +13080,7 @@
   },
   {
     "id": 10177,
-    "name": "가라르 불비달마 STANDARD",
+    "name": "불비달마(가라르 STANDARD)",
     "height": 17,
     "weight": 1200,
     "base_exp": 168,
@@ -13223,7 +13091,7 @@
   },
   {
     "id": 10178,
-    "name": "가라르 불비달마 ZEN",
+    "name": "불비달마(달마모드)",
     "height": 17,
     "weight": 1200,
     "base_exp": 189,
@@ -13234,7 +13102,7 @@
   },
   {
     "id": 10179,
-    "name": "가라르 데스마스",
+    "name": "데스마스(가라르)",
     "height": 5,
     "weight": 15,
     "base_exp": 61,
@@ -13245,7 +13113,7 @@
   },
   {
     "id": 10180,
-    "name": "가라르 메더",
+    "name": "메더(가라르)",
     "height": 7,
     "weight": 205,
     "base_exp": 165,
@@ -13256,7 +13124,7 @@
   },
   {
     "id": 10181,
-    "name": "지가르데 (10)",
+    "name": "지가르데(10)",
     "height": 12,
     "weight": 335,
     "base_exp": 243,
@@ -13267,7 +13135,7 @@
   },
   {
     "id": 10182,
-    "name": "윽우지 (gulping)",
+    "name": "윽우지(그대로 삼킨)",
     "height": 8,
     "weight": 180,
     "base_exp": 166,
@@ -13278,7 +13146,7 @@
   },
   {
     "id": 10183,
-    "name": "윽우지 (gorging)",
+    "name": "윽우지(통째로 삼킨)",
     "height": 8,
     "weight": 180,
     "base_exp": 166,
@@ -13289,7 +13157,7 @@
   },
   {
     "id": 10184,
-    "name": "스트린더 (low-key)",
+    "name": "스트린더(로우한)",
     "height": 16,
     "weight": 400,
     "base_exp": 176,
@@ -13300,7 +13168,7 @@
   },
   {
     "id": 10185,
-    "name": "빙큐보 (noice)",
+    "name": "빙큐보(나이스페이스)",
     "height": 14,
     "weight": 890,
     "base_exp": 165,
@@ -13311,7 +13179,7 @@
   },
   {
     "id": 10186,
-    "name": "에써르 (female)",
+    "name": "에써르(암컷)",
     "height": 9,
     "weight": 280,
     "base_exp": 166,
@@ -13322,7 +13190,7 @@
   },
   {
     "id": 10187,
-    "name": "모르페코 (hangry)",
+    "name": "모르페코(배고픈 모양)",
     "height": 3,
     "weight": 30,
     "base_exp": 153,
@@ -13333,7 +13201,7 @@
   },
   {
     "id": 10188,
-    "name": "자시안 (crowned)",
+    "name": "자시안(검왕)",
     "height": 28,
     "weight": 3550,
     "base_exp": 360,
@@ -13344,7 +13212,7 @@
   },
   {
     "id": 10189,
-    "name": "자마젠타 (crowned)",
+    "name": "자마젠타(방패왕)",
     "height": 29,
     "weight": 7850,
     "base_exp": 360,
@@ -13355,7 +13223,7 @@
   },
   {
     "id": 10190,
-    "name": "에테르나맥스 무한다이노",
+    "name": "무한다이노(에테르나맥스)",
     "height": 1000,
     "weight": 0,
     "base_exp": 563,
@@ -13366,7 +13234,7 @@
   },
   {
     "id": 10191,
-    "name": "우라오스 (rapid-strike)",
+    "name": "우라오스(연격의 태세)",
     "height": 19,
     "weight": 1050,
     "base_exp": 275,
@@ -13377,7 +13245,7 @@
   },
   {
     "id": 10192,
-    "name": "자루도 (dada)",
+    "name": "자루도(아빠)",
     "height": 18,
     "weight": 700,
     "base_exp": 300,
@@ -13388,7 +13256,7 @@
   },
   {
     "id": 10193,
-    "name": "버드렉스 (ice)",
+    "name": "버드렉스(백마 탄)",
     "height": 24,
     "weight": 8091,
     "base_exp": 340,
@@ -13399,7 +13267,7 @@
   },
   {
     "id": 10194,
-    "name": "버드렉스 (shadow)",
+    "name": "버드렉스(흑마 탄)",
     "height": 24,
     "weight": 536,
     "base_exp": 340,
@@ -13674,7 +13542,7 @@
   },
   {
     "id": 10219,
-    "name": "거다이맥스 스트린더 AMPED",
+    "name": "거다이맥스 스트린더",
     "height": 240,
     "weight": 10000,
     "base_exp": 176,
@@ -13784,7 +13652,7 @@
   },
   {
     "id": 10229,
-    "name": "히스이 가디",
+    "name": "가디(히스이)",
     "height": 8,
     "weight": 227,
     "base_exp": 70,
@@ -13795,7 +13663,7 @@
   },
   {
     "id": 10230,
-    "name": "히스이 윈디",
+    "name": "윈디(히스이)",
     "height": 20,
     "weight": 1680,
     "base_exp": 194,
@@ -13806,7 +13674,7 @@
   },
   {
     "id": 10231,
-    "name": "히스이 찌리리공",
+    "name": "찌리리공(히스이)",
     "height": 5,
     "weight": 130,
     "base_exp": 66,
@@ -13817,7 +13685,7 @@
   },
   {
     "id": 10232,
-    "name": "히스이 붐볼",
+    "name": "붐볼(히스이)",
     "height": 12,
     "weight": 710,
     "base_exp": 172,
@@ -13828,7 +13696,7 @@
   },
   {
     "id": 10233,
-    "name": "히스이 블레이범",
+    "name": "블레이범(히스이)",
     "height": 16,
     "weight": 698,
     "base_exp": 240,
@@ -13839,7 +13707,7 @@
   },
   {
     "id": 10234,
-    "name": "히스이 침바루",
+    "name": "침바루(히스이)",
     "height": 5,
     "weight": 39,
     "base_exp": 88,
@@ -13850,7 +13718,7 @@
   },
   {
     "id": 10235,
-    "name": "히스이 포푸니",
+    "name": "포푸니(히스이)",
     "height": 9,
     "weight": 270,
     "base_exp": 86,
@@ -13861,7 +13729,7 @@
   },
   {
     "id": 10236,
-    "name": "히스이 대검귀",
+    "name": "대검귀(히스이)",
     "height": 15,
     "weight": 582,
     "base_exp": 238,
@@ -13872,7 +13740,7 @@
   },
   {
     "id": 10237,
-    "name": "히스이 드레디어",
+    "name": "드레디어(히스이)",
     "height": 12,
     "weight": 192,
     "base_exp": 168,
@@ -13883,7 +13751,7 @@
   },
   {
     "id": 10238,
-    "name": "히스이 조로아",
+    "name": "조로아(히스이)",
     "height": 7,
     "weight": 125,
     "base_exp": 66,
@@ -13894,7 +13762,7 @@
   },
   {
     "id": 10239,
-    "name": "히스이 조로아크",
+    "name": "조로아크(히스이)",
     "height": 16,
     "weight": 730,
     "base_exp": 179,
@@ -13905,7 +13773,7 @@
   },
   {
     "id": 10240,
-    "name": "히스이 워글",
+    "name": "워글(히스이)",
     "height": 17,
     "weight": 434,
     "base_exp": 179,
@@ -13916,7 +13784,7 @@
   },
   {
     "id": 10241,
-    "name": "히스이 미끄네일",
+    "name": "미끄네일(히스이)",
     "height": 7,
     "weight": 685,
     "base_exp": 158,
@@ -13927,7 +13795,7 @@
   },
   {
     "id": 10242,
-    "name": "히스이 미끄래곤",
+    "name": "미끄래곤(히스이)",
     "height": 17,
     "weight": 3341,
     "base_exp": 270,
@@ -13938,7 +13806,7 @@
   },
   {
     "id": 10243,
-    "name": "히스이 크레베이스",
+    "name": "크레베이스(히스이)",
     "height": 14,
     "weight": 2624,
     "base_exp": 180,
@@ -13949,7 +13817,7 @@
   },
   {
     "id": 10244,
-    "name": "히스이 모크나이퍼",
+    "name": "모크나이퍼(히스이)",
     "height": 16,
     "weight": 370,
     "base_exp": 239,
@@ -13960,7 +13828,7 @@
   },
   {
     "id": 10245,
-    "name": "오리진 디아루가",
+    "name": "디아루가(오리진)",
     "height": 70,
     "weight": 8487,
     "base_exp": 306,
@@ -13971,7 +13839,7 @@
   },
   {
     "id": 10246,
-    "name": "오리진 펄기아",
+    "name": "펄기아(오리진)",
     "height": 63,
     "weight": 6590,
     "base_exp": 306,
@@ -13982,7 +13850,7 @@
   },
   {
     "id": 10247,
-    "name": "배쓰나이 (white-striped)",
+    "name": "배쓰나이(백색근)",
     "height": 10,
     "weight": 180,
     "base_exp": 161,
@@ -13993,7 +13861,7 @@
   },
   {
     "id": 10248,
-    "name": "대쓰여너 (female)",
+    "name": "대쓰여너(암컷)",
     "height": 30,
     "weight": 1100,
     "base_exp": 265,
@@ -14004,7 +13872,7 @@
   },
   {
     "id": 10249,
-    "name": "영물 러브로스",
+    "name": "러브로스(영물)",
     "height": 16,
     "weight": 480,
     "base_exp": 116,
@@ -14015,7 +13883,7 @@
   },
   {
     "id": 10250,
-    "name": "팔데아 켄타로스 COMBAT BREED",
+    "name": "켄타로스(컴벳 BREED)",
     "height": 14,
     "weight": 1150,
     "base_exp": 172,
@@ -14026,7 +13894,7 @@
   },
   {
     "id": 10251,
-    "name": "팔데아 켄타로스 BLAZE BREED",
+    "name": "켄타로스(블레이즈 BREED)",
     "height": 14,
     "weight": 850,
     "base_exp": 172,
@@ -14037,7 +13905,7 @@
   },
   {
     "id": 10252,
-    "name": "팔데아 켄타로스 AQUA BREED",
+    "name": "켄타로스(워터 BREED)",
     "height": 14,
     "weight": 1100,
     "base_exp": 172,
@@ -14048,7 +13916,7 @@
   },
   {
     "id": 10253,
-    "name": "팔데아 우파",
+    "name": "우파(팔데아)",
     "height": 4,
     "weight": 110,
     "base_exp": 42,
@@ -14059,7 +13927,7 @@
   },
   {
     "id": 10254,
-    "name": "퍼퓨돈 (female)",
+    "name": "퍼퓨돈(암컷)",
     "height": 10,
     "weight": 1200,
     "base_exp": 171,
@@ -14070,7 +13938,7 @@
   },
   {
     "id": 10255,
-    "name": "노고고치 (three-segment)",
+    "name": "노고고치(세 마디폼)",
     "height": 45,
     "weight": 474,
     "base_exp": 182,
@@ -14081,7 +13949,7 @@
   },
   {
     "id": 10256,
-    "name": "돌핀맨 (hero)",
+    "name": "마이티 돌핀맨",
     "height": 18,
     "weight": 974,
     "base_exp": 160,
@@ -14092,7 +13960,7 @@
   },
   {
     "id": 10257,
-    "name": "파밀리쥐 (family-of-three)",
+    "name": "파밀리쥐(세 식구)",
     "height": 3,
     "weight": 23,
     "base_exp": 165,
@@ -14103,7 +13971,7 @@
   },
   {
     "id": 10258,
-    "name": "싸리용 (droopy)",
+    "name": "싸리용(늘어진)",
     "height": 3,
     "weight": 80,
     "base_exp": 166,
@@ -14114,7 +13982,7 @@
   },
   {
     "id": 10259,
-    "name": "싸리용 (stretchy)",
+    "name": "싸리용(뻗은)",
     "height": 3,
     "weight": 80,
     "base_exp": 166,
@@ -14125,7 +13993,7 @@
   },
   {
     "id": 10260,
-    "name": "시비꼬 (blue-plumage)",
+    "name": "시비꼬(블루 페더)",
     "height": 6,
     "weight": 24,
     "base_exp": 146,
@@ -14136,7 +14004,7 @@
   },
   {
     "id": 10261,
-    "name": "시비꼬 (yellow-plumage)",
+    "name": "시비꼬(옐로 페더)",
     "height": 6,
     "weight": 24,
     "base_exp": 146,
@@ -14147,7 +14015,7 @@
   },
   {
     "id": 10262,
-    "name": "시비꼬 (white-plumage)",
+    "name": "시비꼬(화이트 페더)",
     "height": 6,
     "weight": 24,
     "base_exp": 146,
@@ -14158,7 +14026,7 @@
   },
   {
     "id": 10263,
-    "name": "모으령 (roaming)",
+    "name": "모으령(도보폼)",
     "height": 1,
     "weight": 10,
     "base_exp": 60,
@@ -14168,96 +14036,8 @@
     "species_id": 999
   },
   {
-    "id": 10264,
-    "name": "코라이돈 (limited-build)",
-    "height": 35,
-    "weight": 3030,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10264.ogg",
-    "is_default": false,
-    "species_id": 1007
-  },
-  {
-    "id": 10265,
-    "name": "코라이돈 (sprinting-build)",
-    "height": 35,
-    "weight": 3030,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10265.ogg",
-    "is_default": false,
-    "species_id": 1007
-  },
-  {
-    "id": 10266,
-    "name": "코라이돈 (swimming-build)",
-    "height": 35,
-    "weight": 3030,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10266.ogg",
-    "is_default": false,
-    "species_id": 1007
-  },
-  {
-    "id": 10267,
-    "name": "코라이돈 (gliding-build)",
-    "height": 35,
-    "weight": 3030,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10267.ogg",
-    "is_default": false,
-    "species_id": 1007
-  },
-  {
-    "id": 10268,
-    "name": "미라이돈 (low-power-mode)",
-    "height": 28,
-    "weight": 2400,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10268.ogg",
-    "is_default": false,
-    "species_id": 1008
-  },
-  {
-    "id": 10269,
-    "name": "미라이돈 (drive-mode)",
-    "height": 28,
-    "weight": 2400,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10269.ogg",
-    "is_default": false,
-    "species_id": 1008
-  },
-  {
-    "id": 10270,
-    "name": "미라이돈 (aquatic-mode)",
-    "height": 28,
-    "weight": 2400,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10270.ogg",
-    "is_default": false,
-    "species_id": 1008
-  },
-  {
-    "id": 10271,
-    "name": "미라이돈 (glide-mode)",
-    "height": 28,
-    "weight": 2400,
-    "base_exp": 335,
-    "image_url": null,
-    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10271.ogg",
-    "is_default": false,
-    "species_id": 1008
-  },
-  {
     "id": 10272,
-    "name": "블러드문 다투곰",
+    "name": "다투곰(블러드문)",
     "height": 24,
     "weight": 2900,
     "base_exp": 275,
@@ -14268,7 +14048,7 @@
   },
   {
     "id": 10273,
-    "name": "오거폰 (wellspring-mask)",
+    "name": "오거폰(우물의 가면)",
     "height": 12,
     "weight": 398,
     "base_exp": 275,
@@ -14279,7 +14059,7 @@
   },
   {
     "id": 10274,
-    "name": "오거폰 (hearthflame-mask)",
+    "name": "오거폰(화덕의 가면)",
     "height": 12,
     "weight": 398,
     "base_exp": 275,
@@ -14290,7 +14070,7 @@
   },
   {
     "id": 10275,
-    "name": "오거폰 (cornerstone-mask)",
+    "name": "오거폰(주춧돌의 가면)",
     "height": 12,
     "weight": 398,
     "base_exp": 275,
@@ -14301,7 +14081,7 @@
   },
   {
     "id": 10276,
-    "name": "테라파고스 (terastal)",
+    "name": "테라파고스(테라스탈폼)",
     "height": 3,
     "weight": 160,
     "base_exp": 90,
@@ -14312,7 +14092,7 @@
   },
   {
     "id": 10277,
-    "name": "테라파고스 (stellar)",
+    "name": "테라파고스(스텔라폼)",
     "height": 17,
     "weight": 770,
     "base_exp": 90,
@@ -14762,17 +14542,6 @@
     "species_id": 801
   },
   {
-    "id": 10318,
-    "name": "메가 마기아나 ORIGINAL",
-    "height": 13,
-    "weight": 2481,
-    "base_exp": null,
-    "image_url": null,
-    "cry_url": null,
-    "is_default": false,
-    "species_id": 801
-  },
-  {
     "id": 10319,
     "name": "메가 제라오라",
     "height": 15,
@@ -14806,30 +14575,8 @@
     "species_id": 970
   },
   {
-    "id": 10322,
-    "name": "메가 싸리용 CURLY",
-    "height": 6,
-    "weight": 240,
-    "base_exp": null,
-    "image_url": null,
-    "cry_url": null,
-    "is_default": false,
-    "species_id": 978
-  },
-  {
-    "id": 10323,
-    "name": "메가 싸리용 DROOPY",
-    "height": 6,
-    "weight": 240,
-    "base_exp": null,
-    "image_url": null,
-    "cry_url": null,
-    "is_default": false,
-    "species_id": 978
-  },
-  {
     "id": 10324,
-    "name": "메가 싸리용 STRETCHY",
+    "name": "메가 싸리용",
     "height": 6,
     "weight": 240,
     "base_exp": null,
