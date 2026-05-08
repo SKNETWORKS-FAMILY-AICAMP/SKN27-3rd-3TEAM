@@ -77,19 +77,22 @@ def get_pokedex_styles():
     .type-icon-box {
         background: #fff;
         border: 1px solid #eee;
-        border-radius: 15px;
-        padding: 10px;
+        border-radius: 12px;
+        padding: 10px 4px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         min-height: 85px;
-        margin-bottom: 15px;
+        margin-bottom: 12px; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        width: 100%;
+        position: relative;
     }
     .type-icon-box:hover {
-        transform: translateY(-5px);
+        transform: translateY(-3px);
         border-color: var(--poke-blue);
         box-shadow: 0 8px 20px rgba(42, 117, 187, 0.1);
     }
@@ -98,12 +101,27 @@ def get_pokedex_styles():
         border: 2px solid var(--poke-blue);
         box-shadow: 0 0 20px rgba(42, 117, 187, 0.15);
     }
-    .type-svg-wrap { width: 32px; height: 32px; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-    .type-icon-box span { color: var(--text-main); font-size: 0.8rem; font-weight: 600; font-family: 'Inter', sans-serif; }
+    .type-svg-wrap { width: 28px; height: 28px; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+    .type-icon-box span { color: var(--text-main); font-size: 0.75rem; font-weight: 700; font-family: 'Inter', sans-serif; }
     
     /* Hide Streamlit Button Overlay */
-    div[data-testid="stColumn"]:has(.type-icon-box) [data-testid="stBaseButton-secondary"] {
-        position: absolute; inset: 0; opacity: 0 !important; z-index: 10;
+    div[data-testid="stColumn"]:has(.type-icon-box) [data-testid="stVerticalBlock"] {
+        position: relative;
+    }
+    div[data-testid="stColumn"]:has(.type-icon-box) .element-container:has(button) {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 85px; /* Match icon box height */
+        z-index: 10;
+        margin: 0 !important;
+    }
+    div[data-testid="stColumn"]:has(.type-icon-box) button {
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        border: none !important;
+        cursor: pointer !important;
+        padding: 0 !important;
     }
 
     /* ── Action Buttons ────────────────────────────── */
