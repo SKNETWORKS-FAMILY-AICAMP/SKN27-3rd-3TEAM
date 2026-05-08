@@ -10,7 +10,8 @@ def get_pokemon_list(
     search: str = None,
     type_names: List[str] = None,
     min_id: int = None,
-    max_id: int = None
+    max_id: int = None,
+    ability: str = None
 ):
     query = db.query(models.Pokemon)
     
@@ -26,9 +27,13 @@ def get_pokemon_list(
         query = query.filter(models.Type.name.in_(type_names))
         
     if min_id is not None:
-        query = query.filter(models.Pokemon.id >= min_id)
+        query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
-        query = query.filter(models.Pokemon.id <= max_id)
+        query = query.filter(models.Pokemon.species_id <= max_id)
+        
+    if ability:
+        query = query.join(models.Pokemon.abilities).join(models.PokemonAbility.ability)
+        query = query.filter(models.Ability.name == ability)
         
     return query.order_by(models.Pokemon.species_id, models.Pokemon.id).offset(skip).limit(limit).all()
 
@@ -38,7 +43,8 @@ def get_pokemon_count(
     search: str = None,
     type_names: List[str] = None,
     min_id: int = None,
-    max_id: int = None
+    max_id: int = None,
+    ability: str = None
 ) -> int:
     query = db.query(models.Pokemon)
     
@@ -53,9 +59,13 @@ def get_pokemon_count(
         query = query.filter(models.Type.name.in_(type_names))
         
     if min_id is not None:
-        query = query.filter(models.Pokemon.id >= min_id)
+        query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
-        query = query.filter(models.Pokemon.id <= max_id)
+        query = query.filter(models.Pokemon.species_id <= max_id)
+        
+    if ability:
+        query = query.join(models.Pokemon.abilities).join(models.PokemonAbility.ability)
+        query = query.filter(models.Ability.name == ability)
         
     return query.count()
 
@@ -119,6 +129,10 @@ def get_evolution_chain(db: Session, species_id: int) -> List[dict]:
     # 3. 루트(최하위 종)부터 트리 시작
     root_node = build_node(base_species_id)
     return [root_node] if root_node else []
+
+
+def get_abilities(db: Session) -> List[str]:
+    return [a.name for a in db.query(models.Ability).order_by(models.Ability.name).all()]
 
 
 def get_pokemon_by_id(db: Session, pokemon_id: int):
