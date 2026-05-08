@@ -154,20 +154,24 @@ with st.container(border=True):
         <span>포켓몬 도감</span>
     </div>
     """, unsafe_allow_html=True)
-    # ── Search bar (left-aligned 50% width) ────────────────────────
-    sc1, _ = st.columns([1, 1])
+    # ── Search bar & Slider ──────────────────────────────────────
+    sc1, sc2 = st.columns([1, 1])
     with sc1:
         search_val = st.text_input(
-            "search",
+            "검색",
             value=st.session_state.search_query,
             placeholder="포켓몬 이름 또는 설명, 특성 키워드를 입력하세요.",
-            label_visibility="collapsed",
             key="search_input",
             on_change=handle_search,
         )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
+    with sc2:
+        st.slider(
+            "도감번호",
+            min_value=1,
+            max_value=1025,
+            value=(st.session_state.dex_start, st.session_state.dex_end),
+            key="dex_range_slider"
+        )
     # ── Left / Right filter columns ──────────────────────────────
     left_col, right_col = st.columns([1, 1.7])
 
@@ -196,14 +200,6 @@ with st.container(border=True):
                         st.session_state.dex_end = end
                         st.session_state.dex_range_slider = (start, end)
                         st.rerun()
-
-        st.slider(
-            "도감번호",
-            min_value=1,
-            max_value=1025,
-            value=(st.session_state.dex_start, st.session_state.dex_end),
-            key="dex_range_slider",
-        )
 
     # ── Type icon grid ───────────────────────────────────────────
     type_icons = load_type_icons()
