@@ -132,6 +132,15 @@ REGION_RANGES = {
     "팔데아": (906, 1025),
 }
 
+def select_region(region):
+    """지방 버튼 클릭 시 호출되는 콜백"""
+    st.session_state.region_filter = region
+    start, end = REGION_RANGES.get(region, (1, 1025))
+    st.session_state.dex_start = start
+    st.session_state.dex_end = end
+    st.session_state.dex_range_slider = (start, end)
+
+
 def handle_search():
     """검색 및 필터 적용 로직을 한 곳에서 처리"""
     st.session_state.search_query = st.session_state.search_input
@@ -193,13 +202,14 @@ with st.container(border=True):
                         f'<div class="region-btn-box {"region-sel" if is_sel else ""}">{region}</div>',
                         unsafe_allow_html=True,
                     )
-                    if st.button("", key=f"region_btn_{region}", use_container_width=True):
-                        st.session_state.region_filter = region
-                        start, end = REGION_RANGES.get(region, (1, 1025))
-                        st.session_state.dex_start = start
-                        st.session_state.dex_end = end
-                        st.session_state.dex_range_slider = (start, end)
-                        st.rerun()
+                    if st.button(
+                        "", 
+                        key=f"region_btn_{region}", 
+                        use_container_width=True,
+                        on_click=select_region,
+                        args=(region,)
+                    ):
+                        pass
 
     # ── Type icon grid ───────────────────────────────────────────
     type_icons = load_type_icons()
