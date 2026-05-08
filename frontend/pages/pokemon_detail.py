@@ -88,6 +88,14 @@ TYPE_IMG_DIR = os.path.join(current_dir, "..", "img", "type")
 # API name → filename (대부분 동일, 얼음만 예외)
 TYPE_FILE_MAP = {"얼음": "아이스"}
 
+KO_TO_EN = {
+    "노말": "normal", "풀": "grass", "불꽃": "fire", "물": "water",
+    "전기": "electric", "벌레": "bug", "비행": "flying", "바위": "rock",
+    "독": "poison", "땅": "ground", "얼음": "ice", "격투": "fighting",
+    "에스퍼": "psychic", "고스트": "ghost", "드래곤": "dragon", "악": "dark",
+    "강철": "steel", "페어리": "fairy",
+}
+
 def get_type_img_src(ko_name: str) -> str:
     filename = TYPE_FILE_MAP.get(ko_name, ko_name)
     path = os.path.join(TYPE_IMG_DIR, f"{filename}.svg")
@@ -214,10 +222,11 @@ def render_evo_node(node, is_root=True):
         v_img = v.get("image_url") or img_url
         is_active = "active" if v_id == pokemon_id else ""
         
-        # Build type badges for this variety
+        # Build type badges for this variety (slot 순서 정렬)
+        sorted_types = sorted(v.get("types", []), key=lambda x: x.get("slot", 1))
         v_types_html = "".join([
-            f'<div style="background:#efefef; border-radius:4px; padding:2px 6px; font-size:0.65rem; color:#666; font-weight:600;">{t["type_"]["name"]}</div>'
-            for t in v.get("types", [])
+            f'<div class="evo-type-badge evo-type-{KO_TO_EN.get(t["type_"]["name"], "normal")}">{t["type_"]["name"]}</div>'
+            for t in sorted_types
         ])
         
         var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card {is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v_id:04d}</div><div style="font-weight:800; font-size:0.95rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif; word-break:keep-all; overflow-wrap:break-word; max-width:170px;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')

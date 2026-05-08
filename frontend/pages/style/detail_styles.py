@@ -330,6 +330,26 @@ footer {{ visibility: hidden; }}
 }}
 .evo-arrow {{ color: var(--type-point); font-size: 24px; opacity: 0.6; }}
 
+.evo-type-badge {{ border-radius: 4px; padding: 3px 8px; font-size: 0.65rem; font-weight: 700; color: #fff; }}
+.evo-type-normal   {{ background: #A8A77A; }}
+.evo-type-fire     {{ background: #EE8130; }}
+.evo-type-water    {{ background: #6390F0; }}
+.evo-type-electric {{ background: #F7D02C; color: #000; }}
+.evo-type-grass    {{ background: #7AC74C; }}
+.evo-type-ice      {{ background: #96D9D9; color: #000; }}
+.evo-type-fighting {{ background: #C22E28; }}
+.evo-type-poison   {{ background: #A33EA1; }}
+.evo-type-ground   {{ background: #E2BF65; color: #000; }}
+.evo-type-flying   {{ background: #A98FF3; }}
+.evo-type-psychic  {{ background: #F95587; }}
+.evo-type-bug      {{ background: #A6B91A; }}
+.evo-type-rock     {{ background: #B6A136; }}
+.evo-type-ghost    {{ background: #735797; }}
+.evo-type-dragon   {{ background: #6F35FC; }}
+.evo-type-steel    {{ background: #B7B7CE; color: #000; }}
+.evo-type-fairy    {{ background: #D685AD; }}
+.evo-type-dark     {{ background: #705746; }}
+
 .variety-section {{
     max-width: 1000px; margin: 0 auto 20px auto;
     background: linear-gradient(90deg, var(--glass-bg), var(--type-aura));
