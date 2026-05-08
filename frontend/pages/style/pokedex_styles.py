@@ -27,9 +27,9 @@ def get_pokedex_styles():
     /* ── Search Card Container ───────────────────────── */
     /* 신버전 Streamlit: border=True는 stVerticalBlock에 직접 적용 */
     [data-testid="stVerticalBlock"]:has(> .element-container .dex-search-card) {
-        background: #000000 !important;
-        background-color: #000000 !important;
-        border: 1px solid #333333 !important;
+        background: #2b2b2b !important;
+        background-color: #2b2b2b !important;
+        border: 1px solid #ffffff !important;
         border-radius: 24px !important;
         padding: 30px !important;
         margin-bottom: 30px !important;
@@ -38,8 +38,8 @@ def get_pokedex_styles():
     /* 구버전 Streamlit 호환 */
     [data-testid="stVerticalBlockBorderWrapper"],
     .stVerticalBlockBorderWrapper {
-        background: #000000 !important;
-        background-color: #000000 !important;
+        background: #2b2b2b !important;
+        background-color: #2b2b2b !important;
         border: 1px solid #333333 !important;
         border-radius: 24px !important;
         padding: 30px !important;
@@ -67,46 +67,119 @@ def get_pokedex_styles():
     /* ── Inputs & Selects ──────────────────────────── */
     /* Search Bar */
     [data-testid="stTextInput"] label { display: none; }
-    [data-testid="stTextInput"] > div {
-        background: #f1f3f5 !important;
-        border: 1px solid transparent !important;
-        border-radius: 15px !important;
+    [data-testid="stTextInput"] [data-baseweb="input"],
+    [data-testid="stTextInput"] [data-baseweb="base-input"] {
+        background: #1e1e1e !important;
+        border: 2px solid #444 !important;
+        border-radius: 12px !important;
         transition: all 0.3s ease !important;
     }
-    [data-testid="stTextInput"] > div:focus-within {
-        background: white !important;
-        border-color: var(--poke-blue) !important;
-        box-shadow: 0 0 15px rgba(42, 117, 187, 0.1) !important;
+    [data-testid="stTextInput"]:focus-within [data-baseweb="input"],
+    [data-testid="stTextInput"]:focus-within [data-baseweb="base-input"] {
+        border-color: #E33535 !important;
+        box-shadow: 0 0 12px rgba(227, 53, 53, 0.3) !important;
     }
     [data-testid="stTextInput"] input {
-        color: var(--text-main) !important;
+        color: #e0e0e0 !important;
         font-family: 'Inter', sans-serif !important;
-        font-size: 1.1rem !important;
-        padding: 15px 20px !important;
+        font-size: 1rem !important;
+        padding: 12px 18px !important;
+        background: transparent !important;
+    }
+    [data-testid="stTextInput"] input::placeholder {
+        color: #666 !important;
     }
 
-    /* Selectboxes & Number Inputs */
+    /* Selectboxes & Number Inputs — Labels */
     [data-testid="stSelectbox"] label, .dex-numrange-label, .dex-type-label {
-        color: var(--text-muted) !important;
+        color: #888888 !important;
         font-weight: 700 !important;
         font-size: 0.85rem !important;
         text-transform: uppercase !important;
         letter-spacing: 1px !important;
         margin-bottom: 8px !important;
     }
-    [data-testid="stSelectbox"] > div > div, [data-testid="stNumberInput"] > div > div {
-        background: #f1f3f5 !important;
-        border: 1px solid transparent !important;
+
+    /* Selectbox 드롭다운 박스 */
+    [data-testid="stSelectbox"] > div > div {
+        background: #1e1e1e !important;
+        border: 2px solid #444 !important;
         border-radius: 12px !important;
-        color: var(--text-main) !important;
+        color: #e0e0e0 !important;
     }
-    
-    .dex-range-sep { color: #ccc; font-weight: 900; line-height: 45px; }
+    [data-testid="stSelectbox"] > div > div:hover {
+        border-color: #E33535 !important;
+        box-shadow: 0 0 10px rgba(227, 53, 53, 0.2) !important;
+    }
+    [data-testid="stSelectbox"] span {
+        color: #e0e0e0 !important;
+    }
+    [data-testid="stSelectbox"] svg {
+        fill: #888 !important;
+    }
+
+    /* Number Input */
+    [data-testid="stNumberInput"] [data-baseweb="input"],
+    [data-testid="stNumberInput"] [data-baseweb="base-input"] {
+        background: #1e1e1e !important;
+        border: 2px solid #444 !important;
+        border-radius: 12px !important;
+    }
+    [data-testid="stNumberInput"] input {
+        color: #e0e0e0 !important;
+        background: transparent !important;
+    }
+    [data-testid="stNumberInput"] button {
+        color: #888 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+    [data-testid="stNumberInput"] button:hover {
+        color: #ffffff !important;
+        background: #E33535 !important;
+    }
+
+    .dex-range-sep { color: #888; font-weight: 900; line-height: 45px; }
+
+    /* ── Slider ────────────────────────────────────── */
+    [data-testid="stSlider"] label {
+        color: #888888 !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    [data-testid="stSlider"] [data-baseweb="slider"] {
+        padding: 0 4px !important;
+    }
+    /* 트랙 배경 */
+    [data-testid="stSlider"] [role="slider"] ~ div {
+        background: #444 !important;
+    }
+    /* 선택된 범위 트랙 */
+    [data-testid="stSlider"] div[data-testid="stTickBar"] ~ div > div > div {
+        background: #E33535 !important;
+    }
+    /* 썸(핸들) */
+    [data-testid="stSlider"] [role="slider"] {
+        background: #E33535 !important;
+        border: 3px solid #ffffff !important;
+        box-shadow: 0 0 8px rgba(227, 53, 53, 0.6) !important;
+    }
+    /* 현재값 툴팁 */
+    [data-testid="stSlider"] [data-testid="stSliderThumbValue"] {
+        color: #e0e0e0 !important;
+        font-weight: 700 !important;
+    }
+    /* min/max 눈금 텍스트 */
+    [data-testid="stTickBar"] {
+        color: #666 !important;
+    }
 
     /* ── Type Grid ─────────────────────────────────── */
     .type-icon-box {
-        background: #fff;
-        border: 1px solid #eee;
+        background: #555;
+        border: none;
         border-radius: 12px;
         padding: 10px 4px;
         display: flex;
@@ -123,16 +196,36 @@ def get_pokedex_styles():
     }
     .type-icon-box:hover {
         transform: translateY(-3px);
-        border-color: var(--poke-blue);
-        box-shadow: 0 8px 20px rgba(42, 117, 187, 0.1);
+        filter: brightness(1.2);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
     .type-icon-box.type-sel {
-        background: #fff;
-        border: 2px solid var(--poke-blue);
-        box-shadow: 0 0 20px rgba(42, 117, 187, 0.15);
+        outline: 3px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
     }
-    .type-svg-wrap { width: 28px; height: 28px; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-    .type-icon-box span { color: var(--text-main); font-size: 0.75rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+    .type-svg-wrap { width: 28px; height: 28px; margin-bottom: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+    .type-icon-box span { color: #ffffff; font-size: 0.75rem; font-weight: 700; font-family: 'Inter', sans-serif; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+    /* 타입별 배경색 */
+    .type-bg-normal   { background: #A8A77A; }
+    .type-bg-fire     { background: #EE8130; }
+    .type-bg-water    { background: #6390F0; }
+    .type-bg-electric { background: #F7D02C; }
+    .type-bg-grass    { background: #7AC74C; }
+    .type-bg-ice      { background: #96D9D9; }
+    .type-bg-fighting { background: #C22E28; }
+    .type-bg-poison   { background: #A33EA1; }
+    .type-bg-ground   { background: #E2BF65; }
+    .type-bg-flying   { background: #A98FF3; }
+    .type-bg-psychic  { background: #F95587; }
+    .type-bg-bug      { background: #A6B91A; }
+    .type-bg-rock     { background: #B6A136; }
+    .type-bg-ghost    { background: #735797; }
+    .type-bg-dragon   { background: #6F35FC; }
+    .type-bg-steel    { background: #B7B7CE; }
+    .type-bg-fairy    { background: #D685AD; }
+    .type-bg-dark     { background: #705746; }
     
     /* Hide Streamlit Button Overlay */
     div[data-testid="stColumn"]:has(.type-icon-box) [data-testid="stVerticalBlock"] {
@@ -188,13 +281,19 @@ def get_pokedex_styles():
         padding: 0 !important;
     }
     
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button p,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button div,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button span {
+        color: #1a1a1a !important;
+    }
+
     div[data-testid="stColumn"]:has(.dex-btn-search) button {
         background-color: #E33535 !important; /* Pokemon Red */
         box-shadow: -5px 5px 0px rgba(227, 53, 53, 0.3) !important;
     }
     div[data-testid="stColumn"]:has(.dex-btn-reset) button {
-        background-color: #1a1a1a !important; /* Dark Black */
-        box-shadow: -5px 5px 0px rgba(0, 0, 0, 0.2) !important;
+        background-color: #ffffff !important;
+        box-shadow: -5px 5px 0px rgba(0, 0, 0, 0.15) !important;
     }
 
     div[data-testid="stColumn"]:has(.dex-btn-search) button:hover {
@@ -203,7 +302,7 @@ def get_pokedex_styles():
         box-shadow: -8px 8px 0px rgba(227, 53, 53, 0.4) !important;
     }
     div[data-testid="stColumn"]:has(.dex-btn-reset) button:hover {
-        background-color: #333 !important;
+        background-color: #f0f0f0 !important;
         transform: skew(-20deg) translateY(-2px) !important;
         box-shadow: -8px 8px 0px rgba(0, 0, 0, 0.3) !important;
     }

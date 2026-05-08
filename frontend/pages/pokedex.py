@@ -110,7 +110,7 @@ def do_reset():
     st.session_state.selected_types = []
     st.session_state.region_filter = "전체"
     st.session_state.dex_start = 1
-    st.session_state.dex_end = 2000
+    st.session_state.dex_end = 1025
     st.session_state.ability_filter = "전체"
 
 
@@ -144,15 +144,10 @@ def handle_search():
         # 지방이 변경되었을 때만 도감번호 범위 자동 조정
         if new_region != st.session_state.region_filter:
             st.session_state.region_filter = new_region
-            start, end = REGION_RANGES.get(new_region, (1, 2000))
+            start, end = REGION_RANGES.get(new_region, (1, 1025))
             st.session_state.dex_start = start
             st.session_state.dex_end = end
-        else:
-            # 지방이 그대로라면 사용자가 직접 수정한 도감번호 반영
-            if "dex_start_input" in st.session_state:
-                st.session_state.dex_start = int(st.session_state.dex_start_input)
-            if "dex_end_input" in st.session_state:
-                st.session_state.dex_end = int(st.session_state.dex_end_input)
+        # 지방이 그대로면 슬라이더 값이 이미 session_state에 반영되어 있음
 
 with st.container(border=True):
     st.markdown('<div class="dex-search-card"></div>', unsafe_allow_html=True)
@@ -185,22 +180,14 @@ with st.container(border=True):
             "지방", REGIONS, index=region_idx, key="region_sel", label_visibility="visible"
         )
 
-        st.markdown('<div class="dex-numrange-label">도감번호</div>', unsafe_allow_html=True)
-        nc1, nc2, nc3 = st.columns([1, 0.18, 1])
-        with nc1:
-            dex_start_val = st.number_input(
-                "시작", min_value=1, max_value=2000,
-                value=st.session_state.dex_start,
-                label_visibility="collapsed", key="dex_start_input",
-            )
-        with nc2:
-            st.markdown('<div class="dex-range-sep">-</div>', unsafe_allow_html=True)
-        with nc3:
-            dex_end_val = st.number_input(
-                "끝", min_value=1, max_value=2000,
-                value=st.session_state.dex_end,
-                label_visibility="collapsed", key="dex_end_input",
-            )
+        dex_range = st.slider(
+            "도감번호",
+            min_value=1,
+            max_value=1025,
+            value=(st.session_state.dex_start, st.session_state.dex_end),
+        )
+        st.session_state.dex_start = dex_range[0]
+        st.session_state.dex_end = dex_range[1]
 
     # ── Type icon grid ───────────────────────────────────────────
     type_icons = load_type_icons()
@@ -220,7 +207,7 @@ with st.container(border=True):
                     icon_html = f'<div class="type-svg-wrap">{svg_icon}</div>' if svg_icon else ""
                     
                     st.markdown(
-                        f'<div class="type-icon-box {sel_cls}">'
+                        f'<div class="type-icon-box type-bg-{en.lower()} {sel_cls}">'
                         f'{icon_html}'
                         f'<span>{ko}</span>'
                         f'</div>',
