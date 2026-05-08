@@ -123,7 +123,7 @@ def inject_common_ui(spacer=False):
     """
     
     if spacer:
-        common_html += '<div style="height: 100px; width: 100%;"></div>'
+        common_html += '<div style="height: 50px; width: 100%;"></div>'
         
     st.write(common_html, unsafe_allow_html=True)
 

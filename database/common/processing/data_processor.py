@@ -19,11 +19,52 @@ def save_json(data, filename):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+ABILITY_TRANSLATIONS = {
+    "sharpness": "예리함",
+    "protosynthesis": "고대활성",
+    "quark-drive": "쿼크차지",
+    "orichalcum-pulse": "진홍빛고동",
+    "hadron-engine": "일렉트릭엔진",
+    "supreme-overlord": "대장군",
+    "costar": "공동지휘",
+    "cud-chew": "되새김질",
+    "anger-shell": "분노의껍질",
+    "purifying-salt": "정화의소금",
+    "well-baked-body": "다익은몸",
+    "wind-rider": "바람타기",
+    "guard-dog": "파수견",
+    "rocky-payload": "암석운반",
+    "wind-power": "풍력발전",
+    "zero-to-hero": "마이티체인지",
+    "commander": "사령탑",
+    "electromorphosis": "전기변환",
+    "opportunist": "편승",
+    "thermal-exchange": "열교환",
+    "armor-tail": "아머테일",
+    "earth-eater": "토먹기",
+    "mycelium-might": "균사력",
+    "good-as-gold": "황금몸",
+    "vessel-of-ruin": "재앙의그릇",
+    "sword-of-ruin": "재앙의검",
+    "tablets-of-ruin": "재앙의목간",
+    "beads-of-ruin": "재앙의구슬",
+    "tera-shift": "테라시프트",
+    "tera-shell": "테라쉘",
+    "teraform-zero": "테라폼제로",
+    "poison-puppeteer": "독꼭두각시",
+    "hospitality": "대접",
+    "mind-seye": "심안",
+    "embody-aspect": "투영",
+    "toxic-chain": "독사슬",
+}
+
 def get_korean_name(names_list, default_name):
     for n in names_list:
         if n['language']['name'] == 'ko':
             return n['name']
-    return default_name
+    
+    # 수동 번역 테이블 확인 (영어 소문자 기준)
+    return ABILITY_TRANSLATIONS.get(default_name.lower(), default_name)
 
 def get_korean_flavor_texts(flavor_text_entries):
     texts = []
@@ -39,6 +80,12 @@ def get_korean_flavor_texts(flavor_text_entries):
                     'content': cleaned_text
                 })
     return texts
+
+def get_korean_genus(genera_list):
+    for g in genera_list:
+        if g['language']['name'] == 'ko':
+            return g['genus']
+    return None
 
 def process_types():
     types_data = []
@@ -119,7 +166,8 @@ def process_pokemon():
             'base_exp': p_data['base_experience'],
             'image_url': image_url,
             'cry_url': cry_url,
-            'is_default': p_data['is_default']
+            'is_default': p_data['is_default'],
+            'species_id': species_id
         })
         
         # 2. 종족값
@@ -146,11 +194,16 @@ def process_pokemon():
         # 4. 도감 정보 (기본 포켓몬만, 폼 변형 중복 방지)
         if i <= 1025:
             gen_id = int(s_data['generation']['url'].split('/')[-2])
+            classification = get_korean_genus(s_data.get('genera', []))
+            gender_rate = s_data.get('gender_rate')
+
             species_list.append({
                 'id': species_id,
                 'pokemon_id': p_data['id'],
                 'generation': gen_id,
-                'capture_rate': s_data['capture_rate']
+                'capture_rate': s_data['capture_rate'],
+                'classification': classification,
+                'gender_rate': gender_rate
             })
 
             # 5. 도감 설명 (기본 포켓몬 species 기준)
