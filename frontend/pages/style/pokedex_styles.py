@@ -23,15 +23,45 @@ def get_pokedex_styles():
     }
     .main { background: transparent !important; }
 
-    /* ── Search & Filter Section (White Glass Card) ── */
-    .main div[data-testid="stVerticalBlock"]:has(.dex-top-bg-marker) {
-        background: white !important;
-        border: 1px solid var(--light-glass-border) !important;
-        border-radius: 30px !important;
-        margin-left: 20px !important;
-        margin-right: 20px !important;
-        padding: 40px !important;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.06) !important;
+
+    /* ── Search Card Container ───────────────────────── */
+    /* 신버전 Streamlit: border=True는 stVerticalBlock에 직접 적용 */
+    [data-testid="stVerticalBlock"]:has(> .element-container .dex-search-card) {
+        background: #000000 !important;
+        background-color: #000000 !important;
+        border: 1px solid #333333 !important;
+        border-radius: 24px !important;
+        padding: 30px !important;
+        margin-bottom: 30px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
+    /* 구버전 Streamlit 호환 */
+    [data-testid="stVerticalBlockBorderWrapper"],
+    .stVerticalBlockBorderWrapper {
+        background: #000000 !important;
+        background-color: #000000 !important;
+        border: 1px solid #333333 !important;
+        border-radius: 24px !important;
+        padding: 30px !important;
+        margin-bottom: 30px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* 내부 블록 투명 처리 */
+    [data-testid="stVerticalBlock"]:has(> .element-container .dex-search-card) > [data-testid="stVerticalBlock"],
+    [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"],
+    .stVerticalBlockBorderWrapper [data-testid="stVerticalBlock"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        gap: 0.5rem !important;
+    }
+
+    .dex-search-card {
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
     }
 
     /* ── Inputs & Selects ──────────────────────────── */
@@ -124,31 +154,70 @@ def get_pokedex_styles():
         padding: 0 !important;
     }
 
-    /* ── Action Buttons ────────────────────────────── */
-    .dex-btn-search [data-testid="stBaseButton-secondary"],
-    .dex-btn-reset [data-testid="stBaseButton-secondary"] {
-        border-radius: 12px !important;
-        padding: 20px !important;
-        font-weight: 800 !important;
+    /* ── Action Buttons (Slanted Design) ──────────────── */
+    /* Use :has() because the marker div and button are siblings in the same column */
+    div[data-testid="stColumn"]:has(.dex-btn-search) button,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button {
+        border: none !important;
+        border-radius: 0 !important;
+        transform: skew(-20deg) !important;
+        height: 50px !important;
+        width: 100% !important;
+        transition: all 0.2s ease !important;
+        margin-top: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Button Text (Un-skew) */
+    div[data-testid="stColumn"]:has(.dex-btn-search) button p,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button p,
+    div[data-testid="stColumn"]:has(.dex-btn-search) button div,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button div,
+    div[data-testid="stColumn"]:has(.dex-btn-search) button span,
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button span {
+        transform: skew(0deg) rotate(0deg) !important;
+        display: inline-block !important;
         font-family: 'Outfit', sans-serif !important;
-        text-transform: uppercase !important;
+        font-weight: 900 !important;
+        font-size: 1.1rem !important;
         letter-spacing: 1px !important;
-        transition: all 0.3s ease !important;
+        color: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    .dex-btn-search [data-testid="stBaseButton-secondary"] {
-        background: var(--poke-blue) !important;
-        color: #fff !important;
-        box-shadow: 0 10px 20px rgba(42, 117, 187, 0.2) !important;
+    
+    div[data-testid="stColumn"]:has(.dex-btn-search) button {
+        background-color: #E33535 !important; /* Pokemon Red */
+        box-shadow: -5px 5px 0px rgba(227, 53, 53, 0.3) !important;
     }
-    .dex-btn-reset [data-testid="stBaseButton-secondary"] {
-        background: #f1f3f5 !important;
-        color: var(--text-main) !important;
-        border: 1px solid #ddd !important;
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button {
+        background-color: #1a1a1a !important; /* Dark Black */
+        box-shadow: -5px 5px 0px rgba(0, 0, 0, 0.2) !important;
     }
-    .dex-btn-search [data-testid="stBaseButton-secondary"]:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(42, 117, 187, 0.3) !important;
-        filter: brightness(1.1);
+
+    div[data-testid="stColumn"]:has(.dex-btn-search) button:hover {
+        background-color: #ff4d4d !important;
+        transform: skew(-20deg) translateY(-2px) !important;
+        box-shadow: -8px 8px 0px rgba(227, 53, 53, 0.4) !important;
+    }
+    div[data-testid="stColumn"]:has(.dex-btn-reset) button:hover {
+        background-color: #333 !important;
+        transform: skew(-20deg) translateY(-2px) !important;
+        box-shadow: -8px 8px 0px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Add a gap between button columns */
+    div[data-testid="stColumn"]:has(.dex-btn-search) + div[data-testid="stColumn"]:has(.dex-btn-reset) {
+        margin-left: 15px !important;
+    }
+    
+    /* Ensure Streamlit's internal div doesn't block the click or style */
+    div[data-testid="stColumn"]:has(.dex-btn-search) div, 
+    div[data-testid="stColumn"]:has(.dex-btn-reset) div {
+        background: transparent !important;
+        border: none !important;
     }
 
     /* ── Pokemon Grid & Cards ──────────────────────── */

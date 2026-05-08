@@ -154,7 +154,8 @@ def handle_search():
             if "dex_end_input" in st.session_state:
                 st.session_state.dex_end = int(st.session_state.dex_end_input)
 
-with st.container():
+with st.container(border=True):
+    st.markdown('<div class="dex-search-card"></div>', unsafe_allow_html=True)
     st.markdown('<div class="dex-top-bg-marker"></div>', unsafe_allow_html=True)
     # ── Search bar (full width) ──────────────────────────────────
     search_val = st.text_input(
