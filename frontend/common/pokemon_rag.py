@@ -37,7 +37,7 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-llm        = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm        = ChatOpenAI(model="gpt-4o-mini", temperature=0)  #gemma3:4b  ,gpt-4o-mini
 embeddings = OpenAIEmbeddings()
 search     = TavilySearchResults(max_results=3)
 

@@ -1,10 +1,10 @@
 import streamlit as st
 import sys
 import os
-from common.pokemon_rag import chat, ingest_embeddings
-
-# utils 경로 추가
+# 부모 디렉토리(frontend)를 경로에 추가하여 common과 utils를 찾을 수 있도록 함
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from common.pokemon_rag import chat, ingest_embeddings
 from utils.ui import inject_common_ui
 
 st.set_page_config(
