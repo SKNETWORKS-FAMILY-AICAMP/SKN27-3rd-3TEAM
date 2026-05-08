@@ -14036,6 +14036,94 @@
     "species_id": 999
   },
   {
+    "id": 10264,
+    "name": "코라이돈(limited-build)",
+    "height": 35,
+    "weight": 3030,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10264.ogg",
+    "is_default": false,
+    "species_id": 1007
+  },
+  {
+    "id": 10265,
+    "name": "코라이돈(sprinting-build)",
+    "height": 35,
+    "weight": 3030,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10265.ogg",
+    "is_default": false,
+    "species_id": 1007
+  },
+  {
+    "id": 10266,
+    "name": "코라이돈(swimming-build)",
+    "height": 35,
+    "weight": 3030,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10266.ogg",
+    "is_default": false,
+    "species_id": 1007
+  },
+  {
+    "id": 10267,
+    "name": "코라이돈(gliding-build)",
+    "height": 35,
+    "weight": 3030,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10267.ogg",
+    "is_default": false,
+    "species_id": 1007
+  },
+  {
+    "id": 10268,
+    "name": "미라이돈(low-power-mode)",
+    "height": 28,
+    "weight": 2400,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10268.ogg",
+    "is_default": false,
+    "species_id": 1008
+  },
+  {
+    "id": 10269,
+    "name": "미라이돈(drive-mode)",
+    "height": 28,
+    "weight": 2400,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10269.ogg",
+    "is_default": false,
+    "species_id": 1008
+  },
+  {
+    "id": 10270,
+    "name": "미라이돈(aquatic-mode)",
+    "height": 28,
+    "weight": 2400,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10270.ogg",
+    "is_default": false,
+    "species_id": 1008
+  },
+  {
+    "id": 10271,
+    "name": "미라이돈(glide-mode)",
+    "height": 28,
+    "weight": 2400,
+    "base_exp": 335,
+    "image_url": null,
+    "cry_url": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/10271.ogg",
+    "is_default": false,
+    "species_id": 1008
+  },
+  {
     "id": 10272,
     "name": "다투곰(블러드문)",
     "height": 24,
@@ -14542,6 +14630,17 @@
     "species_id": 801
   },
   {
+    "id": 10318,
+    "name": "메가 마기아나",
+    "height": 13,
+    "weight": 2481,
+    "base_exp": null,
+    "image_url": null,
+    "cry_url": null,
+    "is_default": false,
+    "species_id": 801
+  },
+  {
     "id": 10319,
     "name": "메가 제라오라",
     "height": 15,
@@ -14573,6 +14672,28 @@
     "cry_url": null,
     "is_default": false,
     "species_id": 970
+  },
+  {
+    "id": 10322,
+    "name": "메가 싸리용",
+    "height": 6,
+    "weight": 240,
+    "base_exp": null,
+    "image_url": null,
+    "cry_url": null,
+    "is_default": false,
+    "species_id": 978
+  },
+  {
+    "id": 10323,
+    "name": "메가 싸리용",
+    "height": 6,
+    "weight": 240,
+    "base_exp": null,
+    "image_url": null,
+    "cry_url": null,
+    "is_default": false,
+    "species_id": 978
   },
   {
     "id": 10324,
