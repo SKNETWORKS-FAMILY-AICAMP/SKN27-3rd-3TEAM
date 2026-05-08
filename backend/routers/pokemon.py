@@ -21,19 +21,28 @@ def read_pokemon_list(
     types: Optional[List[str]] = Query(None, description="타입 이름 목록 (예: '불꽃', '물')"),
     min_id: Optional[int] = Query(None, description="최소 도감 번호"),
     max_id: Optional[int] = Query(None, description="최대 도감 번호"),
+    ability: Optional[str] = Query(None, description="특성 이름"),
     db: Session = Depends(get_db)
 ):
     """
     포켓몬 목록 조회. 페이지네이션, 이름/ID 검색, 타입 및 번호 범위 필터링 지원.
     """
-    total = crud.get_pokemon_count(db, search=search, type_names=types, min_id=min_id, max_id=max_id)
-    items = crud.get_pokemon_list(db, skip=skip, limit=limit, search=search, type_names=types, min_id=min_id, max_id=max_id)
+    total = crud.get_pokemon_count(db, search=search, type_names=types, min_id=min_id, max_id=max_id, ability=ability)
+    items = crud.get_pokemon_list(db, skip=skip, limit=limit, search=search, type_names=types, min_id=min_id, max_id=max_id, ability=ability)
     return schemas.PaginatedPokemonResponse(
         total=total,
         skip=skip,
         limit=limit,
         items=items
     )
+
+
+@router.get("/abilities", response_model=List[str])
+def read_abilities(db: Session = Depends(get_db)):
+    """
+    모든 포켓몬 특성 목록 조회.
+    """
+    return crud.get_abilities(db)
 
 
 @router.get("/{pokemon_id}", response_model=schemas.PokemonDetailResponse)

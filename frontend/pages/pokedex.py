@@ -34,6 +34,17 @@ EN_TO_KO = {en: ko for ko, en in TYPE_ORDER}
 _ICON_FILENAME_OVERRIDE = {"얼음": "아이스"}
 
 
+@st.cache_data(show_spinner=False)
+def fetch_abilities():
+    try:
+        resp = requests.get(f"{BACKEND_URL}{API_V1_STR}/abilities")
+        if resp.status_code == 200:
+            return ["전체"] + sorted(resp.json())
+    except:
+        pass
+    return ["전체"]
+
+
 @st.cache_data
 def load_type_icons():
     """SVG를 직접 읽어와서 문자열로 반환 — 직접 HTML에 삽입 가능"""
@@ -75,10 +86,15 @@ for key, default in [
     ("selected_types", []),
     ("region_filter", "전체"),
     ("dex_start", 1),
-    ("dex_end", 2000),
+    ("dex_end", 1025),
+    ("ability_filter", "전체"),
+    ("abilities_list", ["전체"]),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
+
+if st.session_state.abilities_list == ["전체"]:
+    st.session_state.abilities_list = fetch_abilities()
 
 
 def toggle_type(en):
@@ -95,22 +111,48 @@ def do_reset():
     st.session_state.region_filter = "전체"
     st.session_state.dex_start = 1
     st.session_state.dex_end = 2000
+    st.session_state.ability_filter = "전체"
 
 
 def load_more():
     st.session_state.pokemon_limit += 20
 
 
+REGION_RANGES = {
+    "전체": (1, 2000),
+    "관동": (1, 151),
+    "성도": (152, 251),
+    "호연": (252, 386),
+    "신오": (387, 493),
+    "하나": (494, 649),
+    "칼로스": (650, 721),
+    "알로라": (722, 809),
+    "가라르": (810, 905),
+    "팔데아": (906, 1025),
+}
+
 def handle_search():
     """검색 및 필터 적용 로직을 한 곳에서 처리"""
     # 폼 위젯의 현재 값들을 session_state에 저장
     st.session_state.search_query = st.session_state.search_input
+    
+    if "ability_sel" in st.session_state:
+        st.session_state.ability_filter = st.session_state.ability_sel
+
     if "region_sel" in st.session_state:
-        st.session_state.region_filter = st.session_state.region_sel
-    if "dex_start_input" in st.session_state:
-        st.session_state.dex_start = int(st.session_state.dex_start_input)
-    if "dex_end_input" in st.session_state:
-        st.session_state.dex_end = int(st.session_state.dex_end_input)
+        new_region = st.session_state.region_sel
+        # 지방이 변경되었을 때만 도감번호 범위 자동 조정
+        if new_region != st.session_state.region_filter:
+            st.session_state.region_filter = new_region
+            start, end = REGION_RANGES.get(new_region, (1, 2000))
+            st.session_state.dex_start = start
+            st.session_state.dex_end = end
+        else:
+            # 지방이 그대로라면 사용자가 직접 수정한 도감번호 반영
+            if "dex_start_input" in st.session_state:
+                st.session_state.dex_start = int(st.session_state.dex_start_input)
+            if "dex_end_input" in st.session_state:
+                st.session_state.dex_end = int(st.session_state.dex_end_input)
 
 with st.container():
     st.markdown('<div class="dex-top-bg-marker"></div>', unsafe_allow_html=True)
@@ -130,7 +172,12 @@ with st.container():
     left_col, right_col = st.columns([1, 1.7])
 
     with left_col:
-        st.selectbox("특성", ["전체"], key="ability_sel", label_visibility="visible")
+        ability_idx = 0
+        if st.session_state.ability_filter in st.session_state.abilities_list:
+            ability_idx = st.session_state.abilities_list.index(st.session_state.ability_filter)
+        st.selectbox(
+            "특성", st.session_state.abilities_list, index=ability_idx, key="ability_sel"
+        )
 
         region_idx = REGIONS.index(st.session_state.region_filter)
         region_val = st.selectbox(
@@ -205,6 +252,7 @@ try:
         "skip": 0,
         "limit": st.session_state.pokemon_limit,
         "search": st.session_state.search_query or None,
+        "ability": st.session_state.ability_filter if st.session_state.ability_filter != "전체" else None,
     }
     response = requests.get(f"{BACKEND_URL}{API_V1_STR}/", params=params)
 
