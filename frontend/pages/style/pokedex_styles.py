@@ -22,6 +22,9 @@ def get_pokedex_styles():
         background-attachment: fixed !important;
     }
     .main { background: transparent !important; }
+    [data-testid="stMainBlockContainer"] {
+        padding-top: 1rem !important;
+    }
 
 
     /* ── Search Card Container ───────────────────────── */
@@ -64,6 +67,28 @@ def get_pokedex_styles():
         pointer-events: none;
     }
 
+    /* ── Page Title ────────────────────────────────── */
+    .dex-page-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .dex-title-icon {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 6px rgba(227, 53, 53, 0.5));
+    }
+    .dex-page-title span {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px rgba(227, 53, 53, 0.4);
+    }
+
     /* ── Inputs & Selects ──────────────────────────── */
     /* Search Bar */
     [data-testid="stTextInput"] label { display: none; }
@@ -73,6 +98,9 @@ def get_pokedex_styles():
         border: 2px solid #444 !important;
         border-radius: 12px !important;
         transition: all 0.3s ease !important;
+        min-height: 64px !important;
+        display: flex !important;
+        align-items: center !important;
     }
     [data-testid="stTextInput"]:focus-within [data-baseweb="input"],
     [data-testid="stTextInput"]:focus-within [data-baseweb="base-input"] {
@@ -82,8 +110,8 @@ def get_pokedex_styles():
     [data-testid="stTextInput"] input {
         color: #e0e0e0 !important;
         font-family: 'Inter', sans-serif !important;
-        font-size: 1rem !important;
-        padding: 12px 18px !important;
+        font-size: 1.25rem !important;
+        padding: 22px 28px !important;
         background: transparent !important;
     }
     [data-testid="stTextInput"] input::placeholder {
@@ -140,6 +168,59 @@ def get_pokedex_styles():
     }
 
     .dex-range-sep { color: #888; font-weight: 900; line-height: 45px; }
+
+    /* ── Region Buttons (지방) ─────────────────────── */
+    .dex-region-label {
+        color: #888888;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    .region-btn-box {
+        background: #1e1e1e;
+        border: 1.5px solid #444;
+        border-radius: 8px;
+        padding: 7px 4px;
+        text-align: center;
+        color: #aaa;
+        font-size: 0.78rem;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 5px;
+        transition: all 0.2s ease;
+    }
+    .region-btn-box.region-sel {
+        background: #E33535;
+        border-color: #E33535;
+        color: #ffffff;
+        box-shadow: 0 0 10px rgba(227, 53, 53, 0.4);
+    }
+    /* 오버레이 버튼 (클릭 감지용) */
+    div[data-testid="stColumn"]:has(.region-btn-box) [data-testid="stVerticalBlock"] {
+        position: relative;
+    }
+    div[data-testid="stColumn"]:has(.region-btn-box) .element-container:has(button) {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 36px;
+        z-index: 10;
+        margin: 0 !important;
+    }
+    div[data-testid="stColumn"]:has(.region-btn-box) button {
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        border: none !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+    }
 
     /* ── Slider ────────────────────────────────────── */
     [data-testid="stSlider"] label {

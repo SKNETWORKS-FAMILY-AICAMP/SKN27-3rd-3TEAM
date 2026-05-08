@@ -77,7 +77,7 @@ st.set_page_config(
 inject_common_ui(spacer=True)
 st.write(get_pokedex_styles(), unsafe_allow_html=True)
 
-st.markdown("<br><br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Session state defaults ───────────────────────────────────
 for key, default in [
@@ -120,7 +120,7 @@ def load_more():
 
 
 REGION_RANGES = {
-    "전체": (1, 2000),
+    "전체": (1, 1025),
     "관동": (1, 151),
     "성도": (152, 251),
     "호연": (252, 386),
@@ -144,27 +144,27 @@ def handle_search():
         st.session_state.dex_start = st.session_state.dex_range_slider[0]
         st.session_state.dex_end = st.session_state.dex_range_slider[1]
 
-    if "region_sel" in st.session_state:
-        new_region = st.session_state.region_sel
-        if new_region != st.session_state.region_filter:
-            st.session_state.region_filter = new_region
-            start, end = REGION_RANGES.get(new_region, (1, 1025))
-            st.session_state.dex_start = start
-            st.session_state.dex_end = end
-            st.session_state.dex_range_slider = (start, end)
 
 with st.container(border=True):
     st.markdown('<div class="dex-search-card"></div>', unsafe_allow_html=True)
     st.markdown('<div class="dex-top-bg-marker"></div>', unsafe_allow_html=True)
-    # ── Search bar (full width) ──────────────────────────────────
-    search_val = st.text_input(
-        "search",
-        value=st.session_state.search_query,
-        placeholder="포켓몬 이름 또는 설명, 특성 키워드를 입력하세요.",
-        label_visibility="collapsed",
-        key="search_input",
-        on_change=handle_search,
-    )
+    st.markdown("""
+    <div class="dex-page-title">
+        <img src="https://pokemonkorea.co.kr/img/_con.ico" class="dex-title-icon">
+        <span>포켓몬 도감</span>
+    </div>
+    """, unsafe_allow_html=True)
+    # ── Search bar (left-aligned 50% width) ────────────────────────
+    sc1, _ = st.columns([1, 1])
+    with sc1:
+        search_val = st.text_input(
+            "search",
+            value=st.session_state.search_query,
+            placeholder="포켓몬 이름 또는 설명, 특성 키워드를 입력하세요.",
+            label_visibility="collapsed",
+            key="search_input",
+            on_change=handle_search,
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -179,10 +179,23 @@ with st.container(border=True):
             "특성", st.session_state.abilities_list, index=ability_idx, key="ability_sel"
         )
 
-        region_idx = REGIONS.index(st.session_state.region_filter)
-        region_val = st.selectbox(
-            "지방", REGIONS, index=region_idx, key="region_sel", label_visibility="visible"
-        )
+        st.markdown('<div class="dex-region-label">지방</div>', unsafe_allow_html=True)
+        for region_row in [REGIONS[:5], REGIONS[5:]]:
+            rcols = st.columns(len(region_row))
+            for rcol, region in zip(rcols, region_row):
+                with rcol:
+                    is_sel = region == st.session_state.region_filter
+                    st.markdown(
+                        f'<div class="region-btn-box {"region-sel" if is_sel else ""}">{region}</div>',
+                        unsafe_allow_html=True,
+                    )
+                    if st.button("", key=f"region_btn_{region}", use_container_width=True):
+                        st.session_state.region_filter = region
+                        start, end = REGION_RANGES.get(region, (1, 1025))
+                        st.session_state.dex_start = start
+                        st.session_state.dex_end = end
+                        st.session_state.dex_range_slider = (start, end)
+                        st.rerun()
 
         st.slider(
             "도감번호",
