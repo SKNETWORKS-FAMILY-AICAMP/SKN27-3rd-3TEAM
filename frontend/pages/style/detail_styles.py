@@ -245,20 +245,20 @@ footer {{ visibility: hidden; }}
     cursor: help; flex-shrink: 0;
 }}
 
-.pk-cta {{
-    display: block; background: var(--poke-yellow); color: #000 !important;
-    text-align: center; padding: 18px 30px;
-    border-radius: 12px; font-size: 1.1rem; font-weight: 800;
-    text-decoration: none !important; margin-top: 10px;
+.back-btn {{
+    background: var(--type-point);
+    color: #fff !important; font-weight: 800; font-size: 1.1rem;
+    padding: 15px 40px; border-radius: 12px;
+    text-decoration: none !important; display: flex; align-items: center; justify-content: center;
     transition: all 0.3s ease;
-    font-family: 'Outfit', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3), 0 0 20px var(--type-aura);
+    width: 100%; border: none; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 1px;
 }}
-.pk-cta:hover {{ 
-    background: #fff !important; 
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(255, 203, 5, 0.3);
+.back-btn:hover {{ 
+    transform: translateY(-3px); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 30px var(--type-aura);
+    filter: brightness(1.1);
 }}
 
 /* ── Evolution & Forms Sections ── */
@@ -299,12 +299,24 @@ footer {{ visibility: hidden; }}
     position: relative; z-index: 1;
 }}
 .evo-card, .form-card {{
-    text-align: center; border: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: center; 
+    border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(5px);
-    border-radius: 18px; padding: 20px; width: 150px;
+    border-radius: 20px; padding: 22px 15px; width: 190px; min-height: 265px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.02);
+}}
+.evo-card::before, .form-card::before {{
+    content: ''; position: absolute; inset: 0; border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), var(--type-point));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
 }}
 .evo-card:hover, .form-card:hover {{ 
     background: rgba(255, 255, 255, 0.15);
@@ -313,7 +325,7 @@ footer {{ visibility: hidden; }}
     box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px var(--type-aura);
 }}
 .evo-img, .form-img {{ 
-    width: 110px; height: 110px; object-fit: contain; 
+    width: 135px; height: 135px; object-fit: contain; 
     filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
 }}
 .evo-arrow {{ color: var(--type-point); font-size: 24px; opacity: 0.6; }}
@@ -361,11 +373,16 @@ footer {{ visibility: hidden; }}
     box-shadow: 0 0 15px var(--type-aura);
 }}
 
-.form-card.active {{ border: 2px solid var(--type-point); background: var(--type-aura); }}
-.form-name {{ font-weight: 800; font-size: 1.05rem; color: #fff; margin-top: 12px; line-height: 1.2; font-family: 'Outfit', sans-serif; }}
+.evo-card.active, .form-card.active {{ border: 2px solid var(--type-point); background: var(--type-aura); }}
+.form-name {{ 
+    font-weight: 800; font-size: 0.98rem; color: #fff; 
+    margin-top: 10px; line-height: 1.2; font-family: 'Outfit', sans-serif;
+    word-break: keep-all; overflow-wrap: break-word;
+    max-width: 100%;
+}}
 .form-label {{ 
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--poke-yellow); color: #000; font-size: 0.7rem; padding: 3px 12px;
+    background: var(--type-point); color: #fff; font-size: 0.7rem; padding: 3px 12px;
     border-radius: 12px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }}
 </style>

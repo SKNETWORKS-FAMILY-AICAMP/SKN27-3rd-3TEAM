@@ -189,7 +189,7 @@ st.markdown(
     f'<div class="pk-stat-cell"><div class="pk-stat-label">몸무게</div><div class="pk-stat-value">{weight_kg}kg</div></div>'
     f'<div class="pk-stat-cell"><div class="pk-stat-label">특성</div><div class="pk-stat-value">{abilities_html}</div></div>'
     f'</div>'
-    f'<a href="/pokedex" target="_self" class="pk-cta">{name} 목록으로 돌아가기 ›</a>'
+    f'<a href="/pokedex" target="_self" class="back-btn">{name} 목록으로 돌아가기 ›</a>'
     f'</div>'
     f'</div>',
     unsafe_allow_html=True,
@@ -212,7 +212,7 @@ def render_evo_node(node, is_root=True):
     for v in display_vars:
         v_id, v_name = v["id"], v["name"]
         v_img = v.get("image_url") or img_url
-        is_active = "border: 2px solid #E3350D; background: #fff8f8;" if v_id == pokemon_id else ""
+        is_active = "active" if v_id == pokemon_id else ""
         
         # Build type badges for this variety
         v_types_html = "".join([
@@ -220,7 +220,7 @@ def render_evo_node(node, is_root=True):
             for t in v.get("types", [])
         ])
         
-        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card" style="{is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v_id:04d}</div><div style="font-weight:800; font-size:1.05rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
+        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card {is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v_id:04d}</div><div style="font-weight:800; font-size:0.95rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif; word-break:keep-all; overflow-wrap:break-word; max-width:170px;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
     
     varieties_block = "".join(var_htmls)
     
