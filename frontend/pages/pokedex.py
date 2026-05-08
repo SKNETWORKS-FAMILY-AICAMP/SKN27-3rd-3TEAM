@@ -1,8 +1,8 @@
-import streamlit as st
-import sys
+import json
 import os
 import urllib.parse
 import requests
+import streamlit as st
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, "..", ".."))
@@ -72,6 +72,7 @@ st.set_page_config(
     page_title="포켓몬 비공식 도감",
     page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 inject_common_ui(spacer=True)
