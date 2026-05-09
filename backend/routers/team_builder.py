@@ -23,6 +23,26 @@ router = APIRouter(
 )
 
 
+# TEAM_BUILDER_POKEMON_OPTIONS:
+# - 팀 빌딩 선택 화면에서 사용할 포켓몬 목록 조회 Cypher입니다.
+# - Pokemon 노드에서 이름/이미지/기본 종족값을 가져오고,
+#   HAS_TYPE 관계를 통해 타입 이름을 함께 모읍니다.
+# - Species 노드가 연결되어 있으면 세대 정보도 같이 내려줍니다.
+TEAM_BUILDER_POKEMON_OPTIONS = """
+MATCH (p:Pokemon)
+OPTIONAL MATCH (p)-[:HAS_TYPE]->(t:Type)
+OPTIONAL MATCH (p)-[:IS_SPECIES]->(s:Species)
+WITH p, s, collect(DISTINCT t.name) AS type_names
+RETURN p.pokemon_id AS pokemon_id,
+       p.name AS name,
+       p.image_url AS image_url,
+       s.generation AS generation,
+       p.base_total AS base_total,
+       type_names AS types
+ORDER BY pokemon_id
+"""
+
+
 class TeamBuilderRequest(BaseModel):
     """
     팀 분석/추천 요청 데이터를 표현하기 위해 작성한 모델입니다.
@@ -63,6 +83,19 @@ def _handle_value_error(error: ValueError) -> None:
         error: 서비스 함수에서 발생한 ValueError입니다.
     """
     raise HTTPException(status_code=400, detail=str(error))
+
+
+@router.get("/pokemon-options")
+def pokemon_options_endpoint(graph: Neo4jClient = Depends(get_neo4j)):
+    """
+    팀 빌딩 선택 화면에서 사용할 포켓몬 카드 목록을 반환하는 API입니다.
+
+    프론트엔드 사용 흐름:
+        1. teambuilding.py가 이 API를 호출합니다.
+        2. Neo4j에서 포켓몬 이름, 이미지, 세대, 타입을 조회합니다.
+        3. 프론트는 받은 타입 목록을 카드 안에 배지로 표시합니다.
+    """
+    return graph.run_query(TEAM_BUILDER_POKEMON_OPTIONS)
 
 
 @router.post("/analyze")

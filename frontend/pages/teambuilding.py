@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Optional
 
 import requests
 import streamlit as st
-from neo4j import GraphDatabase
 
 
 # utils.ui를 import하기 위한 경로 설정입니다.
@@ -26,16 +25,52 @@ from utils.ui import inject_common_ui
 BACKEND_API_URL = os.getenv("BACKEND_API_URL") or os.getenv("BACKEND_URL") or "http://backend:8000"
 LOCAL_BACKEND_API_URL = "http://localhost:8080"
 
-# Neo4j 접속 정보:
-# - 포켓몬 목록 API가 PostgreSQL 컬럼 문제로 실패할 때, 이 페이지 안에서만 Neo4j를 읽기 위한 값입니다.
-# - Docker 안에서는 bolt://neo4j:7687 이 맞고, 로컬 직접 실행에서는 .env의 bolt://localhost:7687 이 맞습니다.
-GRAPH_DB_URI = os.getenv("GRAPH_DB_URI", "bolt://localhost:7687")
-GRAPH_DB_USER = os.getenv("GRAPH_DB_USER", "neo4j")
-GRAPH_DB_PASSWORD = os.getenv("GRAPH_DB_PASSWORD", "")
-
 # REQUIRED_TEAM_SIZE:
 # - 현재 팀 추천 API는 5마리를 선택한 뒤 1마리를 추천하는 흐름이므로 5로 고정합니다.
 REQUIRED_TEAM_SIZE = 5
+
+# TYPE_BADGE_STYLES:
+# - 포켓몬 타입별 배지 색상입니다.
+# - Neo4j 데이터가 한국어 타입명으로 내려오므로 한국어를 기본으로 두고,
+#   나중에 영문 타입명이 섞여도 깨지지 않도록 영문 키도 함께 넣었습니다.
+TYPE_BADGE_STYLES: Dict[str, Dict[str, str]] = {
+    "노말": {"bg": "#E5E7EB", "border": "#9CA3AF", "text": "#374151"},
+    "Normal": {"bg": "#E5E7EB", "border": "#9CA3AF", "text": "#374151"},
+    "불꽃": {"bg": "#F97316", "border": "#EA580C", "text": "#FFFFFF"},
+    "Fire": {"bg": "#F97316", "border": "#EA580C", "text": "#FFFFFF"},
+    "물": {"bg": "#38BDF8", "border": "#0284C7", "text": "#082F49"},
+    "Water": {"bg": "#38BDF8", "border": "#0284C7", "text": "#082F49"},
+    "전기": {"bg": "#FACC15", "border": "#CA8A04", "text": "#422006"},
+    "Electric": {"bg": "#FACC15", "border": "#CA8A04", "text": "#422006"},
+    "풀": {"bg": "#22C55E", "border": "#16A34A", "text": "#FFFFFF"},
+    "Grass": {"bg": "#22C55E", "border": "#16A34A", "text": "#FFFFFF"},
+    "얼음": {"bg": "#A5F3FC", "border": "#06B6D4", "text": "#164E63"},
+    "Ice": {"bg": "#A5F3FC", "border": "#06B6D4", "text": "#164E63"},
+    "격투": {"bg": "#DC2626", "border": "#991B1B", "text": "#FFFFFF"},
+    "Fighting": {"bg": "#DC2626", "border": "#991B1B", "text": "#FFFFFF"},
+    "독": {"bg": "#A855F7", "border": "#7E22CE", "text": "#FFFFFF"},
+    "Poison": {"bg": "#A855F7", "border": "#7E22CE", "text": "#FFFFFF"},
+    "땅": {"bg": "#D6A85A", "border": "#A16207", "text": "#422006"},
+    "Ground": {"bg": "#D6A85A", "border": "#A16207", "text": "#422006"},
+    "비행": {"bg": "#93C5FD", "border": "#3B82F6", "text": "#172554"},
+    "Flying": {"bg": "#93C5FD", "border": "#3B82F6", "text": "#172554"},
+    "에스퍼": {"bg": "#F472B6", "border": "#DB2777", "text": "#FFFFFF"},
+    "Psychic": {"bg": "#F472B6", "border": "#DB2777", "text": "#FFFFFF"},
+    "벌레": {"bg": "#84CC16", "border": "#4D7C0F", "text": "#1A2E05"},
+    "Bug": {"bg": "#84CC16", "border": "#4D7C0F", "text": "#1A2E05"},
+    "바위": {"bg": "#A16207", "border": "#713F12", "text": "#FFFFFF"},
+    "Rock": {"bg": "#A16207", "border": "#713F12", "text": "#FFFFFF"},
+    "고스트": {"bg": "#6D28D9", "border": "#4C1D95", "text": "#FFFFFF"},
+    "Ghost": {"bg": "#6D28D9", "border": "#4C1D95", "text": "#FFFFFF"},
+    "드래곤": {"bg": "#4338CA", "border": "#312E81", "text": "#FFFFFF"},
+    "Dragon": {"bg": "#4338CA", "border": "#312E81", "text": "#FFFFFF"},
+    "악": {"bg": "#374151", "border": "#111827", "text": "#FFFFFF"},
+    "Dark": {"bg": "#374151", "border": "#111827", "text": "#FFFFFF"},
+    "강철": {"bg": "#94A3B8", "border": "#64748B", "text": "#0F172A"},
+    "Steel": {"bg": "#94A3B8", "border": "#64748B", "text": "#0F172A"},
+    "페어리": {"bg": "#F9A8D4", "border": "#EC4899", "text": "#831843"},
+    "Fairy": {"bg": "#F9A8D4", "border": "#EC4899", "text": "#831843"},
+}
 
 
 st.set_page_config(
@@ -127,67 +162,6 @@ def build_fallback_pokemon_list() -> List[Dict[str, Any]]:
     return fallback_list
 
 
-def load_pokemon_list_from_graph() -> List[Dict[str, Any]]:
-    """Neo4j에서 포켓몬 이름, 이미지, 타입을 직접 읽어오는 함수입니다."""
-
-    # query:
-    # - Pokemon 노드를 기준으로 Type, Species를 함께 가져옵니다.
-    # - 기존 PostgreSQL 목록 API가 실패해도 그래프 DB에 적재된 한국어 이름과 타입을 사용할 수 있습니다.
-    query = """
-    MATCH (p:Pokemon)
-    OPTIONAL MATCH (p)-[:HAS_TYPE]->(t:Type)
-    OPTIONAL MATCH (p)-[:IS_SPECIES]->(s:Species)
-    RETURN p.pokemon_id AS pokemon_id,
-           p.name AS name,
-           p.image_url AS image_url,
-           s.generation AS generation,
-           p.base_total AS base_total,
-           collect(DISTINCT t.name) AS types
-    ORDER BY pokemon_id
-    """
-
-    # candidate_uris:
-    # - frontend 컨테이너에서는 .env의 localhost가 자기 자신을 의미해서 실패할 수 있습니다.
-    # - 그래서 Docker 서비스명 neo4j 주소를 두 번째 후보로 둡니다.
-    candidate_uris = [GRAPH_DB_URI, "bolt://neo4j:7687", "bolt://localhost:7687"]
-    last_error: Optional[Exception] = None
-
-    for uri in dict.fromkeys(candidate_uris):
-        try:
-            # driver:
-            # - Neo4j와 연결하기 위한 공식 Python 드라이버 객체입니다.
-            driver = GraphDatabase.driver(uri, auth=(GRAPH_DB_USER, GRAPH_DB_PASSWORD))
-            with driver.session() as session:
-                records = session.run(query).data()
-            driver.close()
-            break
-        except Exception as exc:
-            last_error = exc
-    else:
-        raise RuntimeError(f"Neo4j 포켓몬 목록 조회 실패: {last_error}")
-
-    pokemon_list: List[Dict[str, Any]] = []
-    for record in records:
-        # pokemon_id:
-        # - 화면 선택과 팀 추천 API 요청에 그대로 사용하는 ID입니다.
-        pokemon_id = record.get("pokemon_id")
-        if pokemon_id is None:
-            continue
-
-        pokemon_list.append(
-            {
-                "pokemon_id": int(pokemon_id),
-                "name": record.get("name") or f"Pokemon {pokemon_id}",
-                "image_url": record.get("image_url") or "",
-                "generation": record.get("generation") or get_generation_by_pokemon_id(int(pokemon_id)),
-                "base_total": record.get("base_total"),
-                "types": [type_name for type_name in record.get("types", []) if type_name],
-            }
-        )
-
-    return pokemon_list
-
-
 def normalize_pokemon_list(raw_data: Any) -> List[Dict[str, Any]]:
     """백엔드 응답을 화면에서 쓰기 좋은 포켓몬 목록 형태로 정리하는 함수입니다."""
 
@@ -240,16 +214,21 @@ def load_pokemon_list() -> List[Dict[str, Any]]:
     """포켓몬 선택 화면에 보여줄 전체 포켓몬 목록을 백엔드에서 가져오는 함수입니다."""
 
     try:
-        # raw_data:
-        # - 기존 포켓몬 목록 API를 사용합니다.
-        # - 응답 구조 차이는 normalize_pokemon_list에서 흡수합니다.
-        raw_data = request_json("GET", "/api/v1/pokemon/")
-        return normalize_pokemon_list(raw_data)
+        # graph_list:
+        # - 카드에서 한국어 이름과 타입을 바로 보여주기 위해 Neo4j 목록을 우선 사용합니다.
+        # - 기존 /api/v1/pokemon/ 응답은 타입이 비어 있을 수 있어서 후순위로 둡니다.
+        raw_data = request_json("GET", "/api/v1/team-builder/pokemon-options")
+        normalized = normalize_pokemon_list(raw_data)
+        if normalized:
+            return normalized
     except RuntimeError:
         try:
-            # graph_fallback:
-            # - 기존 포켓몬 목록 API가 실패하면 Neo4j에서 한국어 이름과 타입을 가져옵니다.
-            return load_pokemon_list_from_graph()
+            # api_fallback:
+            # - 팀빌더 전용 목록 API가 실패할 때만 기존 포켓몬 목록 API를 사용합니다.
+            raw_data = request_json("GET", "/api/v1/pokemon/")
+            normalized = normalize_pokemon_list(raw_data)
+            if any(pokemon["types"] for pokemon in normalized):
+                return normalized
         except RuntimeError:
             pass
 
@@ -279,6 +258,9 @@ def toggle_pokemon(pokemon_id: int) -> None:
 
     if pokemon_id in selected_ids:
         selected_ids.remove(pokemon_id)
+        # 선택 구성이 바뀌면 이전 덱 분석/추천 결과는 더 이상 현재 팀의 결과가 아닙니다.
+        st.session_state.analysis_result = None
+        st.session_state.recommendation_result = None
         return
 
     if len(selected_ids) >= REQUIRED_TEAM_SIZE:
@@ -286,6 +268,28 @@ def toggle_pokemon(pokemon_id: int) -> None:
         return
 
     selected_ids.append(pokemon_id)
+    # 새 포켓몬을 추가한 뒤에도 이전 분석/추천 결과를 지워서 화면 불일치를 막습니다.
+    st.session_state.analysis_result = None
+    st.session_state.recommendation_result = None
+
+
+def get_type_badge_style(type_name: str) -> str:
+    """타입 이름에 맞는 배지 색상 CSS를 만들어주는 함수입니다."""
+
+    # palette:
+    # - 타입명이 색상표에 없을 때도 화면이 깨지지 않도록 기본 회색 배지를 사용합니다.
+    palette = TYPE_BADGE_STYLES.get(
+        type_name,
+        {"bg": "#E5E7EB", "border": "#9CA3AF", "text": "#374151"},
+    )
+
+    # style:
+    # - Streamlit markdown 안에서 타입별 색을 바로 적용하기 위한 inline CSS 문자열입니다.
+    return (
+        f"background: {palette['bg']}; "
+        f"border-color: {palette['border']}; "
+        f"color: {palette['text']};"
+    )
 
 
 def render_selected_slots(selected_pokemon: List[Dict[str, Any]]) -> None:
@@ -336,7 +340,11 @@ def render_pokemon_card(pokemon: Dict[str, Any]) -> None:
     # - 현재 fallback 목록에는 타입이 없을 수 있어서 안내 문구를 대신 보여줍니다.
     if pokemon["types"]:
         type_badges = "".join(
-            f"<span class='type-badge'>{escape(type_name)}</span>" for type_name in pokemon["types"]
+            (
+                f"<span class='type-badge' style='{get_type_badge_style(type_name)}'>"
+                f"{escape(type_name)}</span>"
+            )
+            for type_name in pokemon["types"]
         )
     else:
         type_badges = "<span class='type-placeholder'>타입 분석 후 확인</span>"
@@ -375,10 +383,98 @@ def render_pokemon_card(pokemon: Dict[str, Any]) -> None:
     )
 
 
+def render_team_insights(insights: Dict[str, Any]) -> None:
+    """백엔드가 계산한 덱 해석 결과를 요약 카드 형태로 보여주는 함수입니다."""
+
+    if not insights:
+        return
+
+    # summary:
+    # - 덱 분석에서 가장 먼저 보여줄 한 줄 총평입니다.
+    summary = insights.get("summary", "아직 덱 총평을 만들 수 없습니다.")
+    team_identity = insights.get("team_identity", "팀 성격 미확인")
+    recommendation_direction = insights.get("recommendation_direction", "")
+
+    st.markdown(
+        f"""
+        <div class="analysis-summary-card">
+            <div class="analysis-kicker">덱 총평</div>
+            <div class="analysis-title">{escape(team_identity)}</div>
+            <div class="analysis-summary-text">{escape(summary)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    risk_col, strength_col, direction_col = st.columns(3)
+    with risk_col:
+        st.markdown("**핵심 위험**")
+        for item in insights.get("risk_summary", [])[:3]:
+            # severity:
+            # - high면 더 강한 경고 색상을 적용하기 위한 클래스 값입니다.
+            severity = item.get("severity", "medium")
+            st.markdown(
+                f"""
+                <div class="insight-card risk-{escape(severity)}">
+                    <div class="insight-card-title">{escape(item.get("title", "위험 요소"))}</div>
+                    <div class="insight-card-text">{escape(item.get("detail", ""))}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    with strength_col:
+        st.markdown("**팀 강점**")
+        for item in insights.get("strength_summary", [])[:3]:
+            st.markdown(
+                f"""
+                <div class="insight-card strength-card">
+                    <div class="insight-card-title">{escape(item.get("title", "강점"))}</div>
+                    <div class="insight-card-text">{escape(item.get("detail", ""))}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    with direction_col:
+        st.markdown("**6번째 추천 방향**")
+        st.markdown(
+            f"""
+            <div class="insight-card direction-card">
+                <div class="insight-card-title">보완 방향</div>
+                <div class="insight-card-text">{escape(recommendation_direction)}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        type_balance = insights.get("type_balance", [])
+        if type_balance:
+            balance_badges = "".join(
+                (
+                    f"<span class='type-badge' style='{get_type_badge_style(item['type_name'])}'>"
+                    f"{escape(item['type_name'])} {item['count']}</span>"
+                )
+                for item in type_balance[:6]
+            )
+            st.markdown(
+                f"<div class='analysis-type-balance'>{balance_badges}</div>",
+                unsafe_allow_html=True,
+            )
+
+    role_summary = insights.get("role_summary", [])
+    if role_summary:
+        with st.expander("선택한 포켓몬 역할 해석"):
+            for pokemon in role_summary:
+                st.write(f"- {pokemon['name']} | {pokemon['role']} | {pokemon['detail']}")
+
+
 def render_analysis_result(result: Dict[str, Any]) -> None:
     """팀 분석 API 결과를 사용자가 읽기 좋게 보여주는 함수입니다."""
 
     st.subheader("포켓몬 덱 분석")
+
+    render_team_insights(result.get("insights", {}))
 
     selected = result.get("selected_pokemon", [])
     if selected:
@@ -387,16 +483,29 @@ def render_analysis_result(result: Dict[str, Any]) -> None:
             type_text = ", ".join(type_item["type_name"] for type_item in pokemon.get("types", []))
             st.write(f"- #{pokemon['pokemon_id']:04d} {pokemon['name']} | 타입: {type_text}")
 
-    weaknesses = result.get("weaknesses", [])
-    resistances = result.get("resistances", [])
+    # weaknesses/resistances:
+    # - 백엔드 분석 서비스는 weak_types, resistant_types라는 이름으로 반환합니다.
+    # - 혹시 이전 응답 형태가 들어와도 깨지지 않도록 예전 키도 fallback으로 둡니다.
+    weaknesses = result.get("weak_types", result.get("weaknesses", []))
+    resistances = result.get("resistant_types", result.get("resistances", []))
     move_coverage = result.get("move_type_coverage", [])
+
+    # detail rows:
+    # - 위 카드형 분석과 아래 상세 수치가 서로 다른 기준처럼 보이지 않도록 같은 정렬 기준을 사용합니다.
+    # - 약점/저항은 score가 높은 순서, 기술 커버리지는 move_count가 많은 순서로 보여줍니다.
+    weaknesses = sorted(weaknesses, key=lambda item: item.get("score", 0), reverse=True)
+    resistances = sorted(resistances, key=lambda item: item.get("score", 0), reverse=True)
+    move_coverage = sorted(move_coverage, key=lambda item: item.get("move_count", 0), reverse=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("**주의할 약점 타입**")
         if weaknesses:
             for item in weaknesses[:8]:
-                st.write(f"- {item['type_name']}: {item['score']}")
+                st.write(
+                    f"- {item['type_name']}: 위험 {item.get('score', 0)}점 "
+                    f"(평균 {item.get('average_multiplier', 0):.2f}배)"
+                )
         else:
             st.caption("큰 약점 타입이 아직 계산되지 않았어요.")
 
@@ -404,7 +513,10 @@ def render_analysis_result(result: Dict[str, Any]) -> None:
         st.markdown("**방어가 좋은 타입**")
         if resistances:
             for item in resistances[:8]:
-                st.write(f"- {item['type_name']}: {item['score']}")
+                st.write(
+                    f"- {item['type_name']}: 안정 {item.get('score', 0)}점 "
+                    f"(평균 {item.get('average_multiplier', 0):.2f}배)"
+                )
         else:
             st.caption("저항 타입 정보가 아직 부족해요.")
 
@@ -570,6 +682,77 @@ def apply_page_style() -> None:
             color: #8b95a7;
             font-size: 12px;
             font-weight: 700;
+        }
+        .analysis-summary-card {
+            margin: 16px 0 18px 0;
+            padding: 22px 24px;
+            border: 1px solid #c7d2fe;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 58%, #ecfeff 100%);
+            box-shadow: 0 14px 32px rgba(30, 41, 59, 0.08);
+        }
+        .analysis-kicker {
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .analysis-title {
+            margin-top: 4px;
+            color: #111827;
+            font-size: 24px;
+            font-weight: 900;
+        }
+        .analysis-summary-text {
+            margin-top: 8px;
+            color: #334155;
+            font-size: 16px;
+            line-height: 1.65;
+            font-weight: 650;
+        }
+        .insight-card {
+            min-height: 110px;
+            margin: 10px 0;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid #d8dee9;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 0 10px 24px rgba(30, 41, 59, 0.07);
+        }
+        .risk-high {
+            border-color: #fecaca;
+            background: linear-gradient(180deg, #fff1f2 0%, #ffffff 100%);
+        }
+        .risk-medium {
+            border-color: #fed7aa;
+            background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+        }
+        .strength-card {
+            border-color: #bbf7d0;
+            background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+        }
+        .direction-card {
+            border-color: #bae6fd;
+            background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+        }
+        .insight-card-title {
+            color: #111827;
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        .insight-card-text {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.55;
+            font-weight: 650;
+        }
+        .analysis-type-balance {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
         }
         .missing-image {
             width: 100%;

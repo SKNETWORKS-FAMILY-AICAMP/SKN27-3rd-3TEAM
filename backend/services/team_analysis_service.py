@@ -10,6 +10,8 @@ from typing import Any, Dict, List
 
 from graph import queries
 from graph.neo4j_client import Neo4jClient
+from services.team_insight_service import build_team_insights
+from services.team_score_service import build_type_matchup_items
 
 
 # 선택한 포켓몬의 기본 정보와 타입을 조회하기 위한 Cypher 쿼리입니다.
@@ -139,7 +141,20 @@ def analyze_team(
     )
 
     # matchup_groups는 상성 결과를 약점/보통/저항으로 나눈 값입니다.
-    matchup_groups = _split_matchups(weakness_summary)
+    matchup_groups = build_type_matchup_items(
+        weakness_summary,
+        team_size=len(pokemon_ids),
+    )
+
+    # insights:
+    # - 숫자 분석 결과를 사용자가 이해하기 쉬운 총평/위험/강점/추천 방향으로 바꾼 값입니다.
+    # - RAG를 붙이기 전까지는 규칙 기반 분석 문장으로 사용합니다.
+    insights = build_team_insights(
+        selected_pokemon=selected_pokemon,
+        weak_types=matchup_groups["weak_types"],
+        resistant_types=matchup_groups["resistant_types"],
+        move_type_coverage=move_type_coverage,
+    )
 
     return {
         "selected_pokemon": selected_pokemon,
@@ -148,4 +163,5 @@ def analyze_team(
         "resistant_types": matchup_groups["resistant_types"],
         "team_type_distribution": team_type_distribution,
         "move_type_coverage": move_type_coverage,
+        "insights": insights,
     }
