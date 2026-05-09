@@ -273,26 +273,6 @@ div[data-testid="column"]:has(.bbm){{
     margin-top:12px !important;
 }}
 
-/* ── Title glass card ── */
-.title-card{{
-    background:rgba(20,5,44,.65);
-    border:1px solid rgba(200,0,255,.45);
-    border-radius:18px;
-    padding:12px 28px;
-    text-align:center;
-    margin-bottom:16px;
-    box-shadow:0 4px 24px rgba(160,0,255,.25);
-    backdrop-filter:blur(12px);
-}}
-.battle-title{{
-    font-family:'Outfit',sans-serif;font-size:1.75rem;font-weight:900;
-    letter-spacing:2px;margin:0;
-    background:linear-gradient(90deg,#FF00FF,#00FFFF,#FF00FF);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-size:300%;animation:shimmer 4s linear infinite;
-}}
-@keyframes shimmer{{from{{background-position:0%}}to{{background-position:300%}}}}
 
 /* ── VS text — flex center ── */
 .vs-wrap{{
@@ -429,13 +409,6 @@ def show_game():
 
         st.markdown("<br><br>", unsafe_allow_html=True)
 
-        # 타이틀 카드
-        st.markdown(
-            '<div class="title-card">'
-            '<h1 class="battle-title">🎤 POKÉMON SOUL RAP BATTLE</h1>'
-            '</div>',
-            unsafe_allow_html=True,
-        )
 
         # ── 설정 카드 행 ──────────────────────────────────────────
         s1_col, _, s2_col = st.columns([1.1, 1.3, 1.1])
