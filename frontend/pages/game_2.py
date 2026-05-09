@@ -64,10 +64,11 @@ def speech_bubble(text: str, tail: str = "left",
         arrow = f"left:-13px;top:38%;transform:translateY(-50%);border-right:13px solid {color};border-top:8px solid transparent;border-bottom:8px solid transparent;"
     else:
         arrow = f"right:-13px;top:38%;transform:translateY(-50%);border-left:13px solid {color};border-top:8px solid transparent;border-bottom:8px solid transparent;"
-    style = (f"position:relative;background:rgba(8,4,22,0.9);border:2px solid {color};"
-             f"border-radius:16px;padding:14px 18px;min-height:80px;color:#fff;"
-             f"font-family:Noto Sans KR,sans-serif;font-size:.88rem;line-height:1.7;"
-             f"box-shadow:0 0 22px {color}44;word-break:keep-all;white-space:pre-wrap;")
+    style = (f"position:relative;background:rgba(8,4,22,0.95);border:3px solid {color};"
+             f"border-radius:24px;padding:30px 40px;min-height:220px;color:#fff;"
+             f"font-family:Noto Sans KR,sans-serif;font-size:1.2rem;line-height:1.8;"
+             f"box-shadow:0 0 35px {color}66;word-break:keep-all;white-space:pre-wrap;"
+             f"display:flex;align-items:center;justify-content:center;text-align:center;")
     return (f'<div style="{style}">'
             f'<div style="position:absolute;{arrow}width:0;height:0;"></div>'
             f'{content}</div>')
@@ -78,10 +79,76 @@ def pk_card(img_id: int, name: str, size: int = 700) -> str:
             f'<img src="{ART_URL}/{img_id}.png" '
             f'style="width:{size}px; height:auto; max-width:110%; object-fit:contain;'
             f'filter:drop-shadow(0 15px 45px rgba(0,0,0,0.9));">'
-            f'<div style="color:#fff; font-family:Outfit,sans-serif; font-weight:900;'
-            f'font-size:1.6rem; margin-top:5px; letter-spacing:2px; text-transform:uppercase;'
-            f'text-shadow: 0 0 15px rgba(255,0,255,0.6);">'
-            f'{htmllib.escape(name)}</div></div>')
+            f'<div style="display:inline-block;margin-top:10px;padding:8px 28px;'
+            f'background:rgba(8,4,22,0.85);border:2px solid rgba(200,0,255,0.55);'
+            f'border-radius:50px;backdrop-filter:blur(12px);'
+            f'box-shadow:0 0 20px rgba(200,0,255,0.3);">'
+            f'<span style="color:#fff;font-family:Outfit,sans-serif;font-weight:900;'
+            f'font-size:1.4rem;letter-spacing:3px;text-transform:uppercase;'
+            f'text-shadow:0 0 12px rgba(255,0,255,0.8);">'
+            f'{htmllib.escape(name)}</span></div></div>')
+
+def tts_speak(text: str, voice: str):
+    # pitch, rate, voice_pref(male/female/any)
+    presets = {
+        "기본":       (1.0,  1.0,  "any"),
+        "남성":       (0.8,  1.0,  "male"),
+        "여성":       (1.4,  1.1,  "female"),
+        "로봇":       (0.1,  0.8,  "any"),
+        "래퍼(빠름)": (0.7,  1.35, "male"),
+        "래퍼(딥)":   (0.45, 1.0,  "male"),
+    }
+    pitch, rate, voice_pref = presets.get(voice, presets["기본"])
+    components.html(f"""<script>
+(function(){{
+    var synth = (window.parent !== window) ? window.parent.speechSynthesis : window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+    function speak(voices) {{
+        var uttr = new SpeechSynthesisUtterance({json.dumps(text)});
+        uttr.lang = 'ko-KR';
+        uttr.pitch = {pitch};
+        uttr.rate  = {rate};
+        var pref = {json.dumps(voice_pref)};
+        var ko = voices.filter(function(v){{ return v.lang.indexOf('ko') === 0; }});
+        var chosen = null;
+        if (pref === 'male') {{
+            chosen = ko.find(function(v){{
+                var n = v.name.toLowerCase();
+                return n.indexOf('male') >= 0 || n.indexOf('인준') >= 0 ||
+                       n.indexOf('hyunsu') >= 0 || n.indexOf('sunhi') < 0;
+            }});
+        }} else if (pref === 'female') {{
+            chosen = ko.find(function(v){{
+                var n = v.name.toLowerCase();
+                return n.indexOf('heami') >= 0 || n.indexOf('female') >= 0 || n.indexOf('여') >= 0;
+            }});
+        }}
+        // Neural/Natural 목소리 우선 선택 (고품질)
+        if (!chosen) {{
+            chosen = ko.find(function(v){{
+                var n = v.name.toLowerCase();
+                return n.indexOf('natural') >= 0 || n.indexOf('neural') >= 0 || n.indexOf('online') >= 0;
+            }});
+        }}
+        if (!chosen && ko.length) chosen = ko[0];
+        if (chosen) uttr.voice = chosen;
+        synth.speak(uttr);
+    }}
+    // Chrome: getVoices()가 비동기로 로드되므로 voiceschanged 대기 처리
+    setTimeout(function() {{
+        var vs = synth.getVoices();
+        if (vs && vs.length > 0) {{
+            speak(vs);
+        }} else {{
+            synth.addEventListener('voiceschanged', function(){{ speak(synth.getVoices()); }}, {{once: true}});
+            speak([]);
+        }}
+    }}, 150);
+}})();
+</script>""", height=0)
+    estimated = len(text.strip()) / (5.0 * rate)
+    time.sleep(max(2.0, estimated) + 0.5)
 
 def inject_floating_panel(script: str, p1: str, p2: str):
     """window.parent.document에 플로팅 버튼+패널을 직접 주입."""
@@ -180,8 +247,9 @@ def inject_floating_panel(script: str, p1: str, p2: str):
 }})();
 </script>""", height=0)
 
-# ── Global Styles ─────────────────────────────────────────────
-st.markdown(f"""<style>
+# ── Global Styles & TTS Engine ────────────────────────────────
+st.markdown(f"""
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
 html,body,[data-testid="stAppViewContainer"],[data-testid="stHeader"],.stApp{{
@@ -189,12 +257,10 @@ html,body,[data-testid="stAppViewContainer"],[data-testid="stHeader"],.stApp{{
     background-color:#000 !important;
     overflow:hidden !important;
 }}
-[data-testid="stAppViewBlockContainer"],.main{{
-    background-color:transparent !important;
-    overflow:hidden !important;
-}}
 
-/* ── Glass board (app.py section-inner 패턴) ── */
+/* TTS 데이터 브릿지 (숨김) */
+.tts-bridge {{ display: none; }}
+
 .bbm{{position:absolute;width:0;height:0;opacity:0;pointer-events:none;}}
 div[data-testid="column"]:has(.bbm){{
     background:rgba(8,4,22,.84) !important;
@@ -241,8 +307,39 @@ div[data-testid="column"]:has(.bbm){{
     line-height:1;
 }}
 
+.chall-card{{display:block;width:0;height:0;overflow:hidden;}}
+
 /* ── Selectbox ── */
-[data-testid="stWidgetLabel"] p{{color:#bbb !important;font-weight:600 !important;font-size:.82rem !important;}}
+[data-testid="stWidgetLabel"] p{{color:#CC88FF !important;font-weight:700 !important;font-size:.85rem !important;}}
+
+/* ── Battle Start Card ── */
+.battle-start-card{{
+    background:rgba(8,4,22,0.90);
+    border:2px solid rgba(200,0,255,0.55);
+    border-bottom:none;
+    border-radius:18px 18px 0 0;
+    padding:16px 24px 14px;
+    text-align:center;
+    backdrop-filter:blur(20px);
+    box-shadow:0 -4px 24px rgba(180,0,255,0.18);
+}}
+.bsc-title{{
+    color:#FF88FF;font-family:'Outfit',sans-serif;font-weight:900;
+    font-size:1rem;letter-spacing:3px;margin:0 0 5px 0;
+}}
+.bsc-sub{{
+    color:#999;font-family:'Noto Sans KR',sans-serif;
+    font-size:0.78rem;margin:0;
+}}
+/* 배틀 카드 컬럼 안의 버튼만 카드 하단처럼 연결 */
+div[data-testid="stVerticalBlock"]:has(.battle-start-card) div.stButton>button,
+div[data-testid="stVerticalBlockBorderWrapper"]:has(.battle-start-card) div.stButton>button{{
+    border-radius:0 0 18px 18px !important;
+    margin-top:0 !important;
+    border:2px solid rgba(200,0,255,0.55) !important;
+    border-top:none !important;
+    box-shadow:0 8px 26px rgba(255,0,255,.45) !important;
+}}
 
 /* ── Battle button ── */
 div.stButton>button{{
@@ -257,7 +354,63 @@ div.stButton>button:hover{{
     transform:scale(1.04) !important;
     box-shadow:0 14px 42px rgba(0,255,255,.55) !important;
 }}
-</style>""", unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
+
+# ── Challenger card style — parent.head CSS + JS 이중 적용 ──
+components.html("""<script>
+(function(){
+    var pd = (window.parent !== window) ? window.parent.document : document;
+
+    // 1) parent.head 에 <style> 태그 직접 주입
+    //    data-testid 가 'column' 또는 'stColumn' 중 어느 쪽이든 커버
+    var sid = 'rfb-chall-style';
+    var sEl = pd.getElementById(sid);
+    if (!sEl) { sEl = pd.createElement('style'); sEl.id = sid; pd.head.appendChild(sEl); }
+    sEl.textContent =
+        'div[data-testid="column"]:has(.chall-card):not(:has(.bbm)),' +
+        'div[data-testid="stColumn"]:has(.chall-card):not(:has(.bbm)){' +
+            'background:rgba(8,4,22,0.92)!important;' +
+            'border:2px solid rgba(200,0,255,0.6)!important;' +
+            'border-radius:22px!important;' +
+            'padding:1rem 1.4rem 1.4rem!important;' +
+            'backdrop-filter:blur(28px) saturate(160%)!important;' +
+            '-webkit-backdrop-filter:blur(28px) saturate(160%)!important;' +
+            'box-shadow:0 8px 36px rgba(0,0,0,0.8),0 0 30px rgba(180,0,255,0.3)!important;' +
+            'margin-top:6px!important;' +
+        '}';
+
+    // 2) JS inline setProperty — CSS 가 못 뚫을 때 최후 보루
+    var P = [
+        ['background','rgba(8,4,22,0.92)'],
+        ['border','2px solid rgba(200,0,255,0.6)'],
+        ['border-radius','22px'],
+        ['padding','1rem 1.4rem 1.4rem'],
+        ['backdrop-filter','blur(28px) saturate(160%)'],
+        ['-webkit-backdrop-filter','blur(28px) saturate(160%)'],
+        ['box-shadow','0 8px 36px rgba(0,0,0,0.8),0 0 30px rgba(180,0,255,0.3)'],
+        ['margin-top','6px']
+    ];
+    function apply(){
+        pd.querySelectorAll('.chall-card').forEach(function(m){
+            var el = m;
+            // data-testid 가 column 이든 stColumn 이든 둘 다 탐색
+            while(el && el !== pd.body){
+                var td = el.getAttribute && el.getAttribute('data-testid');
+                if(td === 'column' || td === 'stColumn') break;
+                el = el.parentElement;
+            }
+            if(!el || el === pd.body) return;
+            if(el.querySelector('.bbm')) return;   // col_board 제외
+            P.forEach(function(p){ el.style.setProperty(p[0],p[1],'important'); });
+        });
+    }
+    [200,500,1000,2000].forEach(function(t){ setTimeout(apply,t); });
+    var tmr;
+    new MutationObserver(function(){ clearTimeout(tmr); tmr=setTimeout(apply,150); })
+        .observe(pd.body,{childList:true,subtree:true});
+})();
+</script>""", height=0)
 
 # ── Main ──────────────────────────────────────────────────────
 def show_game():
@@ -274,6 +427,8 @@ def show_game():
     with col_board:
         st.markdown('<div class="bbm"></div>', unsafe_allow_html=True)
 
+        st.markdown("<br><br>", unsafe_allow_html=True)
+
         # 타이틀 카드
         st.markdown(
             '<div class="title-card">'
@@ -282,43 +437,56 @@ def show_game():
             unsafe_allow_html=True,
         )
 
-        # 배틀 영역 — [포켓몬1+말풍선 | VS | 말풍선+포켓몬2]
-        p1_col, vs_col, p2_col = st.columns([5, 1.4, 5])
+        # ── 설정 카드 행 ──────────────────────────────────────────
+        s1_col, _, s2_col = st.columns([1.1, 1.3, 1.1])
 
-        # ── 챌린저 1 ──
-        with p1_col:
+        with s1_col:
+            st.markdown('<div class="chall-card"></div>', unsafe_allow_html=True)
             p1_name = st.selectbox(
-                "챌린저 1", pk_names,
+                "🔴 챌린저 1", pk_names,
                 index=pk_names.index("리자몽") if "리자몽" in pk_names else 0,
                 key="p1_sel",
             )
-            p1_id = pk_map[p1_name]
-            card1_col, bub1_col = st.columns([4, 1.5])
-            with card1_col:
-                st.markdown(pk_card(p1_id, p1_name, 500), unsafe_allow_html=True)
-            with bub1_col:
-                bubble1 = st.empty()
+            p1_voice = st.selectbox("🎙 목소리 톤", ["기본", "남성", "여성", "로봇", "래퍼(빠름)", "래퍼(딥)"], key="v1_sel")
 
-        # ── VS ──
-        with vs_col:
-            st.markdown(
-                '<div class="vs-wrap"><div class="vs-text">VS</div></div>',
-                unsafe_allow_html=True,
-            )
-
-        # ── 챌린저 2 ──
-        with p2_col:
+        with s2_col:
+            st.markdown('<div class="chall-card"></div>', unsafe_allow_html=True)
             p2_name = st.selectbox(
-                "챌린저 2", pk_names,
+                "🔵 챌린저 2", pk_names,
                 index=pk_names.index("이상해꽃") if "이상해꽃" in pk_names else 0,
                 key="p2_sel",
             )
-            p2_id = pk_map[p2_name]
-            bub2_col, card2_col = st.columns([1.5, 4])
-            with bub2_col:
-                bubble2 = st.empty()
-            with card2_col:
-                st.markdown(pk_card(p2_id, p2_name, 500), unsafe_allow_html=True)
+            p2_voice = st.selectbox("🎙 목소리 톤", ["기본", "남성", "여성", "로봇", "래퍼(빠름)", "래퍼(딥)"], key="v2_sel")
+
+        p1_id = pk_map[p1_name]
+        p2_id = pk_map[p2_name]
+
+        # ── 배틀 시작 카드 (독립 행) ────────────────────────────
+        _, start_col, _ = st.columns([1.5, 2, 1.5])
+        with start_col:
+            st.markdown(
+                '<div class="battle-start-card">'
+                '<p class="bsc-title">🎤 RAP BATTLE</p>'
+                '<p class="bsc-sub">챌린저를 선택하고 배틀을 시작하세요</p>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+            battle_btn = st.button("🔥 배틀 시작! (Drop the Beat)", use_container_width=True)
+
+        # ── 배틀 영역 — [포켓몬1 | 중앙 말풍선 | 포켓몬2] ────────
+        p1_img_col, mid_bubble_col, p2_img_col = st.columns([1.1, 1.3, 1.1])
+
+        with p1_img_col:
+            st.markdown(pk_card(p1_id, p1_name, 500), unsafe_allow_html=True)
+
+        # ── 중앙 말풍선 영역 ──
+        with mid_bubble_col:
+            bubble1 = st.empty()
+            st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+            bubble2 = st.empty()
+
+        with p2_img_col:
+            st.markdown(pk_card(p2_id, p2_name, 500), unsafe_allow_html=True)
 
         # 이전 배틀 말풍선 복원
         bubble1.markdown(
@@ -330,18 +498,15 @@ def show_game():
             unsafe_allow_html=True,
         )
 
-        # 배틀 버튼
-        battle_btn = st.button("🔥 배틀 시작! (Drop the Beat)", use_container_width=True)
-
         # ── 스트리밍 배틀 ──────────────────────────────────────
         if battle_btn:
             for k in ("rap_script", "rap_p1_verse", "rap_p2_verse"):
                 st.session_state.pop(k, None)
-            bubble1.markdown(speech_bubble("", ph="🎤 비트 타는 중..."), unsafe_allow_html=True)
-            bubble2.markdown(speech_bubble("", "right", "#00FFFF", "🎤 비트 타는 중..."), unsafe_allow_html=True)
+            bubble1.markdown(speech_bubble("", ph="🎤 챌린저 1 준비 중..."), unsafe_allow_html=True)
+            bubble2.markdown(speech_bubble("", "right", "#00FFFF", "🎤 챌린저 2 준비 중..."), unsafe_allow_html=True)
 
             full_script = buf = cur1 = cur2 = ""
-            current_speaker = None  # persists across chunk boundaries
+            current_speaker = None
             error_occurred = False
             try:
                 with requests.post(
@@ -355,12 +520,10 @@ def show_game():
                         error_occurred = True
                     else:
                         for chunk in resp.iter_content(chunk_size=None, decode_unicode=True):
-                            if not chunk:
-                                continue
+                            if not chunk: continue
                             full_script += chunk
                             buf += chunk
-                            if "\n" not in buf:
-                                continue
+                            if "\n" not in buf: continue
                             lines = buf.split("\n")
                             buf = lines[-1]
                             for line in lines[:-1]:
@@ -368,33 +531,32 @@ def show_game():
                                 if not stripped:
                                     current_speaker = None
                                     continue
-                                # strip markdown bold/italic markers before parsing
                                 clean = re.sub(r'\*+', '', stripped)
                                 if ":" in clean:
                                     sp_raw, vr_raw = clean.split(":", 1)
                                     sp = sp_raw.strip(); vr = vr_raw.strip()
-                                    if p1_name in sp:
+                                    if (p1_name in sp):
                                         current_speaker = "p1"
                                         if vr:
                                             cur1 = vr
                                             bubble1.markdown(speech_bubble(cur1, "left"), unsafe_allow_html=True)
-                                            time.sleep(1.2) # 대사 간 딜레이 추가
-                                    elif p2_name in sp:
+                                            tts_speak(cur1, p1_voice)
+                                    elif (p2_name in sp):
                                         current_speaker = "p2"
                                         if vr:
                                             cur2 = vr
                                             bubble2.markdown(speech_bubble(cur2, "right", "#00FFFF"), unsafe_allow_html=True)
-                                            time.sleep(1.2) # 대사 간 딜레이 추가
+                                            tts_speak(cur2, p2_voice)
                                     else:
                                         current_speaker = None
                                 elif current_speaker == "p1" and clean.strip():
                                     cur1 = clean.strip()
                                     bubble1.markdown(speech_bubble(cur1, "left"), unsafe_allow_html=True)
-                                    time.sleep(1.2)
+                                    tts_speak(cur1, p1_voice)
                                 elif current_speaker == "p2" and clean.strip():
                                     cur2 = clean.strip()
                                     bubble2.markdown(speech_bubble(cur2, "right", "#00FFFF"), unsafe_allow_html=True)
-                                    time.sleep(1.2)
+                                    tts_speak(cur2, p2_voice)
             except requests.exceptions.ConnectionError:
                 st.error("백엔드 서버에 연결할 수 없습니다.")
                 error_occurred = True
