@@ -14,6 +14,8 @@ pokemon_agent.py 와 같은 디렉터리에 있어야 합니다.
 import streamlit as st
 from common.pokemon_agent import chat  # pokemon_agent.py 의 chat() 직접 import
 
+
+
 # ──────────────────────────────────────────────
 # 페이지 설정
 # ──────────────────────────────────────────────

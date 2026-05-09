@@ -30,7 +30,7 @@ load_dotenv()
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
 from langchain_core.tools import tool
-from langchain_tavily import TavilySearch
+from langchain_community.tools import TavilySearchResults
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 
@@ -51,7 +51,7 @@ if DB_CONN.startswith("postgres://"):
 
 llm           = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 embeddings    = OpenAIEmbeddings()
-tavily        = TavilySearch(max_results=3)
+tavily        = TavilySearchResults(max_results=3)
 cohere_client = cohere.Client(os.environ.get("COHERE_API_KEY", ""))
 
 # 하이브리드 검색 후보 수 (BM25·벡터 각각) / Re-rank 후 최종 전달 수
@@ -371,10 +371,12 @@ def agent_node(state: AgentState) -> AgentState:
     return {"messages": [response], "tool_call_count": count}
 
 
+# ToolNode 인스턴스는 한 번만 생성
+_tool_node = ToolNode(tools)
+
 def tools_node_wrapper(state: AgentState) -> AgentState:
     """ToolNode 실행 후 tool_call_count 증가"""
-    from langgraph.prebuilt import ToolNode
-    result = ToolNode(tools)(state)
+    result = _tool_node.invoke(state)
     new_count = state.get("tool_call_count", 0) + 1
     return {**result, "tool_call_count": new_count}
 
