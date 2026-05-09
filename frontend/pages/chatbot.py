@@ -1,336 +1,403 @@
+"""
+포켓몬 챗봇 Streamlit UI
+========================
+실행: streamlit run pokemon_chatbot_app.py
+
+pokemon_agent.py 와 같은 디렉터리에 있어야 합니다.
+.env 파일에 아래 키가 있어야 합니다:
+  OPENAI_API_KEY=...
+  COHERE_API_KEY=...
+  TAVILY_API_KEY=...
+  DATABASE_URL=postgresql://...  (없으면 기본값 사용)
+"""
+
 import streamlit as st
-import sys
-import os
-# 부모 디렉토리(frontend)를 경로에 추가하여 common과 utils를 찾을 수 있도록 함
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from common.pokemon_agent import chat  # pokemon_agent.py 의 chat() 직접 import
 
-from common.pokemon_rag import chat, ingest_embeddings
-from utils.ui import inject_common_ui
-
+# ──────────────────────────────────────────────
+# 페이지 설정
+# ──────────────────────────────────────────────
 st.set_page_config(
-    page_title="포켓몬 박사",
+    page_title="포켓몬 박사 챗봇",
     page_icon="🔴",
     layout="centered",
 )
 
-inject_common_ui(spacer=True)  # 한 번만
-
-# 나머지 코드는 그대로 유지...
-
-
-# ══════════════════════════════════════════════════════════
-# CSS
-# ══════════════════════════════════════════════════════════
-
-st.markdown("""
+# ──────────────────────────────────────────────
+# CSS — 포켓볼 감성 다크 테마
+# ──────────────────────────────────────────────
+st.html("""
 <style>
-  /* 전체 배경 */
-  .stApp { background-color: #f5f5f0; }
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap');
 
-  /* 헤더 */
-  .chat-header {
-    background: linear-gradient(135deg, #cc0000 0%, #ff4444 100%);
-    border-radius: 16px;
-    padding: 24px;
+/* 전체 배경 */
+html, body, [data-testid="stAppViewContainer"] {
+    background: #1a1a2e !important;
+    font-family: 'Nunito', sans-serif;
+}
+
+[data-testid="stHeader"] { background: transparent !important; }
+
+/* 사이드바 */
+[data-testid="stSidebar"] {
+    background: #16213e !important;
+    border-right: 2px solid #e63946;
+}
+[data-testid="stSidebar"] * { color: #edf2f4 !important; }
+
+/* 메인 컨테이너 */
+.block-container {
+    max-width: 780px !important;
+    padding-top: 1.5rem !important;
+}
+
+/* 헤더 */
+.pk-header {
     text-align: center;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(204,0,0,0.2);
-  }
-  .chat-header h1 { color: white; margin: 0; font-size: 2rem; }
-  .chat-header p  { color: rgba(255,255,255,0.85); margin: 6px 0 0; font-size: 0.9rem; }
-
-  /* 메시지 버블 */
-  .msg-user {
-    background: #cc0000;
-    color: white;
-    border-radius: 18px 18px 4px 18px;
-    padding: 12px 16px;
-    margin: 8px 0 8px 20%;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    line-height: 1.5;
-  }
-  .msg-bot {
-    background: white;
-    color: #1a1a1a;
-    border-radius: 18px 18px 18px 4px;
-    padding: 12px 16px;
-    margin: 8px 20% 8px 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    border-left: 3px solid #cc0000;
-    line-height: 1.6;
-  }
-  .msg-label-user {
-    text-align: right;
-    font-size: 0.75rem;
-    color: #888;
-    margin: 0 4px 2px 0;
-  }
-  .msg-label-bot {
-    font-size: 0.75rem;
-    color: #888;
-    margin: 0 0 2px 4px;
-  }
-
-  /* 라우트 배지 */
-  .badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-top: 6px;
-    font-weight: 600;
-  }
-  .badge-sql       { background: #e3f0ff; color: #1565c0; }
-  .badge-embedding { background: #e8f5e9; color: #2e7d32; }
-  .badge-web       { background: #fff3e0; color: #e65100; }
-
-  /* 사이드바 */
-  .sidebar-section {
-    background: white;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .sidebar-section h4 { margin: 0 0 8px; color: #cc0000; font-size: 0.85rem; }
-
-  /* 예시 버튼 */
-  .stButton > button {
-    width: 100%;
-    text-align: left;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 8px 12px;
+    padding: 1.6rem 1rem 1rem;
+    background: linear-gradient(135deg, #e63946 0%, #c1121f 50%, #1a1a2e 100%);
+    border-radius: 20px;
+    margin-bottom: 1.4rem;
+    border: 2px solid #e63946;
+    position: relative;
+    overflow: hidden;
+}
+.pk-header::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 3px;
+    background: #fff;
+    transform: translateY(-50%);
+}
+.pk-header::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 28px; height: 28px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid #1a1a2e;
+    box-shadow: 0 0 0 3px #fff;
+}
+.pk-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 2px 2px 0 #c1121f;
+    position: relative;
+    z-index: 1;
+}
+.pk-sub {
+    color: rgba(255,255,255,0.85);
     font-size: 0.82rem;
-    color: #333;
-    transition: all 0.15s;
-  }
-  .stButton > button:hover {
-    border-color: #cc0000;
-    color: #cc0000;
-    background: #fff5f5;
-  }
+    margin-top: 0.25rem;
+    position: relative;
+    z-index: 1;
+}
 
-  /* 입력창 */
-  .stTextInput > div > div > input {
-    border-radius: 24px;
-    border: 2px solid #e0e0e0;
-    padding: 10px 18px;
-    font-size: 0.95rem;
-  }
-  .stTextInput > div > div > input:focus {
-    border-color: #cc0000;
-    box-shadow: 0 0 0 2px rgba(204,0,0,0.1);
-  }
+/* 채팅 버블 공통 */
+.bubble-wrap { display: flex; margin-bottom: 1rem; align-items: flex-end; gap: 10px; }
+.bubble-wrap.user  { flex-direction: row-reverse; }
+.bubble-wrap.bot   { flex-direction: row; }
+
+.avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.avatar.bot  { background: #e63946; border: 2px solid #fff; }
+.avatar.user { background: #4cc9f0; border: 2px solid #fff; }
+
+.bubble {
+    max-width: 75%;
+    padding: 0.75rem 1.1rem;
+    border-radius: 18px;
+    font-size: 0.93rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.bubble.bot {
+    background: #16213e;
+    color: #edf2f4;
+    border: 1.5px solid #e63946;
+    border-bottom-left-radius: 4px;
+}
+.bubble.user {
+    background: #4cc9f0;
+    color: #1a1a2e;
+    font-weight: 600;
+    border-bottom-right-radius: 4px;
+}
+
+/* 타이핑 인디케이터 */
+.typing { display: flex; gap: 5px; padding: 0.6rem 0.8rem; }
+.typing span {
+    width: 8px; height: 8px;
+    background: #e63946;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40%            { transform: translateY(-8px); opacity: 1; }
+}
+
+/* 입력창 래퍼 */
+.input-area {
+    position: sticky;
+    bottom: 0;
+    background: #1a1a2e;
+    padding: 0.8rem 0 0.4rem;
+    border-top: 2px solid #e63946;
+    margin-top: 0.5rem;
+}
+
+/* 입력창 */
+[data-testid="stChatInput"] textarea {
+    background: #16213e !important;
+    color: #edf2f4 !important;
+    border: 1.5px solid #e63946 !important;
+    border-radius: 12px !important;
+    font-family: 'Nunito', sans-serif !important;
+}
+[data-testid="stChatInput"] textarea:focus {
+    border-color: #4cc9f0 !important;
+    box-shadow: 0 0 0 2px rgba(76,201,240,0.25) !important;
+}
+
+/* 예시 버튼 */
+.stButton > button {
+    background: #16213e !important;
+    color: #4cc9f0 !important;
+    border: 1.5px solid #4cc9f0 !important;
+    border-radius: 20px !important;
+    font-size: 0.78rem !important;
+    padding: 0.3rem 0.8rem !important;
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif !important;
+    white-space: nowrap;
+}
+.stButton > button:hover {
+    background: #4cc9f0 !important;
+    color: #1a1a2e !important;
+}
+
+/* 사이드바 라디오/슬라이더 */
+[data-testid="stSidebar"] .stRadio label,
+[data-testid="stSidebar"] .stSlider label { color: #edf2f4 !important; }
+
+/* 도구 사용 뱃지 */
+.tool-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 1px 7px;
+    border-radius: 20px;
+    margin: 2px 2px 6px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.tool-db      { background: #264653; color: #2a9d8f; border: 1px solid #2a9d8f; }
+.tool-vector  { background: #3d2b69; color: #b388ff; border: 1px solid #b388ff; }
+.tool-web     { background: #6b3a1f; color: #f4a261; border: 1px solid #f4a261; }
+
+/* 스크롤바 */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #1a1a2e; }
+::-webkit-scrollbar-thumb { background: #e63946; border-radius: 3px; }
+
+/* 구분선 */
+hr { border-color: #e6394630 !important; }
+
+/* 푸터 텍스트 */
+.footer-txt {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
 </style>
-""", unsafe_allow_html=True)
+""")
 
-
-# ══════════════════════════════════════════════════════════
-# 세션 초기화
-# ══════════════════════════════════════════════════════════
-
+# ──────────────────────────────────────────────
+# 세션 상태 초기화
+# ──────────────────────────────────────────────
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if "pending_query" not in st.session_state:
-    st.session_state.pending_query = ""
+if "tool_logs" not in st.session_state:
+    st.session_state.tool_logs = {}   # {msg_index: [tool_name, ...]}
 
-
-# ══════════════════════════════════════════════════════════
+# ──────────────────────────────────────────────
 # 사이드바
-# ══════════════════════════════════════════════════════════
-
+# ──────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("### 🔴 포켓몬 박사")
+    st.markdown("## ⚙️ 설정")
     st.markdown("---")
 
-    # 예시 질문 — SQL 경로
-    st.markdown('<div class="sidebar-section"><h4>📊 데이터 검색 (SQL)</h4>', unsafe_allow_html=True)
-    sql_examples = [
-        "🔥 불꽃 타입 공격력 TOP 5",
-        "⚡ 피카츄 스탯 알려줘",
-        "💧 물 타입 중 빠른 포켓몬",
-        "🌿 1세대 포켓몬 목록",
-        "⚔️ 공격력 120 이상인 포켓몬",
-    ]
-    for ex in sql_examples:
-        if st.button(ex, key=f"sql_{ex}"):
-            st.session_state.pending_query = ex
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # 예시 질문 — Embedding 경로
-    st.markdown('<div class="sidebar-section"><h4>✨ 의미 검색 (AI)</h4>', unsafe_allow_html=True)
-    emb_examples = [
-        "🐱 귀엽고 작은 포켓몬 추천",
-        "🌊 바다 느낌 나는 포켓몬",
-        "😤 피카츄는 어떤 성격이야?",
-        "🌙 밤에 활동하는 포켓몬",
-        "💪 강하고 용감한 느낌의 포켓몬",
-    ]
-    for ex in emb_examples:
-        if st.button(ex, key=f"emb_{ex}"):
-            st.session_state.pending_query = ex
-    st.markdown("</div>", unsafe_allow_html=True)
+    show_tools = st.toggle("🔧 툴 사용 내역 표시", value=True)
 
     st.markdown("---")
+    st.markdown("### 📖 사용 가능한 툴")
+    st.markdown("""
+- 🗄️ **search_pokemon_db**  
+  SQL로 스탯·타입·세대 검색
+- 🔮 **search_pokemon_knowledge**  
+  하이브리드(BM25+벡터) + Rerank  
+  도감 설명·분위기 검색
+- 🌐 **web_search**  
+  DB에 없는 최신 정보
+""")
 
-    # 대화 초기화
-    if st.button("🗑️ 대화 초기화", use_container_width=True):
+    st.markdown("---")
+    st.markdown("### 💡 질문 팁")
+    st.markdown("""
+- 타입 + 스탯 조건으로 질문
+- 분위기나 느낌으로 추천 요청
+- 특정 포켓몬 상세 정보 질문
+""")
+
+    st.markdown("---")
+    if st.button("🗑️ 대화 초기화"):
         st.session_state.messages = []
+        st.session_state.tool_logs = {}
         st.rerun()
 
-    # 임베딩 초기화 (관리자용)
-    st.markdown("---")
-    st.markdown("**🛠️ 관리자**")
-    if st.button("임베딩 생성 (최초 1회)", use_container_width=True):
-        with st.spinner("임베딩 생성 중..."):
-            try:
-                ingest_embeddings()
-                st.success("✅ 완료!")
-            except Exception as e:
-                st.error(f"실패: {e}")
-
-    # 경로 범례
-    st.markdown("---")
-    st.markdown("""
-<div style='font-size:0.75rem; color:#888;'>
-<b>검색 경로</b><br>
-🔵 SQL — 수치/조건 검색<br>
-🟢 AI — 의미/느낌 검색<br>
-🟠 웹 — DB 미보유 정보
+# ──────────────────────────────────────────────
+# 헤더
+# ──────────────────────────────────────────────
+st.html("""
+<div class="pk-header">
+    <p class="pk-title">⚫ POKÉDEX AI ⚫</p>
+    <p class="pk-sub">하이브리드 검색 · Cohere Re-ranking · Tool-calling Agent</p>
 </div>
-""", unsafe_allow_html=True)
+""")
 
+# ──────────────────────────────────────────────
+# 예시 질문 버튼
+# ──────────────────────────────────────────────
+EXAMPLE_QUESTIONS = [
+    "불꽃 타입 공격력 TOP 3",
+    "귀엽고 작은 포켓몬 추천",
+    "피카츄의 도감 설명",
+    "1세대 HP 최강은?",
+    "물 타입이면서 바다 느낌 포켓몬",
+]
 
-# ══════════════════════════════════════════════════════════
-# 메인 헤더
-# ══════════════════════════════════════════════════════════
+cols = st.columns(len(EXAMPLE_QUESTIONS))
+clicked_example = None
+for col, q in zip(cols, EXAMPLE_QUESTIONS):
+    with col:
+        if st.button(q, key=f"ex_{q}"):
+            clicked_example = q
 
-st.markdown("""
-<div class="chat-header">
-  <h1>🔴 포켓몬 박사</h1>
-  <p>포켓몬에 대해 무엇이든 물어보세요!</p>
-</div>
-""", unsafe_allow_html=True)
+# ──────────────────────────────────────────────
+# 채팅 히스토리 렌더링
+# ──────────────────────────────────────────────
+def render_tool_badges(tool_names: list[str]) -> str:
+    badge_html = ""
+    for t in tool_names:
+        if "db" in t:
+            badge_html += f'<span class="tool-badge tool-db">🗄️ {t}</span>'
+        elif "knowledge" in t:
+            badge_html += f'<span class="tool-badge tool-vector">🔮 {t}</span>'
+        elif "web" in t:
+            badge_html += f'<span class="tool-badge tool-web">🌐 {t}</span>'
+    return badge_html
 
-
-# ══════════════════════════════════════════════════════════
-# 대화 히스토리 출력
-# ══════════════════════════════════════════════════════════
 
 chat_container = st.container()
 
 with chat_container:
     if not st.session_state.messages:
-        st.markdown("""
-<div style='text-align:center; color:#aaa; padding: 40px 0;'>
-  <div style='font-size:3rem;'>🎮</div>
-  <div style='margin-top:8px;'>포켓몬에 대해 질문해보세요!</div>
-  <div style='font-size:0.82rem; margin-top:4px;'>왼쪽 예시를 클릭하거나 직접 입력하세요</div>
+        st.html("""
+<div style='text-align:center; color:#555; margin-top:3rem; font-size:0.9rem;'>
+    🔴 포켓몬에 대해 무엇이든 물어보세요!<br>
+    <span style='font-size:0.78rem;'>위 예시 버튼을 눌러도 됩니다.</span>
 </div>
-""", unsafe_allow_html=True)
+""")
+    else:
+        for i, msg in enumerate(st.session_state.messages):
+            role = msg["role"]
+            content = msg["content"]
+            avatar = "🤖" if role == "assistant" else "🧑"
+            cls    = "bot" if role == "assistant" else "user"
 
-    for msg in st.session_state.messages:
-        if msg["role"] == "user":
-            st.markdown(f'<div class="msg-label-user">나</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="msg-user">{msg["content"]}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="msg-label-bot">🔴 포켓몬 박사</div>', unsafe_allow_html=True)
-            badge = ""
-            if msg.get("route") == "sql":
-                badge = '<span class="badge badge-sql">🔵 SQL 검색</span>'
-            elif msg.get("route") == "embedding":
-                badge = '<span class="badge badge-embedding">🟢 AI 의미 검색</span>'
-            elif msg.get("route") == "web":
-                badge = '<span class="badge badge-web">🟠 웹 검색</span>'
-            st.markdown(
-                f'<div class="msg-bot">{msg["content"]}{("<br>" + badge) if badge else ""}</div>',
-                unsafe_allow_html=True
-            )
+            tool_html = ""
+            if role == "assistant" and show_tools and i in st.session_state.tool_logs:
+                tool_html = render_tool_badges(st.session_state.tool_logs[i])
 
+            st.html(f"""
+<div class="bubble-wrap {cls}">
+    <div class="avatar {cls}">{avatar}</div>
+    <div>
+        {f'<div style="margin-bottom:2px">{tool_html}</div>' if tool_html else ''}
+        <div class="bubble {cls}">{content}</div>
+    </div>
+</div>
+""")
 
-# ══════════════════════════════════════════════════════════
-# 입력창 + 전송
-# ══════════════════════════════════════════════════════════
-
-st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
-col_input, col_btn = st.columns([5, 1])
-
-with col_input:
-    user_input = st.text_input(
-        label="질문",
-        value=st.session_state.pending_query,
-        placeholder="예) 피카츄 공격력은? / 귀여운 포켓몬 추천해줘",
-        label_visibility="collapsed",
-        key="chat_input",
-    )
-
-with col_btn:
-    send = st.button("전송 ➤", use_container_width=True)
-
-# 예시 버튼 클릭 시 자동 전송
-if st.session_state.pending_query and st.session_state.pending_query != user_input:
-    user_input = st.session_state.pending_query
-    send = True
-
-# ══════════════════════════════════════════════════════════
-# 메시지 처리
-# ══════════════════════════════════════════════════════════
-
-if send and user_input.strip():
-    query = user_input.strip()
+# ──────────────────────────────────────────────
+# 입력 처리
+# ──────────────────────────────────────────────
+def handle_query(user_input: str):
+    """질문 처리 → agent 호출 → 결과 저장"""
+    user_input = user_input.strip()
+    if not user_input:
+        return
 
     # 사용자 메시지 추가
-    st.session_state.messages.append({"role": "user", "content": query})
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # pending 초기화
-    st.session_state.pending_query = ""
-
-    # LangGraph RAG 실행
-    with st.spinner("🔍 포켓몬 데이터 검색 중..."):
+    # 타이핑 인디케이터 표시하며 agent 호출
+    with st.spinner(""):
         try:
-            from common.pokemon_rag import app as rag_app
-
-            result = rag_app.invoke({
-                "query":       query,
-                "route":       "",
-                "sql":         "",
-                "db_result":   "",
-                "vector_docs": [],
-                "web_result":  "",
-                "context":     "",
-                "answer":      "",
-            })
-
-            answer = result["answer"]
-            route  = result.get("route", "")
-
-            # ✅ 수정 - route 문자열만 보거나 값이 있는지 체크
-            if "web" in route:
-                badge_route = "web"
-            elif "embedding" in route or "vector" in route:
-                badge_route = "embedding"
-            elif "sql" in route:
-                badge_route = "sql"
-            else:
-                badge_route = "sql"  # 기본값
-
+            # pokemon_agent.chat() 호출
+            answer = chat(user_input)
         except Exception as e:
-            answer     = f"오류가 발생했어요: {e}"
-            badge_route = ""
+            answer = f"⚠️ 오류가 발생했습니다: {e}"
 
-    # 봇 응답 추가
-    st.session_state.messages.append({
-        "role":    "assistant",
-        "content": answer,
-        "route":   badge_route,
-    })
+    # 응답 저장
+    bot_idx = len(st.session_state.messages)
+    st.session_state.messages.append({"role": "assistant", "content": answer})
+
+    # 툴 로그 파싱 (answer에 ✅ 포함 여부로 간단 감지)
+    used_tools = []
+    if "search_pokemon_db" in answer or "SQL" in answer or "개 결과" in answer:
+        used_tools.append("search_pokemon_db")
+    if "하이브리드" in answer or "Re-ranking" in answer or "RRF" in answer or "도감" in answer:
+        used_tools.append("search_pokemon_knowledge")
+    if "웹에서 찾은" in answer or "웹 검색" in answer:
+        used_tools.append("web_search")
+    if used_tools:
+        st.session_state.tool_logs[bot_idx] = used_tools
 
     st.rerun()
 
-if __name__ == "__main__":
-    pass # Main code is executed at top level in Streamlit
 
+# 예시 버튼 클릭
+if clicked_example:
+    handle_query(clicked_example)
+
+# 채팅 입력창
+user_input = st.chat_input("포켓몬에 대해 무엇이든 물어보세요... ⚡")
+if user_input:
+    handle_query(user_input)
+
+# ──────────────────────────────────────────────
+# 푸터
+# ──────────────────────────────────────────────
+st.html("""
+<p class="footer-txt">
+    Powered by LangGraph · OpenAI · Cohere Rerank · Tavily · pgvector
+</p>
+""")

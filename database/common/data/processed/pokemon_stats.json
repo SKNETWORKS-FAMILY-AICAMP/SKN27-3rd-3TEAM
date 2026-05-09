@@ -11484,78 +11484,6 @@
     "speed": 80
   },
   {
-    "pokemon_id": 10264,
-    "hp": 100,
-    "attack": 135,
-    "defense": 115,
-    "sp_attack": 85,
-    "sp_defense": 100,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10265,
-    "hp": 100,
-    "attack": 135,
-    "defense": 115,
-    "sp_attack": 85,
-    "sp_defense": 100,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10266,
-    "hp": 100,
-    "attack": 135,
-    "defense": 115,
-    "sp_attack": 85,
-    "sp_defense": 100,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10267,
-    "hp": 100,
-    "attack": 135,
-    "defense": 115,
-    "sp_attack": 85,
-    "sp_defense": 100,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10268,
-    "hp": 100,
-    "attack": 85,
-    "defense": 100,
-    "sp_attack": 135,
-    "sp_defense": 115,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10269,
-    "hp": 100,
-    "attack": 85,
-    "defense": 100,
-    "sp_attack": 135,
-    "sp_defense": 115,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10270,
-    "hp": 100,
-    "attack": 85,
-    "defense": 100,
-    "sp_attack": 135,
-    "sp_defense": 115,
-    "speed": 135
-  },
-  {
-    "pokemon_id": 10271,
-    "hp": 100,
-    "attack": 85,
-    "defense": 100,
-    "sp_attack": 135,
-    "sp_defense": 115,
-    "speed": 135
-  },
-  {
     "pokemon_id": 10272,
     "hp": 113,
     "attack": 70,
@@ -11970,15 +11898,6 @@
     "speed": 95
   },
   {
-    "pokemon_id": 10318,
-    "hp": 80,
-    "attack": 125,
-    "defense": 115,
-    "sp_attack": 170,
-    "sp_defense": 115,
-    "speed": 95
-  },
-  {
     "pokemon_id": 10319,
     "hp": 88,
     "attack": 157,
@@ -12004,24 +11923,6 @@
     "sp_attack": 150,
     "sp_defense": 96,
     "speed": 101
-  },
-  {
-    "pokemon_id": 10322,
-    "hp": 68,
-    "attack": 65,
-    "defense": 90,
-    "sp_attack": 135,
-    "sp_defense": 125,
-    "speed": 92
-  },
-  {
-    "pokemon_id": 10323,
-    "hp": 68,
-    "attack": 65,
-    "defense": 90,
-    "sp_attack": 135,
-    "sp_defense": 125,
-    "speed": 92
   },
   {
     "pokemon_id": 10324,

@@ -18,10 +18,12 @@ langchain-openai
 langchain-groq
 langgraph
 tavily-python
+langchain-tavily
 
 # [AI Models & API]
 openai
 groq
+cohere
 
 # [Frontend - Streamlit]
 streamlit
