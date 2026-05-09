@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import os
 import sys
-import base64
+import urllib.parse
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -11,6 +11,7 @@ if root_dir not in sys.path:
     sys.path.append(root_dir)
 
 from utils.ui import inject_common_ui
+from pages.style.detail_styles import get_detail_styles
 
 st.set_page_config(
     page_title="포켓몬 비공식 사이트",
@@ -23,218 +24,6 @@ st.set_page_config(
 inject_common_ui(spacer=True)
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://backend:8000")
-
-# Custom Styles
-st.markdown("""
-<style>
-[data-testid="collapsedControl"] { display: none; }
-#MainMenu { visibility: hidden; }
-footer { visibility: hidden; }
-
-.stApp {
-background-color: #e8e8e8;
-background-image: radial-gradient(circle, #d0d0d0 1px, transparent 1px);
-background-size: 24px 24px;
-}
-
-.pk-nav {
-background-color: #2e2e2e;
-display: flex;
-align-items: stretch;
-min-height: 72px;
-width: 100vw;
-margin-left: calc(50% - 50vw);
-margin-top: 0;
-margin-bottom: 28px;
-font-family: sans-serif;
-}
-.pk-nav-left, .pk-nav-right {
-display: flex;
-align-items: center;
-flex: 1;
-padding: 0 40px;
-text-decoration: none !important;
-color: white !important;
-gap: 14px;
-cursor: pointer;
-transition: background 0.15s;
-}
-.pk-nav-left:hover, .pk-nav-right:hover { background-color: #3d3d3d; }
-.pk-nav-right { justify-content: flex-end; text-align: right; }
-.pk-nav-sep { width: 1px; background: #555; margin: 14px 0; flex-shrink: 0; }
-.nav-circle {
-width: 38px; height: 38px; border-radius: 50%;
-border: 2px solid #666;
-display: flex; align-items: center; justify-content: center;
-font-size: 16px; flex-shrink: 0; color: white;
-}
-.pk-nav-name { font-size: 0.95rem; font-weight: 500; }
-.pk-nav-num  { font-size: 0.78rem; color: #aaa; }
-
-.pk-card {
-background: white;
-border-radius: 10px;
-border: 2px solid #2e2e2e;
-box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-max-width: 900px;
-margin: 0 auto 36px auto;
-display: flex;
-overflow: hidden;
-font-family: sans-serif;
-}
-.pk-card-left {
-width: 320px; flex-shrink: 0;
-background: #f0f0f0;
-display: flex; align-items: center; justify-content: center;
-padding: 48px 24px;
-background-image: radial-gradient(circle, #ddd 1px, transparent 1px);
-background-size: 18px 18px;
-}
-.pk-card-img {
-width: 250px; height: 250px;
-object-fit: contain;
-filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
-}
-.pk-card-right {
-flex: 1; padding: 36px 40px 52px 40px;
-display: flex; flex-direction: column; gap: 14px;
-}
-.pk-id   { color: #aaa; font-size: 0.88rem; }
-.pk-name { font-size: 2.4rem; font-weight: 900; color: #1a1a1a; margin: 0; line-height: 1.1; }
-
-.pk-badges { display: flex; flex-wrap: wrap; gap: 7px; }
-.v-badge {
-display: inline-flex; align-items: center; gap: 6px;
-background: #efefef; border-radius: 999px;
-padding: 5px 13px; font-size: 0.82rem; color: #555; font-weight: 500;
-}
-.v-check {
-width: 17px; height: 17px; border-radius: 50%;
-background: #bbb; display: inline-flex; align-items: center;
-justify-content: center; font-size: 10px; color: white; flex-shrink: 0;
-}
-
-.pk-desc { color: #555; font-size: 0.92rem; line-height: 1.75; }
-
-.pk-stats {
-display: grid;
-grid-template-columns: 1fr 1fr 1fr;
-border: 1px solid #e8e8e8;
-border-radius: 10px;
-overflow: hidden;
-}
-.pk-stat-cell {
-padding: 14px 18px;
-border-right: 1px solid #e8e8e8;
-border-bottom: 1px solid #e8e8e8;
-}
-.pk-stat-cell:nth-child(3n)  { border-right: none; }
-.pk-stat-cell:nth-child(n+4) { border-bottom: none; }
-.pk-stat-label { color: #aaa; font-size: 0.77rem; margin-bottom: 7px; }
-.pk-stat-value { color: #222; font-weight: 600; font-size: 0.9rem; display: flex; flex-wrap: wrap; align-items: center; }
-
-.gender-male   { color: #4a90d9; font-size: 1.25rem; margin-right: 4px; }
-.gender-female { color: #e0507a; font-size: 1.25rem; }
-
-.ability-row { display: flex; flex-direction: column; gap: 3px; }
-.ability-item { display: flex; align-items: center; gap: 5px; }
-.ability-help {
-width: 16px; height: 16px; border-radius: 50%;
-background: #666; color: white; font-size: 10px;
-display: inline-flex; align-items: center; justify-content: center;
-cursor: default; flex-shrink: 0;
-}
-
-.pk-cta {
-display: block; background: #E3350D; color: white !important;
-text-align: center; padding: 15px 30px;
-border-radius: 6px; font-size: 1rem; font-weight: 700;
-text-decoration: none !important; margin-top: 4px;
-transition: background 0.2s;
-}
-.pk-cta:hover { background: #c22b09 !important; }
-
-.evo-section {
-max-width: 900px; margin: 0 auto 40px auto;
-background: white; border-radius: 16px; padding: 30px 36px;
-box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-font-family: sans-serif;
-}
-.evo-title {
-font-size: 1rem; font-weight: 700;
-margin-bottom: 22px; display: flex; align-items: center; gap: 8px;
-color: #1a1a1a;
-}
-.evo-chain {
-display: flex; justify-content: center;
-align-items: center; gap: 16px; flex-wrap: wrap;
-}
-.evo-card {
-text-align: center; border: 1px solid #eee;
-border-radius: 12px; padding: 16px; width: 130px;
-transition: box-shadow 0.2s;
-}
-.evo-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-.evo-img   { width: 90px; height: 90px; object-fit: contain; }
-.evo-arrow { color: #ccc; font-size: 22px; }
-
-/* Varieties Styles */
-.variety-section {
-    max-width: 900px; margin: 0 auto 20px auto;
-    display: flex; flex-direction: column; gap: 10px;
-    font-family: sans-serif;
-}
-.variety-title {
-    font-size: 0.9rem; font-weight: 700; color: #666;
-    display: flex; align-items: center; gap: 6px;
-}
-.variety-list {
-    display: flex; flex-wrap: wrap; gap: 8px;
-}
-.variety-btn {
-    background: white; border: 1px solid #ddd;
-    padding: 6px 16px; border-radius: 20px;
-    font-size: 0.85rem; color: #444; text-decoration: none !important;
-    transition: all 0.2s; cursor: pointer;
-}
-.variety-btn:hover { background: #f5f5f5; border-color: #bbb; }
-.variety-btn.active {
-    background: #2e2e2e; color: white; border-color: #2e2e2e;
-    font-weight: 600;
-}
-
-/* Forms Card Section (below evolution) */
-.forms-section {
-    max-width: 900px; margin: 0 auto 60px auto;
-    background: white; border-radius: 16px; padding: 30px 36px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    font-family: sans-serif;
-}
-.forms-title {
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 22px; display: flex; align-items: center; gap: 8px;
-    color: #1a1a1a;
-}
-.forms-grid {
-    display: flex; justify-content: center;
-    align-items: center; gap: 16px; flex-wrap: wrap;
-}
-.form-card {
-    text-align: center; border: 1px solid #eee;
-    border-radius: 12px; padding: 16px; width: 140px;
-    transition: all 0.2s; position: relative;
-}
-.form-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-3px); }
-.form-card.active { border: 2px solid #E3350D; background: #fff8f8; }
-.form-img { width: 100px; height: 100px; object-fit: contain; }
-.form-name { font-weight: 700; font-size: 0.85rem; color: #1a1a1a; margin-top: 8px; line-height: 1.2; }
-.form-label { 
-    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    background: #E3350D; color: white; font-size: 0.65rem; padding: 2px 8px;
-    border-radius: 10px; font-weight: 800;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # ── Query params ─────────────────────────────────────────────────────────────
 query_params = st.query_params
@@ -254,6 +43,16 @@ with st.spinner("데이터를 불러오는 중..."):
         response = requests.get(f"{BACKEND_URL}/api/v1/pokemon/{pokemon_id}", timeout=5)
         response.raise_for_status()
         data = response.json()
+        
+        # 포켓몬의 타입 목록을 slot 순서대로 정렬
+        if data.get("types"):
+            data["types"] = sorted(data["types"], key=lambda x: x.get("slot", 1))
+            
+        # 포켓몬의 첫 번째 타입 추출 (배경용)
+        main_type = "노말"
+        if data.get("types"):
+            main_type = data["types"][0]["type_"]["name"]
+        st.markdown(get_detail_styles(main_type), unsafe_allow_html=True)
     except Exception as e:
         st.error(f"데이터를 불러오지 못했습니다: {e}")
         st.stop()
@@ -289,27 +88,35 @@ TYPE_IMG_DIR = os.path.join(current_dir, "..", "img", "type")
 # API name → filename (대부분 동일, 얼음만 예외)
 TYPE_FILE_MAP = {"얼음": "아이스"}
 
-def get_type_img(ko_name: str) -> str:
+KO_TO_EN = {
+    "노말": "normal", "풀": "grass", "불꽃": "fire", "물": "water",
+    "전기": "electric", "벌레": "bug", "비행": "flying", "바위": "rock",
+    "독": "poison", "땅": "ground", "얼음": "ice", "격투": "fighting",
+    "에스퍼": "psychic", "고스트": "ghost", "드래곤": "dragon", "악": "dark",
+    "강철": "steel", "페어리": "fairy",
+}
+
+def get_type_img_src(ko_name: str) -> str:
     filename = TYPE_FILE_MAP.get(ko_name, ko_name)
     path = os.path.join(TYPE_IMG_DIR, f"{filename}.svg")
     try:
-        with open(path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode()
-        return f"data:image/svg+xml;base64,{b64}"
+        with open(path, "r", encoding="utf-8") as f:
+            svg = f.read()
+        return f"data:image/svg+xml,{urllib.parse.quote(svg)}"
     except FileNotFoundError:
         return ""
 
 def type_badge_html(ko: str) -> str:
-    src = get_type_img(ko)
+    src = get_type_img_src(ko)
     if src:
         return (
             f'<div style="display:inline-flex;flex-direction:column;align-items:center;'
             f'gap:4px;margin-right:10px;">'
-            f'<img src="{src}" style="width:22px;height:22px;object-fit:contain;">'
-            f'<span style="font-size:0.78rem;font-weight:600;color:#444;">{ko}</span>'
+            f'<img src="{src}" width="30" height="30">'
+            f'<span style="font-size:0.78rem;font-weight:600;color:#eee;">{ko}</span>'
             f'</div>'
         )
-    return f'<span style="font-size:0.9rem;font-weight:600;color:#444;">{ko}</span>'
+    return f'<span style="font-size:0.9rem;font-weight:600;color:#eee;">{ko}</span>'
 
 types_html = "".join(
     type_badge_html(t["type_"]["name"]) for t in data.get("types", [])
@@ -369,7 +176,7 @@ if len(varieties) > 1:
         v_items += f'<a href="?id={v_id}" target="_self" class="variety-btn {is_active}">{v_name}</a>'
     
     st.markdown(
-        f'<div class="variety-section"><div class="variety-title">✨ 다른 모습</div><div class="variety-list">{v_items}</div></div>',
+        f'<div class="variety-section"><div class="variety-title">다른 모습</div><div class="variety-list">{v_items}</div></div>',
         unsafe_allow_html=True
     )
 
@@ -378,7 +185,7 @@ st.markdown(
     f'<div class="pk-card">'
     f'<div class="pk-card-left"><img src="{img_url}" class="pk-card-img" alt="{name}"></div>'
     f'<div class="pk-card-right">'
-    f'<div class="pk-id">No.{pokemon_id:04d}</div>'
+    f'<div class="pk-id">No.{data.get("species_id") or pokemon_id:04d}</div>'
     f'<div class="pk-name">{name}</div>'
     f'{badges_block}'
     f'<div class="pk-desc">{description}</div>'
@@ -390,7 +197,7 @@ st.markdown(
     f'<div class="pk-stat-cell"><div class="pk-stat-label">몸무게</div><div class="pk-stat-value">{weight_kg}kg</div></div>'
     f'<div class="pk-stat-cell"><div class="pk-stat-label">특성</div><div class="pk-stat-value">{abilities_html}</div></div>'
     f'</div>'
-    f'<a href="/pokedex" target="_self" class="pk-cta">{name} 목록으로 돌아가기 ›</a>'
+    f'<a href="/pokedex" target="_self" class="back-btn">{name} 목록으로 돌아가기 ›</a>'
     f'</div>'
     f'</div>',
     unsafe_allow_html=True,
@@ -413,15 +220,16 @@ def render_evo_node(node, is_root=True):
     for v in display_vars:
         v_id, v_name = v["id"], v["name"]
         v_img = v.get("image_url") or img_url
-        is_active = "border: 2px solid #E3350D; background: #fff8f8;" if v_id == pokemon_id else ""
+        is_active = "active" if v_id == pokemon_id else ""
         
-        # Build type badges for this variety
+        # Build type badges for this variety (slot 순서 정렬)
+        sorted_types = sorted(v.get("types", []), key=lambda x: x.get("slot", 1))
         v_types_html = "".join([
-            f'<div style="background:#efefef; border-radius:4px; padding:2px 6px; font-size:0.65rem; color:#666; font-weight:600;">{t["type_"]["name"]}</div>'
-            for t in v.get("types", [])
+            f'<div class="evo-type-badge evo-type-{KO_TO_EN.get(t["type_"]["name"], "normal")}">{t["type_"]["name"]}</div>'
+            for t in sorted_types
         ])
         
-        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card" style="{is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.75rem; color:#aaa; margin-top:8px;">No.{v_id:04d}</div><div style="font-weight:700; font-size:0.88rem; color:#1a1a1a; margin-bottom:8px;">{v_name}</div><div style="display:flex; justify-content:center; gap:4px;">{v_types_html}</div></div></a>''')
+        var_htmls.append(f'''<a href="?id={v_id}" target="_self" style="text-decoration:none; color:inherit;"><div class="evo-card {is_active}"><img src="{v_img}" class="evo-img" alt="{v_name}"><div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:10px; font-weight:600;">No.{v.get("species_id") or v_id:04d}</div><div style="font-weight:800; font-size:0.95rem; color:#fff; margin-bottom:12px; font-family:\'Outfit\', sans-serif; word-break:keep-all; overflow-wrap:break-word; max-width:170px;">{v_name}</div><div style="display:flex; justify-content:center; gap:6px;">{v_types_html}</div></div></a>''')
     
     varieties_block = "".join(var_htmls)
     
@@ -445,7 +253,7 @@ if evo_chain:
     # Start rendering from root nodes
     evo_items = "".join([render_evo_node(root) for root in evo_chain])
     st.markdown(
-        f'<div class="evo-section"><div class="evo-title">🔴 진화</div>'
+        f'<div class="evo-section"><div class="evo-title">진화</div>'
         f'<div style="display:flex; justify-content:center; padding:30px 0; overflow-x:auto; min-width: 100%;">{evo_items}</div>'
         f'</div>',
         unsafe_allow_html=True,
@@ -470,6 +278,6 @@ if len(varieties) > 1:
         )
     
     st.markdown(
-        f'<div class="forms-section"><div class="forms-title">✨ 다양한 모습</div><div class="forms-grid">{form_items}</div></div>',
+        f'<div class="forms-section"><div class="forms-title">다양한 모습</div><div class="forms-grid">{form_items}</div></div>',
         unsafe_allow_html=True
     )

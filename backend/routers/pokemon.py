@@ -16,24 +16,33 @@ router = APIRouter(
 @router.get("/", response_model=schemas.PaginatedPokemonResponse)
 def read_pokemon_list(
     skip: int = Query(0, ge=0, description="건너뛸 항목 수"),
-    limit: int = Query(1025, ge=1, le=1025, description="가져올 항목 수 (최대 1025)"),
+    limit: int = Query(2000, ge=1, le=2000, description="가져올 항목 수 (최대 2000)"),
     search: Optional[str] = Query(None, description="이름 또는 ID로 검색"),
     types: Optional[List[str]] = Query(None, description="타입 이름 목록 (예: '불꽃', '물')"),
     min_id: Optional[int] = Query(None, description="최소 도감 번호"),
     max_id: Optional[int] = Query(None, description="최대 도감 번호"),
+    ability: Optional[str] = Query(None, description="특성 이름"),
     db: Session = Depends(get_db)
 ):
     """
     포켓몬 목록 조회. 페이지네이션, 이름/ID 검색, 타입 및 번호 범위 필터링 지원.
     """
-    total = crud.get_pokemon_count(db, search=search, type_names=types, min_id=min_id, max_id=max_id)
-    items = crud.get_pokemon_list(db, skip=skip, limit=limit, search=search, type_names=types, min_id=min_id, max_id=max_id)
+    total = crud.get_pokemon_count(db, search=search, type_names=types, min_id=min_id, max_id=max_id, ability=ability)
+    items = crud.get_pokemon_list(db, skip=skip, limit=limit, search=search, type_names=types, min_id=min_id, max_id=max_id, ability=ability)
     return schemas.PaginatedPokemonResponse(
         total=total,
         skip=skip,
         limit=limit,
         items=items
     )
+
+
+@router.get("/abilities", response_model=List[str])
+def read_abilities(db: Session = Depends(get_db)):
+    """
+    모든 포켓몬 특성 목록 조회.
+    """
+    return crud.get_abilities(db)
 
 
 @router.get("/{pokemon_id}", response_model=schemas.PokemonDetailResponse)
