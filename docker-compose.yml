@@ -26,6 +26,8 @@ services:
       NEO4J_dbms_memory_heap_initial__size: 512m
       NEO4J_dbms_memory_heap_max__size: 2G
       NEO4J_dbms_memory_pagecache_size: 1G
+    networks:
+      - skn_net
     ports:
       - "7474:7474"  # HTTP - Neo4j Browser 접속용 (웹 브라우저에서 http://localhost:7474)
       - "7687:7687"  # Bolt - 애플리케이션에서 Neo4j에 연결할 때 사용하는 프로토콜
