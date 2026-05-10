@@ -42,6 +42,26 @@ services:
       timeout: 5s      # 5초 내에 응답이 없으면 타임아웃
       retries: 5       # 5번 실패하면 비정상으로 판단
 
+  elasticsearch:
+    image: elasticsearch:8.13.4
+    container_name: pokemon_es
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - skn_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: .
@@ -96,3 +116,4 @@ networks:
 
 volumes:
   postgres_data:
+  es_data:  

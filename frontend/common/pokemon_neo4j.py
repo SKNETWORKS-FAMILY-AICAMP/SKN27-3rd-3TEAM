@@ -120,14 +120,13 @@ def migrate_to_neo4j():
             UNWIND $rows AS row
             MATCH (from_p:Pokemon {species_id: row.from_species_id})
             MATCH (to_p:Pokemon   {species_id: row.to_species_id})
-            MERGE (from_p)-[:EVOLVES_TO {
-                min_level:    row.min_level,
-                trigger_item: row.trigger_item
-            }]->(to_p)
+            MERGE (from_p)-[r:EVOLVES_TO]->(to_p)
+            SET r.min_level    = row.min_level,
+                r.trigger_item = row.trigger_item
         """, rows=[{
             "from_species_id": r[0],
             "to_species_id":   r[1],
-            "min_level":       r[2],
+            "min_level":       r[2],          # null 그대로 둬도 SET은 OK
             "trigger_item":    r[3] or "없음"
         } for r in evolutions])
         print(f"  → {len(evolutions)}개 EVOLVES_TO 관계 생성")
