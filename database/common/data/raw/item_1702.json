@@ -7,7 +7,19 @@
   },
   "cost": 20000,
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "좋은 눈만 나오는 주사위. 지니게 하고 연속 기술을 사용하면 많은 횟수로 기술을 사용할 수 있다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "fling_effect": null,
   "fling_power": null,
   "game_indices": [],
@@ -16,6 +28,13 @@
   "machines": [],
   "name": "loaded-dice",
   "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "속임수주사위"
+    },
     {
       "language": {
         "name": "ja-hrkt",

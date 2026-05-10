@@ -51,6 +51,17 @@
         "name": "the-indigo-disk",
         "url": "https://pokeapi.co/api/v2/version-group/27/"
       }
+    },
+    {
+      "flavor_text": "등장했을 때 주위의 에너지를 흡수하여 테라스탈폼으로 변화한다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {

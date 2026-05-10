@@ -50,11 +50,19 @@ BATCH_SIZE = 1000
 # .env 파일을 읽어서 NEO4J_URI 같은 값을 사용할 수 있게 합니다.
 load_dotenv(PROJECT_ROOT / ".env")
 
+class Singleton(type):
+	_instances = {}
+
+	def __call__(cls, *args, **kwargs):
+		if cls not in cls._instances:
+			cls._instances[cls] = super(Singleton, cls)\
+				.__call__(*args, **kwargs)
+		return cls._instances[cls]
 
 # ============================================
 # 2. Neo4j 연결 클래스
 # ============================================
-class Neo4jConnection:
+class Neo4jConnection(metaclass=Singleton):
     """Neo4j 연결과 Cypher 실행을 담당하는 클래스입니다."""
 
     def __init__(self, uri: str, user: str, password: str):
@@ -70,7 +78,8 @@ class Neo4jConnection:
 
     def close(self) -> None:
         """Neo4j 드라이버 연결을 종료합니다."""
-        self.driver.close()
+        if self.driver is not None:
+            self.driver.close()
 
     def execute_query(self, query: str, parameters: Optional[Dict[str, Any]] = None) -> List[Any]:
         """

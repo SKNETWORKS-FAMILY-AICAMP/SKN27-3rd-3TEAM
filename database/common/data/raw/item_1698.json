@@ -7,7 +7,19 @@
   },
   "cost": 30000,
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "투명하고 빛나는 참. 지니게 하면 상대의 기술이나 특성으로 능력이 떨어지지 않는다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "fling_effect": null,
   "fling_power": null,
   "game_indices": [],
@@ -16,6 +28,13 @@
   "machines": [],
   "name": "clear-amulet",
   "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "클리어참"
+    },
     {
       "language": {
         "name": "ja-hrkt",

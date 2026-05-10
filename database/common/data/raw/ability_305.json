@@ -51,6 +51,17 @@
         "name": "the-indigo-disk",
         "url": "https://pokeapi.co/api/v2/version-group/27/"
       }
+    },
+    {
+      "flavor_text": "모든 타입의 힘이 담긴 등껍질이 HP가 꽉 찼을 때 받는 데미지를 모두 효과가 별로이게 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {

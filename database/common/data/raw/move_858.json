@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "어마어마하게 매운 엑기스를 발사한다. 상대의 공격을 2랭크 오르게 하고 방어를 2랭크 낮춘다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "net-good-stats",
+      "url": "https://pokeapi.co/api/v2/move-category/2/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 100
+  },
   "name": "spicy-extract",
   "names": [
     {
@@ -90,6 +120,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ハバネロエキス"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "하바네로엑기스"
     }
   ],
   "past_values": [],
@@ -97,6 +134,20 @@
   "pp": 15,
   "priority": 0,
   "stat_changes": [
+    {
+      "change": 2,
+      "stat": {
+        "name": "attack",
+        "url": "https://pokeapi.co/api/v2/stat/2/"
+      }
+    },
+    {
+      "change": -2,
+      "stat": {
+        "name": "defense",
+        "url": "https://pokeapi.co/api/v2/stat/3/"
+      }
+    },
     {
       "change": 2,
       "stat": {
