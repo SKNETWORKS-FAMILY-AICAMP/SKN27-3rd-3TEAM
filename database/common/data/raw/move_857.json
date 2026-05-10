@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "거센 물살을 주먹에 둘러 눈에 보이지 않는 속도로 펀치를 날린다. 반드시 선제공격할 수 있다. (우선도 +1)",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -50,7 +61,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "damage",
+        "url": "https://pokeapi.co/api/v2/move-category/0/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "jet-punch",
   "names": [
     {
@@ -94,6 +126,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ジェットパンチ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "제트펀치"
     }
   ],
   "past_values": [],

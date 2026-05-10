@@ -7,7 +7,19 @@
   },
   "cost": 30000,
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "지니게 한 포켓몬은 한 번에 의해 상대의 능력이 올랐을 때 흉내 내어 똑같이 능력을 올린다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "fling_effect": null,
   "fling_power": null,
   "game_indices": [],
@@ -16,6 +28,13 @@
   "machines": [],
   "name": "mirror-herb",
   "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "흉내허브"
+    },
     {
       "language": {
         "name": "ja-hrkt",

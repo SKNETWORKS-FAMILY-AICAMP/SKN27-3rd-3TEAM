@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "호흡이 척척 맞게 다이빙해서 상대에게 물보라를 끼얹는다. 3회 연속으로 데미지를 준다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "damage",
+        "url": "https://pokeapi.co/api/v2/move-category/0/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": 3,
+      "max_turns": null,
+      "min_hits": 3,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "triple-dive",
   "names": [
     {
@@ -90,6 +122,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "トリプルダイブ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "트리플다이브"
     }
   ],
   "past_values": [],

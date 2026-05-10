@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "몸을 내던지는 무모한 돌격. 기술을 사용한 다음 상대의 공격이 반드시 명중하고 데미지를 2배로 입게 된다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "damage",
+        "url": "https://pokeapi.co/api/v2/move-category/0/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "glaive-rush",
   "names": [
     {
@@ -90,6 +122,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "きょけんとつげき"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "대검돌격"
     }
   ],
   "past_values": [],

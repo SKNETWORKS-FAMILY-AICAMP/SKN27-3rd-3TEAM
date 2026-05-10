@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "자신의 HP를 깎아서 분신을 만든 뒤 돌아와서 교대 포켓몬과 교체한다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -54,7 +65,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "unique",
+        "url": "https://pokeapi.co/api/v2/move-category/13/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "shed-tail",
   "names": [
     {
@@ -98,6 +130,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "しっぽきり"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "꼬리자르기"
     }
   ],
   "past_values": [],

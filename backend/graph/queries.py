@@ -51,6 +51,7 @@ AND candidate.is_default = true
 AND NOT candidate.pokemon_id IN $selected_pokemon_ids
 RETURN candidate.pokemon_id AS pokemon_id,
        candidate.name AS name,
+       candidate.image_url AS image_url,
        candidate.base_total AS base_total,
        collect(DISTINCT {
            type_id: weakType.type_id,
@@ -97,6 +98,26 @@ RETURN candidate.pokemon_id AS pokemon_id,
        }) AS pokemon_types
 """
 
+# 후보 포켓몬이 배울 수 있는 기술 중 설명에 쓰기 좋은 대표 기술을 조회합니다.
+# 추천 이유에서 "어떤 기술이 어떤 상황에 유용한지" 설명하기 위한 재료입니다.
+CANDIDATE_USEFUL_MOVES = """
+MATCH (candidate:Pokemon)-[:CAN_KNOW]->(move:Move)-[:HAS_TYPE]->(moveType:Type)
+WHERE candidate.pokemon_id IN $candidate_pokemon_ids
+AND move.power IS NOT NULL
+WITH candidate, move, moveType
+ORDER BY candidate.pokemon_id, move.power DESC, move.accuracy DESC
+RETURN candidate.pokemon_id AS pokemon_id,
+       collect(DISTINCT {
+           move_id: move.move_id,
+           move_name: move.name,
+           type_id: moveType.type_id,
+           type_name: moveType.name,
+           power: move.power,
+           accuracy: move.accuracy,
+           damage_class: move.damage_class
+       })[..12] AS useful_moves
+"""
+
 
 # ============================================
 # 3. 배틀 기능에서 사용할 수 있는 기본 쿼리
@@ -141,4 +162,3 @@ RETURN ability.ability_id AS ability_id,
        canHave.slot AS slot
 ORDER BY canHave.slot
 """
-

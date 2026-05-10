@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "압력을 가한 물을 칼날처럼 분사해서 상대를 베어 가른다. 급소에 맞기 쉽다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -78,7 +89,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "damage",
+        "url": "https://pokeapi.co/api/v2/move-category/0/"
+      },
+      "crit_rate": 1,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "aqua-cutter",
   "names": [
     {
@@ -122,6 +154,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "アクアカッター"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "아쿠아커터"
     }
   ],
   "past_values": [],

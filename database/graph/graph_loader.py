@@ -924,9 +924,9 @@ def get_neo4j_connection_from_env() -> Neo4jConnection:
         NEO4J_USER=neo4j
         NEO4J_PASSWORD=test1234
     """
-    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    user = os.getenv("NEO4J_USER", "neo4j")
-    password = os.getenv("NEO4J_PASSWORD", "test1234")
+    uri = os.getenv("GRAPH_DB_URI", "bolt://localhost:7687")
+    user = os.getenv("GRAPH_DB_USER", "neo4j")
+    password = os.getenv("GRAPH_DB_PASSWORD", "test1234")
 
     return Neo4jConnection(uri=uri, user=user, password=password)
 

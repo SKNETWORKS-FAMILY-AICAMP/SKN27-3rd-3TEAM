@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "회전해서 상대를 공격한다. 조이기, 김밥말이, 씨뿌리기 등의 효과를 날려 버린다. 상대를 독 상태로 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "poison",
+        "url": "https://pokeapi.co/api/v2/move-ailment/5/"
+      },
+      "ailment_chance": 100,
+      "category": {
+        "name": "damage-ailment",
+        "url": "https://pokeapi.co/api/v2/move-category/4/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "mortal-spin",
   "names": [
     {
@@ -90,6 +122,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "キラースピン"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "킬러스핀"
     }
   ],
   "past_values": [],

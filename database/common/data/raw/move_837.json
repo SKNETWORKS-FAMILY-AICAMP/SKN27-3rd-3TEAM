@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "승리를 부르는 춤을 격렬하게 춘다. 자신의 공격, 방어, 스피드를 1랭크 올린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -68,7 +79,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "net-good-stats",
+        "url": "https://pokeapi.co/api/v2/move-category/2/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 100
+    }
+  ],
   "name": "victory-dance",
   "names": [
     {
@@ -112,13 +144,42 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "しょうりのまい"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "승리의춤"
     }
   ],
   "past_values": [],
   "power": 0,
   "pp": 10,
   "priority": 0,
-  "stat_changes": [],
+  "stat_changes": [
+    {
+      "change": 1,
+      "stat": {
+        "name": "attack",
+        "url": "https://pokeapi.co/api/v2/stat/2/"
+      }
+    },
+    {
+      "change": 1,
+      "stat": {
+        "name": "defense",
+        "url": "https://pokeapi.co/api/v2/stat/3/"
+      }
+    },
+    {
+      "change": 1,
+      "stat": {
+        "name": "speed",
+        "url": "https://pokeapi.co/api/v2/stat/6/"
+      }
+    }
+  ],
   "super_contest_effect": null,
   "target": {
     "name": "user",

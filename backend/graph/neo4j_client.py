@@ -94,9 +94,19 @@ def create_neo4j_client_from_env() -> Neo4jClient:
         백엔드가 Docker 컨테이너 안에서 실행되면 NEO4J_URI는 보통 bolt://neo4j:7687 입니다.
         로컬 PC에서 실행되면 보통 bolt://localhost:7687 입니다.
     """
-    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    user = os.getenv("NEO4J_USER", "neo4j")
-    password = os.getenv("NEO4J_PASSWORD", "")
+    neo4j_auth = os.getenv("NEO4J_AUTH", "")
+    auth_user = "neo4j"
+    auth_password = ""
+
+    # NEO4J_AUTH:
+    # - Neo4j Docker 공식 환경변수는 보통 "neo4j/password" 형태입니다.
+    # - GRAPH_DB_USER/PASSWORD가 없으면 이 값을 백엔드 접속 정보로 재사용합니다.
+    if "/" in neo4j_auth:
+        auth_user, auth_password = neo4j_auth.split("/", 1)
+
+    uri = os.getenv("GRAPH_DB_URI", "bolt://neo4j:7687")
+    user = os.getenv("GRAPH_DB_USER", auth_user)
+    password = os.getenv("GRAPH_DB_PASSWORD", auth_password)
 
     return Neo4jClient(uri=uri, user=user, password=password)
 

@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "온 힘을 다한 몸통박치기를 날린다. 자신의 방어와 특수방어가 1랭크 떨어진다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -84,7 +95,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "none",
+        "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+      },
+      "ailment_chance": 0,
+      "category": {
+        "name": "damage-raise",
+        "url": "https://pokeapi.co/api/v2/move-category/7/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 100
+    }
+  ],
   "name": "headlong-rush",
   "names": [
     {
@@ -128,13 +160,35 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ぶちかまし"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "들이받기"
     }
   ],
   "past_values": [],
   "power": 120,
   "pp": 5,
   "priority": 0,
-  "stat_changes": [],
+  "stat_changes": [
+    {
+      "change": -1,
+      "stat": {
+        "name": "defense",
+        "url": "https://pokeapi.co/api/v2/stat/3/"
+      }
+    },
+    {
+      "change": -1,
+      "stat": {
+        "name": "special-defense",
+        "url": "https://pokeapi.co/api/v2/stat/5/"
+      }
+    }
+  ],
   "super_contest_effect": null,
   "target": {
     "name": "selected-pokemon",

@@ -10053,15 +10053,6 @@
     "speed": 77
   },
   {
-    "pokemon_id": 10093,
-    "hp": 75,
-    "attack": 71,
-    "defense": 70,
-    "sp_attack": 40,
-    "sp_defense": 80,
-    "speed": 77
-  },
-  {
     "pokemon_id": 10094,
     "hp": 35,
     "attack": 55,
@@ -10305,24 +10296,6 @@
     "speed": 85
   },
   {
-    "pokemon_id": 10121,
-    "hp": 88,
-    "attack": 110,
-    "defense": 60,
-    "sp_attack": 55,
-    "sp_defense": 60,
-    "speed": 45
-  },
-  {
-    "pokemon_id": 10122,
-    "hp": 77,
-    "attack": 70,
-    "defense": 90,
-    "sp_attack": 145,
-    "sp_defense": 75,
-    "speed": 43
-  },
-  {
     "pokemon_id": 10123,
     "hp": 75,
     "attack": 70,
@@ -10366,24 +10339,6 @@
     "sp_attack": 140,
     "sp_defense": 135,
     "speed": 30
-  },
-  {
-    "pokemon_id": 10128,
-    "hp": 70,
-    "attack": 105,
-    "defense": 90,
-    "sp_attack": 80,
-    "sp_defense": 90,
-    "speed": 45
-  },
-  {
-    "pokemon_id": 10129,
-    "hp": 68,
-    "attack": 64,
-    "defense": 60,
-    "sp_attack": 111,
-    "sp_defense": 60,
-    "speed": 117
   },
   {
     "pokemon_id": 10130,
@@ -10512,33 +10467,6 @@
     "speed": 96
   },
   {
-    "pokemon_id": 10144,
-    "hp": 55,
-    "attack": 90,
-    "defense": 80,
-    "sp_attack": 50,
-    "sp_defense": 105,
-    "speed": 96
-  },
-  {
-    "pokemon_id": 10145,
-    "hp": 55,
-    "attack": 90,
-    "defense": 80,
-    "sp_attack": 50,
-    "sp_defense": 105,
-    "speed": 96
-  },
-  {
-    "pokemon_id": 10146,
-    "hp": 75,
-    "attack": 110,
-    "defense": 125,
-    "sp_attack": 100,
-    "sp_defense": 105,
-    "speed": 85
-  },
-  {
     "pokemon_id": 10147,
     "hp": 80,
     "attack": 95,
@@ -10557,24 +10485,6 @@
     "speed": 90
   },
   {
-    "pokemon_id": 10149,
-    "hp": 60,
-    "attack": 80,
-    "defense": 110,
-    "sp_attack": 50,
-    "sp_defense": 80,
-    "speed": 45
-  },
-  {
-    "pokemon_id": 10150,
-    "hp": 60,
-    "attack": 55,
-    "defense": 60,
-    "sp_attack": 95,
-    "sp_defense": 70,
-    "speed": 124
-  },
-  {
     "pokemon_id": 10151,
     "hp": 45,
     "attack": 65,
@@ -10591,24 +10501,6 @@
     "sp_attack": 55,
     "sp_defense": 65,
     "speed": 110
-  },
-  {
-    "pokemon_id": 10153,
-    "hp": 68,
-    "attack": 70,
-    "defense": 92,
-    "sp_attack": 50,
-    "sp_defense": 132,
-    "speed": 42
-  },
-  {
-    "pokemon_id": 10154,
-    "hp": 65,
-    "attack": 98,
-    "defense": 63,
-    "sp_attack": 40,
-    "sp_defense": 73,
-    "speed": 96
   },
   {
     "pokemon_id": 10155,

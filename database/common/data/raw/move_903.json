@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "상대에게 물엿을 발사해 폭발시켜 공격한다. 상대를 물엿범벅 상태로 만들어 3턴 동안 매 턴 스피드를 1랭크씩 감소시킨다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -99,6 +110,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "みずあめボム"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "시럽봄"
     }
   ],
   "past_values": [],
@@ -106,6 +124,13 @@
   "pp": 10,
   "priority": 0,
   "stat_changes": [
+    {
+      "change": -1,
+      "stat": {
+        "name": "speed",
+        "url": "https://pokeapi.co/api/v2/stat/6/"
+      }
+    },
     {
       "change": -1,
       "stat": {

@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "치명적인 손톱으로 공격한다. 30% 확률로 상대를 독, 마비, 잠듦 중 하나의 상태로 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -68,7 +79,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "unknown",
+        "url": "https://pokeapi.co/api/v2/move-ailment/-1/"
+      },
+      "ailment_chance": 50,
+      "category": {
+        "name": "damage-ailment",
+        "url": "https://pokeapi.co/api/v2/move-category/4/"
+      },
+      "crit_rate": 1,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "dire-claw",
   "names": [
     {
@@ -112,6 +144,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "フェイタルクロー"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "페이탈클로"
     }
   ],
   "past_values": [],
