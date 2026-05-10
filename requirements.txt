@@ -9,6 +9,7 @@ psycopg2-binary
 pgvector
 neo4j==5.28.2
 graphdatascience==1.17
+elasticsearch>=8.0.0
 
 # [AI & LLM Orchestration]
 langchain
@@ -23,8 +24,8 @@ langchain-tavily
 # [AI Models & API]
 openai
 groq
-cohere
 sentence-transformers
+torchvision
 
 # [Frontend - Streamlit]
 streamlit
