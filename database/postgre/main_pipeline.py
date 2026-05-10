@@ -83,7 +83,7 @@ def run_script(script_path):
 def main():
     print("Starting Pokemon Data Pipeline Update...")
 
-    cleanup()
+    # cleanup()
 
     scripts = [
         # "database/common/processing/api_collector.py",

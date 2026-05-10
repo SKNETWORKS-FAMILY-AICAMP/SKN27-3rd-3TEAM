@@ -112,6 +112,10 @@ def inject_common_ui(spacer=False):
                 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png">
                 <span>팀 빌더</span>
             </a>
+            <a href="/mini_game" target="_self" class="nav-item">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png">
+                <span>미니게임</span>
+            </a>
         </div>
         <div class="nav-right">
             <a href="/login" target="_self" class="nav-aux">
@@ -127,35 +131,57 @@ def inject_common_ui(spacer=False):
         
     st.write(common_html, unsafe_allow_html=True)
 
-    # 2. Mouse Follower JS
+    # 2. Mouse Follower JS (최적화 및 프리징 방지)
     components.html("""
     <script>
-        const parentDoc = window.parent.document;
-        
-        // Only add if not already present
-        if (!parentDoc.querySelector('.cursor-follower')) {
-            const followerStyle = parentDoc.createElement('style');
-            followerStyle.innerHTML = `
-                .cursor-follower {
-                    position: fixed; width: 30px; height: 30px;
-                    background: url('https://pokemonkorea.co.kr/img/_con.ico') no-repeat center/contain;
-                    pointer-events: none; z-index: 10000;
-                    transform: translate(15px, 15px);
-                    display: none;
-                    transition: transform 0.05s linear;
+        (function() {
+            const parentWin = window.parent;
+            const parentDoc = parentWin.document;
+            
+            // 1. 요소 및 스타일 생성 (최초 1회만)
+            if (!parentDoc.querySelector('.cursor-follower')) {
+                const style = parentDoc.createElement('style');
+                style.innerHTML = `
+                    .cursor-follower {
+                        position: fixed;
+                        width: 30px;
+                        height: 30px;
+                        background: url('https://pokemonkorea.co.kr/img/_con.ico') no-repeat center/contain;
+                        pointer-events: none;
+                        z-index: 99999;
+                        display: none;
+                        /* transform을 사용하여 성능 최적화 */
+                        top: 0;
+                        left: 0;
+                        will-change: transform;
+                    }
+                `;
+                parentDoc.head.appendChild(style);
+
+                const follower = parentDoc.createElement('div');
+                follower.className = 'cursor-follower';
+                parentDoc.body.appendChild(follower);
+            }
+
+            const follower = parentDoc.querySelector('.cursor-follower');
+
+            // 2. 이벤트 리스너 리프레시 (페이지 전환 시 프리징 방지)
+            // 이전 리스너가 있다면 제거하여 중복 등록 및 메모리 누수 방지
+            if (parentWin._pokeBallListener) {
+                parentDoc.removeEventListener('mousemove', parentWin._pokeBallListener);
+            }
+
+            // 새 리스너 정의
+            parentWin._pokeBallListener = function(e) {
+                if (follower) {
+                    follower.style.display = 'block';
+                    // transform을 사용하여 렌더링 부하 감소
+                    follower.style.transform = `translate3d(${e.clientX + 10}px, ${e.clientY + 10}px, 0)`;
                 }
-            `;
-            parentDoc.head.appendChild(followerStyle);
+            };
 
-            const follower = parentDoc.createElement('div');
-            follower.className = 'cursor-follower';
-            parentDoc.body.appendChild(follower);
-
-            parentDoc.addEventListener('mousemove', (e) => {
-                follower.style.display = 'block';
-                follower.style.left = e.clientX + 'px';
-                follower.style.top = e.clientY + 'px';
-            });
-        }
+            // 부모 문서에 새 리스너 등록
+            parentDoc.addEventListener('mousemove', parentWin._pokeBallListener);
+        })();
     </script>
     """, height=0)

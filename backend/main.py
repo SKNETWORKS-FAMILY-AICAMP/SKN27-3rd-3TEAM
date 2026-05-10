@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from graph.neo4j_client import neo4j_client
-from routers import pokemon
+from routers import pokemon, chat
 
 # DB 테이블 생성 (schema.sql로 이미 생성되므로 안전한 no-op)
 Base.metadata.create_all(bind=engine)
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # 라우터 등록
 app.include_router(pokemon.router)
+app.include_router(chat.router)
 
 @app.get("/")
 def read_root():
