@@ -87,28 +87,26 @@
     }
   ],
   "machines": [],
-  "meta": [
-    {
-      "ailment": {
-        "name": "poison",
-        "url": "https://pokeapi.co/api/v2/move-ailment/5/"
-      },
-      "ailment_chance": 50,
-      "category": {
-        "name": "damage-ailment",
-        "url": "https://pokeapi.co/api/v2/move-category/4/"
-      },
-      "crit_rate": 0,
-      "drain": 0,
-      "flinch_chance": 0,
-      "healing": 0,
-      "max_hits": null,
-      "max_turns": null,
-      "min_hits": null,
-      "min_turns": null,
-      "stat_chance": 0
-    }
-  ],
+  "meta": {
+    "ailment": {
+      "name": "poison",
+      "url": "https://pokeapi.co/api/v2/move-ailment/5/"
+    },
+    "ailment_chance": 50,
+    "category": {
+      "name": "damage-ailment",
+      "url": "https://pokeapi.co/api/v2/move-category/4/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "barb-barrage",
   "names": [
     {
