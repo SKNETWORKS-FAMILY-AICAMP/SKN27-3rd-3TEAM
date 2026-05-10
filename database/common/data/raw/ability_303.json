@@ -51,6 +51,17 @@
         "name": "the-teal-mask",
         "url": "https://pokeapi.co/api/v2/version-group/26/"
       }
+    },
+    {
+      "flavor_text": "마음속에 깃든 추억의 힘으로 가면을 빛나게 하여 자신의 능력을 올린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {

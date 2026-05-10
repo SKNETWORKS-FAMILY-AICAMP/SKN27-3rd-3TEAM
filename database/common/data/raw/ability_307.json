@@ -51,6 +51,17 @@
         "name": "the-indigo-disk",
         "url": "https://pokeapi.co/api/v2/version-group/27/"
       }
+    },
+    {
+      "flavor_text": "복숭악동의 기술에 의해 독 상태가 된 상대는 혼란 상태도 되어 버린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
