@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "발꿈치를 들어 올린 뒤 내리찍어 공격한다. 30%의 확률로 상대를 혼란 상태로 만든다. 빗나가면 자신이 전체 HP의 ½만큼 대미지를 입는다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -58,7 +69,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "confusion",
+        "url": "https://pokeapi.co/api/v2/move-ailment/6/"
+      },
+      "ailment_chance": 30,
+      "category": {
+        "name": "damage-ailment",
+        "url": "https://pokeapi.co/api/v2/move-category/4/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "axe-kick",
   "names": [
     {
@@ -102,6 +134,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "かかとおとし"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "발꿈치찍기"
     }
   ],
   "past_values": [],

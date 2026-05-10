@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "뜨겁게 달궈진 모래와 강렬한 바람으로 상대를 둘러싸서 공격한다. 30% 확률로 상대를 화상 상태로 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -72,7 +83,28 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": [
+    {
+      "ailment": {
+        "name": "burn",
+        "url": "https://pokeapi.co/api/v2/move-ailment/4/"
+      },
+      "ailment_chance": 30,
+      "category": {
+        "name": "damage-ailment",
+        "url": "https://pokeapi.co/api/v2/move-category/4/"
+      },
+      "crit_rate": 0,
+      "drain": 0,
+      "flinch_chance": 0,
+      "healing": 0,
+      "max_hits": null,
+      "max_turns": null,
+      "min_hits": null,
+      "min_turns": null,
+      "stat_chance": 0
+    }
+  ],
   "name": "sandsear-storm",
   "names": [
     {
@@ -116,6 +148,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ねっさのあらし"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "열사의폭풍"
     }
   ],
   "past_values": [],
