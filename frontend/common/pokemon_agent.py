@@ -8,7 +8,10 @@
   - 답변 품질 향상을 위한 강화된 system prompt
   - 웹검색은 DB에 정말 없을 때만 사용
   - [NEW] 하이브리드 검색: BM25(키워드) + 벡터 검색 → RRF 융합
-  - [NEW] Cohere Re-ranking: 상위 후보를 재정렬해 LLM에 최적 컨텍스트 전달
+  - [NEW] Cross-encoder Re-ranking (BAAI/bge-reranker-v2-m3): 상위 후보를 재정렬해 LLM에 최적 컨텍스트 전달
+         (Cohere API 의존성 제거 → 로컬 추론, 무료, 한국어 지원)
+  - [NEW] Neo4j 툴 연동: 진화 체인(search_evolution_chain) · 타입 상성(search_type_relations) 그래프 검색
+  - [NEW] 멀티턴 대화 히스토리 지원 (chat_with_tools 에 history 파라미터 추가)
 
 테이블 구조:
   pokemon → pokemon_stats (1:1)
@@ -19,23 +22,35 @@
 
 import os
 import json
+import threading
 import psycopg2
-import cohere
 from dotenv import load_dotenv
 from typing import TypedDict, List, Annotated
 import operator
 
+# GPU 자동 감지 — torch 없으면 CPU 폴백
+try:
+    import torch
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+except ImportError:
+    DEVICE = "cpu"
+
+from sentence_transformers import CrossEncoder
+
 load_dotenv()
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+# Neo4j 툴 — pokemon_neo4j.py 에서 가져옴
+try:
+    from common.pokemon_neo4j import search_evolution_chain, search_type_relations
+except ImportError:
+    from pokemon_neo4j import search_evolution_chain, search_type_relations
 
 
 # ══════════════════════════════════════════════════════════
@@ -49,14 +64,33 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-llm           = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-embeddings    = OpenAIEmbeddings()
-tavily        = TavilySearchResults(max_results=3)
-cohere_client = cohere.Client(os.environ.get("COHERE_API_KEY", ""))
+llm        = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+embeddings = OpenAIEmbeddings()
+tavily     = TavilySearchResults(max_results=3)
+
+# Cross-encoder: 첫 호출 시 모델 자동 다운로드 (~1GB), 이후 로컬 캐시 사용
+# BAAI/bge-reranker-v2-m3 — 다국어(한국어 포함) 지원, 무료
+_cross_encoder: CrossEncoder | None = None
+_cross_encoder_lock = threading.Lock()
+
+def get_cross_encoder() -> CrossEncoder:
+    global _cross_encoder
+    if _cross_encoder is None:
+        with _cross_encoder_lock:
+            if _cross_encoder is None:
+                print(f"🔄 Cross-encoder 모델 로딩 중... (device={DEVICE}, 최초 1회만)")
+                _cross_encoder = CrossEncoder(
+                    "BAAI/bge-reranker-v2-m3",
+                    max_length=512,
+                    device=DEVICE,
+                )
+                print("✅ Cross-encoder 로딩 완료")
+    return _cross_encoder
 
 # 하이브리드 검색 후보 수 (BM25·벡터 각각) / Re-rank 후 최종 전달 수
-HYBRID_CANDIDATE_K = 10
-RERANK_TOP_N       = 5
+HYBRID_CANDIDATE_K  = 10
+RERANK_CANDIDATE_N  = HYBRID_CANDIDATE_K * 2   # Cross-encoder 입력 후보 수
+RERANK_TOP_N        = 5                         # LLM에 전달할 최종 문서 수
 
 
 # ══════════════════════════════════════════════════════════
@@ -118,7 +152,9 @@ SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부
 2. **복합 질문은 여러 툴을 함께 활용하세요.**
    - 수치/조건/비교 → `search_pokemon_db` (SQL)
    - 느낌/묘사/성격/배경 → `search_pokemon_knowledge` (벡터)
-   - "불꽃타입이면서 귀여운 포켓몬" 같은 복합 질문 → 두 툴 모두 사용
+   - 진화 경로/조건 → `search_evolution_chain` (Neo4j 그래프)
+   - 타입 상성/약점 → `search_type_relations` (Neo4j 그래프)
+   - "불꽃타입이면서 귀여운 포켓몬" 같은 복합 질문 → 여러 툴 함께 사용
 3. **DB에 없는 정보만** `web_search`를 사용하고, 사용 시 "웹에서 찾은 정보입니다"를 명시합니다.
 4. SQL 오류가 발생하면 오류 메시지를 분석해 SQL을 수정 후 재시도합니다.
 
@@ -150,7 +186,6 @@ def search_pokemon_db(sql: str) -> str:
     """
     sql = sql.replace("```sql", "").replace("```", "").strip()
 
-    # 안전성 검사
     sql_upper = sql.upper().strip()
     if not sql_upper.startswith("SELECT"):
         return "오류: SELECT 문만 허용됩니다."
@@ -181,8 +216,8 @@ def search_pokemon_db(sql: str) -> str:
 
 
 def _rrf_merge(
-    bm25_rows: list,   # [(name, source, content), ...]
-    vec_rows:  list,   # [(name, source, content), ...]
+    bm25_rows: list,
+    vec_rows:  list,
     k: int = 60
 ) -> list[dict]:
     """
@@ -192,7 +227,7 @@ def _rrf_merge(
     scores: dict[str, dict] = {}
 
     for rank, (name, source, content) in enumerate(bm25_rows):
-        key = content[:80]   # content 앞 80자를 dedup 키로 사용
+        key = content[:80]
         if key not in scores:
             scores[key] = {"name": name, "source": source, "content": content, "score": 0.0}
         scores[key]["score"] += 1.0 / (k + rank + 1)
@@ -216,14 +251,14 @@ def search_pokemon_knowledge(query: str) -> str:
       1. BM25 키워드 검색 (PostgreSQL full-text search) — 고유명사·정확한 단어에 강함
       2. 벡터 유사도 검색 — 의미·분위기 기반 검색에 강함
       3. RRF(Reciprocal Rank Fusion)로 두 결과 융합
-      4. Cohere Re-ranking으로 최종 정렬 → 상위 5개만 LLM에 전달
+      4. Cross-encoder Re-ranking으로 최종 정렬 → 상위 5개만 LLM에 전달
     """
+    merged = []
     try:
         conn = psycopg2.connect(DB_CONN)
         cur  = conn.cursor()
 
         # ── 1. BM25 키워드 검색 ──────────────────────────────────
-        # PostgreSQL to_tsquery는 공백을 | 로 변환해 OR 검색
         ts_query = " | ".join(query.split())
 
         cur.execute("""
@@ -281,30 +316,24 @@ def search_pokemon_knowledge(query: str) -> str:
         if not merged:
             return "검색 결과가 없습니다. 다른 표현으로 질문해보세요."
 
-        # Re-rank 입력 후보 (최대 HYBRID_CANDIDATE_K * 2개)
-        candidates = merged[:HYBRID_CANDIDATE_K * 2]
+        candidates = merged[:RERANK_CANDIDATE_N]
 
-        # ── 4. Cohere Re-ranking ──────────────────────────────────
+        # ── 4. Cross-encoder Re-ranking ──────────────────────────
         docs_for_rerank = [f"[{c['name']} / {c['source']}]\n{c['content']}" for c in candidates]
 
-        rerank_resp = cohere_client.rerank(
-            model      = "rerank-multilingual-v3.0",  # 한국어 지원 모델
-            query      = query,
-            documents  = docs_for_rerank,
-            top_n      = RERANK_TOP_N,
-        )
+        encoder = get_cross_encoder()
+        pairs   = [(query, doc) for doc in docs_for_rerank]
+        scores  = encoder.predict(pairs)
 
-        top_docs = [docs_for_rerank[r.index] for r in rerank_resp.results]
+        ranked   = sorted(zip(scores, docs_for_rerank), key=lambda x: x[0], reverse=True)
+        top_docs = [doc for _, doc in ranked[:RERANK_TOP_N]]
 
-        return "✅ 관련 포켓몬 정보 (하이브리드 검색 + Re-ranking):\n\n" + "\n\n---\n\n".join(top_docs)
+        return "✅ 관련 포켓몬 정보 (하이브리드 검색 + Cross-encoder Re-ranking):\n\n" + "\n\n---\n\n".join(top_docs)
 
     except Exception as e:
-        # Cohere 실패(버전/API 오류 포함) 시 RRF 결과로 fallback
+        # Cross-encoder 실패 시 RRF 결과로 fallback
         print(f"⚠️  Re-ranking 실패 (fallback to RRF): {e}")
-        try:
-            fallback = merged[:RERANK_TOP_N] if merged else []
-        except NameError:
-            fallback = []
+        fallback = merged[:RERANK_TOP_N] if merged else []
         if not fallback:
             return "검색 결과가 없습니다."
         results = [f"[{c['name']} / {c['source']}]\n{c['content']}" for c in fallback]
@@ -329,26 +358,26 @@ def web_search(query: str) -> str:
 # Agent State & Graph
 # ══════════════════════════════════════════════════════════
 
-tools     = [search_pokemon_db, search_pokemon_knowledge, web_search]
+# Neo4j 툴 포함 — 툴 수가 늘어났으므로 최대 호출 횟수를 8로 상향
+tools     = [search_pokemon_db, search_pokemon_knowledge,
+             search_evolution_chain, search_type_relations,
+             web_search]
 llm_agent = llm.bind_tools(tools)
 
-# 툴 호출 최대 횟수 — 이 횟수를 초과하면 강제 종료
-MAX_TOOL_CALLS = 6
+MAX_TOOL_CALLS = 8
 
 class AgentState(TypedDict):
     messages:        Annotated[List, operator.add]
-    tool_call_count: int   # 누적 툴 호출 횟수
+    tool_call_count: int
 
 
 def agent_node(state: AgentState) -> AgentState:
     """LLM이 툴을 선택하고 답변을 생성하는 핵심 노드"""
     messages = state["messages"]
 
-    # system prompt가 없으면 맨 앞에 추가
     if not any(isinstance(m, SystemMessage) for m in messages):
         messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
 
-    # 최대 툴 호출 횟수 초과 시 강제 종료 지시
     count = state.get("tool_call_count", 0)
     if count >= MAX_TOOL_CALLS:
         messages = messages + [
@@ -360,7 +389,6 @@ def agent_node(state: AgentState) -> AgentState:
 
     response = llm_agent.invoke(messages)
 
-    # 강제 종료 상태에서 여전히 tool_calls 가 있으면 제거
     if count >= MAX_TOOL_CALLS and hasattr(response, "tool_calls") and response.tool_calls:
         response.tool_calls = []
 
@@ -371,7 +399,6 @@ def agent_node(state: AgentState) -> AgentState:
     return {"messages": [response], "tool_call_count": count}
 
 
-# ToolNode 인스턴스는 한 번만 생성
 _tool_node = ToolNode(tools)
 
 def tools_node_wrapper(state: AgentState) -> AgentState:
@@ -382,7 +409,6 @@ def tools_node_wrapper(state: AgentState) -> AgentState:
 
 
 def should_continue(state: AgentState) -> str:
-    """툴 호출이 있고 한도 미만이면 계속, 아니면 종료"""
     last  = state["messages"][-1]
     count = state.get("tool_call_count", 0)
 
@@ -412,84 +438,40 @@ app = build_agent()
 
 
 # ══════════════════════════════════════════════════════════
-# Ingestion — 최초 1회만 실행
-# ══════════════════════════════════════════════════════════
-
-def ingest_embeddings():
-    """
-    DB의 비정형 텍스트에 embedding을 생성해서 저장합니다.
-    최초 1회 실행 시 BM25용 GIN 인덱스도 함께 생성합니다.
-    """
-    conn = psycopg2.connect(DB_CONN)
-    cur  = conn.cursor()
-
-    # ── BM25용 GIN 인덱스 (없을 때만 생성) ─────────────────────
-    print("BM25 GIN 인덱스 확인/생성 중...")
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_flavor_text_fts
-        ON flavor_text USING GIN (to_tsvector('simple', content));
-    """)
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_pokemon_knowledge_fts
-        ON pokemon_knowledge USING GIN (to_tsvector('simple', content));
-    """)
-    conn.commit()
-    print("✅ GIN 인덱스 준비 완료")
-
-    cur.execute("""
-        SELECT ft.id, p.name, ft.version_name, ft.content
-        FROM flavor_text ft
-        JOIN species s ON ft.species_id = s.id
-        JOIN pokemon p ON s.pokemon_id  = p.id
-        WHERE ft.embedding IS NULL AND ft.content IS NOT NULL
-    """)
-    flavor_rows = cur.fetchall()
-    print(f"flavor_text 임베딩 대상: {len(flavor_rows)}개")
-
-    for ft_id, name, version, content in flavor_rows:
-        text   = f"포켓몬: {name} (버전: {version})\n{content}"
-        vector = embeddings.embed_query(text)
-        cur.execute("UPDATE flavor_text SET embedding = %s WHERE id = %s", (vector, ft_id))
-
-    cur.execute("""
-        SELECT pk.pokemon_id, p.name, pk.content
-        FROM pokemon_knowledge pk
-        JOIN pokemon p ON pk.pokemon_id = p.id
-        WHERE pk.embedding IS NULL AND pk.content IS NOT NULL
-    """)
-    knowledge_rows = cur.fetchall()
-    print(f"pokemon_knowledge 임베딩 대상: {len(knowledge_rows)}개")
-
-    for pokemon_id, name, content in knowledge_rows:
-        text   = f"포켓몬: {name}\n{content}"
-        vector = embeddings.embed_query(text)
-        cur.execute("UPDATE pokemon_knowledge SET embedding = %s WHERE pokemon_id = %s", (vector, pokemon_id))
-
-    conn.commit()
-    conn.close()
-    print(f"✅ 임베딩 완료 — flavor_text {len(flavor_rows)}개 / knowledge {len(knowledge_rows)}개")
-
-
-# ══════════════════════════════════════════════════════════
 # 실행 헬퍼
 # ══════════════════════════════════════════════════════════
 
-def chat(query: str) -> str:
-    """기존 호환용 — 답변 텍스트만 반환."""
-    answer, _ = chat_with_tools(query)
-    return answer
+def chat_with_tools(
+    query: str,
+    history: list[dict] | None = None
+) -> tuple[str, list[str]]:
+    """
+    답변 텍스트와 실제 사용된 툴 이름 목록을 함께 반환합니다.
 
+    Args:
+        query:   현재 사용자 질문
+        history: 이전 대화 목록 [{"role": "user"|"assistant", "content": "..."}, ...]
+                 Streamlit 의 st.session_state.messages 를 그대로 전달하면 됩니다.
+    """
+    messages = []
 
-def chat_with_tools(query: str) -> tuple[str, list[str]]:
-    """답변 텍스트와 실제 사용된 툴 이름 목록을 함께 반환."""
+    # 이전 대화를 LangChain 메시지로 변환
+    if history:
+        for msg in history:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+
+    messages.append(HumanMessage(content=query))
+
     result = app.invoke({
-        "messages":        [HumanMessage(content=query)],
+        "messages":        messages,
         "tool_call_count": 0,
     })
 
     used_tools: list[str] = []
     for msg in result["messages"]:
-        # AIMessage 중 tool_calls 가 있는 것만 수집
         if hasattr(msg, "tool_calls") and msg.tool_calls:
             for tc in msg.tool_calls:
                 name = tc.get("name", "") if isinstance(tc, dict) else getattr(tc, "name", "")
@@ -500,25 +482,10 @@ def chat_with_tools(query: str) -> tuple[str, list[str]]:
     return answer, used_tools
 
 
-# ══════════════════════════════════════════════════════════
-# FastAPI 라우터
-# ══════════════════════════════════════════════════════════
-
-router = APIRouter(prefix="/chat", tags=["chat"])
-
-class ChatRequest(BaseModel):
-    query: str
-
-class ChatResponse(BaseModel):
-    query:  str
-    answer: str
-
-@router.post("/", response_model=ChatResponse)
-def pokemon_chat(req: ChatRequest):
-    if not req.query.strip():
-        raise HTTPException(status_code=400, detail="질문을 입력하세요.")
-    answer = chat(req.query)
-    return ChatResponse(query=req.query, answer=answer)
+def chat(query: str, history: list[dict] | None = None) -> str:
+    """답변 텍스트만 반환합니다 (툴 목록이 필요 없을 때 사용)."""
+    answer, _ = chat_with_tools(query, history)
+    return answer
 
 
 # ══════════════════════════════════════════════════════════
@@ -526,19 +493,21 @@ def pokemon_chat(req: ChatRequest):
 # ══════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    # 임베딩 최초 실행 시 아래 주석 해제
-    # ingest_embeddings()
-
+    # 임베딩 초기화는 python -m common.ingest 으로 별도 실행
     tests = [
-        "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQL만 사용
-        "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # 벡터만 사용
-        "피카츄는 어떤 성격이야?",                             # 벡터만 사용
-        "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQL만 사용
-        "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQL + 벡터 동시 사용 ← 핵심 개선
-        "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQL + 벡터 동시 사용
+        "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQL
+        "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # 벡터
+        "피카츄는 어떤 성격이야?",                             # 벡터
+        "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQL
+        "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQL + 벡터
+        "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQL + 벡터
+        "이브이 진화 경로 알려줘",                             # Neo4j
+        "드래곤 타입 상성은?",                                 # Neo4j
     ]
 
     for q in tests:
         print(f"\n{'='*60}")
         print(f"Q: {q}")
-        print(f"A: {chat(q)}")
+        answer, used = chat_with_tools(q)
+        print(f"툴: {used}")
+        print(f"A: {answer}")

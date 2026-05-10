@@ -1,18 +1,16 @@
 """
 포켓몬 챗봇 Streamlit UI
 ========================
-실행: streamlit run pokemon_chatbot_app.py
-
 pokemon_agent.py 와 같은 디렉터리에 있어야 합니다.
 .env 파일에 아래 키가 있어야 합니다:
   OPENAI_API_KEY=...
-  COHERE_API_KEY=...
   TAVILY_API_KEY=...
   DATABASE_URL=postgresql://...  (없으면 기본값 사용)
 """
 
+import copy
 import streamlit as st
-from common.pokemon_agent import chat  # pokemon_agent.py 의 chat() 직접 import
+from common.pokemon_agent import chat_with_tools
 
 
 
@@ -210,6 +208,7 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 .tool-db      { background: #264653; color: #2a9d8f; border: 1px solid #2a9d8f; }
 .tool-vector  { background: #3d2b69; color: #b388ff; border: 1px solid #b388ff; }
+.tool-neo4j   { background: #1a3a2a; color: #4ade80; border: 1px solid #4ade80; }
 .tool-web     { background: #6b3a1f; color: #f4a261; border: 1px solid #f4a261; }
 
 /* 스크롤바 */
@@ -251,12 +250,16 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 📖 사용 가능한 툴")
     st.markdown("""
-- 🗄️ **search_pokemon_db**  
+- 🗄️ **search_pokemon_db**
   SQL로 스탯·타입·세대 검색
-- 🔮 **search_pokemon_knowledge**  
-  하이브리드(BM25+벡터) + Rerank  
+- 🔮 **search_pokemon_knowledge**
+  하이브리드(BM25+벡터) + Cross-encoder Rerank
   도감 설명·분위기 검색
-- 🌐 **web_search**  
+- 🔗 **search_evolution_chain**
+  Neo4j로 진화 경로·조건 탐색
+- ⚔️ **search_type_relations**
+  Neo4j로 타입 상성·약점 탐색
+- 🌐 **web_search**
   DB에 없는 최신 정보
 """)
 
@@ -280,7 +283,7 @@ with st.sidebar:
 st.html("""
 <div class="pk-header">
     <p class="pk-title">⚫ POKÉDEX AI ⚫</p>
-    <p class="pk-sub">하이브리드 검색 · Cohere Re-ranking · Tool-calling Agent</p>
+    <p class="pk-sub">하이브리드 검색 · Cross-encoder Re-ranking · Tool-calling Agent</p>
 </div>
 """)
 
@@ -305,15 +308,21 @@ for col, q in zip(cols, EXAMPLE_QUESTIONS):
 # ──────────────────────────────────────────────
 # 채팅 히스토리 렌더링
 # ──────────────────────────────────────────────
+_BADGE_MAP = [
+    ("db",        "tool-db",     "🗄️"),
+    ("knowledge", "tool-vector", "🔮"),
+    ("evolution", "tool-neo4j",  "🔗"),
+    ("type_rel",  "tool-neo4j",  "⚔️"),
+    ("web",       "tool-web",    "🌐"),
+]
+
 def render_tool_badges(tool_names: list[str]) -> str:
     badge_html = ""
     for t in tool_names:
-        if "db" in t:
-            badge_html += f'<span class="tool-badge tool-db">🗄️ {t}</span>'
-        elif "knowledge" in t:
-            badge_html += f'<span class="tool-badge tool-vector">🔮 {t}</span>'
-        elif "web" in t:
-            badge_html += f'<span class="tool-badge tool-web">🌐 {t}</span>'
+        for key, css, emoji in _BADGE_MAP:
+            if key in t:
+                badge_html += f'<span class="tool-badge {css}">{emoji} {t}</span>'
+                break
     return badge_html
 
 
@@ -357,29 +366,22 @@ def handle_query(user_input: str):
     if not user_input:
         return
 
+    history = copy.deepcopy(st.session_state.messages)
+
     # 사용자 메시지 추가
     st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # 타이핑 인디케이터 표시하며 agent 호출
     with st.spinner(""):
         try:
-            # pokemon_agent.chat() 호출
-            answer = chat(user_input)
+            answer, used_tools = chat_with_tools(user_input, history=history)
         except Exception as e:
             answer = f"⚠️ 오류가 발생했습니다: {e}"
+            used_tools = []
 
     # 응답 저장
     bot_idx = len(st.session_state.messages)
     st.session_state.messages.append({"role": "assistant", "content": answer})
 
-    # 툴 로그 파싱 (answer에 ✅ 포함 여부로 간단 감지)
-    used_tools = []
-    if "search_pokemon_db" in answer or "SQL" in answer or "개 결과" in answer:
-        used_tools.append("search_pokemon_db")
-    if "하이브리드" in answer or "Re-ranking" in answer or "RRF" in answer or "도감" in answer:
-        used_tools.append("search_pokemon_knowledge")
-    if "웹에서 찾은" in answer or "웹 검색" in answer:
-        used_tools.append("web_search")
     if used_tools:
         st.session_state.tool_logs[bot_idx] = used_tools
 
@@ -400,6 +402,6 @@ if user_input:
 # ──────────────────────────────────────────────
 st.html("""
 <p class="footer-txt">
-    Powered by LangGraph · OpenAI · Cohere Rerank · Tavily · pgvector
+    Powered by LangGraph · OpenAI · BAAI/bge-reranker · Tavily · pgvector · Neo4j
 </p>
 """)

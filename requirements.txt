@@ -24,6 +24,7 @@ langchain-tavily
 openai
 groq
 cohere
+sentence-transformers
 
 # [Frontend - Streamlit]
 streamlit
