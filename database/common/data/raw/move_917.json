@@ -380,28 +380,26 @@
       }
     }
   ],
-  "meta": [
-    {
-      "ailment": {
-        "name": "heal-block",
-        "url": "https://pokeapi.co/api/v2/move-ailment/15/"
-      },
-      "ailment_chance": 100,
-      "category": {
-        "name": "damage-ailment",
-        "url": "https://pokeapi.co/api/v2/move-category/4/"
-      },
-      "crit_rate": 0,
-      "drain": 0,
-      "flinch_chance": 0,
-      "healing": 0,
-      "max_hits": null,
-      "max_turns": 2,
-      "min_hits": null,
-      "min_turns": 2,
-      "stat_chance": 0
-    }
-  ],
+  "meta": {
+    "ailment": {
+      "name": "heal-block",
+      "url": "https://pokeapi.co/api/v2/move-ailment/15/"
+    },
+    "ailment_chance": 100,
+    "category": {
+      "name": "damage-ailment",
+      "url": "https://pokeapi.co/api/v2/move-category/4/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": 2,
+    "min_hits": null,
+    "min_turns": 2,
+    "stat_chance": 0
+  },
   "name": "psychic-noise",
   "names": [
     {
