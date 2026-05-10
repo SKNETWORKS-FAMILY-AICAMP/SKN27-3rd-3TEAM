@@ -480,6 +480,29 @@ def create_species_and_generation_nodes(conn: Neo4jConnection) -> None:
     run_batched(conn, species_query, species_payload, "Species nodes")
     run_batched(conn, generation_query, generation_payload, "Generation nodes")
 
+def create_effect_nodes(conn: Neo4jConnection) -> None:
+    """
+    Effect 노드를 생성합니다.
+
+    Source:
+        moves.json, abilities.json, items.json
+    
+    설명:
+    """
+    rows = [
+        {
+            "effect_id": [],
+            "name": [],
+            "effect_type": [],
+            "target_scope": [],
+            "chance": [],
+            "value": [],
+            "value_unit": [],
+            "condition_key": [],
+            "condition_value": [],
+            "description": []
+        }
+    ]
 
 # ============================================
 # 6. 원본 관계 생성 함수
