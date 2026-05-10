@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 from graph.neo4j_client import Neo4jClient, get_neo4j
 from services.team_analysis_service import analyze_team
 from services.team_builder_service import recommend_team_member
+from services.team_rag_service import run_team_rag
 
 
 # router는 팀 분석/추천 API 주소를 묶기 위한 FastAPI 라우터입니다.
@@ -134,6 +135,53 @@ def recommend_team_member_endpoint(
         return recommend_team_member(
             pokemon_ids=request.pokemon_ids,
             graph=graph,
+            limit=request.limit,
+        )
+    except ValueError as error:
+        _handle_value_error(error)
+
+
+@router.post("/rag-analyze")
+def rag_analyze_team_endpoint(
+    request: TeamBuilderRequest,
+    graph: Neo4jClient = Depends(get_neo4j),
+):
+    """
+    LangGraph 기반 Hybrid RAG로 팀 분석 설명을 생성하는 API입니다.
+
+    프론트엔드 사용 흐름:
+        1. 사용자가 5마리 포켓몬을 선택합니다.
+        2. pokemon_ids를 이 API로 보냅니다.
+        3. Graph DB 분석 결과, Vector 검색 근거, 최종 설명 문장을 함께 반환합니다.
+    """
+    try:
+        return run_team_rag(
+            pokemon_ids=request.pokemon_ids,
+            graph=graph,
+            request_type="analysis",
+        )
+    except ValueError as error:
+        _handle_value_error(error)
+
+
+@router.post("/rag-recommend")
+def rag_recommend_team_member_endpoint(
+    request: TeamRecommendationRequest,
+    graph: Neo4jClient = Depends(get_neo4j),
+):
+    """
+    LangGraph 기반 Hybrid RAG로 6번째 포켓몬 추천 설명을 생성하는 API입니다.
+
+    프론트엔드 사용 흐름:
+        1. 사용자가 5마리 포켓몬을 선택합니다.
+        2. pokemon_ids와 limit를 이 API로 보냅니다.
+        3. Graph DB 추천 후보, 재정렬 결과, 최종 추천 설명 문장을 함께 반환합니다.
+    """
+    try:
+        return run_team_rag(
+            pokemon_ids=request.pokemon_ids,
+            graph=graph,
+            request_type="recommendation",
             limit=request.limit,
         )
     except ValueError as error:

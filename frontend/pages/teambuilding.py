@@ -469,26 +469,265 @@ def render_team_insights(insights: Dict[str, Any]) -> None:
                 st.write(f"- {pokemon['name']} | {pokemon['role']} | {pokemon['detail']}")
 
 
+def render_rag_final_answer(result: Dict[str, Any]) -> None:
+    """Hybrid RAG가 만든 최종 자연어 해설을 분석 화면에 추가로 보여주는 함수입니다."""
+
+    # final_answer:
+    # - /rag-analyze API가 Graph DB 계산 결과와 Vector DB 근거를 합쳐 만든 최종 설명 문장입니다.
+    final_answer = result.get("final_answer")
+    if not final_answer:
+        return
+
+    st.markdown(
+        f"""
+        <div class="rag-answer-card">
+            <div class="rag-answer-kicker">AI 종합 해설</div>
+            <div class="rag-answer-text">{escape(final_answer).replace(chr(10), "<br>")}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def normalize_html(html: str) -> str:
+    """Streamlit Markdown이 HTML을 코드블록으로 오해하지 않도록 줄 앞 공백을 제거하는 함수입니다."""
+
+    # Markdown 규칙:
+    # - 줄 앞에 공백이 많이 있으면 HTML이 아니라 코드블록으로 표시될 수 있습니다.
+    # - 카드 UI HTML은 렌더링 직전에 왼쪽 공백을 제거해서 안전하게 표시합니다.
+    return "\n".join(line.lstrip() for line in html.splitlines())
+
+
+def build_type_badges(type_names: List[str]) -> str:
+    """타입 이름 목록을 색상 배지 HTML로 바꾸는 함수입니다."""
+
+    # badges:
+    # - 포켓몬 카드, 선택 덱 요약, 추천 카드에서 타입을 같은 색상 규칙으로 보여주기 위해 사용합니다.
+    badges = []
+    for type_name in type_names:
+        badges.append(
+            f"<span class='type-badge' style='{get_type_badge_style(type_name)}'>"
+            f"{escape(type_name)}</span>"
+        )
+
+    return "".join(badges) if badges else "<span class='type-placeholder'>타입 정보 없음</span>"
+
+
+def render_selected_team_cards(selected: List[Dict[str, Any]]) -> None:
+    """분석 대상 5마리 포켓몬을 보기 좋은 카드 형태로 보여주는 함수입니다."""
+
+    if not selected:
+        return
+
+    # cards:
+    # - 기존 글머리표 목록 대신, 사용자가 고른 5마리를 한눈에 확인할 수 있는 요약 카드입니다.
+    cards = []
+    for pokemon in selected:
+        type_names = [
+            type_item.get("type_name", "")
+            for type_item in pokemon.get("types", [])
+            if type_item.get("type_name")
+        ]
+        image_url = pokemon.get("image_url") or (
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/"
+            f"sprites/pokemon/other/official-artwork/{pokemon.get('pokemon_id')}.png"
+        )
+        image_html = (
+            f"<img class='analysis-team-image' src='{escape(image_url)}' alt='{escape(pokemon.get('name', ''))}' />"
+            if image_url
+            else "<div class='analysis-team-image-empty'>?</div>"
+        )
+
+        cards.append(
+            normalize_html(
+                f"""
+                <div class="analysis-team-card">
+                    <div class="analysis-team-image-wrap">{image_html}</div>
+                    <div class="analysis-team-name">#{pokemon.get('pokemon_id', 0):04d} {escape(pokemon.get('name', ''))}</div>
+                    <div class="analysis-team-types">{build_type_badges(type_names)}</div>
+                </div>
+                """
+            )
+        )
+
+    st.markdown(
+        normalize_html(
+            f"""
+            <div class="analysis-section-header">선택한 포켓몬</div>
+            <div class="analysis-team-grid">
+                {''.join(cards)}
+            </div>
+            """
+        ),
+        unsafe_allow_html=True,
+    )
+
+
+def render_analysis_detail_cards(
+    weaknesses: List[Dict[str, Any]],
+    resistances: List[Dict[str, Any]],
+    move_coverage: List[Dict[str, Any]],
+) -> None:
+    """약점/방어/기술 커버리지를 카드형 패널로 보여주는 함수입니다."""
+
+    def build_matchup_rows(items: List[Dict[str, Any]], label: str) -> str:
+        """타입 상성 목록을 카드 안의 행 HTML로 바꾸는 내부 함수입니다."""
+
+        if not items:
+            return "<div class='analysis-empty-row'>아직 계산된 정보가 부족해요.</div>"
+
+        rows = []
+        for item in items[:6]:
+            type_name = item.get("type_name", "")
+            score = item.get("score", 0)
+            average = item.get("average_multiplier", 0)
+            rows.append(
+                normalize_html(
+                    f"""
+                    <div class="analysis-metric-row">
+                        <div class="analysis-metric-left">{build_type_badges([type_name])}</div>
+                        <div class="analysis-metric-right">
+                            <strong>{label} {score}점</strong>
+                            <span>평균 {float(average):.2f}배</span>
+                        </div>
+                    </div>
+                    """
+                )
+            )
+        return "".join(rows)
+
+    def build_coverage_rows(items: List[Dict[str, Any]]) -> str:
+        """기술 타입 커버리지 목록을 카드 안의 행 HTML로 바꾸는 내부 함수입니다."""
+
+        if not items:
+            return "<div class='analysis-empty-row'>기술 타입 정보가 아직 부족해요.</div>"
+
+        rows = []
+        max_count = max((item.get("move_count", 0) for item in items[:6]), default=1)
+        for item in items[:6]:
+            type_name = item.get("type_name", "")
+            move_count = item.get("move_count", 0)
+            width = int((move_count / max_count) * 100) if max_count else 0
+            rows.append(
+                normalize_html(
+                    f"""
+                    <div class="coverage-row">
+                        <div class="coverage-row-top">
+                            {build_type_badges([type_name])}
+                            <strong>{move_count}개</strong>
+                        </div>
+                        <div class="coverage-bar">
+                            <div class="coverage-bar-fill" style="width:{width}%"></div>
+                        </div>
+                    </div>
+                    """
+                )
+            )
+        return "".join(rows)
+
+    st.markdown(
+        normalize_html(
+            f"""
+            <div class="analysis-detail-grid">
+                <div class="analysis-detail-card danger-panel">
+                    <div class="analysis-detail-title">주의할 약점 타입</div>
+                    <div class="analysis-detail-caption">상대가 이 타입 기술을 들고 오면 교체와 선봉 선택을 조심해야 해요.</div>
+                    {build_matchup_rows(weaknesses, "위험")}
+                </div>
+                <div class="analysis-detail-card safe-panel">
+                    <div class="analysis-detail-title">방어가 좋은 타입</div>
+                    <div class="analysis-detail-caption">이 타입 공격은 비교적 안정적으로 받아낼 가능성이 높아요.</div>
+                    {build_matchup_rows(resistances, "안정")}
+                </div>
+                <div class="analysis-detail-card coverage-panel">
+                    <div class="analysis-detail-title">기술 타입 커버리지</div>
+                    <div class="analysis-detail-caption">현재 팀이 어떤 공격 타입을 많이 확보했는지 보여줍니다.</div>
+                    {build_coverage_rows(move_coverage)}
+                </div>
+            </div>
+            """
+        ),
+        unsafe_allow_html=True,
+    )
+
+
+def render_recommendation_cards(recommendations: List[Dict[str, Any]]) -> None:
+    """추천 후보 1~3순위를 카드형 비교 UI로 보여주는 함수입니다."""
+
+    # cards:
+    # - 추천 후보를 같은 기준으로 비교할 수 있게 이미지, 점수, 이유를 한 카드에 묶습니다.
+    cards = []
+    for index, pokemon in enumerate(recommendations[:3], start=1):
+        rank = pokemon.get("rank", index)
+        score = pokemon.get("hybrid_score", pokemon.get("score", 0))
+        image_url = pokemon.get("image_url") or (
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/"
+            f"sprites/pokemon/other/official-artwork/{pokemon.get('pokemon_id')}.png"
+        )
+        reasons = pokemon.get("reasons") or []
+        reason_rows = "".join(
+            f"<li>{escape(reason)}</li>"
+            for reason in reasons[:4]
+        ) or "<li>현재 팀의 약점을 보완할 수 있는 후보입니다.</li>"
+
+        raw_types = pokemon.get("types", [])
+        type_names = [
+            type_item.get("type_name", type_item.get("name", ""))
+            if isinstance(type_item, dict)
+            else str(type_item)
+            for type_item in raw_types
+        ]
+
+        image_html = (
+            f"<img class='recommend-image' src='{escape(image_url)}' alt='{escape(pokemon.get('name', ''))}' />"
+            if image_url
+            else "<div class='recommend-image-empty'>?</div>"
+        )
+
+        cards.append(
+            normalize_html(
+                f"""
+                <div class="recommend-card rank-{rank}">
+                    <div class="recommend-rank">{rank}순위</div>
+                    <div class="recommend-image-wrap">{image_html}</div>
+                    <div class="recommend-name">#{pokemon.get('pokemon_id', 0):04d} {escape(pokemon.get('name', ''))}</div>
+                    <div class="recommend-types">{build_type_badges([name for name in type_names if name])}</div>
+                    <div class="recommend-score">추천 점수 <strong>{score}</strong></div>
+                    <ul class="recommend-reasons">{reason_rows}</ul>
+                </div>
+                """
+            )
+        )
+
+    st.markdown(
+        normalize_html(f"<div class='recommend-grid'>{''.join(cards)}</div>"),
+        unsafe_allow_html=True,
+    )
+
+
 def render_analysis_result(result: Dict[str, Any]) -> None:
     """팀 분석 API 결과를 사용자가 읽기 좋게 보여주는 함수입니다."""
 
     st.subheader("포켓몬 덱 분석")
 
-    render_team_insights(result.get("insights", {}))
+    # analysis:
+    # - 기존 /analyze 응답은 분석 값이 바로 오고,
+    # - 새 /rag-analyze 응답은 graph_result 안에 기존 분석 값이 들어옵니다.
+    # - 이 한 줄로 두 응답 구조를 모두 처리해서 기존 화면 코드를 최대한 유지합니다.
+    analysis = result.get("graph_result", result)
 
-    selected = result.get("selected_pokemon", [])
-    if selected:
-        st.markdown("**선택한 포켓몬**")
-        for pokemon in selected:
-            type_text = ", ".join(type_item["type_name"] for type_item in pokemon.get("types", []))
-            st.write(f"- #{pokemon['pokemon_id']:04d} {pokemon['name']} | 타입: {type_text}")
+    render_team_insights(analysis.get("insights", {}))
+    render_rag_final_answer(result)
+
+    selected = analysis.get("selected_pokemon", [])
+    render_selected_team_cards(selected)
 
     # weaknesses/resistances:
     # - 백엔드 분석 서비스는 weak_types, resistant_types라는 이름으로 반환합니다.
     # - 혹시 이전 응답 형태가 들어와도 깨지지 않도록 예전 키도 fallback으로 둡니다.
-    weaknesses = result.get("weak_types", result.get("weaknesses", []))
-    resistances = result.get("resistant_types", result.get("resistances", []))
-    move_coverage = result.get("move_type_coverage", [])
+    weaknesses = analysis.get("weak_types", analysis.get("weaknesses", []))
+    resistances = analysis.get("resistant_types", analysis.get("resistances", []))
+    move_coverage = analysis.get("move_type_coverage", [])
 
     # detail rows:
     # - 위 카드형 분석과 아래 상세 수치가 서로 다른 기준처럼 보이지 않도록 같은 정렬 기준을 사용합니다.
@@ -497,36 +736,7 @@ def render_analysis_result(result: Dict[str, Any]) -> None:
     resistances = sorted(resistances, key=lambda item: item.get("score", 0), reverse=True)
     move_coverage = sorted(move_coverage, key=lambda item: item.get("move_count", 0), reverse=True)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("**주의할 약점 타입**")
-        if weaknesses:
-            for item in weaknesses[:8]:
-                st.write(
-                    f"- {item['type_name']}: 위험 {item.get('score', 0)}점 "
-                    f"(평균 {item.get('average_multiplier', 0):.2f}배)"
-                )
-        else:
-            st.caption("큰 약점 타입이 아직 계산되지 않았어요.")
-
-    with col2:
-        st.markdown("**방어가 좋은 타입**")
-        if resistances:
-            for item in resistances[:8]:
-                st.write(
-                    f"- {item['type_name']}: 안정 {item.get('score', 0)}점 "
-                    f"(평균 {item.get('average_multiplier', 0):.2f}배)"
-                )
-        else:
-            st.caption("저항 타입 정보가 아직 부족해요.")
-
-    with col3:
-        st.markdown("**기술 타입 커버리지**")
-        if move_coverage:
-            for item in move_coverage[:8]:
-                st.write(f"- {item['type_name']}: {item['move_count']}개")
-        else:
-            st.caption("기술 타입 정보가 아직 부족해요.")
+    render_analysis_detail_cards(weaknesses, resistances, move_coverage)
 
 
 def render_recommendation_result(result: Dict[str, Any]) -> None:
@@ -534,26 +744,20 @@ def render_recommendation_result(result: Dict[str, Any]) -> None:
 
     st.subheader("포켓몬 추천")
 
-    recommendations = result.get("recommendations", [])
+    # recommendation_result:
+    # - 기존 /recommend 응답은 recommendations가 바로 오고,
+    # - 새 /rag-recommend 응답은 reranked_result 안에 최종 추천 목록이 들어옵니다.
+    # - 두 구조를 모두 지원해서 기존 추천 카드 UI를 그대로 사용할 수 있게 합니다.
+    recommendation_result = result.get("reranked_result", result.get("graph_result", result))
+
+    render_rag_final_answer(result)
+
+    recommendations = recommendation_result.get("recommendations", [])
     if not recommendations:
         st.info("추천 결과가 아직 없어요.")
         return
 
-    columns = st.columns(min(len(recommendations), 3))
-    for index, pokemon in enumerate(recommendations[:3]):
-        with columns[index]:
-            st.markdown(f"### {pokemon.get('rank', index + 1)}순위")
-            if pokemon.get("image_url"):
-                st.image(pokemon["image_url"], use_container_width=True)
-            st.markdown(f"**#{pokemon['pokemon_id']:04d} {pokemon['name']}**")
-            st.caption(f"추천 점수: {pokemon.get('score')}")
-
-            # reasons:
-            # - 백엔드가 계산한 추천 근거입니다.
-            # - 나중에 RAG를 붙이면 이 근거를 자연어 설명 재료로 사용할 수 있습니다.
-            reasons = pokemon.get("reasons") or []
-            for reason in reasons:
-                st.write(f"- {reason}")
+    render_recommendation_cards(recommendations)
 
 
 def apply_page_style() -> None:
@@ -711,6 +915,295 @@ def apply_page_style() -> None:
             line-height: 1.65;
             font-weight: 650;
         }
+        .rag-answer-card {
+            margin: 12px 0 20px 0;
+            padding: 20px 22px;
+            border: 1px solid #a7f3d0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 52%, #ecfeff 100%);
+            box-shadow: 0 14px 30px rgba(15, 118, 110, 0.09);
+        }
+        .rag-answer-kicker {
+            color: #0f766e;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .rag-answer-text {
+            color: #1f2937;
+            font-size: 15px;
+            line-height: 1.75;
+            font-weight: 650;
+        }
+        .analysis-section-header {
+            margin: 22px 0 12px 0;
+            color: #111827;
+            font-size: 18px;
+            font-weight: 900;
+        }
+        .analysis-team-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .analysis-team-card {
+            min-height: 168px;
+            padding: 12px;
+            border: 1px solid #dbe7f5;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,251,255,0.92) 100%);
+            box-shadow: 0 14px 28px rgba(30, 41, 59, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+        }
+        .analysis-team-image-wrap {
+            width: 100%;
+            height: 88px;
+            border-radius: 16px;
+            background: radial-gradient(circle at 50% 35%, #ffffff 0%, #eef6ff 72%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .analysis-team-image {
+            width: 92px;
+            height: 84px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 10px rgba(30, 41, 59, 0.13));
+        }
+        .analysis-team-image-empty {
+            color: #94a3b8;
+            font-weight: 900;
+        }
+        .analysis-team-name {
+            width: 100%;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 900;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .analysis-team-types {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .analysis-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin: 18px 0 32px 0;
+        }
+        .analysis-detail-card {
+            min-height: 360px;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid #dbe7f5;
+            box-shadow: 0 18px 36px rgba(30, 41, 59, 0.08);
+        }
+        .danger-panel {
+            background: linear-gradient(180deg, #fff7f7 0%, #ffffff 100%);
+            border-color: #fecaca;
+        }
+        .safe-panel {
+            background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+            border-color: #bbf7d0;
+        }
+        .coverage-panel {
+            background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+            border-color: #bfdbfe;
+        }
+        .analysis-detail-title {
+            color: #111827;
+            font-size: 18px;
+            font-weight: 950;
+            margin-bottom: 6px;
+        }
+        .analysis-detail-caption {
+            min-height: 40px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.45;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .analysis-metric-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 0;
+            border-top: 1px solid rgba(148, 163, 184, 0.22);
+        }
+        .analysis-metric-left {
+            min-width: 92px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .analysis-metric-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 750;
+        }
+        .analysis-metric-right span {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .analysis-empty-row {
+            padding: 16px;
+            color: #64748b;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            font-weight: 700;
+        }
+        .coverage-row {
+            padding: 11px 0;
+            border-top: 1px solid rgba(148, 163, 184, 0.22);
+        }
+        .coverage-row-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        .coverage-bar {
+            height: 8px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        .coverage-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #38bdf8 0%, #2563eb 100%);
+        }
+        .recommend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin: 18px 0 32px 0;
+        }
+        .recommend-card {
+            position: relative;
+            min-height: 420px;
+            padding: 22px 18px 18px 18px;
+            border-radius: 28px;
+            border: 1px solid #dbe7f5;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,251,255,0.96) 100%);
+            box-shadow: 0 20px 42px rgba(30, 41, 59, 0.11);
+            overflow: hidden;
+        }
+        .recommend-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 8px;
+            background: linear-gradient(90deg, #60a5fa 0%, #34d399 100%);
+        }
+        .recommend-card.rank-1::before {
+            background: linear-gradient(90deg, #f59e0b 0%, #facc15 100%);
+        }
+        .recommend-rank {
+            color: #111827;
+            font-size: 24px;
+            font-weight: 950;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+        .recommend-image-wrap {
+            height: 150px;
+            border-radius: 22px;
+            background: radial-gradient(circle at 50% 35%, #ffffff 0%, #eef6ff 76%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .recommend-image {
+            width: 150px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 14px rgba(30, 41, 59, 0.16));
+        }
+        .recommend-image-empty {
+            color: #94a3b8;
+            font-size: 28px;
+            font-weight: 900;
+        }
+        .recommend-name {
+            color: #111827;
+            font-size: 17px;
+            font-weight: 950;
+            margin-bottom: 8px;
+        }
+        .recommend-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 26px;
+            margin-bottom: 12px;
+        }
+        .recommend-score {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 850;
+            margin-bottom: 12px;
+        }
+        .recommend-score strong {
+            color: #2563eb;
+            font-size: 18px;
+            font-weight: 950;
+        }
+        .recommend-reasons {
+            margin: 0;
+            padding-left: 18px;
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.65;
+            font-weight: 700;
+        }
+        .recommend-reasons li {
+            margin-bottom: 8px;
+        }
+        @media (max-width: 1100px) {
+            .analysis-team-grid,
+            .analysis-detail-grid,
+            .recommend-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 720px) {
+            .analysis-team-grid,
+            .analysis-detail-grid,
+            .recommend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         .insight-card {
             min-height: 110px;
             margin: 10px 0;
@@ -852,14 +1345,14 @@ def show() -> None:
         if st.button("덱 분석", disabled=not can_request, use_container_width=True):
             payload = {"pokemon_ids": st.session_state.selected_pokemon_ids}
             st.session_state.analysis_result = request_json(
-                "POST", "/api/v1/team-builder/analyze", json=payload
+                "POST", "/api/v1/team-builder/rag-analyze", json=payload
             )
 
     with action_col3:
         if st.button("추천 받기", disabled=not can_request, use_container_width=True):
             payload = {"pokemon_ids": st.session_state.selected_pokemon_ids, "limit": 3}
             st.session_state.recommendation_result = request_json(
-                "POST", "/api/v1/team-builder/recommend", json=payload
+                "POST", "/api/v1/team-builder/rag-recommend", json=payload
             )
 
     if st.session_state.analysis_result:

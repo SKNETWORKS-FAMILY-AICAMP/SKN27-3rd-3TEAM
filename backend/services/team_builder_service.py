@@ -13,10 +13,88 @@ from graph.neo4j_client import Neo4jClient
 from services.team_analysis_service import analyze_team
 
 
+def _describe_defensive_relation(relation: str, multiplier: float) -> str:
+    """Graph DB 방어 관계를 사용자에게 읽기 쉬운 한국어 표현으로 바꾸는 함수입니다."""
+
+    # relation:
+    # - Neo4j에는 RESISTANT_TO, VERY_RESISTANT_TO, IMMUNE_TO 같은 관계명으로 저장되어 있습니다.
+    relation_labels = {
+        "IMMUNE_TO": "무효",
+        "VERY_RESISTANT_TO": "강한 저항",
+        "RESISTANT_TO": "저항",
+    }
+    label = relation_labels.get(relation, "저항")
+    return f"{label}({multiplier}배)"
+
+
+def _build_defensive_reason(defensive_covers: List[Dict[str, Any]]) -> str:
+    """후보가 어떤 약점 타입을 어떤 방식으로 보완하는지 설명하는 함수입니다."""
+
+    if not defensive_covers:
+        return "현재 팀의 주요 약점을 직접 저항/무효로 받는 정보는 부족합니다."
+
+    # cover_texts:
+    # - 예: 바위는 저항(0.5배), 전기는 무효(0배)
+    cover_texts = [
+        f"{cover['type_name']}는 {_describe_defensive_relation(cover.get('relation'), cover.get('multiplier'))}"
+        for cover in defensive_covers[:5]
+    ]
+    return f"{', '.join(cover_texts)}로 받아 현재 팀의 약점 부담을 줄입니다."
+
+
+def _build_useful_move_notes(
+    useful_moves: List[Dict[str, Any]],
+    candidate_types: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """추천 후보가 배울 수 있는 기술 중 설명에 쓸 대표 기술을 고르는 함수입니다."""
+
+    # candidate_type_ids:
+    # - 후보 자신의 타입과 같은 기술은 STAB 보너스를 기대할 수 있으므로 우선 설명 대상으로 둡니다.
+    candidate_type_ids = {type_row["type_id"] for type_row in candidate_types}
+
+    enriched_moves = []
+    for move in useful_moves:
+        is_stab = move.get("type_id") in candidate_type_ids
+        enriched_moves.append(
+            {
+                **move,
+                "is_stab": is_stab,
+                "usage_note": (
+                    f"{move.get('move_name')}은 {move.get('type_name')} 타입 주력기로 쓰기 좋습니다."
+                    if is_stab
+                    else f"{move.get('move_name')}은 {move.get('type_name')} 타입 견제 폭을 넓힐 때 유용합니다."
+                ),
+            }
+        )
+
+    # STAB 기술을 먼저, 그다음 위력이 높은 기술을 우선 노출합니다.
+    return sorted(
+        enriched_moves,
+        key=lambda move: (move.get("is_stab", False), move.get("power") or 0),
+        reverse=True,
+    )[:5]
+
+
+def _build_move_reason(useful_move_notes: List[Dict[str, Any]]) -> str:
+    """추천 이유에 들어갈 대표 기술 설명 문장을 만드는 함수입니다."""
+
+    if not useful_move_notes:
+        return "대표 기술 정보가 부족해 기술 기반 추천 이유는 제한적입니다."
+
+    # primary_moves:
+    # - 너무 많은 기술을 한 문장에 넣으면 오히려 읽기 어려우므로 상위 3개만 요약합니다.
+    primary_moves = [
+        f"{move['move_name']}({move['type_name']}, 위력 {move.get('power')})"
+        for move in useful_move_notes[:3]
+    ]
+    return f"대표적으로 {', '.join(primary_moves)}를 활용해 공격 선택지를 넓힐 수 있습니다."
+
+
 def _build_candidate_score(
     candidate: Dict[str, Any],
     candidate_move_types: List[Dict[str, Any]],
     candidate_types: List[Dict[str, Any]],
+    useful_moves: List[Dict[str, Any]],
     team_type_counts: Dict[int, int],
 ) -> Dict[str, Any]:
     """
@@ -46,6 +124,9 @@ def _build_candidate_score(
         for type_row in candidate_types
     )
 
+    # useful_move_notes는 RAG와 프론트 카드에서 사용할 대표 기술 설명 목록입니다.
+    useful_move_notes = _build_useful_move_notes(useful_moves, candidate_types)
+
     # defensive_score는 약점을 보완하는 정도를 가장 크게 반영합니다.
     defensive_score = len(defensive_covers) * 25
 
@@ -64,11 +145,12 @@ def _build_candidate_score(
         2,
     )
 
-    # reasons는 프론트엔드와 이후 RAG 설명에 전달할 짧은 추천 근거 목록입니다.
+    # reasons는 프론트엔드와 이후 RAG 설명에 전달할 추천 근거 목록입니다.
     reasons = [
-        f"{len(defensive_covers)}개 약점 타입을 저항/무효로 보완합니다.",
+        _build_defensive_reason(defensive_covers),
         f"기본 능력치 합계가 {base_total}입니다.",
-        f"{move_type_count}개 타입의 기술을 배울 수 있습니다.",
+        _build_move_reason(useful_move_notes),
+        f"{move_type_count}개 타입의 기술을 배울 수 있어 기술 선택 폭이 넓습니다.",
     ]
 
     if duplicate_type_count:
@@ -77,11 +159,14 @@ def _build_candidate_score(
     return {
         "pokemon_id": candidate["pokemon_id"],
         "name": candidate["name"],
+        "image_url": candidate.get("image_url"),
         "base_total": base_total,
         "score": total_score,
         "defensive_covers": defensive_covers,
         "move_types": candidate_move_types,
         "pokemon_types": candidate_types,
+        "types": candidate_types,
+        "useful_moves": useful_move_notes,
         "reasons": reasons,
     }
 
@@ -166,11 +251,20 @@ def recommend_team_member(
         {"candidate_pokemon_ids": candidate_ids},
     )
 
+    # useful_move_rows는 후보가 실제로 어떤 기술을 활용할 수 있는지 설명하기 위한 대표 기술 목록입니다.
+    useful_move_rows = graph.run_query(
+        queries.CANDIDATE_USEFUL_MOVES,
+        {"candidate_pokemon_ids": candidate_ids},
+    )
+
     # move_types_by_candidate는 pokemon_id 기준으로 기술 타입 목록을 찾기 위한 딕셔너리입니다.
     move_types_by_candidate = _index_by_pokemon_id(move_type_rows, "move_types")
 
     # pokemon_types_by_candidate는 pokemon_id 기준으로 후보 타입 목록을 찾기 위한 딕셔너리입니다.
     pokemon_types_by_candidate = _index_by_pokemon_id(pokemon_type_rows, "pokemon_types")
+
+    # useful_moves_by_candidate는 pokemon_id 기준으로 후보 대표 기술 목록을 찾기 위한 딕셔너리입니다.
+    useful_moves_by_candidate = _index_by_pokemon_id(useful_move_rows, "useful_moves")
 
     # team_type_counts는 현재 팀의 타입 중복 정도를 판단하기 위한 딕셔너리입니다.
     team_type_counts = {
@@ -184,6 +278,7 @@ def recommend_team_member(
             candidate,
             move_types_by_candidate.get(candidate["pokemon_id"], []),
             pokemon_types_by_candidate.get(candidate["pokemon_id"], []),
+            useful_moves_by_candidate.get(candidate["pokemon_id"], []),
             team_type_counts,
         )
         for candidate in candidates
