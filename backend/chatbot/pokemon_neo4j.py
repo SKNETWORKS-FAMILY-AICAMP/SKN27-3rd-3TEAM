@@ -17,16 +17,23 @@ graph_loader.py가 적재한 그래프 스키마에 맞춘 LangGraph Agent 툴:
 
 import os
 from dotenv import load_dotenv
-from neo4j import GraphDatabase
 from langchain_core.tools import tool
 
 load_dotenv()
 
-NEO4J_URI      = os.environ.get("GRAPH_DB_URI",      "bolt://localhost:7687")
-NEO4J_USER     = os.environ.get("GRAPH_DB_USER",     "neo4j")
-NEO4J_PASSWORD = os.environ.get("GRAPH_DB_PASSWORD", "test1234")
-
-driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
+# 백엔드의 공용 neo4j_client 재사용 (중복 연결 방지)
+try:
+    from graph.neo4j_client import neo4j_client as _client
+    driver = _client.driver
+except ImportError:
+    from neo4j import GraphDatabase
+    driver = GraphDatabase.driver(
+        os.environ.get("GRAPH_DB_URI", "bolt://neo4j:7687"),
+        auth=(
+            os.environ.get("GRAPH_DB_USER", "neo4j"),
+            os.environ.get("GRAPH_DB_PASSWORD", "test1234"),
+        ),
+    )
 
 
 # ══════════════════════════════════════════════════════════

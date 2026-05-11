@@ -52,7 +52,7 @@ from langgraph.prebuilt import ToolNode
 
 # Neo4j 툴 — pokemon_neo4j.py 에서 가져옴
 try:
-    from common.pokemon_neo4j import search_evolution_chain, search_type_relations
+    from chatbot.pokemon_neo4j import search_evolution_chain, search_type_relations
 except ImportError:
     from pokemon_neo4j import search_evolution_chain, search_type_relations
 
