@@ -485,24 +485,176 @@ def create_effect_nodes(conn: Neo4jConnection) -> None:
     Effect 노드를 생성합니다.
 
     Source:
-        moves.json, abilities.json, items.json
+        effects.json
     
     설명:
+        일부 기술, 특성, 도구는 배틀에 영향을 주는 부가 효과를 갖고 있습니다.
     """
     rows = [
         {
-            "effect_id": [],
-            "name": [],
-            "effect_type": [],
-            "target_scope": [],
-            "chance": [],
-            "value": [],
-            "value_unit": [],
-            "condition_key": [],
-            "condition_value": [],
-            "description": []
+            "effect_id": row["id"],
+            "name": row["name"],
+            "effect_type": row["effect_type"],
+            "effect_text": row["effect_text"]
         }
+        for row in load_json('effects.json')
     ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (e:Effect {effect_id: row.effect_id})
+    SET e.name = row.name,
+        e.effect_type = row.effect_type,
+        e.effect_text = row.effect_text
+    """
+    run_batched(conn, query, rows, "Effect nodes")
+
+def create_stat_nodes(conn: Neo4jConnection) -> None:
+    """
+    Stat 노드를 생성합니다.
+
+    Source:
+        pokemon_stats.json
+    
+    설명:
+        포켓몬의 능력치를 나타냅니다.
+        배틀에서 기술의 데미지를 계산하는 기준이 되며, 수치는 특성, 기술, 도구 등에 의해 변동될 수 있습니다.
+    """
+    rows = [
+        {
+            "stat_id": row['id'],
+            "name": row['name'],
+            "battle_stage_applicable": False if row['name'] == 'hp' else True,
+            "description": row['description']
+        }
+        for row in load_json('stats.json')
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (s:Stat {stat_id: row.stat_id})
+    SET s.name = row.name,
+        s.battle_stage_applicable = row.battle_stage_applicable,
+        s.description = row.description
+    """
+    run_batched(conn, query, rows, "Stat nodes")
+
+def create_status_condition_nodes(conn: Neo4jConnection) -> None:
+    """
+    StatusCondition 노드를 생성합니다.
+
+    Source:
+        status_conditions.json
+
+    설명:
+        배틀에 영향을 주는 상태 이상을 노드로 생성합니다.
+    """
+    rows = [
+        {
+            "status_condition_id": row["id"],
+            "name": row["name"],
+            "effect_text": row["effect_text"]
+        }
+        for row in load_json("status_conditions.json")
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (s:StatusCondition {status_condition_id: row.status_condition_id})
+    SET s.name = row.name,
+        s.effect_text = row.effect_text
+    """
+    run_batched(conn, query, rows, "StatusCondition nodes")
+
+def create_phase_nodes(conn: Neo4jConnection) -> None:
+    """
+    Phase 노드를 생성합니다.
+
+    Source:
+        battle_phases.json
+
+    설명:
+        배틀의 단계를 노드로 생성합니다.
+    """
+    rows = [
+        {
+            "phase_id": row["id"],
+            "name": row["name"],
+            "order": row["order"],
+            "description": row["description"]
+        }
+        for row in load_json("phases.json")
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (p:Phase {phase_id: row.phase_id})
+    SET p.name = row.name,
+        p.order = row.order,
+        p.description = row.description
+    """
+    run_batched(conn, query, rows, "Phase nodes")
+
+def create_weather_nodes(conn: Neo4jConnection) -> None:
+    """
+    Weather 노드를 생성합니다.
+
+    Source:
+        weathers.json
+
+    설명:
+        쾌청, 비, 모래바람, 싸라기눈 4가지 날씨 노드를 생성합니다.
+    """
+    rows = [
+        {
+            "weather_id": row["id"],
+            "name":       row["name"],
+            "name_en":    row["name_en"],
+            "description": row["description"],
+        }
+        for row in load_json("weathers.json")
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (w:Weather {weather_id: row.weather_id})
+    SET w.name        = row.name,
+        w.name_en     = row.name_en,
+        w.description = row.description
+    """
+    run_batched(conn, query, rows, "Weather nodes")
+
+
+def create_field_effect_nodes(conn: Neo4jConnection) -> None:
+    """
+    Field 노드를 생성합니다.
+
+    Source:
+        fields.json
+
+    설명:
+        그래스필드, 미스트필드, 일렉트릭필드, 사이코필드,
+        트릭룸, 매직룸, 원더룸, 중력 8가지 필드 노드를 생성합니다.
+    """
+    rows = [
+        {
+            "field_id":   row["id"],
+            "name":       row["name"],
+            "name_en":    row["name_en"],
+            "description": row["description"],
+        }
+        for row in load_json("fields.json")
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MERGE (f:Field {field_id: row.field_id})
+    SET f.name        = row.name,
+        f.name_en     = row.name_en,
+        f.description = row.description
+    """
+    run_batched(conn, query, rows, "Field nodes")
+
 
 # ============================================
 # 6. 원본 관계 생성 함수
@@ -723,6 +875,445 @@ def create_evolution_relationships(conn: Neo4jConnection) -> None:
     run_batched(conn, evolution_query, rows, "Species EVOLVES_TO relationships")
     run_batched(conn, item_query, item_rows, "Species EVOLUTION_REQUIRES relationships")
 
+def create_move_effect_relationships(conn: Neo4jConnection) -> None:
+    """
+    Move - TRIGGERS -> Effect 관계를 생성합니다.
+
+    Source:
+        move_effects.json  (graph 폴더)
+
+    관계 속성:
+        phase_id    : 효과가 발동하는 배틀 페이즈 ID
+        ailment_id  : 상태이상 ID. "etc"는 -1로 정규화, null → None
+        stat_ids    : 영향받는 스탯 이름 목록 (리스트), null → []
+        chance      : 발동 확률(%). true → 100, null → None
+        values      : 랭크/배율 변화량 목록 (리스트), null → []
+        target      : 대상 문자열 (null 허용)
+    """
+    graph_dir = Path(__file__).resolve().parent
+    move_effects_path = graph_dir / "move_effects.json"
+
+    if not move_effects_path.exists():
+        raise FileNotFoundError(f"move_effects.json not found: {move_effects_path}")
+
+    with move_effects_path.open("r", encoding="utf-8") as f:
+        raw_rows = json.load(f)
+
+    rows = []
+    for row in raw_rows:
+        # chance: true → 100, 숫자 → 그대로, null → None
+        chance_raw = row.get("chance")
+        if chance_raw is True:
+            chance = 100
+        elif isinstance(chance_raw, (int, float)):
+            chance = int(chance_raw)
+        else:
+            chance = None
+
+        # ailment_id: "etc" → -1, 숫자 → 그대로, null → None
+        ailment_raw = row.get("ailment_id")
+        if ailment_raw == "etc":
+            ailment_id = -1
+        elif isinstance(ailment_raw, int):
+            ailment_id = ailment_raw
+        else:
+            ailment_id = None
+
+        # stat_id: 리스트 → 그대로, null → []
+        stat_ids = row.get("stat_id") or []
+
+        # value: 리스트 → 그대로, null → []
+        values = row.get("value") or []
+
+        rows.append({
+            "move_id": row["move_id"],
+            "effect_id": row["effect_id"],
+            "phase_id": row.get("phase_id"),
+            "ailment_id": ailment_id,
+            "stat_ids": stat_ids,
+            "chance": chance,
+            "values": values,
+            "target": row.get("target"),
+        })
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (m:Move {move_id: row.move_id})
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MERGE (m)-[r:TRIGGERS {phase_id: row.phase_id}]->(e)
+    SET r.ailment_id  = row.ailment_id,
+        r.stat_ids    = row.stat_ids,
+        r.chance      = row.chance,
+        r.values      = row.values,
+        r.target      = row.target
+    """
+    run_batched(conn, query, rows, "Move TRIGGERS Effect relationships")
+
+def create_ability_effect_relationships(conn: Neo4jConnection) -> None:
+    """
+    Ability - TRIGGERS -> Effect 관계를 생성합니다.
+
+    Source:
+        ability_effects.json  (graph 폴더)
+
+    관계 속성:
+        phase_id   : 효과가 발동하는 배틀 페이즈 ID
+        ailment_id : 상태이상 ID (정수 or null)
+        stat_id    : 영향받는 스탯 ID (정수 or null)
+        chance     : 발동 확률 % (정수 or null)
+        value      : 랭크/배율 변화량 (정수 or null)
+        target     : 대상 문자열 ("self" / "opponent" / "all" / null)
+    """
+    graph_dir = Path(__file__).resolve().parent
+    ability_effects_path = graph_dir / "ability_effects.json"
+
+    if not ability_effects_path.exists():
+        raise FileNotFoundError(f"ability_effects.json not found: {ability_effects_path}")
+
+    with ability_effects_path.open("r", encoding="utf-8") as f:
+        raw_rows = json.load(f)
+
+    rows = [
+        {
+            "ability_id": row["ability_id"],
+            "effect_id":  row["effect_id"],
+            "phase_id":   row.get("phase_id"),
+            "ailment_id": row.get("ailment_id"),
+            "stat_id":    row.get("stat_id"),
+            "chance":     row.get("chance"),
+            "value":      row.get("value"),
+            "target":     row.get("target"),
+        }
+        for row in raw_rows
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (a:Ability {ability_id: row.ability_id})
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MERGE (a)-[r:TRIGGERS {phase_id: row.phase_id}]->(e)
+    SET r.ailment_id = row.ailment_id,
+        r.stat_id    = row.stat_id,
+        r.chance     = row.chance,
+        r.value      = row.value,
+        r.target     = row.target
+    """
+    run_batched(conn, query, rows, "Ability TRIGGERS Effect relationships")
+
+def create_item_effect_relationships(conn: Neo4jConnection) -> None:
+    """
+    Item - TRIGGERS -> Effect 관계를 생성합니다.
+
+    Source:
+        item_effects.json  (graph 폴더)
+
+    관계 속성:
+        phase_id   : 효과가 발동하는 배틀 페이즈 ID
+        ailment_id : 상태이상 ID (정수 or null)
+        stat_id    : 영향받는 스탯 ID (정수 or null)
+        chance     : 발동 확률 % (정수 or null)
+        value      : 변화량 (숫자 or null)
+        target     : 대상 문자열 (null 허용)
+    """
+    graph_dir = Path(__file__).resolve().parent
+    item_effects_path = graph_dir / "item_effects.json"
+
+    if not item_effects_path.exists():
+        raise FileNotFoundError(f"item_effects.json not found: {item_effects_path}")
+
+    with item_effects_path.open("r", encoding="utf-8") as f:
+        raw_rows = json.load(f)
+
+    rows = [
+        {
+            "item_id":    row["item_id"],
+            "effect_id":  row["effect_id"],
+            "phase_id":   row.get("phase_id"),
+            "ailment_id": row.get("ailment_id"),
+            "stat_id":    row.get("stat_id"),
+            "chance":     row.get("chance"),
+            "value":      row.get("value"),
+            "target":     row.get("target"),
+        }
+        for row in raw_rows
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (i:Item   {item_id:   row.item_id})
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MERGE (i)-[r:TRIGGERS {phase_id: row.phase_id}]->(e)
+    SET r.ailment_id = row.ailment_id,
+        r.stat_id    = row.stat_id,
+        r.chance     = row.chance,
+        r.value      = row.value,
+        r.target     = row.target
+    """
+    run_batched(conn, query, rows, "Item TRIGGERS Effect relationships")
+
+
+def create_effect_phase_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - APPLIES_AT -> Phase 관계를 생성합니다.
+
+    Source:
+        move_effects.json / ability_effects.json / item_effects.json 에서
+        (effect_id, phase_id) 쌍을 수집합니다.
+
+    설명:
+        각 effect_id 가 어느 phase_id 에 발동할 수 있는지를 나타냅니다.
+        중복 없이 유일한 (effect_id, phase_id) 쌍만 생성합니다.
+    """
+    graph_dir = Path(__file__).resolve().parent
+    sources = ["move_effects.json", "ability_effects.json", "item_effects.json"]
+
+    seen: set = set()
+    rows: List[Dict[str, Any]] = []
+    for filename in sources:
+        path = graph_dir / filename
+        if not path.exists():
+            continue
+        with path.open("r", encoding="utf-8") as f:
+            for record in json.load(f):
+                eid = record.get("effect_id")
+                pid = record.get("phase_id")
+                if eid is not None and pid is not None and (eid, pid) not in seen:
+                    seen.add((eid, pid))
+                    rows.append({"effect_id": eid, "phase_id": pid})
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MATCH (p:Phase  {phase_id:  row.phase_id})
+    MERGE (e)-[:APPLIES_AT]->(p)
+    """
+    run_batched(conn, query, rows, "Effect APPLIES_AT Phase relationships")
+
+
+def create_effect_stat_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - AFFECTS_STAT -> Stat 관계를 생성합니다.
+
+    Source:
+        move_effects.json  : stat_id 가 문자열 배열 (e.g. ["attack", "speed"])
+        ability_effects.json : stat_id 가 정수 (Stat.stat_id)
+        item_effects.json  : stat_id 가 정수 (Stat.stat_id)
+
+    설명:
+        move_effects 의 stat 이름은 Stat 노드의 name 속성으로 매칭하고,
+        ability/item_effects 의 정수 stat_id 는 Stat.stat_id 로 매칭합니다.
+        중복 없이 유일한 (effect_id, 식별자) 쌍만 생성합니다.
+    """
+    graph_dir = Path(__file__).resolve().parent
+
+    seen_name: set = set()
+    seen_id:   set = set()
+    rows_by_name: List[Dict[str, Any]] = []
+    rows_by_id:   List[Dict[str, Any]] = []
+
+    # move_effects: stat_id 는 문자열 배열
+    move_path = graph_dir / "move_effects.json"
+    if move_path.exists():
+        with move_path.open("r", encoding="utf-8") as f:
+            for record in json.load(f):
+                eid = record.get("effect_id")
+                stat_names = record.get("stat_id") or []
+                for sname in stat_names:
+                    if eid is not None and (eid, sname) not in seen_name:
+                        seen_name.add((eid, sname))
+                        rows_by_name.append({"effect_id": eid, "stat_name": sname})
+
+    # ability_effects / item_effects: stat_id 는 정수
+    for filename in ["ability_effects.json", "item_effects.json"]:
+        path = graph_dir / filename
+        if not path.exists():
+            continue
+        with path.open("r", encoding="utf-8") as f:
+            for record in json.load(f):
+                eid = record.get("effect_id")
+                sid = record.get("stat_id")
+                if eid is not None and sid is not None and (eid, sid) not in seen_id:
+                    seen_id.add((eid, sid))
+                    rows_by_id.append({"effect_id": eid, "stat_id": sid})
+
+    # stat 이름 기반 연결
+    if rows_by_name:
+        query_name = """
+        UNWIND $rows AS row
+        MATCH (e:Effect {effect_id: row.effect_id})
+        MATCH (s:Stat   {name:      row.stat_name})
+        MERGE (e)-[:AFFECTS_STAT]->(s)
+        """
+        run_batched(conn, query_name, rows_by_name, "Effect AFFECTS_STAT (by name)")
+
+    # stat_id 기반 연결
+    if rows_by_id:
+        query_id = """
+        UNWIND $rows AS row
+        MATCH (e:Effect {effect_id: row.effect_id})
+        MATCH (s:Stat   {stat_id:   row.stat_id})
+        MERGE (e)-[:AFFECTS_STAT]->(s)
+        """
+        run_batched(conn, query_id, rows_by_id, "Effect AFFECTS_STAT (by id)")
+
+
+def create_effect_status_condition_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - TRIGGERS -> StatusCondition 관계를 생성합니다.
+
+    Source:
+        move_effects.json / ability_effects.json / item_effects.json 에서
+        ailment_id 가 유효한 정수인 레코드를 수집합니다.
+
+    설명:
+        ailment_id == -1 ("etc" 정규화 값) 은 제외합니다.
+        중복 없이 유일한 (effect_id, ailment_id) 쌍만 생성합니다.
+    """
+    graph_dir = Path(__file__).resolve().parent
+    sources = ["move_effects.json", "ability_effects.json", "item_effects.json"]
+
+    seen: set = set()
+    rows: List[Dict[str, Any]] = []
+    for filename in sources:
+        path = graph_dir / filename
+        if not path.exists():
+            continue
+        with path.open("r", encoding="utf-8") as f:
+            for record in json.load(f):
+                eid = record.get("effect_id")
+                # ailment_id: move_effects 는 이미 -1 정규화됨, -1 제외
+                aid_raw = record.get("ailment_id")
+                if aid_raw == "etc":
+                    aid_raw = -1
+                if eid is None or not isinstance(aid_raw, int) or aid_raw == -1:
+                    continue
+                if (eid, aid_raw) not in seen:
+                    seen.add((eid, aid_raw))
+                    rows.append({"effect_id": eid, "ailment_id": aid_raw})
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (e:Effect          {effect_id:           row.effect_id})
+    MATCH (s:StatusCondition {status_condition_id: row.ailment_id})
+    MERGE (e)-[:TRIGGERS]->(s)
+    """
+    run_batched(conn, query, rows, "Effect TRIGGERS StatusCondition relationships")
+
+
+def create_effect_type_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - MODIFIES_TYPE -> Type 관계를 생성합니다.
+
+    Source:
+        effects.json (effect_type 이 move_immunity / move_absorb / type_modifier 인 Effect)
+        types.json   (모든 Type 노드)
+
+    설명:
+        특정 기술 타입을 무효화하거나 흡수·변경하는 Effect 를
+        모든 Type 노드와 MODIFIES_TYPE 으로 연결합니다.
+        (어떤 타입에 작용하는지는 기술/특성 관계 속성에서 결정되므로,
+         여기서는 Effect 가 타입을 수정할 수 있다는 가능성 관계를 생성합니다.)
+    """
+    target_types = {"move_immunity", "move_absorb", "type_modifier"}
+    effects = load_json("effects.json")
+    types   = load_json("types.json")
+
+    type_effect_ids = [
+        row["id"] for row in effects if row["effect_type"] in target_types
+    ]
+    if not type_effect_ids:
+        print("Effect MODIFIES_TYPE: no matching effect_type found, skipped")
+        return
+
+    rows = [
+        {"effect_id": eid, "type_id": t["id"]}
+        for eid in type_effect_ids
+        for t in types
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MATCH (t:Type   {type_id:   row.type_id})
+    MERGE (e)-[:MODIFIES_TYPE]->(t)
+    """
+    run_batched(conn, query, rows, "Effect MODIFIES_TYPE Type relationships")
+
+def create_effect_field_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - CHANGES_FIELD -> Field 관계를 생성합니다.
+
+    Source:
+        effects.json (effect_type == "terrain_change")
+        fields.json
+
+    설명:
+        effect_type이 terrain_change인 Effect 노드를 모든 Field 노드와
+        CHANGES_FIELD 관계로 연결합니다.
+        (어떤 필드로 변화시킬지는 기술/특성 레벨 관계 속성에서 결정되므로,
+         여기서는 Effect → Field 의 가능성 관계만 생성합니다.)
+    """
+    effects = load_json("effects.json")
+    fields  = load_json("fields.json")
+
+    terrain_effect_ids = [
+        row["id"] for row in effects if row["effect_type"] == "terrain_change"
+    ]
+    if not terrain_effect_ids:
+        print("Effect CHANGES_FIELD: terrain_change effect not found, skipped")
+        return
+
+    rows = [
+        {"effect_id": eid, "field_id": field["id"]}
+        for eid in terrain_effect_ids
+        for field in fields
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (e:Effect {effect_id: row.effect_id})
+    MATCH (f:Field  {field_id:  row.field_id})
+    MERGE (e)-[:CHANGES_FIELD]->(f)
+    """
+    run_batched(conn, query, rows, "Effect CHANGES_FIELD relationships")
+
+
+def create_effect_weather_relationships(conn: Neo4jConnection) -> None:
+    """
+    Effect - CHANGES_WEATHER -> Weather 관계를 생성합니다.
+
+    Source:
+        effects.json (effect_type == "weather_change")
+        weathers.json
+
+    설명:
+        effect_type이 weather_change인 Effect 노드를 모든 Weather 노드와
+        CHANGES_WEATHER 관계로 연결합니다.
+    """
+    effects  = load_json("effects.json")
+    weathers = load_json("weathers.json")
+
+    weather_effect_ids = [
+        row["id"] for row in effects if row["effect_type"] == "weather_change"
+    ]
+    if not weather_effect_ids:
+        print("Effect CHANGES_WEATHER: weather_change effect not found, skipped")
+        return
+
+    rows = [
+        {"effect_id": eid, "weather_id": weather["id"]}
+        for eid in weather_effect_ids
+        for weather in weathers
+    ]
+
+    query = """
+    UNWIND $rows AS row
+    MATCH (e:Effect  {effect_id:  row.effect_id})
+    MATCH (w:Weather {weather_id: row.weather_id})
+    MERGE (e)-[:CHANGES_WEATHER]->(w)
+    """
+    run_batched(conn, query, rows, "Effect CHANGES_WEATHER relationships")
+
 
 # ============================================
 # 7. 파생 관계 생성 함수
@@ -900,7 +1491,12 @@ def create_all_nodes(conn: Neo4jConnection) -> None:
     create_item_nodes(conn)
     create_nature_nodes(conn)
     create_species_and_generation_nodes(conn)
-
+    create_effect_nodes(conn)
+    create_stat_nodes(conn)
+    create_status_condition_nodes(conn)
+    create_phase_nodes(conn)
+    create_weather_nodes(conn)
+    create_field_effect_nodes(conn)
 
 def create_all_relationships(conn: Neo4jConnection) -> None:
     """Graph DB에 필요한 기본 관계와 파생 관계를 모두 생성합니다."""
@@ -913,7 +1509,15 @@ def create_all_relationships(conn: Neo4jConnection) -> None:
     create_species_relationships(conn)
     create_evolution_relationships(conn)
     create_pokemon_defense_relationships(conn)
-
+    create_move_effect_relationships(conn)
+    create_ability_effect_relationships(conn)
+    create_item_effect_relationships(conn)
+    create_effect_phase_relationships(conn)
+    create_effect_stat_relationships(conn)
+    create_effect_status_condition_relationships(conn)
+    create_effect_type_relationships(conn)
+    create_effect_field_relationships(conn)
+    create_effect_weather_relationships(conn)
 
 def print_graph_summary(conn: Neo4jConnection) -> None:
     """
