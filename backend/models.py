@@ -134,3 +134,23 @@ class User(Base):
     avatar_url = Column(String(255), nullable=True)
     email = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    game_logs = relationship("GameLog", back_populates="user")
+
+
+class GameLog(Base):
+    __tablename__ = "game_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    game_type = Column(String(50), nullable=False)  # "silhouette", "memory"
+    pokemon_id = Column(Integer, ForeignKey("pokemon.id", ondelete="SET NULL"), nullable=True)
+    is_correct = Column(Boolean, default=False)
+    hint_used = Column(Boolean, default=False)
+    wrong_answer_id = Column(Integer, ForeignKey("pokemon.id", ondelete="SET NULL"), nullable=True)
+    log_data = Column(Text, nullable=True)  # 추가적인 데이터 (예: 메모리 게임 이동 횟수 등 JSON 저장)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="game_logs")
+    pokemon = relationship("Pokemon", foreign_keys=[pokemon_id])
+    wrong_pokemon = relationship("Pokemon", foreign_keys=[wrong_answer_id])

@@ -117,6 +117,17 @@ class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# ── Game Log ──
+class GameLogCreate(BaseModel):
+    user_id: Optional[int] = None
+    game_type: str  # "silhouette", "memory"
+    pokemon_id: Optional[int] = None
+    is_correct: bool = False
+    hint_used: bool = False
+    wrong_answer_id: Optional[int] = None
+    log_data: Optional[str] = None
+
+
 # ── Pagination wrapper ──
 class PaginatedPokemonResponse(BaseModel):
     total: int

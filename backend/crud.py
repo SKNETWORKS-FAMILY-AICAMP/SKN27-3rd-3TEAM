@@ -166,3 +166,26 @@ def create_or_update_user(db: Session, user_data: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
+
+def create_game_log(db: Session, log_data: schemas.GameLogCreate):
+    print(f"DEBUG: Attempting to save game log: {log_data}")
+    try:
+        db_log = models.GameLog(
+            user_id=log_data.user_id,
+            game_type=log_data.game_type,
+            pokemon_id=log_data.pokemon_id,
+            is_correct=log_data.is_correct,
+            hint_used=log_data.hint_used,
+            wrong_answer_id=log_data.wrong_answer_id,
+            log_data=log_data.log_data
+        )
+        db.add(db_log)
+        db.commit()
+        db.refresh(db_log)
+        print(f"DEBUG: Successfully saved log with ID: {db_log.id}")
+        return db_log
+    except Exception as e:
+        print(f"DEBUG: Error saving game log: {str(e)}")
+        db.rollback()
+        raise e
+
