@@ -152,6 +152,7 @@ def show():
                 user_info = get_user_info(token)
                 if user_info:
                     gh_stats = fetch_lifetime_stats(user_info.get("login"))
+                    st.write("DEBUG: Fetched GitHub Stats:", gh_stats) # 디버그용
                     db_user = sync_user_to_db(user_info, gh_stats)
                     if db_user:
                         user_info["db_id"] = db_user.get("id")

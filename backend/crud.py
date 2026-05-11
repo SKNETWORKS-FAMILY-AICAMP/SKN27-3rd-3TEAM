@@ -143,10 +143,11 @@ def get_pokemon_by_id(db: Session, pokemon_id: int):
 
 
 def create_or_update_user(db: Session, user_data: schemas.UserCreate):
+    print(f"DEBUG: Syncing user data: {user_data}")
     db_user = db.query(models.User).filter(models.User.github_id == user_data.github_id).first()
     
     if db_user:
-        # Update existing user
+        print(f"DEBUG: Updating existing user ID {db_user.id}")
         db_user.login = user_data.login
         db_user.name = user_data.name
         db_user.avatar_url = user_data.avatar_url
@@ -155,7 +156,7 @@ def create_or_update_user(db: Session, user_data: schemas.UserCreate):
         db_user.total_commits = user_data.total_commits
         db_user.total_stars = user_data.total_stars
     else:
-        # Create new user
+        print("DEBUG: Creating new user")
         db_user = models.User(
             github_id=user_data.github_id,
             login=user_data.login,
@@ -168,8 +169,13 @@ def create_or_update_user(db: Session, user_data: schemas.UserCreate):
         )
         db.add(db_user)
     
-    db.commit()
-    db.refresh(db_user)
+    try:
+        db.commit()
+        db.refresh(db_user)
+        print(f"DEBUG: Successfully synced user {db_user.login}")
+    except Exception as e:
+        print(f"DEBUG: DB Sync Error: {str(e)}")
+        db.rollback()
     return db_user
 
 
