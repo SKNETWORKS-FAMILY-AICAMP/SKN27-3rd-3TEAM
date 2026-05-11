@@ -129,9 +129,9 @@ def show():
                         user_info["db_id"] = db_user.get("id")
                     st.session_state.user = user_info
                     controller.set("user_session", user_info)
-                    st.success("인증 및 DB 등록 성공!")
+                    st.success("인증 및 DB 등록 성공! 마이페이지로 이동합니다...")
                     time.sleep(1)
-                    st.rerun()
+                    st.switch_page("pages/mypage.py")
 
     # 5. 화면 렌더링
     if "user" in st.session_state:
@@ -167,7 +167,7 @@ def show():
 {name} <span style="font-size: 16px; opacity: 0.6; font-weight: 500; margin-left: 8px;">@{login}</span>
 </h2>
 <div style="height: 15px;"></div>
-<a href="/" target="_self" class="main-nav-btn">메인 화면으로 이동</a>
+<a href="/mypage" target="_self" class="main-nav-btn">마이페이지로 이동</a>
 <div style="height: 10px;"></div>
 <a href="/login?ask_logout=true" target="_self" class="github-btn" style="background: linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color: rgba(255,255,255,0.2);">로그아웃</a>
 </div>
