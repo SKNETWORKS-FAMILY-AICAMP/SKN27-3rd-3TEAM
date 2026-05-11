@@ -205,6 +205,40 @@ def get_mypage_styles():
     </style>
     """)
 
+def fetch_github_details(username):
+    stats = {"repos": 0, "followers": 0, "commits": 0, "stars": 0}
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "Pokemon-Trainer-App"
+    }
+    try:
+        # 1. 기본 정보 (Repos, Followers)
+        user_resp = requests.get(f"https://api.github.com/users/{username}", headers=headers, timeout=5)
+        if user_resp.status_code == 200:
+            data = user_resp.json()
+            stats["repos"] = data.get("public_repos", 0)
+            stats["followers"] = data.get("followers", 0)
+            
+        # 2. 전체 커밋 수 (Search API 사용)
+        # Search API는 별도의 preview header가 필요할 수 있음
+        search_headers = headers.copy()
+        search_headers["Accept"] = "application/vnd.github.cloak-preview+json"
+        search_url = f"https://api.github.com/search/commits?q=author:{username}"
+        search_resp = requests.get(search_url, headers=search_headers, timeout=5)
+        if search_resp.status_code == 200:
+            stats["commits"] = search_resp.json().get("total_count", 0)
+            
+        # 3. 전체 받은 스타(Stars) 수 계산
+        repos_url = f"https://api.github.com/users/{username}/repos?per_page=100"
+        repos_resp = requests.get(repos_url, headers=headers, timeout=5)
+        if repos_resp.status_code == 200:
+            repos_data = repos_resp.json()
+            stats["stars"] = sum(r.get("stargazers_count", 0) for r in repos_data)
+            
+    except:
+        pass
+    return stats
+
 def show():
     inject_common_ui(spacer=False)
     
@@ -215,10 +249,12 @@ def show():
 
     user = st.session_state.user
     user_id = user.get("id") or user.get("db_id")
+    username = user.get("login")
     
     # Fetch data
     stats = fetch_user_stats(user_id) if user_id else None
     logs = fetch_user_logs(user_id) if user_id else []
+    gh = fetch_github_details(username) if username else None
     
     st.markdown(get_mypage_styles(), unsafe_allow_html=True)
     
@@ -228,23 +264,22 @@ def show():
     # 1. Profile Section
     avatar = user.get("avatar_url", "https://cdn-icons-png.flaticon.com/512/1144/1144760.png")
     name = user.get("name") or user.get("login", "트레이너")
-    created_at = user.get("created_at", "")
-    if created_at:
-        try:
-            date_obj = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-            date_str = date_obj.strftime("%Y년 %m월 %d일 가입")
-        except:
-            date_str = "신입 트레이너"
-    else:
-        date_str = "신입 트레이너"
+    
+    # GitHub 기반 등급 결정 (전체 커밋과 레포 기준)
+    repos = gh["repos"]
+    commits = gh["commits"]
+    if commits > 1000 or repos > 100: trainer_tier = "Legendary Developer"
+    elif commits > 300 or repos > 30: trainer_tier = "Veteran Developer"
+    elif commits > 50: trainer_tier = "Active Developer"
+    else: trainer_tier = "Rookie Developer"
         
     st.markdown(f"""
     <div class="profile-card">
         <img src="{avatar}" class="profile-avatar">
         <div class="profile-info">
             <h1>{name}</h1>
-            <p>{date_str}</p>
-            <div class="trainer-badge">Elite Trainer</div>
+            <p>@{username} · {trainer_tier}</p>
+            <div class="trainer-badge" style="background:#4ade80; color:#064e3b;">Lv.{min(99, int(commits/10) + 1)} Developer</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -264,22 +299,28 @@ def show():
     s_rate = int((s_correct / s_total * 100)) if s_total > 0 else 0
     m_rate = int((m_correct / m_total * 100)) if m_total > 0 else 0
     
+    # 통합 점수 계산 (게임 점수 + 깃허브 전체 점수)
+    game_score = (s_correct + m_correct) * 10
+    # GitHub 전체 점수: Repo(100) + Followers(20) + Total Commits(10) + Total Stars(50)
+    gh_score = (repos * 100) + (gh['followers'] * 20) + (commits * 10) + (gh['stars'] * 50)
+    total_score = game_score + gh_score
+    
     st.markdown(f"""
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-label">🔍 실루엣 퀴즈</div>
-            <div class="stat-value">{s_rate}%</div>
-            <div class="stat-desc">정답률 ({s_correct}/{s_total})</div>
+        <div class="stat-card" style="border-top: 5px solid #2a75bb;">
+            <div class="stat-label">💻 전체 커밋 수</div>
+            <div class="stat-value">{commits:,}</div>
+            <div class="stat-desc">Lifetime Public Commits</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">🃏 메모리 게임</div>
-            <div class="stat-value">{m_rate}%</div>
-            <div class="stat-desc">성공률 ({m_correct}/{m_total})</div>
+        <div class="stat-card" style="border-top: 5px solid #ffcb05;">
+            <div class="stat-label">⭐ 획득한 스타</div>
+            <div class="stat-value">{gh['stars']}</div>
+            <div class="stat-desc">Reputation from Repositories</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">🏆 총 활동 점수</div>
-            <div class="stat-value">{ (s_correct + m_correct) * 10 }</div>
-            <div class="stat-desc">누적 포인트</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;">
+            <div class="stat-label" style="color: rgba(255,255,255,0.8);">🏆 평생 통합 점수</div>
+            <div class="stat-value" style="color: white; font-size: 2.5rem;">{total_score:,}</div>
+            <div class="stat-desc" style="color: rgba(255,255,255,0.6);">Dev {gh_score:,} + Game {game_score:,}</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
