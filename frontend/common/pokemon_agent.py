@@ -17,7 +17,6 @@
   pokemon → pokemon_stats (1:1)
   pokemon → pokemon_types → types (N:M)
   pokemon → species → flavor_text (비정형, embedding 있음, tsvector 인덱스 있음)
-  pokemon → pokemon_knowledge (비정형, embedding 있음, tsvector 인덱스 있음)
 """
 
 import os
@@ -28,7 +27,6 @@ from dotenv import load_dotenv
 from typing import TypedDict, List, Annotated
 import operator
 
-# GPU 자동 감지 — torch 없으면 CPU 폴백
 try:
     import torch
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -40,6 +38,7 @@ from sentence_transformers import CrossEncoder
 load_dotenv()
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
@@ -64,12 +63,16 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-llm        = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 embeddings = OpenAIEmbeddings()
 tavily     = TavilySearchResults(max_results=3)
 
-# Cross-encoder: 첫 호출 시 모델 자동 다운로드 (~1GB), 이후 로컬 캐시 사용
-# BAAI/bge-reranker-v2-m3 — 다국어(한국어 포함) 지원, 무료
+MODELS = {
+    "gpt-4o-mini":           lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    "llama-3.1-8b-instant":  lambda: ChatGroq(model="llama-3.1-8b-instant", temperature=0),
+}
+DEFAULT_MODEL = "gpt-4o-mini"
+
+# Cross-encoder 싱글톤 — 첫 호출 시 모델 자동 다운로드 (~1GB), 이후 로컬 캐시 사용
 _cross_encoder: CrossEncoder | None = None
 _cross_encoder_lock = threading.Lock()
 
@@ -78,19 +81,15 @@ def get_cross_encoder() -> CrossEncoder:
     if _cross_encoder is None:
         with _cross_encoder_lock:
             if _cross_encoder is None:
-                print(f"🔄 Cross-encoder 모델 로딩 중... (device={DEVICE}, 최초 1회만)")
                 _cross_encoder = CrossEncoder(
                     "BAAI/bge-reranker-v2-m3",
                     max_length=512,
                     device=DEVICE,
                 )
-                print("✅ Cross-encoder 로딩 완료")
     return _cross_encoder
 
-# 하이브리드 검색 후보 수 (BM25·벡터 각각) / Re-rank 후 최종 전달 수
-HYBRID_CANDIDATE_K  = 10
-RERANK_CANDIDATE_N  = HYBRID_CANDIDATE_K * 2   # Cross-encoder 입력 후보 수
-RERANK_TOP_N        = 5                         # LLM에 전달할 최종 문서 수
+FLAVOR_CANDIDATE_K = 20   # BM25·벡터 각각 후보 수
+FLAVOR_TOP_N       = 5    # LLM에 전달할 최종 문서 수
 
 
 # ══════════════════════════════════════════════════════════
@@ -116,8 +115,6 @@ SCHEMA = """
 테이블: flavor_text  (비정형 도감 설명 — embedding 컬럼 있음)
 컬럼: id, species_id(FK), version_name, content, embedding
 
-테이블: pokemon_knowledge  (비정형 추가 지식 — embedding 컬럼 있음)
-컬럼: pokemon_id(FK), content, embedding
 
 ─── 자주 쓰는 조인 패턴 ───────────────────────────────────
 
@@ -151,7 +148,7 @@ SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부
 1. **항상 툴을 먼저 사용하세요.** 질문에 답하기 전에 반드시 관련 툴을 호출해 데이터를 확인합니다.
 2. **복합 질문은 여러 툴을 함께 활용하세요.**
    - 수치/조건/비교 → `search_pokemon_db` (SQL)
-   - 느낌/묘사/성격/배경 → `search_pokemon_knowledge` (벡터)
+   - 느낌/묘사/성격/배경 → `search_flavor_text` (벡터 + BM25 + Re-ranking)
    - 진화 경로/조건 → `search_evolution_chain` (Neo4j 그래프)
    - 타입 상성/약점 → `search_type_relations` (Neo4j 그래프)
    - "불꽃타입이면서 귀여운 포켓몬" 같은 복합 질문 → 여러 툴 함께 사용
@@ -215,52 +212,23 @@ def search_pokemon_db(sql: str) -> str:
         return f"SQL 오류: {e}\n힌트: 위 오류를 분석해 SQL을 수정한 후 재시도하세요."
 
 
-def _rrf_merge(
-    bm25_rows: list,
-    vec_rows:  list,
-    k: int = 60
-) -> list[dict]:
-    """
-    Reciprocal Rank Fusion — BM25 순위와 벡터 순위를 합산해 단일 리스트로 융합합니다.
-    동일 content가 두 리스트에 모두 있으면 점수가 더 높아져 상위에 오릅니다.
-    """
-    scores: dict[str, dict] = {}
-
-    for rank, (name, source, content) in enumerate(bm25_rows):
-        key = content[:80]
-        if key not in scores:
-            scores[key] = {"name": name, "source": source, "content": content, "score": 0.0}
-        scores[key]["score"] += 1.0 / (k + rank + 1)
-
-    for rank, (name, source, content) in enumerate(vec_rows):
-        key = content[:80]
-        if key not in scores:
-            scores[key] = {"name": name, "source": source, "content": content, "score": 0.0}
-        scores[key]["score"] += 1.0 / (k + rank + 1)
-
-    return sorted(scores.values(), key=lambda x: x["score"], reverse=True)
-
-
 @tool
-def search_pokemon_knowledge(query: str) -> str:
+def search_flavor_text(query: str) -> str:
     """
-    포켓몬의 도감 설명, 성격, 배경, 느낌 등 비정형 정보를 검색합니다.
-    "귀여운 포켓몬", "바다 느낌", "불꽃에서 사는 포켓몬 이야기" 같은 의미 기반 검색에 사용하세요.
+    포켓몬 도감 설명(flavor_text)에서 의미 기반으로 검색합니다.
+    "귀여운 포켓몬", "바다 느낌", "불꽃에서 사는 포켓몬" 같은 분위기·묘사·성격 질문에 사용하세요.
 
     내부 동작:
-      1. BM25 키워드 검색 (PostgreSQL full-text search) — 고유명사·정확한 단어에 강함
+      1. BM25 키워드 검색 — 고유명사·정확한 단어에 강함
       2. 벡터 유사도 검색 — 의미·분위기 기반 검색에 강함
-      3. RRF(Reciprocal Rank Fusion)로 두 결과 융합
-      4. Cross-encoder Re-ranking으로 최종 정렬 → 상위 5개만 LLM에 전달
+      3. Cross-encoder Re-ranking으로 최종 정렬 → 상위 5개 LLM에 전달
     """
-    merged = []
     try:
         conn = psycopg2.connect(DB_CONN)
         cur  = conn.cursor()
-
-        # ── 1. BM25 키워드 검색 ──────────────────────────────────
         ts_query = " | ".join(query.split())
 
+        # BM25 키워드 검색
         cur.execute("""
             SELECT p.name, ft.version_name AS source, ft.content
             FROM flavor_text ft
@@ -269,24 +237,11 @@ def search_pokemon_knowledge(query: str) -> str:
             WHERE to_tsvector('simple', ft.content) @@ to_tsquery('simple', %s)
             ORDER BY ts_rank(to_tsvector('simple', ft.content), to_tsquery('simple', %s)) DESC
             LIMIT %s
-        """, (ts_query, ts_query, HYBRID_CANDIDATE_K))
-        bm25_flavor = [(r[0], r[1], r[2]) for r in cur.fetchall()]
+        """, (ts_query, ts_query, FLAVOR_CANDIDATE_K))
+        bm25_rows = cur.fetchall()
 
-        cur.execute("""
-            SELECT p.name, 'knowledge' AS source, pk.content
-            FROM pokemon_knowledge pk
-            JOIN pokemon p ON pk.pokemon_id = p.id
-            WHERE to_tsvector('simple', pk.content) @@ to_tsquery('simple', %s)
-            ORDER BY ts_rank(to_tsvector('simple', pk.content), to_tsquery('simple', %s)) DESC
-            LIMIT %s
-        """, (ts_query, ts_query, HYBRID_CANDIDATE_K))
-        bm25_knowledge = [(r[0], r[1], r[2]) for r in cur.fetchall()]
-
-        bm25_all = bm25_flavor + bm25_knowledge
-
-        # ── 2. 벡터 유사도 검색 ──────────────────────────────────
+        # 벡터 유사도 검색
         query_vector = embeddings.embed_query(query)
-
         cur.execute("""
             SELECT p.name, ft.version_name AS source, ft.content
             FROM flavor_text ft
@@ -295,49 +250,31 @@ def search_pokemon_knowledge(query: str) -> str:
             WHERE ft.embedding IS NOT NULL
             ORDER BY ft.embedding <=> %s::vector
             LIMIT %s
-        """, (query_vector, HYBRID_CANDIDATE_K))
-        vec_flavor = [(r[0], r[1], r[2]) for r in cur.fetchall()]
-
-        cur.execute("""
-            SELECT p.name, 'knowledge' AS source, pk.content
-            FROM pokemon_knowledge pk
-            JOIN pokemon p ON pk.pokemon_id = p.id
-            WHERE pk.embedding IS NOT NULL
-            ORDER BY pk.embedding <=> %s::vector
-            LIMIT %s
-        """, (query_vector, HYBRID_CANDIDATE_K))
-        vec_knowledge = [(r[0], r[1], r[2]) for r in cur.fetchall()]
-
-        vec_all = vec_flavor + vec_knowledge
+        """, (query_vector, FLAVOR_CANDIDATE_K))
+        vec_rows = cur.fetchall()
         conn.close()
 
-        # ── 3. RRF 융합 ──────────────────────────────────────────
-        merged = _rrf_merge(bm25_all, vec_all)
-        if not merged:
+        # 중복 제거 후 후보 합치기
+        seen, candidates = set(), []
+        for row in bm25_rows + vec_rows:
+            key = row[2][:80]
+            if key not in seen:
+                seen.add(key)
+                candidates.append(f"[{row[0]} / {row[1]}]\n{row[2]}")
+
+        if not candidates:
             return "검색 결과가 없습니다. 다른 표현으로 질문해보세요."
 
-        candidates = merged[:RERANK_CANDIDATE_N]
-
-        # ── 4. Cross-encoder Re-ranking ──────────────────────────
-        docs_for_rerank = [f"[{c['name']} / {c['source']}]\n{c['content']}" for c in candidates]
-
+        # Cross-encoder Re-ranking
         encoder = get_cross_encoder()
-        pairs   = [(query, doc) for doc in docs_for_rerank]
-        scores  = encoder.predict(pairs)
+        scores  = encoder.predict([(query, doc) for doc in candidates])
+        ranked  = sorted(zip(scores, candidates), key=lambda x: x[0], reverse=True)
+        top     = [doc for _, doc in ranked[:FLAVOR_TOP_N]]
 
-        ranked   = sorted(zip(scores, docs_for_rerank), key=lambda x: x[0], reverse=True)
-        top_docs = [doc for _, doc in ranked[:RERANK_TOP_N]]
-
-        return "✅ 관련 포켓몬 정보 (하이브리드 검색 + Cross-encoder Re-ranking):\n\n" + "\n\n---\n\n".join(top_docs)
+        return "✅ 관련 도감 설명 (BM25 + 벡터 + Re-ranking):\n\n" + "\n\n---\n\n".join(top)
 
     except Exception as e:
-        # Cross-encoder 실패 시 RRF 결과로 fallback
-        print(f"⚠️  Re-ranking 실패 (fallback to RRF): {e}")
-        fallback = merged[:RERANK_TOP_N] if merged else []
-        if not fallback:
-            return "검색 결과가 없습니다."
-        results = [f"[{c['name']} / {c['source']}]\n{c['content']}" for c in fallback]
-        return "✅ 관련 포켓몬 정보 (RRF only):\n\n" + "\n\n---\n\n".join(results)
+        return f"도감 검색 오류: {e}"
 
 
 @tool
@@ -358,11 +295,10 @@ def web_search(query: str) -> str:
 # Agent State & Graph
 # ══════════════════════════════════════════════════════════
 
-# Neo4j 툴 포함 — 툴 수가 늘어났으므로 최대 호출 횟수를 8로 상향
-tools     = [search_pokemon_db, search_pokemon_knowledge,
-             search_evolution_chain, search_type_relations,
-             web_search]
-llm_agent = llm.bind_tools(tools)
+tools      = [search_pokemon_db, search_flavor_text,
+              search_evolution_chain, search_type_relations,
+              web_search]
+_tool_node = ToolNode(tools)
 
 MAX_TOOL_CALLS = 8
 
@@ -371,70 +307,58 @@ class AgentState(TypedDict):
     tool_call_count: int
 
 
-def agent_node(state: AgentState) -> AgentState:
-    """LLM이 툴을 선택하고 답변을 생성하는 핵심 노드"""
-    messages = state["messages"]
+def build_agent(model_name: str):
+    llm_with_tools = MODELS[model_name]().bind_tools(tools)
 
-    if not any(isinstance(m, SystemMessage) for m in messages):
-        messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
+    def agent_node(state: AgentState) -> AgentState:
+        messages = state["messages"]
+        if not any(isinstance(m, SystemMessage) for m in messages):
+            messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
 
-    count = state.get("tool_call_count", 0)
-    if count >= MAX_TOOL_CALLS:
-        messages = messages + [
-            SystemMessage(content=(
+        count = state.get("tool_call_count", 0)
+        if count >= MAX_TOOL_CALLS:
+            messages = messages + [SystemMessage(content=(
                 "지금까지 검색한 정보를 바탕으로 최선의 답변을 지금 바로 작성하세요. "
                 "더 이상 툴을 호출하지 마세요."
-            ))
-        ]
+            ))]
 
-    response = llm_agent.invoke(messages)
+        response = llm_with_tools.invoke(messages)
 
-    if count >= MAX_TOOL_CALLS and hasattr(response, "tool_calls") and response.tool_calls:
-        response.tool_calls = []
+        if count >= MAX_TOOL_CALLS and hasattr(response, "tool_calls") and response.tool_calls:
+            response.tool_calls = []
 
-    tool_names = [tc["name"] if isinstance(tc, dict) else tc.name
-                  for tc in response.tool_calls] if response.tool_calls else []
-    print(f"🤖 Agent (툴호출 {count}회): {tool_names if tool_names else '최종 답변'}")
+        tool_names = [tc["name"] if isinstance(tc, dict) else tc.name
+                      for tc in response.tool_calls] if response.tool_calls else []
+        print(f"[{model_name}] Agent (툴호출 {count}회): {tool_names or '최종 답변'}")
 
-    return {"messages": [response], "tool_call_count": count}
+        return {"messages": [response], "tool_call_count": count}
 
+    def tools_node_wrapper(state: AgentState) -> AgentState:
+        result = _tool_node.invoke(state)
+        return {**result, "tool_call_count": state.get("tool_call_count", 0) + 1}
 
-_tool_node = ToolNode(tools)
+    def should_continue(state: AgentState) -> str:
+        last  = state["messages"][-1]
+        count = state.get("tool_call_count", 0)
+        if hasattr(last, "tool_calls") and last.tool_calls and count < MAX_TOOL_CALLS:
+            return "tools"
+        return END
 
-def tools_node_wrapper(state: AgentState) -> AgentState:
-    """ToolNode 실행 후 tool_call_count 증가"""
-    result = _tool_node.invoke(state)
-    new_count = state.get("tool_call_count", 0) + 1
-    return {**result, "tool_call_count": new_count}
-
-
-def should_continue(state: AgentState) -> str:
-    last  = state["messages"][-1]
-    count = state.get("tool_call_count", 0)
-
-    if hasattr(last, "tool_calls") and last.tool_calls and count < MAX_TOOL_CALLS:
-        return "tools"
-    return END
-
-
-# ══════════════════════════════════════════════════════════
-# 그래프 조립
-# ══════════════════════════════════════════════════════════
-
-def build_agent():
     workflow = StateGraph(AgentState)
-
     workflow.add_node("agent", agent_node)
     workflow.add_node("tools", tools_node_wrapper)
-
     workflow.add_edge(START, "agent")
     workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
     workflow.add_edge("tools", "agent")
-
     return workflow.compile()
 
 
-app = build_agent()
+_agent_cache: dict[str, object] = {}
+
+def get_agent(model_name: str):
+    if model_name not in _agent_cache:
+        _agent_cache[model_name] = build_agent(model_name)
+    return _agent_cache[model_name]
 
 
 # ══════════════════════════════════════════════════════════
@@ -443,29 +367,28 @@ app = build_agent()
 
 def chat_with_tools(
     query: str,
-    history: list[dict] | None = None
+    history: list[dict] | None = None,
+    model: str = DEFAULT_MODEL,
 ) -> tuple[str, list[str]]:
     """
     답변 텍스트와 실제 사용된 툴 이름 목록을 함께 반환합니다.
 
-   Args:
+    Args:
         query:   현재 사용자 질문
         history: 이전 대화 목록 [{"role": "user"|"assistant", "content": "..."}, ...]
-                 Streamlit 의 st.session_state.messages 를 그대로 전달하면 됩니다.
+        model:   사용할 모델명 (MODELS 키 중 하나)
     """
     messages = []
-
-   # 이전 대화를 LangChain 메시지로 변환
     if history:
         for msg in history:
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-               messages.append(AIMessage(content=msg["content"]))
+                messages.append(AIMessage(content=msg["content"]))
 
     messages.append(HumanMessage(content=query))
 
-    result = app.invoke({
+    result = get_agent(model).invoke({
         "messages":        messages,
         "tool_call_count": 0,
     })
@@ -482,9 +405,9 @@ def chat_with_tools(
     return answer, used_tools
 
 
-def chat(query: str, history: list[dict] | None = None) -> str:
+def chat(query: str, history: list[dict] | None = None, model: str = DEFAULT_MODEL) -> str:
     """답변 텍스트만 반환합니다 (툴 목록이 필요 없을 때 사용)."""
-    answer, _ = chat_with_tools(query, history)
+    answer, _ = chat_with_tools(query, history, model)
     return answer
 
 

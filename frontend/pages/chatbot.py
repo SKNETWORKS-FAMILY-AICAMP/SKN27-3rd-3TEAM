@@ -10,7 +10,7 @@ pokemon_agent.py 와 같은 디렉터리에 있어야 합니다.
 
 import copy
 import streamlit as st
-from common.pokemon_agent import chat_with_tools
+from common.pokemon_agent import chat_with_tools, MODELS, DEFAULT_MODEL
 
 
 
@@ -238,11 +238,27 @@ if "messages" not in st.session_state:
 if "tool_logs" not in st.session_state:
     st.session_state.tool_logs = {}   # {msg_index: [tool_name, ...]}
 
+if "model" not in st.session_state:
+    st.session_state.model = DEFAULT_MODEL
+
 # ──────────────────────────────────────────────
 # 사이드바
 # ──────────────────────────────────────────────
 with st.sidebar:
     st.markdown("## ⚙️ 설정")
+    st.markdown("---")
+
+    selected_model = st.selectbox(
+        "🤖 모델 선택",
+        options=list(MODELS.keys()),
+        index=list(MODELS.keys()).index(st.session_state.model),
+    )
+    if selected_model != st.session_state.model:
+        st.session_state.model = selected_model
+        st.session_state.messages = []
+        st.session_state.tool_logs = {}
+        st.rerun()
+
     st.markdown("---")
 
     show_tools = st.toggle("🔧 툴 사용 내역 표시", value=True)
@@ -252,8 +268,8 @@ with st.sidebar:
     st.markdown("""
 - 🗄️ **search_pokemon_db**
   SQL로 스탯·타입·세대 검색
-- 🔮 **search_pokemon_knowledge**
-  하이브리드(BM25+벡터) + Cross-encoder Rerank
+- 🔮 **search_flavor_text**
+  BM25 + 벡터 + Cross-encoder Rerank
   도감 설명·분위기 검색
 - 🔗 **search_evolution_chain**
   Neo4j로 진화 경로·조건 탐색
@@ -309,11 +325,11 @@ for col, q in zip(cols, EXAMPLE_QUESTIONS):
 # 채팅 히스토리 렌더링
 # ──────────────────────────────────────────────
 _BADGE_MAP = [
-    ("db",        "tool-db",     "🗄️"),
-    ("knowledge", "tool-vector", "🔮"),
-    ("evolution", "tool-neo4j",  "🔗"),
-    ("type_rel",  "tool-neo4j",  "⚔️"),
-    ("web",       "tool-web",    "🌐"),
+    ("db",      "tool-db",     "🗄️"),
+    ("flavor",  "tool-vector", "🔮"),
+    ("evol",    "tool-neo4j",  "🔗"),
+    ("type_rel","tool-neo4j",  "⚔️"),
+    ("web",     "tool-web",    "🌐"),
 ]
 
 def render_tool_badges(tool_names: list[str]) -> str:
@@ -373,7 +389,7 @@ def handle_query(user_input: str):
 
     with st.spinner(""):
         try:
-            answer, used_tools = chat_with_tools(user_input, history=history)
+            answer, used_tools = chat_with_tools(user_input, history=history, model=st.session_state.model)
         except Exception as e:
             answer = f"⚠️ 오류가 발생했습니다: {e}"
             used_tools = []
@@ -402,6 +418,6 @@ if user_input:
 # ──────────────────────────────────────────────
 st.html("""
 <p class="footer-txt">
-    Powered by LangGraph · OpenAI · BAAI/bge-reranker · Tavily · pgvector · Neo4j
+    Powered by LangGraph · OpenAI · Groq · BAAI/bge-reranker · Tavily · pgvector · Neo4j
 </p>
 """)
