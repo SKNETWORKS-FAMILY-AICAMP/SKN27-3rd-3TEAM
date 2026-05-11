@@ -55,6 +55,39 @@ def api_delete(session_id):
 
 MODELS_LIST, DEFAULT_MODEL = fetch_models()
 
+def render_tool_badges(tools: list) -> None:
+    if not tools:
+        return
+    TOOL_COLORS = {
+        "search_pokemon_db":      ("#3B4CCA", "#e8edff"),
+        "search_flavor_text":     ("#7c3aed", "#f3e8ff"),
+        "search_evolution_chain": ("#059669", "#d1fae5"),
+        "search_type_relations":  ("#d97706", "#fef3c7"),
+        "web_search":             ("#6b7280", "#f3f4f6"),
+    }
+    TOOL_LABELS = {
+        "search_pokemon_db":      "DB 검색",
+        "search_flavor_text":     "도감 검색",
+        "search_evolution_chain": "진화 체인",
+        "search_type_relations":  "타입 상성",
+        "web_search":             "웹 검색",
+    }
+    badges = []
+    for t in tools:
+        color, bg = TOOL_COLORS.get(t, ("#64748b", "#f1f5f9"))
+        label = TOOL_LABELS.get(t, t)
+        badges.append(
+            f'<span style="display:inline-flex;align-items:center;gap:4px;'
+            f'background:{bg};color:{color};border:1px solid {color}33;'
+            f'border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;'
+            f'letter-spacing:0.3px;margin-right:4px;">'
+            f'⚙ {label}</span>'
+        )
+    st.markdown(
+        '<div style="margin-top:6px;line-height:2;">' + "".join(badges) + "</div>",
+        unsafe_allow_html=True,
+    )
+
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="포켓몬 박사 챗봇",
@@ -358,9 +391,7 @@ with right_col:
             if asst_msg:
                 with st.chat_message("assistant", avatar="🤖"):
                     st.markdown(asst_msg["content"], unsafe_allow_html=True)
-                    tools = asst_msg.get("used_tools") or []
-                    if tools:
-                        st.caption("사용 툴: " + " · ".join(f"`{t}`" for t in tools))
+                    render_tool_badges(asst_msg.get("used_tools") or [])
             else:
                 st.caption("아직 답변이 없습니다.")
     else:
@@ -383,9 +414,8 @@ with right_col:
                     avatar = "🤖" if msg["role"] == "assistant" else "🧑"
                     with st.chat_message(msg["role"], avatar=avatar):
                         st.markdown(msg["content"], unsafe_allow_html=True)
-                        tools = msg.get("used_tools") or []
-                        if tools and msg["role"] == "assistant":
-                            st.caption("사용 툴: " + " · ".join(f"`{t}`" for t in tools))
+                        if msg["role"] == "assistant":
+                            render_tool_badges(msg.get("used_tools") or [])
 
 # ── 입력 처리 ─────────────────────────────────────────────────
 if prompt := st.chat_input("포켓몬에 대해 무엇이든 물어보세요... ⚡"):
