@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from graph.neo4j_client import neo4j_client
-from routers import pokemon, team_builder, chat
+from routers import pokemon, team_builder, chat, users
 
 # DB 테이블 생성
 Base.metadata.create_all(bind=engine)
