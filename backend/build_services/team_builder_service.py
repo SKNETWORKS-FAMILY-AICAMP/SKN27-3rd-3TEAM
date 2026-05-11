@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 
 from graph import queries
 from graph.neo4j_client import Neo4jClient
-from services.team_analysis_service import analyze_team
+from build_services.team_analysis_service import analyze_team
 
 
 def _describe_defensive_relation(relation: str, multiplier: float) -> str:
@@ -161,6 +161,7 @@ def _build_candidate_score(
         "name": candidate["name"],
         "image_url": candidate.get("image_url"),
         "base_total": base_total,
+        "graph_score": total_score,
         "score": total_score,
         "defensive_covers": defensive_covers,
         "move_types": candidate_move_types,
@@ -287,7 +288,7 @@ def recommend_team_member(
     # 점수가 높은 후보부터 정렬하고 요청한 개수만 반환합니다.
     recommendations = sorted(
         scored_candidates,
-        key=lambda row: row["score"],
+        key=lambda row: row.get("graph_score", row.get("score", 0)),
         reverse=True,
     )[:limit]
 
