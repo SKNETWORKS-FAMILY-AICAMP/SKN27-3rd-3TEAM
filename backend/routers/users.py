@@ -1,0 +1,28 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+import crud
+import schemas
+from database import get_db
+
+router = APIRouter(
+    prefix="/api/v1/users",
+    tags=["users"],
+)
+
+@router.post("/", response_model=schemas.UserResponse)
+def create_or_update_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """
+    유저 정보를 생성하거나 이미 존재하는 경우 업데이트합니다.
+    """
+    return crud.create_or_update_user(db, user)
+
+@router.get("/{github_id}", response_model=schemas.UserResponse)
+def get_user(github_id: int, db: Session = Depends(get_db)):
+    """
+    GitHub ID를 기반으로 유저 정보를 조회합니다.
+    """
+    import models
+    db_user = db.query(models.User).filter(models.User.github_id == github_id).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
 import models
+import schemas
 from typing import List, Optional
 
 def get_pokemon_list(
@@ -135,7 +136,33 @@ def get_abilities(db: Session) -> List[str]:
     return [a.name for a in db.query(models.Ability).order_by(models.Ability.name).all()]
 
 
+
 def get_pokemon_by_id(db: Session, pokemon_id: int):
     # This will return the DB model. The router will add evolution_chain manually if needed.
     return db.query(models.Pokemon).filter(models.Pokemon.id == pokemon_id).first()
+
+
+def create_or_update_user(db: Session, user_data: schemas.UserCreate):
+    db_user = db.query(models.User).filter(models.User.github_id == user_data.github_id).first()
+    
+    if db_user:
+        # Update existing user
+        db_user.login = user_data.login
+        db_user.name = user_data.name
+        db_user.avatar_url = user_data.avatar_url
+        db_user.email = user_data.email
+    else:
+        # Create new user
+        db_user = models.User(
+            github_id=user_data.github_id,
+            login=user_data.login,
+            name=user_data.name,
+            avatar_url=user_data.avatar_url,
+            email=user_data.email
+        )
+        db.add(db_user)
+    
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
