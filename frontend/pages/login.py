@@ -147,14 +147,14 @@ def show():
         name = user.get("name") or user.get("login", "트레이너")
         login = user.get("login", "")
         
-        profile_html = f'<div class="login-scene"><div class="login-card"><div class="profile-box"><div class="avatar-wrap"><img src="{avatar}" class="avatar-img"></div><h2 class="user-name">{name}</h2><p class="user-id">@{login}</p><a href="/" target="_self" class="main-nav-btn">🏠 메인 화면으로 이동</a><div style="height:10px;"></div><a href="/login?do_logout=true" target="_self" class="github-btn" style="background:linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color:rgba(255,255,255,0.2);">🚪 로그아웃</a></div><div style="background:rgba(255,203,5,0.1); border:1px solid rgba(255,203,5,0.2); border-radius:12px; padding:12px; color:#ffcb05; font-size:13px; font-weight:700; margin-bottom:20px; text-align:center;">✅ 정식 트레이너 인증 완료</div><div class="benefit-row"><span class="benefit-tag">Lv.99 Master</span><span class="benefit-tag">Pokedex 100%</span></div></div></div>'
+        profile_html = f'<div class="login-scene"><div class="login-card"><div class="profile-box"><div class="avatar-wrap"><img src="{avatar}" class="avatar-img"></div><h2 class="user-name">{name}</h2><p class="user-id">@{login}</p><a href="/" target="_self" class="main-nav-btn">메인 화면으로 이동</a><div style="height:10px;"></div><a href="/login?do_logout=true" target="_self" class="github-btn" style="background:linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color:rgba(255,255,255,0.2);">로그아웃</a></div><div style="background:rgba(255,203,5,0.1); border:1px solid rgba(255,203,5,0.2); border-radius:12px; padding:12px; color:#ffcb05; font-size:13px; font-weight:700; margin-bottom:20px; text-align:center;">정식 트레이너 인증 완료</div><div class="benefit-row"><span class="benefit-tag">Lv.99 Master</span><span class="benefit-tag">Pokedex 100%</span></div></div></div>'
         st.markdown(profile_html, unsafe_allow_html=True)
     else:
         if not CLIENT_ID or not CLIENT_SECRET:
             st.warning("⚠️ .env 파일에 GITHUB_CLIENT_ID와 GITHUB_CLIENT_SECRET을 설정해주세요.")
             
         auth_url = get_github_auth_url()
-        login_html = f'<div class="login-scene"><div class="login-card">{POKEBALL_SVG}<h1 class="login-title">트레이너 인증</h1><p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p><a href="{auth_url}" target="_self" class="github-btn"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">GitHub 계정으로 시작하기</a><div class="benefit-row"><span class="benefit-tag">🛡️ 팀 저장</span><span class="benefit-tag">🔥 배틀 기록</span><span class="benefit-tag">💬 AI 챗</span></div></div></div>'
+        login_html = f'<div class="login-scene"><div class="login-card">{POKEBALL_SVG}<h1 class="login-title">트레이너 인증</h1><p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p><a href="{auth_url}" target="_self" class="github-btn"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">GitHub 계정으로 시작하기</a><div class="benefit-row"><span class="benefit-tag">팀 저장</span><span class="benefit-tag">배틀 기록</span><span class="benefit-tag">AI 챗</span></div></div></div>'
         st.markdown(login_html, unsafe_allow_html=True)
 
 if __name__ == "__main__":
