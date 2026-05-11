@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "상태이상 부여",
+        "effect_type": "ailment",
+        "effect_text": "상태이상을 부여합니다."
+    },
+    {
+        "id": 2,
+        "name": "상태이상 면역",
+        "effect_type": "ailment_immunity",
+        "effect_text": "상태이상에 면역이 됩니다."
+    },
+    {
+        "id": 3,
+        "name": "능력치 랭크 변화",
+        "effect_type": "stat_change",
+        "effect_text": "능력치의 랭크를 변화시킵니다."
+    },
+    {
+        "id": 4,
+        "name": "능력치 배율 변화",
+        "effect_type": "stat_multiplier",
+        "effect_text": "능력치의 수치를 변화시킵니다."
+    },
+    {
+        "id": 5,
+        "name": "데미지 배율 변화",
+        "effect_type": "damage_modifier",
+        "effect_text": "기술 데미지를 수치로 변환하기전 곱해지는 배율을 변화시킵니다."
+    },
+    {
+        "id": 6,
+        "name": "기술 위력 변화",
+        "effect_type": "power_modifier",
+        "effect_text": "기술의 위력을 변화시킵니다."
+    },
+    {
+        "id": 7,
+        "name": "특정 기술 무효화",
+        "effect_type": "move_immunity",
+        "effect_text": "특정 기술을 무효화합니다."
+    },
+    {
+        "id": 8,
+        "name": "특정 기술 무효 + 회복/능력 상승",
+        "effect_type": "move_absorb",
+        "effect_text": "특정 기술을 무효화하고 회복하거나 능력을 상승시킵니다."
+    },
+    {
+        "id": 9,
+        "name": "HP 회복",
+        "effect_type": "heal",
+        "effect_text": "HP를 회복합니다."
+    },
+    {
+        "id": 10,
+        "name": "반동 피해",
+        "effect_type": "recoil",
+        "effect_text": "기술 사용 후 데미지의 일부를 자신도 받습니다."
+    },
+    {
+        "id": 11,
+        "name": "날씨 변화",
+        "effect_type": "weather_change",
+        "effect_text": "배틀 필드의 날씨를 변화시킵니다."
+    },
+    {
+        "id": 12,
+        "name": "필드 변화",
+        "effect_type": "terrain_change",
+        "effect_text": "배틀 필드의 상태를 변화시킵니다."
+    }
+]
