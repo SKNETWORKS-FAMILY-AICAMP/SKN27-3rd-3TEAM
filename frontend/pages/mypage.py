@@ -29,179 +29,232 @@ def fetch_user_logs(user_id):
 def get_mypage_styles():
     return textwrap.dedent("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+    
+    :root {
+        --neon-blue: #00d2ff;
+        --neon-yellow: #ffcb05;
+        --neon-green: #4ade80;
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    .stApp { background-color: #050505 !important; }
     
     .mypage-container {
-        padding: 120px 40px 60px;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 100px 5% 60px;
+        background: #050505;
         min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Pokedex Scanline & Grid Effect */
+    .mypage-container::after {
+        content: ''; position: absolute; inset: 0;
+        background: 
+            linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+            linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+        background-size: 100% 4px, 3px 100%;
+        pointer-events: none;
+        z-index: 1;
     }
     
     /* Profile Section */
-    .profile-card {
-        background: rgba(255, 255, 255, 0.7);
+    .profile-hero {
+        position: relative;
+        z-index: 10;
+        background: var(--glass-bg);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 24px;
-        padding: 40px;
+        border: 1px solid var(--glass-border);
+        border-radius: 40px;
+        padding: 60px;
+        margin-bottom: 50px;
         display: flex;
         align-items: center;
-        gap: 30px;
-        margin-bottom: 40px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        gap: 50px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.5);
     }
     
+    .profile-avatar-wrap {
+        position: relative;
+    }
+
     .profile-avatar {
-        width: 120px;
-        height: 120px;
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
-        border: 4px solid #fff;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border: 4px solid var(--neon-blue);
+        box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
         object-fit: cover;
+        animation: float 6s ease-in-out infinite;
     }
     
+    @keyframes float { 
+        0%, 100% { transform: translateY(0); } 
+        50% { transform: translateY(-20px); } 
+    }
+
     .profile-info h1 {
         font-family: 'Outfit', sans-serif;
         font-weight: 900;
         margin: 0;
-        font-size: 2.5rem;
-        color: #1a1a1a;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        color: #fff;
+        letter-spacing: -2px;
+        text-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
     
     .profile-info p {
-        margin: 5px 0 0;
-        color: #666;
-        font-size: 1.1rem;
+        margin: 10px 0 0;
+        color: rgba(255,255,255,0.5);
+        font-size: 1.2rem;
+        font-weight: 300;
     }
     
-    .trainer-badge {
+    .tier-badge {
         display: inline-block;
-        padding: 6px 16px;
-        background: #ffcb05;
-        color: #2a75bb;
+        padding: 8px 24px;
+        background: var(--neon-yellow);
+        color: #000;
         border-radius: 50px;
-        font-weight: 800;
-        font-size: 0.8rem;
-        margin-top: 15px;
+        font-weight: 900;
+        font-size: 0.9rem;
+        margin-top: 25px;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        box-shadow: 0 10px 25px rgba(255, 203, 5, 0.3);
     }
     
     /* Stats Grid */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        margin-bottom: 40px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+        position: relative;
+        z-index: 10;
     }
     
     .stat-card {
-        background: white;
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-        transition: transform 0.3s ease;
-        border: 1px solid #f0f0f0;
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 30px;
+        padding: 40px;
+        border: 1px solid var(--glass-border);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .stat-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-10px) scale(1.02);
+        background: rgba(255,255,255,0.06);
+        border-color: var(--neon-blue);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(0, 210, 255, 0.1);
     }
     
     .stat-label {
-        font-size: 0.9rem;
-        color: #888;
-        font-weight: 600;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.4);
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
     
     .stat-value {
         font-family: 'Outfit', sans-serif;
-        font-size: 2rem;
+        font-size: 3rem;
         font-weight: 900;
-        color: #1a1a1a;
+        color: #fff;
+        line-height: 1;
     }
     
     .stat-desc {
-        font-size: 0.85rem;
-        color: #aaa;
-        margin-top: 5px;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.3);
+        margin-top: 10px;
     }
     
     /* Activity List */
     .activity-section {
-        background: white;
-        border-radius: 24px;
-        padding: 35px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border-radius: 40px;
+        padding: 50px;
+        border: 1px solid var(--glass-border);
+        position: relative;
+        z-index: 10;
     }
     
     .section-title {
         font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        font-size: 1.5rem;
-        margin-bottom: 25px;
-        color: #1a1a1a;
+        font-weight: 900;
+        font-size: 2rem;
+        margin-bottom: 40px;
+        color: #fff;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 20px;
     }
     
     .activity-item {
         display: flex;
         align-items: center;
-        padding: 15px 0;
-        border-bottom: 1px solid #f0f0f0;
+        padding: 25px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
     }
     
-    .activity-item:last-child {
-        border-bottom: none;
+    .activity-item:hover {
+        background: rgba(255,255,255,0.02);
+        padding-left: 15px;
+        padding-right: 15px;
     }
     
     .activity-icon {
-        width: 45px;
-        height: 45px;
-        background: #f8f9fa;
-        border-radius: 12px;
+        width: 54px;
+        height: 54px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 20px;
-    }
-    
-    .activity-details {
-        flex: 1;
+        margin-right: 25px;
+        font-size: 1.5rem;
     }
     
     .activity-main {
         font-weight: 700;
-        color: #333;
-        font-size: 1rem;
+        color: #fff;
+        font-size: 1.1rem;
     }
     
     .activity-sub {
-        font-size: 0.85rem;
-        color: #888;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.4);
     }
     
     .activity-time {
-        font-size: 0.85rem;
-        color: #bbb;
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.2);
     }
     
     .status-tag {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        margin-left: 10px;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 900;
+        margin-left: 15px;
+        text-transform: uppercase;
     }
     
-    .status-success { background: #e6fffa; color: #38b2ac; }
-    .status-fail { background: #fff5f5; color: #e53e3e; }
+    .status-success { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); border: 1px solid rgba(74, 222, 128, 0.2); }
+    .status-fail { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+
+    @media (max-width: 768px) {
+        .profile-hero { flex-direction: column; text-align: center; padding: 40px; }
+        .profile-avatar { width: 140px; height: 140px; }
+    }
     </style>
     """)
 
@@ -276,7 +329,7 @@ def show():
     # Layout Start
     st.markdown('<div class="mypage-container">', unsafe_allow_html=True)
     
-    # 1. Profile Section
+    # 1. Profile Hero Section
     avatar = user.get("avatar_url", "https://cdn-icons-png.flaticon.com/512/1144/1144760.png")
     name = user.get("name") or user.get("login", "트레이너")
     
@@ -287,12 +340,15 @@ def show():
     else: trainer_tier = "Rookie Developer"
         
     st.markdown(f"""
-    <div class="profile-card">
-        <img src="{avatar}" class="profile-avatar">
+    <div class="profile-hero">
+        <div class="profile-avatar-wrap">
+            <img src="{avatar}" class="profile-avatar">
+        </div>
         <div class="profile-info">
             <h1>{name}</h1>
-            <p>@{username} · {trainer_tier}</p>
-            <div class="trainer-badge" style="background:#4ade80; color:#064e3b;">Lv.{min(99, int(commits/10) + 1)} Developer</div>
+            <p>@{username} · Professional Pokemon Trainer</p>
+            <div class="tier-badge">{trainer_tier}</div>
+            <div style="margin-top: 15px; color: var(--neon-blue); font-weight: 900; font-family: 'Outfit';">Lv.{min(99, int(commits/10) + 1)} Master</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -320,59 +376,57 @@ def show():
     
     st.markdown(f"""
     <div class="stats-grid">
-        <div class="stat-card" style="border-top: 5px solid #2a75bb;">
-            <div class="stat-label">💻 전체 커밋 수</div>
-            <div class="stat-value">{commits:,}</div>
-            <div class="stat-desc">Lifetime Public Commits</div>
+        <div class="stat-card">
+            <div class="stat-label">💻 Lifetime Commits</div>
+            <div class="stat-value" style="color: var(--neon-blue);">{commits:,}</div>
+            <div class="stat-desc">Total public contributions</div>
         </div>
-        <div class="stat-card" style="border-top: 5px solid #ffcb05;">
-            <div class="stat-label">⭐ 획득한 스타</div>
-            <div class="stat-value">{stars}</div>
-            <div class="stat-desc">Reputation from Repositories</div>
+        <div class="stat-card">
+            <div class="stat-label">⭐ Reputation</div>
+            <div class="stat-value" style="color: var(--neon-yellow);">{stars}</div>
+            <div class="stat-desc">Total stars from {repos} repos</div>
         </div>
-        <div class="stat-card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;">
-            <div class="stat-label" style="color: rgba(255,255,255,0.8);">🏆 평생 통합 점수</div>
-            <div class="stat-value" style="color: white; font-size: 2.5rem;">{total_score:,}</div>
-            <div class="stat-desc" style="color: rgba(255,255,255,0.6);">Dev {gh_score:,} + Game {game_score:,}</div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-color: rgba(255,255,255,0.2);">
+            <div class="stat-label" style="color: rgba(255,255,255,0.6);">🏆 Total Trainer Score</div>
+            <div class="stat-value" style="color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">{total_score:,}</div>
+            <div class="stat-desc" style="color: rgba(255,255,255,0.4);">Game {game_score:,} + Dev {gh_score:,}</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     # 3. Activity Timeline
     st.markdown('<div class="activity-section">', unsafe_allow_html=True)
-    st.markdown('<div class="section-title">🕒 최근 활동 내역</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🕒 Recent Activities</div>', unsafe_allow_html=True)
     
     if not logs:
-        st.markdown('<p style="color: #888; text-align: center; padding: 40px 0;">아직 활동 기록이 없습니다. 미니게임을 플레이해보세요!</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: rgba(255,255,255,0.2); text-align: center; padding: 40px 0;">No activities recorded yet. Play a mini-game!</p>', unsafe_allow_html=True)
     else:
         for log in logs:
-            g_type = "실루엣 퀴즈" if log.get("game_type") == "silhouette" else "메모리 게임"
+            g_type = "Silhouette Quiz" if log.get("game_type") == "silhouette" else "Memory Game"
             is_correct = log.get("is_correct")
             status_text = "SUCCESS" if is_correct else "FAIL"
             status_class = "status-success" if is_correct else "status-fail"
             
             # Format time
             ts = log.get("created_at")
+            time_str = ""
             if ts:
                 try:
                     dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
                     time_str = dt.strftime("%m/%d %H:%M")
-                except:
-                    time_str = ""
-            else:
-                time_str = ""
+                except: pass
                 
-            icon = "❓" if log.get("game_type") == "silhouette" else "🧠"
+            icon = "🔍" if log.get("game_type") == "silhouette" else "🧠"
             
             st.markdown(f"""
             <div class="activity-item">
                 <div class="activity-icon">{icon}</div>
                 <div class="activity-details">
                     <div class="activity-main">
-                        {g_type} 플레이
+                        Played {g_type}
                         <span class="status-tag {status_class}">{status_text}</span>
                     </div>
-                    <div class="activity-sub">활동 점수 획득</div>
+                    <div class="activity-sub">Gained trainer points</div>
                 </div>
                 <div class="activity-time">{time_str}</div>
             </div>

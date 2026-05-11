@@ -116,11 +116,13 @@ def sync_user_to_db(user_info, gh_stats):
         "total_stars": gh_stats.get("total_stars", 0)
     }
     try:
-        resp = requests.post(url, json=payload, timeout=5)
+        resp = requests.post(url, json=payload, timeout=10) # 타임아웃 10초로 연장
         if resp.status_code == 200:
             return resp.json()
+        else:
+            st.error(f"백엔드 응답 오류 ({resp.status_code}): {resp.text}")
     except Exception as e:
-        st.warning(f"DB 동기화 중 오류 발생: {str(e)}")
+        st.error(f"DB 동기화 중 네트워크 오류 발생: {str(e)}")
     return None
 
 def show():
