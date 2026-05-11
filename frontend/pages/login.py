@@ -37,7 +37,7 @@ def get_secret(key, default=None):
 CLIENT_ID     = get_secret("GITHUB_CLIENT_ID", "")
 CLIENT_SECRET = get_secret("GITHUB_CLIENT_SECRET", "")
 REDIRECT_URI  = get_secret("GITHUB_REDIRECT_URI", "http://localhost:8501/login")
-BACKEND_URL   = get_secret("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
 
 def get_github_auth_url():
     params = {

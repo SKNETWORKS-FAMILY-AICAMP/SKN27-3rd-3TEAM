@@ -16,7 +16,7 @@ if frontend_dir not in sys.path:
 from utils.ui import inject_common_ui
 from pages.style.pokedex_styles import get_pokedex_styles, render_pokemon_card
 
-BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
 API_V1_STR = "/api/v1/pokemon"
 
 REGIONS = ["전체", "관동", "성도", "호연", "신오", "하나", "칼로스", "알로라", "가라르", "팔데아"]
