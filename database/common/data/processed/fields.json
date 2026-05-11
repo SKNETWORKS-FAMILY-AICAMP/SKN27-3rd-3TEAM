@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "그래스필드",
+    "name_en": "grassy_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬의 HP를 매 턴 1/16 회복. 풀 기술 위력 1.3배, 지진·땅고르기·매그니튜드 위력 0.5배."
+  },
+  {
+    "id": 2,
+    "name": "미스트필드",
+    "name_en": "misty_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 상태이상·드래곤 기술 무효화."
+  },
+  {
+    "id": 3,
+    "name": "일렉트릭필드",
+    "name_en": "electric_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 잠듦 무효화. 전기 기술 위력 1.3배."
+  },
+  {
+    "id": 4,
+    "name": "사이코필드",
+    "name_en": "psychic_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 우선도 기술 무효화. 에스퍼 기술 위력 1.3배."
+  },
+  {
+    "id": 5,
+    "name": "트릭룸",
+    "name_en": "trick_room",
+    "description": "5턴간 지속. 스피드가 낮은 포켓몬이 먼저 행동한다."
+  },
+  {
+    "id": 6,
+    "name": "매직룸",
+    "name_en": "magic_room",
+    "description": "5턴간 지속. 모든 포켓몬이 지닌 도구의 효과를 무시한다."
+  },
+  {
+    "id": 7,
+    "name": "원더룸",
+    "name_en": "wonder_room",
+    "description": "5턴간 지속. 모든 포켓몬의 방어와 특수방어 수치를 교환한다."
+  },
+  {
+    "id": 8,
+    "name": "중력",
+    "name_en": "gravity",
+    "description": "5턴간 지속. 하늘 위·부유·공중 상태의 포켓몬이 접지된다. 비행·부유 관련 기술 불가."
+  }
+]
