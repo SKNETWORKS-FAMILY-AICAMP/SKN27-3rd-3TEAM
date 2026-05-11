@@ -38,12 +38,17 @@ from sentence_transformers import CrossEncoder
 load_dotenv()
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_groq import ChatGroq
+try:
+    from langchain_ollama import ChatOllama
+except ImportError:
+    from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
+
+
 
 # Neo4j 툴 — pokemon_neo4j.py 에서 가져옴
 try:
@@ -67,8 +72,12 @@ embeddings = OpenAIEmbeddings()
 tavily     = TavilySearchResults(max_results=3)
 
 MODELS = {
-    "gpt-4o-mini":           lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
-    "llama-3.1-8b-instant":  lambda: ChatGroq(model="llama-3.1-8b-instant", temperature=0),
+    "gpt-4o-mini": lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    "gemma4:e2b":    lambda: ChatOllama(
+        model="gemma4:e2b",
+        base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
+        temperature=0,
+    ),
 }
 DEFAULT_MODEL = "gpt-4o-mini"
 

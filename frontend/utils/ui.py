@@ -7,7 +7,7 @@ import textwrap
 # 쿠키 컨트롤러 초기화 (페이지 최상단)
 controller = CookieController()
 
-def inject_common_ui(spacer=False, show_header=True):
+def inject_common_ui(spacer=False, show_header=True, hide_sidebar=True):
     """
     Injects common UI elements with zero-indentation and forces FULL WIDTH layout.
     """
@@ -96,13 +96,12 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 }}
 
 /* 툴바 및 기본 헤더 숨김 */
-#MainMenu, header, footer, 
-[data-testid="stHeader"], 
-[data-testid="stToolbar"], 
-[data-testid="stSidebar"], 
-[data-testid="collapsedControl"] {{ 
-    display: none !important; 
+#MainMenu, header, footer,
+[data-testid="stHeader"],
+[data-testid="stToolbar"] {{
+    display: none !important;
 }}
+{'[data-testid="stSidebar"], [data-testid="collapsedControl"] { display: none !important; }' if hide_sidebar else ''}
 
 .top-nav {{ 
     position: absolute; top: 0; left: 0; width: 100%; 
