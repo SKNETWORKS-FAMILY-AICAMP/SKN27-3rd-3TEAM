@@ -6,13 +6,12 @@ graph_loader.py가 적재한 그래프 스키마에 맞춘 LangGraph Agent 툴:
   - search_type_relations  : 타입 상성 탐색
 
 그래프 구조 (graph_loader.py 기준):
-  (Pokemon)-[:IS_SPECIES]->(Species)
-  (Species)-[:EVOLVES_TO {min_level, trigger_item_id}]->(Species)
-  (Species)-[:EVOLUTION_REQUIRES]->(Item)
+  (Pokemon {pokemon_id, name, species_id, hp, ...})-[:EVOLVES_TO {min_level, trigger_item_id}]->(Pokemon)
   (Type)-[:ATTACK_EFFECTIVE {damage_factor}]->(Type)
     damage_factor: 0.0=무효, 0.5=절반, 1.0=보통, 2.0=2배
   (Pokemon)-[:HAS_TYPE]->(Type)
   (Pokemon)-[:WEAK_AGAINST / RESISTANT_TO / IMMUNE_TO / ...]->(Type)
+  (Item {item_id, name})
 """
 
 import os
@@ -49,27 +48,26 @@ def search_evolution_chain(pokemon_name: str) -> str:
     """
     try:
         with driver.session() as session:
-            # 진화 전 체인 (이 포켓몬이 무엇에서 진화했는지)
+            # ── 진화 전 체인 ────────────────────────────────────────
+            # (Pokemon)-[:EVOLVES_TO {min_level, trigger_item_id}]->(Pokemon)
             result_prev = session.run("""
-                MATCH (prevP:Pokemon)-[:IS_SPECIES]->(prevS:Species)
-                      -[e:EVOLVES_TO]->(targetS:Species)<-[:IS_SPECIES]-(targetP:Pokemon)
+                MATCH (prevP:Pokemon)-[e:EVOLVES_TO]->(targetP:Pokemon)
                 WHERE targetP.name CONTAINS $name
-                OPTIONAL MATCH (prevS)-[:EVOLUTION_REQUIRES]->(item:Item)
-                RETURN prevP.name AS from_pokemon,
+                OPTIONAL MATCH (triggerItem:Item {item_id: e.trigger_item_id})
+                RETURN prevP.name   AS from_pokemon,
                        targetP.name AS to_pokemon,
-                       e.min_level AS min_level,
-                       item.name AS trigger_item
+                       e.min_level  AS min_level,
+                       triggerItem.name AS trigger_item
             """, name=pokemon_name)
             prev_chain = result_prev.data()
 
-            # 진화 후 체인 (이 포켓몬이 무엇으로 진화하는지, 최대 3단계)
+            # ── 진화 후 체인 (최대 3단계) ───────────────────────────
             result_next = session.run("""
-                MATCH (targetP:Pokemon)-[:IS_SPECIES]->(startS:Species)
+                MATCH (targetP:Pokemon)
                 WHERE targetP.name CONTAINS $name
-                MATCH path = (startS)-[:EVOLVES_TO*1..3]->(nextS:Species)
-                MATCH (nextP:Pokemon)-[:IS_SPECIES]->(nextS)
+                MATCH path = (targetP)-[:EVOLVES_TO*1..3]->(nextP:Pokemon)
                 RETURN length(path) AS depth,
-                       nextP.name AS evolved_name,
+                       nextP.name   AS evolved_name,
                        [r IN relationships(path) | {
                            min_level:       r.min_level,
                            trigger_item_id: r.trigger_item_id
@@ -78,8 +76,27 @@ def search_evolution_chain(pokemon_name: str) -> str:
             """, name=pokemon_name)
             next_chain = result_next.data()
 
+            # 진화 후 체인에 등장하는 아이템 ID → 이름 일괄 조회
+            item_ids = set()
+            for row in next_chain:
+                for cond in row.get("conditions", []):
+                    tid = cond.get("trigger_item_id")
+                    if tid:
+                        item_ids.add(tid)
+
+            item_name_map: dict = {}
+            if item_ids:
+                item_result = session.run(
+                    "MATCH (i:Item) WHERE i.item_id IN $ids RETURN i.item_id AS id, i.name AS name",
+                    ids=list(item_ids),
+                )
+                item_name_map = {r["id"]: r["name"] for r in item_result.data()}
+
         if not prev_chain and not next_chain:
-            return f"{pokemon_name}의 진화 정보를 찾을 수 없습니다. (진화하지 않는 포켓몬일 수 있습니다)"
+            return (
+                f"{pokemon_name}의 진화 정보를 찾을 수 없습니다. "
+                "(진화하지 않는 포켓몬이거나 이름을 다시 확인해 주세요)"
+            )
 
         lines = [f"🔗 [{pokemon_name}] 진화 체인 정보\n"]
 
@@ -102,11 +119,15 @@ def search_evolution_chain(pokemon_name: str) -> str:
                     if c.get("min_level"):
                         cond_parts.append(f"Lv.{c['min_level']}")
                     elif c.get("trigger_item_id"):
-                        cond_parts.append(f"아이템ID:{c['trigger_item_id']}")
+                        name = item_name_map.get(c["trigger_item_id"], f"아이템ID:{c['trigger_item_id']}")
+                        cond_parts.append(f"아이템: {name}")
                     else:
-                        cond_parts.append("?")
-                arrow = " → " * r["depth"]
-                lines.append(f"  {pokemon_name}{arrow}{r['evolved_name']}  [{' → '.join(cond_parts)}]")
+                        cond_parts.append("조건 미상")
+                depth_arrow = " → " * r["depth"]
+                lines.append(
+                    f"  {pokemon_name}{depth_arrow}{r['evolved_name']}"
+                    f"  [{' → '.join(cond_parts)}]"
+                )
 
         return "\n".join(lines)
 
