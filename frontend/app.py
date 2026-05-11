@@ -18,6 +18,12 @@ bg3 = get_base64_img("main_3.png")
 bg4 = get_base64_img("main_4.png")
 bg5 = get_base64_img("main_5.png")
 obak = get_base64_img("Obak.png")
+bg6 = get_base64_img("main_6.png")
+bg7 = get_base64_img("main_7.png")
+bg8 = get_base64_img("main_1.png")
+login_img = get_base64_img("login.png")
+minigame1_img = get_base64_img("mini_game.png")
+minigame2_img = get_base64_img("game_2.png")
 
 # ── Image Assets ──
 ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
@@ -233,12 +239,39 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 .sec-psychic .main-artwork {{ filter: drop-shadow(0 0 80px rgba(147, 51, 234, 0.6)); }}
 
 .sec-ghost .sec-badge {{ color: #fff; border-color: #4F46E5; background: #4F46E5; }}
-.sec-ghost .sec-title {{ 
-    color: #818CF8; 
-    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(129, 140, 248, 0.4); 
+.sec-ghost .sec-title {{
+    color: #818CF8;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(129, 140, 248, 0.4);
 }}
 .sec-ghost .cta-btn {{ background: #4F46E5; color: #fff; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3); }}
 .sec-ghost .main-artwork {{ filter: drop-shadow(0 0 80px rgba(79, 70, 229, 0.6)); }}
+
+.sec-water {{ background: url('{bg6}') center/cover no-repeat fixed; }}
+.sec-water .sec-badge {{ color: #fff; border-color: #38BDF8; background: #0284C7; }}
+.sec-water .sec-title {{
+    color: #38BDF8;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(56, 189, 248, 0.4);
+}}
+.sec-water .cta-btn {{ background: #0284C7; color: #fff; box-shadow: 0 10px 30px rgba(2, 132, 199, 0.3); }}
+.sec-water .main-artwork {{ filter: drop-shadow(0 0 80px rgba(56, 189, 248, 0.6)); }}
+
+.sec-electric {{ background: url('{bg7}') center/cover no-repeat fixed; }}
+.sec-electric .sec-badge {{ color: #000; border-color: #FACC15; background: #FACC15; }}
+.sec-electric .sec-title {{
+    color: #FDE047;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(253, 224, 71, 0.4);
+}}
+.sec-electric .cta-btn {{ background: #CA8A04; color: #fff; box-shadow: 0 10px 30px rgba(202, 138, 4, 0.3); }}
+.sec-electric .main-artwork {{ filter: drop-shadow(0 0 80px rgba(250, 204, 21, 0.6)); }}
+
+.sec-dragon {{ background: url('{bg8}') center/cover no-repeat fixed; }}
+.sec-dragon .sec-badge {{ color: #fff; border-color: #F97316; background: #EA580C; }}
+.sec-dragon .sec-title {{
+    color: #FB923C;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(249, 115, 22, 0.4);
+}}
+.sec-dragon .cta-btn {{ background: #EA580C; color: #fff; box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3); }}
+.sec-dragon .main-artwork {{ filter: drop-shadow(0 0 80px rgba(249, 115, 22, 0.6)); }}
 
 /* ── Reveal Animations ── */
 .js-ready .reveal-up {{ transform: translateY(80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }}
@@ -331,6 +364,51 @@ content_html = f"""
         </div>
         <div class="visual-box reveal-left">
             <img src="{ART}/94.png" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 5: Login -->
+<div class="full-section sec-water observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-left">
+            <div class="sec-badge">Trainer Identity</div>
+            <h2 class="sec-title">나만의<br><b>트레이너 카드</b></h2>
+            <p class="sec-desc">로그인하면 팀 빌딩 히스토리와 배틀 기록이 저장됩니다.<br>나만의 포켓몬 여정을 기록하고 맞춤형 AI 추천까지 받아보세요.</p>
+            <a href="/login" target="_self" class="cta-btn">트레이너 등록하기</a>
+        </div>
+        <div class="visual-box reveal-right">
+            <img src="{login_img}" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 6: Silhouette Quiz (Mini-game 1) -->
+<div class="full-section sec-electric reverse observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-right">
+            <div class="sec-badge">Who's That Pokémon?</div>
+            <h2 class="sec-title">실루엣으로 맞혀봐!<br><b>이 포켓몬은 누구게?</b></h2>
+            <p class="sec-desc">흑백 실루엣만 보고 포켓몬을 맞혀보세요.<br>1세대부터 현재까지, 당신의 포켓몬 지식을 시험할 시간입니다!</p>
+            <a href="/game_1" target="_self" class="cta-btn">도전 시작</a>
+        </div>
+        <div class="visual-box reveal-left">
+            <img src="{minigame1_img}" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 7: Rap Battle (Mini-game 2) -->
+<div class="full-section sec-dragon observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-left">
+            <div class="sec-badge">Rap Battle</div>
+            <h2 class="sec-title">포켓몬<br><b>랩 배틀</b></h2>
+            <p class="sec-desc">포켓몬들의 치열한 언어 대결! AI가 만들어내는 랩 가사로 배틀을 펼쳐보세요.<br>누가 더 강렬한 라임을 뱉을 수 있을까요?</p>
+            <a href="/game_2" target="_self" class="cta-btn">배틀 참전하기</a>
+        </div>
+        <div class="visual-box reveal-right">
+            <img src="{minigame2_img}" class="main-artwork">
         </div>
     </div>
 </div>
