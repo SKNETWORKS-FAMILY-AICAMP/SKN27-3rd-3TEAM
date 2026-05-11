@@ -251,6 +251,27 @@ def get_mypage_styles():
     .status-success { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); border: 1px solid rgba(74, 222, 128, 0.2); }
     .status-fail { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
 
+    .logout-btn {
+        display: inline-block;
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-top: 25px;
+        margin-left: 15px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        filter: brightness(1.1);
+    }
+
     @media (max-width: 768px) {
         .profile-hero { flex-direction: column; text-align: center; padding: 40px; }
         .profile-avatar { width: 140px; height: 140px; }
@@ -348,6 +369,7 @@ def show():
             <h1>{name}</h1>
             <p>@{username} · Professional Pokemon Trainer</p>
             <div class="tier-badge">{trainer_tier}</div>
+            <a href="/login?do_logout=true" target="_self" class="logout-btn">Logout</a>
             <div style="margin-top: 15px; color: var(--neon-blue); font-weight: 900; font-family: 'Outfit';">Lv.{min(99, int(commits/10) + 1)} Master</div>
         </div>
     </div>

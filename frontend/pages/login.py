@@ -116,7 +116,7 @@ def sync_user_to_db(user_info, gh_stats):
         "total_stars": gh_stats.get("total_stars", 0)
     }
     try:
-        resp = requests.post(url, json=payload, timeout=10) # 타임아웃 10초로 연장
+        resp = requests.post(url, json=payload, timeout=30) # 타임아웃 30초로 연장
         if resp.status_code == 200:
             return resp.json()
         else:

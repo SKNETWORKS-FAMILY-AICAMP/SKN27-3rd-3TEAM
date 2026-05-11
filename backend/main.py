@@ -7,20 +7,24 @@ from routers import pokemon, team_builder, chat, users
 # DB 테이블 생성 및 스키마 업데이트 (간이 마이그레이션)
 Base.metadata.create_all(bind=engine)
 
-# 컬럼 존재 여부 확인 및 추가 (PostgreSQL 전용)
-from sqlalchemy import text
-with engine.connect() as conn:
-    try:
-        # public_repos 컬럼이 있는지 확인
-        conn.execute(text("SELECT public_repos FROM users LIMIT 1"))
-    except Exception:
-        # 컬럼이 없으면 추가
-        print("Migrating: Adding GitHub stats columns to users table...")
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS public_repos INTEGER DEFAULT 0"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_commits INTEGER DEFAULT 0"))
-        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_stars INTEGER DEFAULT 0"))
-        conn.commit()
-        print("Migration complete.")
+def update_schema():
+    from sqlalchemy import text
+    with engine.begin() as conn:  # begin()을 사용하여 자동 커밋/롤백 처리
+        try:
+            # public_repos 컬럼이 있는지 확인
+            conn.execute(text("SELECT public_repos FROM users LIMIT 1"))
+        except Exception:
+            print("Migrating: Adding GitHub stats columns to users table...")
+            # PostgreSQL에서는 IF NOT EXISTS를 지원하므로 안전하게 추가 가능
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS public_repos INTEGER DEFAULT 0"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_commits INTEGER DEFAULT 0"))
+            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_stars INTEGER DEFAULT 0"))
+            print("Migration complete.")
+
+try:
+    update_schema()
+except Exception as e:
+    print(f"Migration failed (possibly already applied): {e}")
 
 app = FastAPI(
     title="Pokemon App Backend",
