@@ -133,3 +133,11 @@ CREATE INDEX move_damage_class IF NOT EXISTS
 FOR (m:Move)
 ON (m.damage_class);
 
+
+// Additional constraints for new battle elements
+CREATE CONSTRAINT effect_id IF NOT EXISTS FOR (e:Effect) REQUIRE e.effect_id IS UNIQUE;
+CREATE CONSTRAINT stat_id IF NOT EXISTS FOR (s:Stat) REQUIRE s.stat_id IS UNIQUE;
+CREATE CONSTRAINT status_condition_id IF NOT EXISTS FOR (sc:StatusCondition) REQUIRE sc.status_condition_id IS UNIQUE;
+CREATE CONSTRAINT phase_id IF NOT EXISTS FOR (p:Phase) REQUIRE p.phase_id IS UNIQUE;
+CREATE CONSTRAINT weather_id IF NOT EXISTS FOR (w:Weather) REQUIRE w.weather_id IS UNIQUE;
+CREATE CONSTRAINT field_id IF NOT EXISTS FOR (f:FieldEffect) REQUIRE f.field_id IS UNIQUE;

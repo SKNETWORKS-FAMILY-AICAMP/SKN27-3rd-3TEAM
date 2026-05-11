@@ -97,6 +97,8 @@ def resolve_attack(attacker: BattlePokemon, defender: BattlePokemon, move: Dict,
 
     damage = max(1, int(estimate_damage(attacker, defender, move, efficacy) * random.uniform(0.85, 1.0)))
     defender.current_hp = max(0, defender.current_hp - damage)
+    # 맹독
+    # HP회복
 
     if move["name"] == "암석봉인":
         defender.speed_stage = max(-6, defender.speed_stage - 1)

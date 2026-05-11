@@ -77,8 +77,8 @@ def process_turn(player_move, efficacy):
     st.session_state.turn_count += 1
     lines = [
         f"Turn {st.session_state.turn_count}",
-        f"당신: {fmt_player(player.name)}에게 {fmt_move(player_move['name'])}을 지시했습니다.",
-        f"LLM Bot: {fmt_bot(bot.name)}은 {fmt_move(bot_move['name'])}을 선택했습니다.",
+        f"당신: {fmt_player(player.name)}에게 {fmt_move(player_move['name'])}을(를) 지시했습니다.",
+        f"LLM Bot: {fmt_bot(bot.name)}은(는) {fmt_move(bot_move['name'])}을(를) 선택했습니다.",
     ]
 
     # 우선도 및 스피드에 따른 공격 순서 결정
