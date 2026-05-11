@@ -100,6 +100,23 @@ class PokemonDetailResponse(BaseModel):
 
 
 
+# ── User ──
+class UserBase(BaseModel):
+    github_id: int
+    login: str
+    name: Optional[str] = None
+    avatar_url: Optional[str] = None
+    email: Optional[str] = None
+
+class UserCreate(UserBase):
+    pass
+
+class UserResponse(UserBase):
+    id: int
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
 # ── Pagination wrapper ──
 class PaginatedPokemonResponse(BaseModel):
     total: int
