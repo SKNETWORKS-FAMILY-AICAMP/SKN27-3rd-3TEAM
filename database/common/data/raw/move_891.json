@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "현세의 미련을 칼끝에 담아 베어 버린다. 입힌 데미지의 절반에 해당하는 HP를 회복할 수 있다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "damage-heal",
+      "url": "https://pokeapi.co/api/v2/move-category/8/"
+    },
+    "crit_rate": 0,
+    "drain": 50,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "bitter-blade",
   "names": [
     {
@@ -90,6 +120,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "むねんのつるぎ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "원념의칼"
     }
   ],
   "past_values": [],

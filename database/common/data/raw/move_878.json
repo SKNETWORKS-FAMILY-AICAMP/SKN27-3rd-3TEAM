@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "변형하며 거칠게 낙하한 다음 고대의 대폭발을 일으킨다. 약점인 상대에게는 위력이 더욱 올라간다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -62,7 +73,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "damage",
+      "url": "https://pokeapi.co/api/v2/move-category/0/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "collision-course",
   "names": [
     {
@@ -106,6 +136,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "アクセルブレイク"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "액셀브레이크"
     }
   ],
   "past_values": [],

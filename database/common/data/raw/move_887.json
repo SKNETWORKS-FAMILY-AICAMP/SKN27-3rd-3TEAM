@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "뾰족한 신체 부위를 급속도로 회전시켜 관통한다. 방어나 판별 등도 무시할 수 있다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -54,7 +65,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "damage",
+      "url": "https://pokeapi.co/api/v2/move-category/0/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "hyper-drill",
   "names": [
     {
@@ -98,6 +128,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ハイパードリル"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "하이퍼드릴"
     }
   ],
   "past_values": [],

@@ -51,6 +51,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "깨끗한 소금에 의해 상태 이상이 되지 않는다. 고스트타입 기술의 데미지를 반감시킨다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -109,6 +120,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "きよめのしお"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "정화의소금"
     }
   ],
   "pokemon": [

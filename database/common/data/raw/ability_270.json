@@ -51,6 +51,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "불꽃타입 기술로 공격받으면 공격이 올라간다. 화상 상태가 되지 않는다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -109,6 +120,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ねつこうかん"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "열교환"
     }
   ],
   "pokemon": [

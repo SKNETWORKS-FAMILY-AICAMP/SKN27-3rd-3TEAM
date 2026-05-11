@@ -7,7 +7,19 @@
   },
   "cost": 750,
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "빛에 비추면 희미하게 빛나는 깃털. 지니게 하면 페어리타입 기술의 위력이 올라간다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "fling_effect": null,
   "fling_power": null,
   "game_indices": [],
@@ -16,6 +28,13 @@
   "machines": [],
   "name": "fairy-feather",
   "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "요정의깃털"
+    },
     {
       "language": {
         "name": "ja-hrkt",

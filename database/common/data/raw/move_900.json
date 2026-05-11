@@ -10,7 +10,19 @@
   "effect_chance": null,
   "effect_changes": [],
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "30% 확률로 상대를 혼란 상태로 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "generation": {
     "name": "generation-ix",
     "url": "https://pokeapi.co/api/v2/generation/9/"
@@ -18,7 +30,26 @@
   "id": 900,
   "learned_by_pokemon": [],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "confusion",
+      "url": "https://pokeapi.co/api/v2/move-ailment/6/"
+    },
+    "ailment_chance": 30,
+    "category": {
+      "name": "damage-ailment",
+      "url": "https://pokeapi.co/api/v2/move-category/4/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "magical-torque",
   "names": [
     {
@@ -62,6 +93,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "マジカルアクセル"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "매지컬액셀"
     }
   ],
   "past_values": [],
