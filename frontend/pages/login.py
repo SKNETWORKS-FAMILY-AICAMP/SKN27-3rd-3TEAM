@@ -191,19 +191,22 @@ def show():
 {POKEBALL_SVG}
 <h1 class="login-title">트레이너 인증</h1>
 <p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p>
-<a href="{auth_url}" target="_top" class="github-btn">
-<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">
-GitHub 계정으로 시작하기
-</a>
-<div class="benefit-row">
+<div style="height: 10px;"></div>
+        """).strip()
+        st.markdown(login_html, unsafe_allow_html=True)
+        
+        # Streamlit 순정 링크 버튼을 사용하여 샌드박스 보안 정책 우회
+        st.link_button("GitHub 계정으로 시작하기", auth_url, use_container_width=True)
+        
+        st.markdown(textwrap.dedent("""
+<div class="benefit-row" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
 <span class="benefit-tag">팀 저장</span>
 <span class="benefit-tag">배틀 기록</span>
 <span class="benefit-tag">AI 챗</span>
 </div>
 </div>
 </div>
-        """).strip()
-        st.markdown(login_html, unsafe_allow_html=True)
+        """).strip(), unsafe_allow_html=True)
 
 if __name__ == "__main__":
     show()
