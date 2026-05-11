@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from dotenv import load_dotenv
 import sys
 import time
+import textwrap
 
 # 스타일 및 에셋 임포트 준비
 _frontend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,9 +80,6 @@ def get_user_info(token):
     return None
 
 def sync_user_to_db(user_info):
-    """
-    GitHub 사용자 정보를 백엔드 DB에 저장/업데이트합니다.
-    """
     url = f"{BACKEND_URL}/api/v1/users/"
     payload = {
         "github_id": user_info.get("id"),
@@ -107,7 +105,7 @@ def show():
     bg_base64 = get_base64_img(bg_path)
     st.markdown(get_login_styles(bg_base64), unsafe_allow_html=True)
 
-    # 3. 로그아웃 처리
+    # 3. 로그아웃 최종 처리
     if st.query_params.get("do_logout") == "true":
         controller.remove("user_session")
         if "user" in st.session_state:
@@ -126,35 +124,85 @@ def show():
             if token:
                 user_info = get_user_info(token)
                 if user_info:
-                    # DB 동기화
                     db_user = sync_user_to_db(user_info)
                     if db_user:
-                        # DB에서 생성된 ID 정보를 포함하여 세션에 저장
                         user_info["db_id"] = db_user.get("id")
-                    
                     st.session_state.user = user_info
                     controller.set("user_session", user_info)
-                    st.success("인증 및 DB 등록 성공! 잠시 후 프로필로 이동합니다.")
+                    st.success("인증 및 DB 등록 성공!")
                     time.sleep(1)
                     st.rerun()
-            else:
-                st.error("GitHub 인증에 실패했습니다. Client ID와 Secret을 확인해주세요.")
 
     # 5. 화면 렌더링
     if "user" in st.session_state:
-        user = st.session_state.user
-        avatar = user.get("avatar_url", "")
-        name = user.get("name") or user.get("login", "트레이너")
-        login = user.get("login", "")
-        
-        profile_html = f'<div class="login-scene"><div class="login-card"><div class="profile-box"><div class="avatar-wrap"><img src="{avatar}" class="avatar-img"></div><h2 class="user-name">{name}</h2><p class="user-id">@{login}</p><a href="/" target="_self" class="main-nav-btn">메인 화면으로 이동</a><div style="height:10px;"></div><a href="/login?do_logout=true" target="_self" class="github-btn" style="background:linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color:rgba(255,255,255,0.2);">로그아웃</a></div><div style="background:rgba(255,203,5,0.1); border:1px solid rgba(255,203,5,0.2); border-radius:12px; padding:12px; color:#ffcb05; font-size:13px; font-weight:700; margin-bottom:20px; text-align:center;">정식 트레이너 인증 완료</div><div class="benefit-row"><span class="benefit-tag">Lv.99 Master</span><span class="benefit-tag">Pokedex 100%</span></div></div></div>'
-        st.markdown(profile_html, unsafe_allow_html=True)
+        if st.query_params.get("ask_logout") == "true":
+            logout_confirm_html = textwrap.dedent(f"""
+<div class="login-scene">
+<div class="login-card">
+{POKEBALL_SVG}
+<h2 class="login-title" style="font-size: 24px; margin-bottom: 10px;">로그아웃 하시겠습니까?</h2>
+<p class="login-subtitle" style="margin-bottom: 30px;">정말 로그아웃 하시겠습니까?<br>인증 세션이 종료됩니다.</p>
+<div style="display: flex; gap: 10px; width: 100%;">
+<a href="/login?do_logout=true" target="_self" class="github-btn" style="background: #ff4b4b; flex: 1; text-align: center; justify-content: center;">예</a>
+<a href="/login" target="_self" class="github-btn" style="background: #666; flex: 1; text-align: center; justify-content: center;">아니오</a>
+</div>
+</div>
+</div>
+            """).strip()
+            st.markdown(logout_confirm_html, unsafe_allow_html=True)
+        else:
+            user = st.session_state.user
+            avatar = user.get("avatar_url", "")
+            name = user.get("name") or user.get("login", "트레이너")
+            login = user.get("login", "")
+            
+            profile_html = textwrap.dedent(f"""
+<div class="login-scene">
+<div class="login-card">
+<div class="profile-box">
+<div class="avatar-wrap">
+<img src="{avatar}" class="avatar-img">
+</div>
+<h2 class="user-name">
+{name} <span style="font-size: 16px; opacity: 0.6; font-weight: 500; margin-left: 8px;">@{login}</span>
+</h2>
+<div style="height: 15px;"></div>
+<a href="/" target="_self" class="main-nav-btn">메인 화면으로 이동</a>
+<div style="height: 10px;"></div>
+<a href="/login?ask_logout=true" target="_self" class="github-btn" style="background: linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color: rgba(255,255,255,0.2);">로그아웃</a>
+</div>
+<div style="background:rgba(255,203,5,0.1); border:1px solid rgba(255,203,5,0.2); border-radius:12px; padding:12px; color:#ffcb05; font-size:13px; font-weight:700; margin-bottom:20px; text-align:center;">정식 트레이너 인증 완료</div>
+<div class="benefit-row">
+<span class="benefit-tag">Lv.99 Master</span>
+<span class="benefit-tag">Pokedex 100%</span>
+</div>
+</div>
+</div>
+            """).strip()
+            st.markdown(profile_html, unsafe_allow_html=True)
     else:
         if not CLIENT_ID or not CLIENT_SECRET:
             st.warning("⚠️ .env 파일에 GITHUB_CLIENT_ID와 GITHUB_CLIENT_SECRET을 설정해주세요.")
             
         auth_url = get_github_auth_url()
-        login_html = f'<div class="login-scene"><div class="login-card">{POKEBALL_SVG}<h1 class="login-title">트레이너 인증</h1><p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p><a href="{auth_url}" target="_self" class="github-btn"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">GitHub 계정으로 시작하기</a><div class="benefit-row"><span class="benefit-tag">팀 저장</span><span class="benefit-tag">배틀 기록</span><span class="benefit-tag">AI 챗</span></div></div></div>'
+        login_html = textwrap.dedent(f"""
+<div class="login-scene">
+<div class="login-card">
+{POKEBALL_SVG}
+<h1 class="login-title">트레이너 인증</h1>
+<p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p>
+<a href="{auth_url}" target="_self" class="github-btn">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">
+GitHub 계정으로 시작하기
+</a>
+<div class="benefit-row">
+<span class="benefit-tag">팀 저장</span>
+<span class="benefit-tag">배틀 기록</span>
+<span class="benefit-tag">AI 챗</span>
+</div>
+</div>
+</div>
+        """).strip()
         st.markdown(login_html, unsafe_allow_html=True)
 
 if __name__ == "__main__":
