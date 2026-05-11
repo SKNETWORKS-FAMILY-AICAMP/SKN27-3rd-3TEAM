@@ -281,8 +281,6 @@ def show():
     name = user.get("name") or user.get("login", "트레이너")
     
     # GitHub 기반 등급 결정 (전체 커밋과 레포 기준)
-    repos = gh["repos"]
-    commits = gh["commits"]
     if commits > 1000 or repos > 100: trainer_tier = "Legendary Developer"
     elif commits > 300 or repos > 30: trainer_tier = "Veteran Developer"
     elif commits > 50: trainer_tier = "Active Developer"
