@@ -545,20 +545,36 @@ def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bo
     type_html = "".join(f"<span class='type-pill'>{type_name}</span>" for type_name in pokemon.type_names)
     move_html = "".join(f"<span class='move-chip'>{move['name']}</span>" for move in pokemon.moves) if reveal_details else ""
     hp_text = f"HP {pokemon.current_hp}/{pokemon.max_hp}" if reveal_details else "HP"
+    
+    # HP Bar 색상 및 비율 계산
+    hp_ratio = max(0.0, min(1.0, pokemon.current_hp / pokemon.max_hp))
+    hp_percent = hp_ratio * 100
+    
+    if hp_percent > 50:
+        hp_color = "#22c55e"  # 초록색
+    elif hp_percent > 20:
+        hp_color = "#eab308"  # 노란색
+    else:
+        hp_color = "#ef4444"  # 빨간색
+
     st.markdown(
         f"""
-        <div class="status-card">
+        <div class="status-card" style="min-height: 280px;">
             <div style="color:rgba(226,232,240,.72);font-weight:900;">{title}</div>
             <img src="{pokemon.image_url}" alt="{pokemon.name}">
             <div class="pokemon-name">{pokemon.name}</div>
             <div>{type_html}</div>
             <div class="hp-label">{hp_text}</div>
-            <div style="margin-top:8px;">{move_html}</div>
+            <div style="margin-top:8px; margin-bottom: 14px;">{move_html}</div>
+            <!-- 커스텀 HP 바 (높이 24px) -->
+            <div style="width: 100%; height: 24px; background-color: rgba(15, 23, 42, 0.6); border-radius: 12px; overflow: hidden; border: 1px solid rgba(148, 163, 184, 0.3);">
+                <div style="width: {hp_percent}%; height: 100%; background-color: {hp_color}; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 2px 4px rgba(255,255,255,0.15);"></div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.progress(max(0.0, min(1.0, pokemon.current_hp / pokemon.max_hp)))
+
 
 
 def start_battle(selected_player_entry, all_pokemon, all_stats, all_types, moves_by_name, pokemon_types):
@@ -594,82 +610,79 @@ def show():
     st.markdown(
         """
         <div class="battle-header">
-            <h1>Pokemon 1대1 LLM 채팅 배틀</h1>
-            <p>내 포켓몬을 고르고 배틀을 시작하세요. 상대는 시작 전까지 비공개이며, 이후 채팅창에 기술명을 입력해 턴을 진행합니다.</p>
+            <h1>포켓몬 1대1 배틀</h1>
+            <p>포켓몬을 고르고 배틀을 시작하세요. 상대는 시작 전까지 비공개이며, 나의 포켓몬에게 채팅창을 통해 지시를 내리세요!</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    selected_player_id = st.selectbox(
-        "내 포켓몬",
-        [entry["pokemon_id"] for entry in ROSTER],
-        format_func=lambda pid: display_name(get_roster_entry(pid)),
-        disabled="battle_player" in st.session_state,
-    )
-    selected_player_entry = get_roster_entry(selected_player_id)
-
     if "battle_player" not in st.session_state:
-        preview = build_battle_pokemon(selected_player_entry, all_pokemon, all_stats, all_types, moves_by_name, pokemon_types)
-        left, right = st.columns([1, 1])
-        with left:
+        col1, col2 = st.columns([1, 1.2])
+        with col1:
+            selected_player_id = st.selectbox(
+                "내 포켓몬 선택",
+                [entry["pokemon_id"] for entry in ROSTER],
+                format_func=lambda pid: display_name(get_roster_entry(pid)),
+            )
+            selected_player_entry = get_roster_entry(selected_player_id)
+            preview = build_battle_pokemon(selected_player_entry, all_pokemon, all_stats, all_types, moves_by_name, pokemon_types)
             render_pokemon_status("PLAYER ENTRY", preview)
-        with right:
+            
+            st.markdown("<hr style='border: 1px solid rgba(148, 163, 184, .24); margin: 20px 0;'>", unsafe_allow_html=True)
             st.markdown("<div class='secret-card'>LLM BOT<br>???</div>", unsafe_allow_html=True)
-            st.markdown("<div class='chat-tip'>배틀 시작 버튼을 누르면 상대 포켓몬이 공개됩니다.</div>", unsafe_allow_html=True)
 
-        if st.button("배틀 시작", use_container_width=True):
-            start_battle(selected_player_entry, all_pokemon, all_stats, all_types, moves_by_name, pokemon_types)
-            st.rerun()
+            if st.button("배틀 시작", use_container_width=True):
+                start_battle(selected_player_entry, all_pokemon, all_stats, all_types, moves_by_name, pokemon_types)
+                st.rerun()
         return
+
 
     player = st.session_state.battle_player
     bot = st.session_state.battle_bot
 
-    top_cols = st.columns([1, 1])
-    with top_cols[0]:
+    col1, col2 = st.columns([1, 1.2])
+
+    with col1:
         render_pokemon_status("PLAYER", player)
-    with top_cols[1]:
+        st.markdown("<hr style='border: 1px solid rgba(148, 163, 184, .24); margin: 20px 0;'>", unsafe_allow_html=True)
         render_pokemon_status("LLM BOT", bot, reveal_details=False)
+        
+        if st.button("새 배틀 준비", use_container_width=True):
+            reset_battle()
+            st.rerun()
 
-    if st.button("새 배틀 준비"):
-        reset_battle()
-        st.rerun()
+    with col2:
+        # 채팅 메시지를 담는 스크롤 가능한 컨테이너
+        with st.container(height=650):
+            for message in st.session_state.get("battle_messages", []):
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"], unsafe_allow_html=True)
 
-    st.markdown(
-        "<div class='chat-tip'>사용 가능한 내 기술: "
-        + " / ".join(move["name"] for move in player.moves)
-        + "</div>",
-        unsafe_allow_html=True,
-    )
+            if st.session_state.get("battle_over"):
+                st.info(f"배틀 종료. 승리: {st.session_state.winner}")
 
-    for message in st.session_state.get("battle_messages", []):
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"], unsafe_allow_html=True)
-
-    if st.session_state.get("battle_over"):
-        st.info(f"배틀 종료. 승리: {st.session_state.winner}")
-        return
-
-    prompt = st.chat_input(f"{player.name}에게 지시를 내리세요!")
-    if prompt:
-        st.session_state.battle_messages.append({"role": "user", "content": prompt})
-        player_move = find_player_move(prompt, player)
-        if not player_move:
-            st.session_state.battle_messages.append(
-                {
-                    "role": "assistant",
-                    "content": (
-                        "그 기술은 현재 사용할 수 없습니다. 사용 가능한 기술은 "
-                        + " / ".join(fmt_move(move["name"]) for move in player.moves)
-                        + " 입니다."
-                    ),
-                }
-            )
-        else:
-            process_turn(player_move, efficacy)
-        st.rerun()
+        if not st.session_state.get("battle_over"):
+            prompt = st.chat_input(f"{player.name}에게 지시를 내리세요!")
+            if prompt:
+                st.session_state.battle_messages.append({"role": "user", "content": prompt})
+                player_move = find_player_move(prompt, player)
+                if not player_move:
+                    st.session_state.battle_messages.append(
+                        {
+                            "role": "assistant",
+                            "content": (
+                                "그 기술은 현재 사용할 수 없습니다. 사용 가능한 기술은 "
+                                + " / ".join(fmt_move(move["name"]) for move in player.moves)
+                                + " 입니다."
+                            ),
+                        }
+                    )
+                else:
+                    process_turn(player_move, efficacy)
+                st.rerun()
 
 
 if __name__ == "__main__":
     show()
+
