@@ -11,7 +11,7 @@ LangGraph workflow for Hybrid RAG.
       -> execution_graph_tool
       -> vector_search
       -> evaluate_with_llm
-      -> rerank_with_score
+      -> hybrid_scorer
       -> answer_generator
       -> __end__
 """
@@ -27,7 +27,7 @@ from team_build_rag.graph_tools import (
     select_graph_tool,
 )
 from team_build_rag.hybrid_retriever import build_hybrid_context
-from team_build_rag.reranker import rerank_with_score
+from team_build_rag.hybrid_scorer import calculate_hybrid_score
 from team_build_rag.state import HybridRagState, append_error, get_request_type
 from team_build_rag.vector_search import search_vector_documents
 
@@ -43,7 +43,7 @@ flowchart TD
     GRAPH[execution_graph_tool<br/>Neo4j Graph DB 실행]
     VECTOR[vector_search<br/>pgvector 근거 검색]
     EVAL[evaluate_with_llm<br/>Graph + Vector 근거 결합]
-    RERANK[rerank_with_score<br/>추천 후보 재정렬]
+    RERANK[hybrid_scorer<br/>Graph + Vector 점수 결합]
     ANSWER[answer_generator<br/>LLM 기반 AI 해설 생성]
     END([__end__])
 
@@ -74,7 +74,7 @@ def describe_workflow() -> Dict[str, Any]:
         {"name": "execution_graph_tool", "purpose": "Neo4j 기반 팀 분석 또는 추천 실행"},
         {"name": "vector_search", "purpose": "Graph 결과를 검색 문장으로 바꾸고 pgvector 근거 검색"},
         {"name": "evaluate_with_llm", "purpose": "Graph 결과와 Vector 근거를 하나의 RAG context로 결합"},
-        {"name": "rerank_with_score", "purpose": "추천 요청일 때 후보 점수를 기준으로 재정렬"},
+        {"name": "hybrid_scorer", "purpose": "Graph 점수와 Vector 근거 점수를 합쳐 hybrid_score 계산"},
         {"name": "answer_generator", "purpose": "RAG context를 프롬프트로 만들어 LLM AI 해설 생성"},
         {"name": "__end__", "purpose": "LangGraph 실행 종료점"},
     ]
@@ -87,8 +87,8 @@ def describe_workflow() -> Dict[str, Any]:
         ("select_graph_tool", "execution_graph_tool"),
         ("execution_graph_tool", "vector_search"),
         ("vector_search", "evaluate_with_llm"),
-        ("evaluate_with_llm", "rerank_with_score"),
-        ("rerank_with_score", "answer_generator"),
+        ("evaluate_with_llm", "hybrid_scorer"),
+        ("hybrid_scorer", "answer_generator"),
         ("answer_generator", "__end__"),
     ]
 
@@ -155,7 +155,7 @@ def build_hybrid_rag_workflow():
     workflow.add_node("execution_graph_tool", execute_graph_tool)
     workflow.add_node("vector_search", vector_search_node)
     workflow.add_node("evaluate_with_llm", evaluate_with_llm)
-    workflow.add_node("rerank_with_score", rerank_with_score)
+    workflow.add_node("hybrid_scorer", calculate_hybrid_score)
     workflow.add_node("answer_generator", generate_answer)
 
     workflow.add_edge(START, "supervisor")
@@ -163,8 +163,8 @@ def build_hybrid_rag_workflow():
     workflow.add_edge("select_graph_tool", "execution_graph_tool")
     workflow.add_edge("execution_graph_tool", "vector_search")
     workflow.add_edge("vector_search", "evaluate_with_llm")
-    workflow.add_edge("evaluate_with_llm", "rerank_with_score")
-    workflow.add_edge("rerank_with_score", "answer_generator")
+    workflow.add_edge("evaluate_with_llm", "hybrid_scorer")
+    workflow.add_edge("hybrid_scorer", "answer_generator")
     workflow.add_edge("answer_generator", END)
 
     return workflow.compile()

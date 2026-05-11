@@ -10,8 +10,8 @@ from typing import Any, Dict, List
 
 from graph import queries
 from graph.neo4j_client import Neo4jClient
-from services.team_insight_service import build_team_insights
-from services.team_score_service import build_type_matchup_items
+from build_services.team_insight_service import build_team_insights
+from build_services.team_score_service import build_type_matchup_items
 
 
 # 선택한 포켓몬의 기본 정보와 타입을 조회하기 위한 Cypher 쿼리입니다.

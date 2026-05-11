@@ -8,8 +8,8 @@ Graph tools for Hybrid RAG.
 
 from typing import Any, Dict
 
-from services.team_analysis_service import analyze_team
-from services.team_builder_service import recommend_team_member
+from build_services.team_analysis_service import analyze_team
+from build_services.team_builder_service import recommend_team_member
 
 from team_build_rag.state import HybridRagState, get_limit, get_request_type
 

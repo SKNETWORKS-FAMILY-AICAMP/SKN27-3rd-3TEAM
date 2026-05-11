@@ -15,7 +15,7 @@
 ```text
 프론트엔드 teambuilding.py
   -> backend/routers/team_builder.py
-  -> backend/services/*
+  -> backend/build_services/*
   -> backend/graph/*
   -> Neo4j / Vector DB / LLM
 ```
@@ -203,7 +203,7 @@ pokemon_ids
   -> team_build_rag.workflow
   -> graph tool: team_recommendation
   -> vector search
-  -> reranker
+  -> hybrid_scorer
   -> answer generator
 ```
 
@@ -233,10 +233,10 @@ Neo4j 연결 실패나 서버 내부 오류는 별도 예외로 처리됩니다.
 
 | 작업 | 담당 파일 |
 | --- | --- |
-| 팀 분석 계산 | `backend/services/team_analysis_service.py` |
-| 분석 점수 변환 | `backend/services/team_score_service.py` |
-| 추천 후보 계산 | `backend/services/team_builder_service.py` |
-| RAG 워크플로우 실행 | `backend/services/team_rag_service.py` |
+| 팀 분석 계산 | `backend/build_services/team_analysis_service.py` |
+| 분석 점수 변환 | `backend/build_services/team_score_service.py` |
+| 추천 후보 계산 | `backend/build_services/team_builder_service.py` |
+| RAG 워크플로우 실행 | `backend/build_services/team_rag_service.py` |
 | Neo4j 쿼리 실행 | `backend/graph/neo4j_client.py` |
 
 ---
