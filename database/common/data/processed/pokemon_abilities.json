@@ -15198,24 +15198,6 @@
     "slot": 3
   },
   {
-    "pokemon_id": 10093,
-    "ability_id": 82,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10093,
-    "ability_id": 55,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10093,
-    "ability_id": 47,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
     "pokemon_id": 10094,
     "ability_id": 9,
     "is_hidden": false,
@@ -15564,30 +15546,6 @@
     "slot": 1
   },
   {
-    "pokemon_id": 10121,
-    "ability_id": 198,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10121,
-    "ability_id": 173,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10121,
-    "ability_id": 91,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
-    "pokemon_id": 10122,
-    "ability_id": 26,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
     "pokemon_id": 10123,
     "ability_id": 216,
     "is_hidden": false,
@@ -15628,30 +15586,6 @@
     "ability_id": 208,
     "is_hidden": false,
     "slot": 1
-  },
-  {
-    "pokemon_id": 10128,
-    "ability_id": 102,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10128,
-    "ability_id": 126,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
-    "pokemon_id": 10129,
-    "ability_id": 212,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10129,
-    "ability_id": 12,
-    "is_hidden": true,
-    "slot": 3
   },
   {
     "pokemon_id": 10130,
@@ -15738,36 +15672,6 @@
     "slot": 1
   },
   {
-    "pokemon_id": 10144,
-    "ability_id": 209,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10145,
-    "ability_id": 209,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10146,
-    "ability_id": 171,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10146,
-    "ability_id": 43,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10146,
-    "ability_id": 142,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
     "pokemon_id": 10147,
     "ability_id": 220,
     "is_hidden": false,
@@ -15786,42 +15690,6 @@
     "slot": 3
   },
   {
-    "pokemon_id": 10149,
-    "ability_id": 130,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10149,
-    "ability_id": 31,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10149,
-    "ability_id": 69,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
-    "pokemon_id": 10150,
-    "ability_id": 118,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10150,
-    "ability_id": 19,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10150,
-    "ability_id": 175,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
     "pokemon_id": 10151,
     "ability_id": 20,
     "is_hidden": false,
@@ -15832,36 +15700,6 @@
     "ability_id": 181,
     "is_hidden": false,
     "slot": 1
-  },
-  {
-    "pokemon_id": 10153,
-    "ability_id": 199,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10153,
-    "ability_id": 11,
-    "is_hidden": true,
-    "slot": 3
-  },
-  {
-    "pokemon_id": 10154,
-    "ability_id": 160,
-    "is_hidden": false,
-    "slot": 1
-  },
-  {
-    "pokemon_id": 10154,
-    "ability_id": 31,
-    "is_hidden": false,
-    "slot": 2
-  },
-  {
-    "pokemon_id": 10154,
-    "ability_id": 5,
-    "is_hidden": true,
-    "slot": 3
   },
   {
     "pokemon_id": 10155,

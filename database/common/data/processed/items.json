@@ -9865,45 +9865,45 @@
   },
   {
     "id": 1696,
-    "name": "booster-energy",
+    "name": "부스트에너지",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "에너지가 가득한 캡슐. 어떤 특성을 가진 포켓몬에게 지니게 하면 그 힘을 증폭시킨다."
   },
   {
     "id": 1697,
-    "name": "ability-shield",
+    "name": "특성가드",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "귀엽고 개성적인 방패. 지니게 하면 상대에 의해 특성이 바뀌지 않는다."
   },
   {
     "id": 1698,
-    "name": "clear-amulet",
+    "name": "클리어참",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "투명하고 빛나는 참. 지니게 하면 상대의 기술이나 특성으로 능력이 떨어지지 않는다."
   },
   {
     "id": 1699,
-    "name": "mirror-herb",
+    "name": "흉내허브",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "지니게 한 포켓몬은 한 번에 의해 상대의 능력이 올랐을 때 흉내 내어 똑같이 능력을 올린다."
   },
   {
     "id": 1700,
-    "name": "punching-glove",
+    "name": "펀치글러브",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "주먹을 보호하는 글러브. 지니게 하면 펀치 기술의 위력이 오르고 상대에게 접촉하지 않는 펀치가 된다."
   },
   {
     "id": 1701,
-    "name": "covert-cloak",
+    "name": "은밀망토",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "상대의 눈을 속이는 후드 달린 망토. 지니게 하면 몸을 숨겨서 기술의 추가 효과를 받지 않게 된다."
   },
   {
     "id": 1702,
-    "name": "loaded-dice",
+    "name": "속임수주사위",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "좋은 눈만 나오는 주사위. 지니게 하고 연속 기술을 사용하면 많은 횟수로 기술을 사용할 수 있다."
   },
   {
     "id": 1703,
@@ -12289,27 +12289,27 @@
   },
   {
     "id": 2105,
-    "name": "fairy-feather",
+    "name": "요정의깃털",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "빛에 비추면 희미하게 빛나는 깃털. 지니게 하면 페어리타입 기술의 위력이 올라간다."
   },
   {
     "id": 2106,
-    "name": "wellspring-mask",
+    "name": "우물의가면",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "결정이 장식되어 있는 목각 가면. 오거폰에게 지니게 하면 물타입을 두르고 싸울 수 있다."
   },
   {
     "id": 2107,
-    "name": "hearthflame-mask",
+    "name": "화덕의가면",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "결정이 장식되어 있는 목각 가면. 오거폰에게 지니게 하면 불꽃타입을 두르고 싸울 수 있다."
   },
   {
     "id": 2108,
-    "name": "cornerstone-mask",
+    "name": "주춧돌의가면",
     "category": "held-items",
-    "effect_text": null
+    "effect_text": "결정이 장식되어 있는 목각 가면. 오거폰에게 지니게 하면 바위타입을 두르고 싸울 수 있다."
   },
   {
     "id": 2109,

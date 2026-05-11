@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "기운을 고조시켜서 자신의 상태 이상을 회복하고 특수공격과 특수방어를 1랭크 올린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -72,7 +83,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "none",
+      "url": "https://pokeapi.co/api/v2/move-ailment/0/"
+    },
+    "ailment_chance": 0,
+    "category": {
+      "name": "net-good-stats",
+      "url": "https://pokeapi.co/api/v2/move-category/2/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 100
+  },
   "name": "take-heart",
   "names": [
     {
@@ -116,13 +146,35 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "ブレイブチャージ"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "브레이브차지"
     }
   ],
   "past_values": [],
   "power": 0,
   "pp": 10,
   "priority": 0,
-  "stat_changes": [],
+  "stat_changes": [
+    {
+      "change": 1,
+      "stat": {
+        "name": "special-attack",
+        "url": "https://pokeapi.co/api/v2/stat/4/"
+      }
+    },
+    {
+      "change": 1,
+      "stat": {
+        "name": "special-defense",
+        "url": "https://pokeapi.co/api/v2/stat/5/"
+      }
+    }
+  ],
   "super_contest_effect": null,
   "target": {
     "name": "all-allies",

@@ -51,6 +51,17 @@
         "name": "the-teal-mask",
         "url": "https://pokeapi.co/api/v2/version-group/26/"
       }
+    },
+    {
+      "flavor_text": "등장했을 때 상대의 회피율을 떨어뜨린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {

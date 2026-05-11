@@ -35,7 +35,45 @@ class PokemonListResponse(BaseModel):
     name: str
     image_url: Optional[str] = None
     types: List[PokemonTypeResponse] = []
+    species_id: Optional[int] = None
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ── Abilities ──
+class AbilityResponse(BaseModel):
+    id: int
+    name: str
+    effect_text: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class PokemonAbilityResponse(BaseModel):
+    is_hidden: bool
+    slot: int
+    ability: AbilityResponse
+
+    model_config = ConfigDict(from_attributes=True)
+
+class PokemonVarietyResponse(BaseModel):
+    id: int
+    name: str
+    is_default: bool
+    image_url: Optional[str] = None
+    types: List[PokemonTypeResponse] = []
+    species_id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+# ── Evolutions ──
+class EvolutionNode(BaseModel):
+    id: int
+    name: str
+    image_url: Optional[str] = None
+    min_level: Optional[int] = None
+    evolves_to: List['EvolutionNode'] = []
+    varieties: List[PokemonVarietyResponse] = []
+    
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -50,7 +88,32 @@ class PokemonDetailResponse(BaseModel):
     cry_url: Optional[str] = None
     stats: Optional[PokemonStatsResponse] = None
     types: List[PokemonTypeResponse] = []
+    abilities: List[PokemonAbilityResponse] = []
+    evolution_chain: List[EvolutionNode] = []
+    description: Optional[str] = None
+    classification: Optional[str] = None
+    gender_ratio: Optional[str] = None
+    varieties: List[PokemonVarietyResponse] = []
+    species_id: Optional[int] = None
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+
+# ── User ──
+class UserBase(BaseModel):
+    github_id: int
+    login: str
+    name: Optional[str] = None
+    avatar_url: Optional[str] = None
+    email: Optional[str] = None
+
+class UserCreate(UserBase):
+    pass
+
+class UserResponse(UserBase):
+    id: int
+    
     model_config = ConfigDict(from_attributes=True)
 
 

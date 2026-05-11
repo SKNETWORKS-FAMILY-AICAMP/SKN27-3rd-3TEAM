@@ -51,6 +51,17 @@
         "name": "the-teal-mask",
         "url": "https://pokeapi.co/api/v2/version-group/26/"
       }
+    },
+    {
+      "flavor_text": "등장했을 때 같은 편을 대접해서 HP를 조금 회복시킨다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {

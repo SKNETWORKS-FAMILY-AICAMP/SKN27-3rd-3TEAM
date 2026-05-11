@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "휘저은 차를 대포처럼 발사해 준 데미지의 절반을 HP로 회복한다. 20% 확률로 상대를 화상 상태로 만든다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -46,7 +57,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "burn",
+      "url": "https://pokeapi.co/api/v2/move-ailment/4/"
+    },
+    "ailment_chance": 20,
+    "category": {
+      "name": "damage-heal",
+      "url": "https://pokeapi.co/api/v2/move-category/8/"
+    },
+    "crit_rate": 0,
+    "drain": 50,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "matcha-gotcha",
   "names": [
     {
@@ -76,6 +106,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "シャカシャカほう"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "휘적휘적포"
     }
   ],
   "past_values": [],

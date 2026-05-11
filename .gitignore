@@ -7,6 +7,10 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.ipynb
+
+# Mac
+.DS_Store
 
 # Env
 .env
@@ -20,3 +24,13 @@ venv/
 .streamlit/
 .claude/
 CLAUDE.md
+
+# neo4j
+database/graph/neo4j/neo4j_data
+database/graph/neo4j/neo4j_import
+database/graph/neo4j/neo4j_logs
+database/graph/neo4j/neo4j_plugins
+
+# data
+moves.csv
+new_moves.csv

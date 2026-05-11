@@ -7,7 +7,19 @@
   },
   "cost": 15000,
   "effect_entries": [],
-  "flavor_text_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "주먹을 보호하는 글러브. 지니게 하면 펀치 기술의 위력이 오르고 상대에게 접촉하지 않는 펀치가 된다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
   "fling_effect": null,
   "fling_power": null,
   "game_indices": [],
@@ -16,6 +28,13 @@
   "machines": [],
   "name": "punching-glove",
   "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "펀치글러브"
+    },
     {
       "language": {
         "name": "ja-hrkt",

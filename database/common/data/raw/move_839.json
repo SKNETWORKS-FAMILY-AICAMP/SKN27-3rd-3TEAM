@@ -54,6 +54,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "무수히 많은 독침으로 공격한다. 50% 확률로 상대를 독 상태로 만든다. 상대가 독/맹독 상태인 경우 위력이 2배가 된다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -76,7 +87,26 @@
     }
   ],
   "machines": [],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "poison",
+      "url": "https://pokeapi.co/api/v2/move-ailment/5/"
+    },
+    "ailment_chance": 50,
+    "category": {
+      "name": "damage-ailment",
+      "url": "https://pokeapi.co/api/v2/move-category/4/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": null,
+    "min_hits": null,
+    "min_turns": null,
+    "stat_chance": 0
+  },
   "name": "barb-barrage",
   "names": [
     {
@@ -120,6 +150,13 @@
         "url": "https://pokeapi.co/api/v2/language/11/"
       },
       "name": "どくばりセンボン"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "독침천발"
     }
   ],
   "past_values": [],
