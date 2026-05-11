@@ -199,6 +199,29 @@ def apply_constraints(conn: Neo4jConnection) -> None:
     print(f"Constraints and indexes applied: {len(statements)} statements")
 
 
+def drop_removed_graph_schema(conn: Neo4jConnection) -> None:
+    """
+    현재 그래프 설계에서 제거된 라벨의 constraint/index를 삭제합니다.
+
+    목적:
+        MATCH (n) DETACH DELETE n은 실제 노드와 관계만 삭제합니다.
+        예전 설계에서 만든 constraint/index가 남아 있으면 Neo4j Browser에 제거한 라벨이 계속 보일 수 있습니다.
+    """
+    statements = [
+        "DROP CONSTRAINT nature_id IF EXISTS",
+        "DROP CONSTRAINT team_id IF EXISTS",
+        "DROP CONSTRAINT team_member_id IF EXISTS",
+        "DROP CONSTRAINT species_id IF EXISTS",
+        "DROP INDEX nature_name IF EXISTS",
+        "DROP INDEX team_name IF EXISTS",
+    ]
+
+    for statement in statements:
+        conn.execute_write(statement)
+
+    print(f"Removed old graph schema: {len(statements)} statements")
+
+
 def reset_graph(conn: Neo4jConnection) -> None:
     """
     Neo4j 안의 모든 노드와 관계를 삭제합니다.
@@ -280,6 +303,8 @@ def create_pokemon_nodes(conn: Neo4jConnection) -> None:
                 "image_url": pokemon.get("image_url"),
                 "cry_url": pokemon.get("cry_url"),
                 "is_default": pokemon.get("is_default", True),
+                # species_id는 Species 노드를 나중에 제거하더라도 종 기준 정보를 잃지 않기 위해 Pokemon에 보관합니다.
+                "species_id": pokemon.get("species_id"),
                 "hp": hp,
                 "attack": attack,
                 "defense": defense,
@@ -300,6 +325,7 @@ def create_pokemon_nodes(conn: Neo4jConnection) -> None:
         p.image_url = row.image_url,
         p.cry_url = row.cry_url,
         p.is_default = row.is_default,
+        p.species_id = row.species_id,
         p.hp = row.hp,
         p.attack = row.attack,
         p.defense = row.defense,
@@ -400,59 +426,18 @@ def create_item_nodes(conn: Neo4jConnection) -> None:
     run_batched(conn, query, rows, "Item nodes")
 
 
-def create_nature_nodes(conn: Neo4jConnection) -> None:
+def create_generation_nodes(conn: Neo4jConnection) -> None:
     """
-    Nature 노드를 생성합니다.
-
-    Source:
-        natures.json
-
-    설명:
-        성격은 포켓몬 종 자체의 정보가 아니라 실제 배틀 개체의 세팅입니다.
-        따라서 지금은 Nature 노드만 만들고, 나중에 TeamMember - HAS_NATURE -> Nature 관계로 연결합니다.
-    """
-    rows = [
-        {
-            "nature_id": row["id"],
-            "name": row["name"],
-            "increased_stat": row.get("increased_stat"),
-            "decreased_stat": row.get("decreased_stat"),
-        }
-        for row in load_json("natures.json")
-    ]
-
-    query = """
-    UNWIND $rows AS row
-    MERGE (n:Nature {nature_id: row.nature_id})
-    SET n.name = row.name,
-        n.increased_stat = row.increased_stat,
-        n.decreased_stat = row.decreased_stat
-    """
-    run_batched(conn, query, rows, "Nature nodes")
-
-
-def create_species_and_generation_nodes(conn: Neo4jConnection) -> None:
-    """
-    Species와 Generation 노드를 생성합니다.
+    Generation 노드를 생성합니다.
 
     Source:
         species.json
 
     설명:
-        진화 관계는 species_id 기준이므로 Species 노드가 필요합니다.
-        Generation은 세대 제한 추천이나 배틀 룰 확장에 사용할 수 있습니다.
+        Species 노드는 만들지 않고, species.json에서 세대 번호만 뽑아 Generation 노드를 만듭니다.
+        species_id는 Pokemon 노드 속성으로 보관하므로 별도 Species 노드 없이도 종 기준 연결을 처리할 수 있습니다.
     """
     species_rows = load_json("species.json")
-
-    species_payload = [
-        {
-            "species_id": row["id"],
-            "pokemon_id": row.get("pokemon_id"),
-            "generation": row.get("generation"),
-            "capture_rate": row.get("capture_rate"),
-        }
-        for row in species_rows
-    ]
 
     # species.json에 들어있는 generation 번호를 중복 없이 모읍니다.
     generation_ids = sorted({row.get("generation") for row in species_rows if row.get("generation")})
@@ -464,20 +449,12 @@ def create_species_and_generation_nodes(conn: Neo4jConnection) -> None:
         for generation_id in generation_ids
     ]
 
-    species_query = """
-    UNWIND $rows AS row
-    MERGE (s:Species {species_id: row.species_id})
-    SET s.pokemon_id = row.pokemon_id,
-        s.generation = row.generation,
-        s.capture_rate = row.capture_rate
-    """
     generation_query = """
     UNWIND $rows AS row
     MERGE (g:Generation {generation_id: row.generation_id})
     SET g.name = row.name
     """
 
-    run_batched(conn, species_query, species_payload, "Species nodes")
     run_batched(conn, generation_query, generation_payload, "Generation nodes")
 
 def create_effect_nodes(conn: Neo4jConnection) -> None:
@@ -800,50 +777,44 @@ def create_type_efficacy_relationships(conn: Neo4jConnection) -> None:
     run_batched(conn, query, rows, "Type ATTACK_EFFECTIVE relationships")
 
 
-def create_species_relationships(conn: Neo4jConnection) -> None:
+def create_pokemon_generation_relationships(conn: Neo4jConnection) -> None:
     """
-    Pokemon - IS_SPECIES -> Species,
-    Species - FROM -> Generation 관계를 생성합니다.
+    Pokemon - FROM -> Generation 관계를 생성합니다.
 
     Source:
         species.json
+
+    설명:
+        Species 노드를 제거했기 때문에 세대 관계는 Pokemon에서 Generation으로 직접 연결합니다.
     """
     rows = [
         {
-            "species_id": row["id"],
             "pokemon_id": row.get("pokemon_id"),
             "generation": row.get("generation"),
         }
         for row in load_json("species.json")
     ]
 
-    pokemon_species_query = """
+    query = """
     UNWIND $rows AS row
     MATCH (p:Pokemon {pokemon_id: row.pokemon_id})
-    MATCH (s:Species {species_id: row.species_id})
-    MERGE (p)-[:IS_SPECIES]->(s)
-    """
-
-    species_generation_query = """
-    UNWIND $rows AS row
-    MATCH (s:Species {species_id: row.species_id})
     MATCH (g:Generation {generation_id: row.generation})
-    MERGE (s)-[:FROM]->(g)
+    MERGE (p)-[:FROM]->(g)
     """
 
-    run_batched(conn, pokemon_species_query, rows, "Pokemon IS_SPECIES relationships")
-    run_batched(conn, species_generation_query, rows, "Species FROM Generation relationships")
+    run_batched(conn, query, rows, "Pokemon FROM Generation relationships")
 
 
 def create_evolution_relationships(conn: Neo4jConnection) -> None:
     """
-    Species - EVOLVES_TO -> Species 관계를 생성합니다.
+    Pokemon - EVOLVES_TO -> Pokemon 관계를 생성합니다.
 
     Source:
         evolutions.json
 
     설명:
-        trigger_item_id가 있는 경우에는 Species - EVOLUTION_REQUIRES -> Item 관계도 생성합니다.
+        evolutions.json은 species_id 기준으로 들어오므로 Pokemon.species_id로 실제 포켓몬 노드를 찾습니다.
+        진화에 필요한 아이템 정보는 현재 그래프 관계로 만들지 않습니다.
     """
     rows = [
         {
@@ -857,23 +828,14 @@ def create_evolution_relationships(conn: Neo4jConnection) -> None:
 
     evolution_query = """
     UNWIND $rows AS row
-    MATCH (fromSpecies:Species {species_id: row.from_species_id})
-    MATCH (toSpecies:Species {species_id: row.to_species_id})
-    MERGE (fromSpecies)-[r:EVOLVES_TO]->(toSpecies)
+    MATCH (fromPokemon:Pokemon {species_id: row.from_species_id})
+    MATCH (toPokemon:Pokemon {species_id: row.to_species_id})
+    MERGE (fromPokemon)-[r:EVOLVES_TO]->(toPokemon)
     SET r.min_level = row.min_level,
         r.trigger_item_id = row.trigger_item_id
     """
 
-    item_rows = [row for row in rows if row.get("trigger_item_id") is not None]
-    item_query = """
-    UNWIND $rows AS row
-    MATCH (fromSpecies:Species {species_id: row.from_species_id})
-    MATCH (item:Item {item_id: row.trigger_item_id})
-    MERGE (fromSpecies)-[:EVOLUTION_REQUIRES]->(item)
-    """
-
-    run_batched(conn, evolution_query, rows, "Species EVOLVES_TO relationships")
-    run_batched(conn, item_query, item_rows, "Species EVOLUTION_REQUIRES relationships")
+    run_batched(conn, evolution_query, rows, "Pokemon EVOLVES_TO relationships")
 
 def create_move_effect_relationships(conn: Neo4jConnection) -> None:
     """
@@ -1489,8 +1451,7 @@ def create_all_nodes(conn: Neo4jConnection) -> None:
     create_move_nodes(conn)
     create_ability_nodes(conn)
     create_item_nodes(conn)
-    create_nature_nodes(conn)
-    create_species_and_generation_nodes(conn)
+    create_generation_nodes(conn)
     create_effect_nodes(conn)
     create_stat_nodes(conn)
     create_status_condition_nodes(conn)
@@ -1506,7 +1467,7 @@ def create_all_relationships(conn: Neo4jConnection) -> None:
     create_pokemon_can_know_relationships(conn)
     create_pokemon_can_have_relationships(conn)
     create_type_efficacy_relationships(conn)
-    create_species_relationships(conn)
+    create_pokemon_generation_relationships(conn)
     create_evolution_relationships(conn)
     create_pokemon_defense_relationships(conn)
     create_move_effect_relationships(conn)
@@ -1594,6 +1555,7 @@ def main() -> None:
         print(f"Processed data dir: {PROCESSED_DATA_DIR}")
 
         if args.reset:
+            drop_removed_graph_schema(conn)
             reset_graph(conn)
 
         apply_constraints(conn)
