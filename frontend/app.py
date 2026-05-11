@@ -326,7 +326,7 @@ content_html = f"""
         <div class="text-box reveal-right">
             <div class="sec-badge">Strategy Lab</div>
             <h2 class="sec-title">최강 팀 빌더</h2>
-            <p class="sec-desc">나만의 6마리 드림팀을 구축하고 파티의 약점을 진단하세요. 타입 방어 상성을 시각적으로 분석하여 빈틈없는 스쿼드를 완성합니다.</p>
+            <p class="sec-desc">나만의 6마리 드림팀을 구축하고 파티의 약점을 진단하세요.<br>타입 상성을 시각적으로 분석하여 빈틈없는 스쿼드를 완성합니다.</p>
             <a href="/teambuilding" target="_self" class="cta-btn">팀 빌딩 시작</a>
         </div>
         <div class="visual-box reveal-left">
