@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS pokemon (
     base_exp INTEGER,
     image_url VARCHAR(255),
     cry_url VARCHAR(255),
-    is_default BOOLEAN DEFAULT TRUE
+    is_default BOOLEAN DEFAULT TRUE,
+    species_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS pokemon_stats (

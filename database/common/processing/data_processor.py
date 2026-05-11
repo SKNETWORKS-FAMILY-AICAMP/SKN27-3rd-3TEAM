@@ -265,15 +265,31 @@ def process_moves():
                 break
         
         type_id = int(m_data['type']['url'].split('/')[-2]) if m_data.get('type') else None
+        meta = m_data.get('meta', {})
         
         moves_list.append({
             'id': m_data['id'],
             'name': name_ko,
             'type_id': type_id,
+            'damage_class': m_data['damage_class']['name'] if m_data.get('damage_class') else None,
             'power': m_data.get('power'),
             'accuracy': m_data.get('accuracy'),
-            'damage_class': m_data['damage_class']['name'] if m_data.get('damage_class') else None,
-            'effect_text': flavor_text
+            'pp': m_data.get('pp'),
+            'priority': m_data.get('priority'),
+            'effect_text': flavor_text,
+            'ailment': meta.get('ailment', {}).get('name') if meta.get('ailment') else None,
+            'ailment_chance': meta.get('ailment_chance'),
+            'category': meta.get('category', {}).get('name') if meta.get('category') else None,
+            'crit_rate': meta.get('crit_rate'),
+            'drain': meta.get('drain'),
+            'flinch_chance': meta.get('flinch_chance'),
+            'healing': meta.get('healing'),
+            'max_hits': meta.get('max_hits'),
+            'max_turns': meta.get('max_turns'),
+            'min_hits': meta.get('min_hits'),
+            'min_turns': meta.get('min_turns'),
+            'stat_chance': meta.get('stat_chance'),
+            'stat_changes': [(stat_change['stat']['name'], stat_change['change']) for stat_change in m_data.get('stat_changes', [])]
         })
     save_json(moves_list, "moves.json")
 
