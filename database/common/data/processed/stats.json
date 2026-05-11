@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "hp",
+    "description": "이 수치가 높을수록 최대 HP가 증가한다."
+  },
+  {
+    "id": 2,
+    "name": "attack",
+    "description": "이 수치가 높을수록 physical move로 가하는 데미지가 증가한다."
+  },
+  {
+    "id": 3,
+    "name": "defense",
+    "description": "이 수치가 높을수록 physical move에 받는 데미지가 감소한다."
+  },
+  {
+    "id": 4,
+    "name": "sp_attack",
+    "description": "이 수치가 높을수록 special move로 가하는 데미지가 증가한다."
+  },
+  {
+    "id": 5,
+    "name": "sp_defense",
+    "description": "이 수치가 높을수록 special move에 받는 데미지가 감소한다."
+  },
+  {
+    "id": 6,
+    "name": "speed",
+    "description": "이 수치가 높을수록 먼저 행동한다."
+  },
+  {
+    "id": 7,
+    "name": "accuracy",
+    "description": "이 수치가 높을수록 기술 명중률이 증가한다."
+  },
+  {
+    "id": 8,
+    "name": "evasion",
+    "description": "이 수치가 높을수록 기술 회피율이 증가한다."
+  },
+  {
+    "id": 9,
+    "name": "critical",
+    "description": "이 수치가 높을수록 기술 급소율이 증가한다."
+  }
+]

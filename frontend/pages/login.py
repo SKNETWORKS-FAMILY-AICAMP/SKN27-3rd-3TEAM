@@ -37,7 +37,7 @@ def get_secret(key, default=None):
 CLIENT_ID     = get_secret("GITHUB_CLIENT_ID", "")
 CLIENT_SECRET = get_secret("GITHUB_CLIENT_SECRET", "")
 REDIRECT_URI  = get_secret("GITHUB_REDIRECT_URI", "http://localhost:8501/login")
-BACKEND_URL   = get_secret("BACKEND_URL", "http://localhost:8000")
+BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
 
 def get_github_auth_url():
     params = {
@@ -191,7 +191,7 @@ def show():
 {POKEBALL_SVG}
 <h1 class="login-title">트레이너 인증</h1>
 <p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p>
-<a href="{auth_url}" target="_self" class="github-btn">
+<a href="{auth_url}" target="_blank" class="github-btn">
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">
 GitHub 계정으로 시작하기
 </a>

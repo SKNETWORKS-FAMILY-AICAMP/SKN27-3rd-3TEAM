@@ -89,6 +89,7 @@ services:
       - skn_net
     volumes:
       - ./frontend:/app
+      - ./database:/database
       - ./requirements.txt:/requirements.txt
     command: >
       sh -c "pip install --no-cache-dir -r /requirements.txt &&

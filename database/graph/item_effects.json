@@ -1,0 +1,492 @@
+[
+    {
+        "item_id": 205,
+        "effect_id": 17,
+        "phase_id": 4,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 207,
+        "effect_id": 16,
+        "phase_id": 7,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 209,
+        "effect_id": 12,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": 1
+    },
+    {
+        "item_id": 210,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 211,
+        "effect_id": 9,
+        "phase_id": 10,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": 0.0625
+    },
+    {
+        "item_id": 214,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 215,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 216,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 217,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 218,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 219,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 220,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 221,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 222,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 223,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 224,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 225,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 226,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 227,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 228,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 230,
+        "effect_id": 9,
+        "phase_id": 8,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": null
+    },
+    {
+        "item_id": 231,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 232,
+        "effect_id": 1,
+        "phase_id": 8,
+        "ailment_id": 6,
+        "stat_id": null,
+        "target": "opponent",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 232,
+        "effect_id": 11,
+        "phase_id": 8,
+        "ailment_id": null,
+        "stat_id": 7,
+        "target": "opponent",
+        "chance": null,
+        "value": -1
+    },
+    {
+        "item_id": 242,
+        "effect_id": 11,
+        "phase_id": 5,
+        "ailment_id": null,
+        "stat_id": 7,
+        "target": "self",
+        "chance": null,
+        "value": 1
+    },
+    {
+        "item_id": 243,
+        "effect_id": 5,
+        "phase_id": 7,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 244,
+        "effect_id": 5,
+        "phase_id": 7,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 245,
+        "effect_id": 5,
+        "phase_id": 7,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 246,
+        "effect_id": 16,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 247,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 247,
+        "effect_id": 10,
+        "phase_id": 9,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": null
+    },
+    {
+        "item_id": 248,
+        "effect_id": 10,
+        "phase_id": 3,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": null
+    },
+    {
+        "item_id": 252,
+        "effect_id": 16,
+        "phase_id": 8,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": 1
+    },
+    {
+        "item_id": 253,
+        "effect_id": 11,
+        "phase_id": 5,
+        "ailment_id": null,
+        "stat_id": 7,
+        "target": "self",
+        "chance": null,
+        "value": 1
+    },
+    {
+        "item_id": 254,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 257,
+        "effect_id": 1,
+        "phase_id": 8,
+        "ailment_id": 7,
+        "stat_id": null,
+        "target": "opponent",
+        "chance": 100,
+        "value": null
+    },
+    {
+        "item_id": 258,
+        "effect_id": 9,
+        "phase_id": 10,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 259,
+        "effect_id": 13,
+        "phase_id": 9,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "all",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 260,
+        "effect_id": 13,
+        "phase_id": 9,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "all",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 261,
+        "effect_id": 13,
+        "phase_id": 9,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "all",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 262,
+        "effect_id": 13,
+        "phase_id": 9,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "all",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 272,
+        "effect_id": 17,
+        "phase_id": 4,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": 100,
+        "value": null
+    },
+    {
+        "item_id": 273,
+        "effect_id": 9,
+        "phase_id": 8,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 291,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 292,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 294,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 295,
+        "effect_id": 6,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": null
+    },
+    {
+        "item_id": 303,
+        "effect_id": 12,
+        "phase_id": 6,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "self",
+        "chance": null,
+        "value": 1
+    },
+    {
+        "item_id": 304,
+        "effect_id": 1,
+        "phase_id": 8,
+        "ailment_id": null,
+        "stat_id": null,
+        "target": "opponent",
+        "chance": null,
+        "value": null
+    }
+]

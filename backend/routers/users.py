@@ -26,3 +26,10 @@ def get_user(github_id: int, db: Session = Depends(get_db)):
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
+
+@router.post("/game-log")
+def create_game_log(log_data: schemas.GameLogCreate, db: Session = Depends(get_db)):
+    """
+    미니게임 플레이 로그를 저장합니다.
+    """
+    return crud.create_game_log(db, log_data)

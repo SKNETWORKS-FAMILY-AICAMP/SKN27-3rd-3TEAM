@@ -20,14 +20,29 @@ from utils.ui import inject_common_ui
 
 
 # BACKEND_API_URL:
-# - Docker 안의 frontend 컨테이너에서 실행되면 http://backend:8000 을 사용합니다.
-# - 로컬에서 직접 Streamlit을 실행하면 http://localhost:8080 을 fallback으로 사용합니다.
-BACKEND_API_URL = os.getenv("BACKEND_API_URL") or os.getenv("BACKEND_URL") or "http://backend:8000"
-LOCAL_BACKEND_API_URL = "http://localhost:8080"
+# - 클라우드 환경(Streamlit Cloud)이나 Docker에서는 환경 변수를 우선 사용합니다.
+BACKEND_API_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http://localhost:8000"
+
+# IS_CLOUD: Streamlit Cloud 환경인지 확인
+IS_CLOUD = os.getenv("STREAMLIT_SERVER_PORT") is not None or os.path.exists("/.dockerenv")
 
 # REQUIRED_TEAM_SIZE:
 # - 현재 팀 추천 API는 5마리를 선택한 뒤 1마리를 추천하는 흐름이므로 5로 고정합니다.
 REQUIRED_TEAM_SIZE = 5
+
+# POKEMON_LIST_SESSION_KEY:
+# - API에서 정상으로 받아온 포켓몬 목록만 세션에 저장하기 위한 key입니다.
+# - 임시 fallback 목록은 저장하지 않아야, 백엔드가 복구됐을 때 한국어 이름/타입을 바로 다시 받을 수 있습니다.
+POKEMON_LIST_SESSION_KEY = "team_builder_pokemon_list"
+
+# DEFAULT_API_TIMEOUT:
+# - 일반 목록 조회/분석 요청은 짧게 끝나므로 기본 timeout을 10초로 둡니다.
+DEFAULT_API_TIMEOUT = 10
+
+# RAG_API_TIMEOUT:
+# - RAG 추천/분석은 Graph DB, Vector DB, LLM 호출이 함께 실행되어 10초를 넘길 수 있습니다.
+# - 사용자가 기다릴 수 있는 범위 안에서 충분히 여유 있게 90초로 둡니다.
+RAG_API_TIMEOUT = 90
 
 # TYPE_BADGE_STYLES:
 # - 포켓몬 타입별 배지 색상입니다.
@@ -88,17 +103,30 @@ def request_json(method: str, path: str, **kwargs: Any) -> Any:
     """백엔드 API를 호출하고 JSON 응답을 반환하기 위한 함수입니다."""
 
     # urls:
-    # - 첫 번째 주소는 현재 실행 환경의 기본 백엔드 주소입니다.
-    # - 두 번째 주소는 Docker 밖에서 실행할 때를 대비한 로컬 fallback 주소입니다.
-    urls = [BACKEND_API_URL.rstrip("/"), LOCAL_BACKEND_API_URL]
+    # - 기본적으로 설정된 백엔드 주소를 사용합니다.
+    urls = [BACKEND_API_URL.rstrip("/")]
+    
+    # 로컬 환경에서만 추가적인 fallback을 고려할 수 있습니다.
+    if not IS_CLOUD and BACKEND_API_URL != "http://localhost:8000":
+        urls.append("http://localhost:8000")
+    
+    urls = list(dict.fromkeys(urls))
     last_error: Optional[Exception] = None
+
+    # timeout:
+    # - 호출자가 직접 timeout을 넘기면 그 값을 우선 사용합니다.
+    # - RAG API는 LLM 응답 시간이 포함되므로 기본 API보다 길게 기다립니다.
+    timeout = kwargs.pop(
+        "timeout",
+        RAG_API_TIMEOUT if "/rag-" in path else DEFAULT_API_TIMEOUT,
+    )
 
     for base_url in urls:
         try:
             # response:
             # - method 값에 따라 GET/POST 요청을 모두 처리합니다.
             # - timeout은 백엔드 연결이 오래 멈춰있는 상황을 막기 위한 안전장치입니다.
-            response = requests.request(method, f"{base_url}{path}", timeout=10, **kwargs)
+            response = requests.request(method, f"{base_url}{path}", timeout=timeout, **kwargs)
             response.raise_for_status()
             return response.json()
         except requests.HTTPError as exc:
@@ -184,6 +212,13 @@ def normalize_pokemon_list(raw_data: Any) -> List[Dict[str, Any]]:
         pokemon_id = item.get("pokemon_id") or item.get("id")
         if pokemon_id is None:
             continue
+        pokemon_id = int(pokemon_id)
+
+        # pokemon_id < 10000:
+        # - PokeAPI에서 10000번대 ID는 메가진화/거다이맥스/리전폼 같은 특수 폼이 주로 들어갑니다.
+        # - 팀 선택 화면은 기본 포켓몬만 고르게 하기 위해 10000번대 이상은 제외합니다.
+        if pokemon_id >= 10000:
+            continue
 
         # raw_types:
         # - 타입 데이터가 문자열 리스트 또는 dict 리스트로 올 수 있어서 둘 다 처리합니다.
@@ -197,7 +232,7 @@ def normalize_pokemon_list(raw_data: Any) -> List[Dict[str, Any]]:
 
         normalized.append(
             {
-                "pokemon_id": int(pokemon_id),
+                "pokemon_id": pokemon_id,
                 "name": item.get("name") or item.get("korean_name") or f"Pokemon {pokemon_id}",
                 "image_url": item.get("image_url") or item.get("sprite_url") or "",
                 "generation": item.get("generation") or item.get("generation_id"),
@@ -209,9 +244,15 @@ def normalize_pokemon_list(raw_data: Any) -> List[Dict[str, Any]]:
     return normalized
 
 
-@st.cache_data(ttl=300)
 def load_pokemon_list() -> List[Dict[str, Any]]:
     """포켓몬 선택 화면에 보여줄 전체 포켓몬 목록을 백엔드에서 가져오는 함수입니다."""
+
+    # cached_list:
+    # - 이미 정상 API 응답을 한 번 받아왔다면 같은 화면 rerun에서는 그 목록을 재사용합니다.
+    # - st.cache_data를 쓰지 않는 이유는 API 실패 시 만든 임시 목록까지 캐시되어 이름이 Pokemon 1처럼 고정될 수 있기 때문입니다.
+    cached_list = st.session_state.get(POKEMON_LIST_SESSION_KEY)
+    if cached_list:
+        return cached_list
 
     try:
         # graph_list:
@@ -220,6 +261,7 @@ def load_pokemon_list() -> List[Dict[str, Any]]:
         raw_data = request_json("GET", "/api/v1/team-builder/pokemon-options")
         normalized = normalize_pokemon_list(raw_data)
         if normalized:
+            st.session_state[POKEMON_LIST_SESSION_KEY] = normalized
             return normalized
     except RuntimeError:
         try:
@@ -228,6 +270,7 @@ def load_pokemon_list() -> List[Dict[str, Any]]:
             raw_data = request_json("GET", "/api/v1/pokemon/")
             normalized = normalize_pokemon_list(raw_data)
             if any(pokemon["types"] for pokemon in normalized):
+                st.session_state[POKEMON_LIST_SESSION_KEY] = normalized
                 return normalized
         except RuntimeError:
             pass
@@ -478,11 +521,25 @@ def render_rag_final_answer(result: Dict[str, Any]) -> None:
     if not final_answer:
         return
 
+    # paragraphs:
+    # - AI 해설은 길어질 수 있으므로 문단 단위로 나눠 첫 문단을 결론 영역으로 강조합니다.
+    # - 스크롤을 내려야 핵심이 보이는 문제를 줄이기 위해, 답변 생성 프롬프트도 결론을 앞에 두도록 맞춥니다.
+    paragraphs = [paragraph.strip() for paragraph in str(final_answer).split("\n\n") if paragraph.strip()]
+    if not paragraphs:
+        return
+
+    conclusion_html = escape(paragraphs[0]).replace(chr(10), "<br>")
+    detail_html = "".join(
+        f"<p>{escape(paragraph).replace(chr(10), '<br>')}</p>"
+        for paragraph in paragraphs[1:]
+    )
+
     st.markdown(
         f"""
         <div class="rag-answer-card">
             <div class="rag-answer-kicker">AI 종합 해설</div>
-            <div class="rag-answer-text">{escape(final_answer).replace(chr(10), "<br>")}</div>
+            <div class="rag-answer-conclusion">{conclusion_html}</div>
+            <div class="rag-answer-text">{detail_html}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -766,6 +823,13 @@ def apply_page_style() -> None:
     st.markdown(
         """
         <style>
+        .stApp, .stMarkdown, .stText, .stButton button, .stSelectbox label, .stTextInput label {
+            font-size: 18px;
+        }
+        .stButton button {
+            font-weight: 800;
+            min-height: 44px;
+        }
         .main-title {
             text-align: center;
             font-size: 56px;
@@ -782,6 +846,7 @@ def apply_page_style() -> None:
             text-align: center;
             color: #2563eb;
             font-weight: 800;
+            font-size: 18px;
             margin-top: 18px;
         }
         .empty-slot {
@@ -792,6 +857,7 @@ def apply_page_style() -> None:
             align-items: center;
             justify-content: center;
             color: #8b95a7;
+            font-size: 18px;
             font-weight: 700;
             background: rgba(255, 255, 255, 0.72);
         }
@@ -815,7 +881,7 @@ def apply_page_style() -> None:
         .selected-slot-name {
             max-width: 100%;
             padding: 0 8px;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 800;
             color: #1f2937;
             overflow: hidden;
@@ -858,7 +924,7 @@ def apply_page_style() -> None:
         .pokemon-card-title {
             width: 100%;
             text-align: center;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 900;
             color: #111827;
             overflow: hidden;
@@ -878,13 +944,13 @@ def apply_page_style() -> None:
             border-radius: 999px;
             background: #e0f2fe;
             color: #075985;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 800;
             border: 1px solid #bae6fd;
         }
         .type-placeholder {
             color: #8b95a7;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 700;
         }
         .analysis-summary-card {
@@ -897,7 +963,7 @@ def apply_page_style() -> None:
         }
         .analysis-kicker {
             color: #2563eb;
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 900;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -905,42 +971,76 @@ def apply_page_style() -> None:
         .analysis-title {
             margin-top: 4px;
             color: #111827;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
         }
         .analysis-summary-text {
             margin-top: 8px;
             color: #334155;
-            font-size: 16px;
-            line-height: 1.65;
+            font-size: 20px;
+            line-height: 1.75;
             font-weight: 650;
         }
         .rag-answer-card {
             margin: 12px 0 20px 0;
-            padding: 20px 22px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding: 24px 28px;
             border: 1px solid #a7f3d0;
             border-radius: 20px;
             background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 52%, #ecfeff 100%);
             box-shadow: 0 14px 30px rgba(15, 118, 110, 0.09);
+            scrollbar-width: thin;
+            scrollbar-color: #34d399 #e2e8f0;
+        }
+        .rag-answer-card::-webkit-scrollbar {
+            width: 10px;
+        }
+        .rag-answer-card::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 999px;
+        }
+        .rag-answer-card::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #34d399 0%, #38bdf8 100%);
+            border-radius: 999px;
         }
         .rag-answer-kicker {
+            position: sticky;
+            top: -24px;
+            z-index: 1;
+            padding: 0 0 10px 0;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 52%, #ecfeff 100%);
             color: #0f766e;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 900;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .rag-answer-conclusion {
+            margin-bottom: 18px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid #99f6e4;
+            background: rgba(240, 253, 250, 0.9);
+            color: #0f172a;
+            font-size: 22px;
+            line-height: 1.65;
+            font-weight: 900;
         }
         .rag-answer-text {
             color: #1f2937;
-            font-size: 15px;
-            line-height: 1.75;
+            font-size: 20px;
+            line-height: 1.85;
             font-weight: 650;
+        }
+        .rag-answer-text p {
+            margin: 0 0 18px 0;
         }
         .analysis-section-header {
             margin: 22px 0 12px 0;
             color: #111827;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 900;
         }
         .analysis-team-grid {
@@ -984,7 +1084,7 @@ def apply_page_style() -> None:
         .analysis-team-name {
             width: 100%;
             color: #111827;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 900;
             text-align: center;
             overflow: hidden;
@@ -1024,15 +1124,15 @@ def apply_page_style() -> None:
         }
         .analysis-detail-title {
             color: #111827;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 950;
             margin-bottom: 6px;
         }
         .analysis-detail-caption {
             min-height: 40px;
             color: #64748b;
-            font-size: 13px;
-            line-height: 1.45;
+            font-size: 17px;
+            line-height: 1.55;
             font-weight: 700;
             margin-bottom: 14px;
         }
@@ -1056,12 +1156,12 @@ def apply_page_style() -> None:
             align-items: flex-end;
             gap: 2px;
             color: #334155;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 750;
         }
         .analysis-metric-right span {
             color: #64748b;
-            font-size: 12px;
+            font-size: 15px;
             font-weight: 700;
         }
         .analysis-empty-row {
@@ -1081,7 +1181,7 @@ def apply_page_style() -> None:
             justify-content: space-between;
             gap: 12px;
             color: #334155;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 900;
             margin-bottom: 8px;
         }
@@ -1124,7 +1224,7 @@ def apply_page_style() -> None:
         }
         .recommend-rank {
             color: #111827;
-            font-size: 24px;
+            font-size: 30px;
             font-weight: 950;
             letter-spacing: -0.02em;
             margin-bottom: 10px;
@@ -1151,7 +1251,7 @@ def apply_page_style() -> None:
         }
         .recommend-name {
             color: #111827;
-            font-size: 17px;
+            font-size: 21px;
             font-weight: 950;
             margin-bottom: 8px;
         }
@@ -1170,21 +1270,23 @@ def apply_page_style() -> None:
             border-radius: 14px;
             background: #f1f5f9;
             color: #475569;
-            font-size: 13px;
+            font-size: 17px;
             font-weight: 850;
             margin-bottom: 12px;
         }
         .recommend-score strong {
             color: #2563eb;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 950;
         }
         .recommend-reasons {
             margin: 0;
             padding-left: 18px;
             color: #334155;
-            font-size: 13px;
-            line-height: 1.65;
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.75;
             font-weight: 700;
         }
         .recommend-reasons li {
@@ -1231,14 +1333,14 @@ def apply_page_style() -> None:
         }
         .insight-card-title {
             color: #111827;
-            font-size: 15px;
+            font-size: 19px;
             font-weight: 900;
             margin-bottom: 8px;
         }
         .insight-card-text {
             color: #475569;
-            font-size: 14px;
-            line-height: 1.55;
+            font-size: 18px;
+            line-height: 1.65;
             font-weight: 650;
         }
         .analysis-type-balance {
