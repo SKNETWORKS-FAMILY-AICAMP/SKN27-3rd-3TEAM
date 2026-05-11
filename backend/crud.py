@@ -189,3 +189,28 @@ def create_game_log(db: Session, log_data: schemas.GameLogCreate):
         db.rollback()
         raise e
 
+def get_user_stats(db: Session, user_id: int):
+    """마이페이지용 유저 통계 데이터를 조회합니다."""
+    logs = db.query(models.GameLog).filter(models.GameLog.user_id == user_id).all()
+    
+    stats = {
+        "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
+        "memory": {"total": 0, "correct": 0, "hint_used": 0},
+    }
+    
+    for log in logs:
+        g_type = log.game_type
+        if g_type in stats:
+            stats[g_type]["total"] += 1
+            if log.is_correct:
+                stats[g_type]["correct"] += 1
+            if log.hint_used:
+                stats[g_type]["hint_used"] += 1
+                
+    return stats
+
+
+def get_user_logs(db: Session, user_id: int, limit: int = 10):
+    """최근 게임 로그를 조회합니다."""
+    return db.query(models.GameLog).filter(models.GameLog.user_id == user_id)\
+             .order_by(models.GameLog.created_at.desc()).limit(limit).all()

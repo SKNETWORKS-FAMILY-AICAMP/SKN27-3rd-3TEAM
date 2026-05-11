@@ -27,7 +27,7 @@ def inject_common_ui(spacer=False, show_header=True):
         user = st.session_state.get("user")
         if user:
             avatar_url = user.get("avatar_url", "https://cdn-icons-png.flaticon.com/512/1144/1144760.png")
-            nav_right_content = f'<a href="/login" target="_self" class="nav-aux"><img src="{avatar_url}" style="border-radius:50%; width:28px; height:28px; object-fit:cover;"><span style="color:#2a75bb; font-weight:800; font-size:11px;">{user.get("login", "")}</span></a>'
+            nav_right_content = f'<a href="/mypage" target="_self" class="nav-aux"><img src="{avatar_url}" style="border-radius:50%; width:28px; height:28px; object-fit:cover;"><span style="color:#2a75bb; font-weight:800; font-size:11px;">{user.get("login", "")}</span></a>'
         else:
             nav_right_content = '<a href="/login" target="_self" class="nav-aux"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" style="width:28px; height:28px;"><span>로그인</span></a>'
 
