@@ -8,6 +8,10 @@ load_dotenv()
 PROCESSED_DATA_DIR = "database/common/data/processed"
 
 def get_connection():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        return psycopg2.connect(db_url)
+    
     return psycopg2.connect(
         host=os.getenv("POSTGRES_HOST", "localhost"),
         database=os.getenv("POSTGRES_DB", "pokemon_db"),
