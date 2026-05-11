@@ -53,7 +53,9 @@ services:
     env_file:
       - .env
     environment:
+      # 기존 pokemon_db 컨테이너 호스트명으로 직접 지정
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
     ports:
       - "8080:8000"
     depends_on:
@@ -78,6 +80,8 @@ services:
       - .env
     environment:
       BACKEND_URL: http://backend:8000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
     ports:
       - "8501:8501"
     depends_on:
@@ -98,3 +102,4 @@ networks:
 
 volumes:
   postgres_data:
+  es_data:  
