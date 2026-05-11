@@ -439,7 +439,7 @@ app = build_agent()
 
 # ══════════════════════════════════════════════════════════
 # 실행 헬퍼
-# ══════════════════════════════════════════════════════════
+# # ══════════════════════════════════════════════════════════
 
 def chat_with_tools(
     query: str,
@@ -448,20 +448,20 @@ def chat_with_tools(
     """
     답변 텍스트와 실제 사용된 툴 이름 목록을 함께 반환합니다.
 
-    Args:
+   Args:
         query:   현재 사용자 질문
         history: 이전 대화 목록 [{"role": "user"|"assistant", "content": "..."}, ...]
                  Streamlit 의 st.session_state.messages 를 그대로 전달하면 됩니다.
     """
     messages = []
 
-    # 이전 대화를 LangChain 메시지로 변환
+   # 이전 대화를 LangChain 메시지로 변환
     if history:
         for msg in history:
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-                messages.append(AIMessage(content=msg["content"]))
+               messages.append(AIMessage(content=msg["content"]))
 
     messages.append(HumanMessage(content=query))
 
@@ -488,26 +488,26 @@ def chat(query: str, history: list[dict] | None = None) -> str:
     return answer
 
 
-# ══════════════════════════════════════════════════════════
-# 직접 실행 테스트
-# ══════════════════════════════════════════════════════════
+# # ══════════════════════════════════════════════════════════
+# # 직접 실행 테스트
+# # ══════════════════════════════════════════════════════════
 
-if __name__ == "__main__":
-    # 임베딩 초기화는 python -m common.ingest 으로 별도 실행
-    tests = [
-        "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQL
-        "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # 벡터
-        "피카츄는 어떤 성격이야?",                             # 벡터
-        "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQL
-        "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQL + 벡터
-        "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQL + 벡터
-        "이브이 진화 경로 알려줘",                             # Neo4j
-        "드래곤 타입 상성은?",                                 # Neo4j
-    ]
+# if __name__ == "__main__":
+#     # 임베딩 초기화는 python -m common.ingest 으로 별도 실행
+#     tests = [
+#         "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQL
+#         "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # 벡터
+#         "피카츄는 어떤 성격이야?",                             # 벡터
+#         "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQL
+#         "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQL + 벡터
+#         "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQL + 벡터
+#         "이브이 진화 경로 알려줘",                             # Neo4j
+#         "드래곤 타입 상성은?",                                 # Neo4j
+#     ]
 
-    for q in tests:
-        print(f"\n{'='*60}")
-        print(f"Q: {q}")
-        answer, used = chat_with_tools(q)
-        print(f"툴: {used}")
-        print(f"A: {answer}")
+#     for q in tests:
+#         print(f"\n{'='*60}")
+#         print(f"Q: {q}")
+#         answer, used = chat_with_tools(q)
+#         print(f"툴: {used}")
+#         print(f"A: {answer}")

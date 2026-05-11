@@ -99,6 +99,7 @@ services:
       - .env
     environment:
       BACKEND_URL: http://backend:8000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     ports:
       - "8501:8501"
     depends_on:
