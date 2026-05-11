@@ -896,7 +896,7 @@
       "name": "paralysis",
       "url": "https://pokeapi.co/api/v2/move-ailment/1/"
     },
-    "ailment_chance": 0,
+    "ailment_chance": 100,
     "category": {
       "name": "ailment",
       "url": "https://pokeapi.co/api/v2/move-category/1/"

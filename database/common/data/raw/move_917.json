@@ -32,6 +32,17 @@
         "name": "scarlet-violet",
         "url": "https://pokeapi.co/api/v2/version-group/25/"
       }
+    },
+    {
+      "flavor_text": "불쾌한 음파를 상대에게 날려서 공격한다. 2턴 동안 상대는 기술이나 특성 또는 지니고 있는 도구로 HP를 회복할 수 없게 된다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
     }
   ],
   "generation": {
@@ -369,7 +380,26 @@
       }
     }
   ],
-  "meta": null,
+  "meta": {
+    "ailment": {
+      "name": "heal-block",
+      "url": "https://pokeapi.co/api/v2/move-ailment/15/"
+    },
+    "ailment_chance": 100,
+    "category": {
+      "name": "damage-ailment",
+      "url": "https://pokeapi.co/api/v2/move-category/4/"
+    },
+    "crit_rate": 0,
+    "drain": 0,
+    "flinch_chance": 0,
+    "healing": 0,
+    "max_hits": null,
+    "max_turns": 2,
+    "min_hits": null,
+    "min_turns": 2,
+    "stat_chance": 0
+  },
   "name": "psychic-noise",
   "names": [
     {
