@@ -4,8 +4,23 @@ from database import engine, Base
 from graph.neo4j_client import neo4j_client
 from routers import pokemon, team_builder, chat, users
 
-# DB 테이블 생성
+# DB 테이블 생성 및 스키마 업데이트 (간이 마이그레이션)
 Base.metadata.create_all(bind=engine)
+
+# 컬럼 존재 여부 확인 및 추가 (PostgreSQL 전용)
+from sqlalchemy import text
+with engine.connect() as conn:
+    try:
+        # public_repos 컬럼이 있는지 확인
+        conn.execute(text("SELECT public_repos FROM users LIMIT 1"))
+    except Exception:
+        # 컬럼이 없으면 추가
+        print("Migrating: Adding GitHub stats columns to users table...")
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS public_repos INTEGER DEFAULT 0"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_commits INTEGER DEFAULT 0"))
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_stars INTEGER DEFAULT 0"))
+        conn.commit()
+        print("Migration complete.")
 
 app = FastAPI(
     title="Pokemon App Backend",
