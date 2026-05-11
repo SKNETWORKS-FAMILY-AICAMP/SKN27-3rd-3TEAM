@@ -251,10 +251,25 @@ def show():
     user_id = user.get("id") or user.get("db_id")
     username = user.get("login")
     
-    # Fetch data
+    # 1. 세션에 이미 스탯이 있는지 확인 (우선순위 1)
+    repos = user.get("public_repos", 0)
+    commits = user.get("total_commits", 0)
+    stars = user.get("total_stars", 0)
+    followers = user.get("followers", 0)
+    
+    # 2. 데이터가 부족하면 API 호출 (우선순위 2)
+    gh = None
+    if repos == 0 and commits == 0:
+        gh = fetch_github_details(username) if username else None
+        if gh:
+            repos = gh["repos"]
+            commits = gh["commits"]
+            stars = gh["stars"]
+            followers = gh["followers"]
+    
+    # Fetch data (Pokemon Game Stats)
     stats = fetch_user_stats(user_id) if user_id else None
     logs = fetch_user_logs(user_id) if user_id else []
-    gh = fetch_github_details(username) if username else None
     
     st.markdown(get_mypage_styles(), unsafe_allow_html=True)
     
@@ -302,7 +317,7 @@ def show():
     # 통합 점수 계산 (게임 점수 + 깃허브 전체 점수)
     game_score = (s_correct + m_correct) * 10
     # GitHub 전체 점수: Repo(100) + Followers(20) + Total Commits(10) + Total Stars(50)
-    gh_score = (repos * 100) + (gh['followers'] * 20) + (commits * 10) + (gh['stars'] * 50)
+    gh_score = (repos * 100) + (followers * 20) + (commits * 10) + (stars * 50)
     total_score = game_score + gh_score
     
     st.markdown(f"""
@@ -314,7 +329,7 @@ def show():
         </div>
         <div class="stat-card" style="border-top: 5px solid #ffcb05;">
             <div class="stat-label">⭐ 획득한 스타</div>
-            <div class="stat-value">{gh['stars']}</div>
+            <div class="stat-value">{stars}</div>
             <div class="stat-desc">Reputation from Repositories</div>
         </div>
         <div class="stat-card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white;">

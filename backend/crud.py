@@ -151,6 +151,9 @@ def create_or_update_user(db: Session, user_data: schemas.UserCreate):
         db_user.name = user_data.name
         db_user.avatar_url = user_data.avatar_url
         db_user.email = user_data.email
+        db_user.public_repos = user_data.public_repos
+        db_user.total_commits = user_data.total_commits
+        db_user.total_stars = user_data.total_stars
     else:
         # Create new user
         db_user = models.User(
@@ -158,7 +161,10 @@ def create_or_update_user(db: Session, user_data: schemas.UserCreate):
             login=user_data.login,
             name=user_data.name,
             avatar_url=user_data.avatar_url,
-            email=user_data.email
+            email=user_data.email,
+            public_repos=user_data.public_repos,
+            total_commits=user_data.total_commits,
+            total_stars=user_data.total_stars
         )
         db.add(db_user)
     

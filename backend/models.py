@@ -133,6 +133,9 @@ class User(Base):
     name = Column(String(100), nullable=True)
     avatar_url = Column(String(255), nullable=True)
     email = Column(String(100), nullable=True)
+    public_repos = Column(Integer, default=0)
+    total_commits = Column(Integer, default=0)
+    total_stars = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     game_logs = relationship("GameLog", back_populates="user")

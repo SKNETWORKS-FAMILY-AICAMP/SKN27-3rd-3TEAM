@@ -107,6 +107,9 @@ class UserBase(BaseModel):
     name: Optional[str] = None
     avatar_url: Optional[str] = None
     email: Optional[str] = None
+    public_repos: Optional[int] = 0
+    total_commits: Optional[int] = 0
+    total_stars: Optional[int] = 0
 
 class UserCreate(UserBase):
     pass
