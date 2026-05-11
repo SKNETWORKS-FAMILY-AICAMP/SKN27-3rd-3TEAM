@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(pokemon.router)
 app.include_router(team_builder.router)
 app.include_router(chat.router)
+app.include_router(users.router)
 
 @app.get("/")
 def read_root():
