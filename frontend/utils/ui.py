@@ -9,7 +9,7 @@ controller = CookieController()
 
 def inject_common_ui(spacer=False, show_header=True):
     """
-    Injects common UI elements with zero-indentation to prevent Streamlit rendering as text.
+    Injects common UI elements with zero-indentation and forces FULL WIDTH layout.
     """
     
     # 1. 쿠키에서 로그인 정보 복구
@@ -24,7 +24,7 @@ def inject_common_ui(spacer=False, show_header=True):
             except:
                 pass
 
-    # 2. 헤더 관련 HTML 생성 (들여쓰기 제거)
+    # 2. 헤더 관련 HTML 생성
     nav_html = ""
     header_css = ""
     
@@ -37,7 +37,6 @@ def inject_common_ui(spacer=False, show_header=True):
         else:
             nav_right_content = '<a href="/login" target="_self" class="nav-aux"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" style="width:32px; height:32px; margin-bottom:5px;"><span>로그인</span></a>'
 
-        # 모든 HTML 태그의 시작 부분에 들여쓰기가 없어야 함
         nav_html = textwrap.dedent(f"""
 <nav class="top-nav">
 <div class="nav-left">
@@ -78,15 +77,41 @@ def inject_common_ui(spacer=False, show_header=True):
     else:
         header_css = ".top-nav { display: none !important; }"
 
-    # 3. Global CSS 주입 (들여쓰기 제거)
+    # 3. Global CSS 주입 (풀 너비 강제 및 기본 여백 제거)
     common_css = textwrap.dedent(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
-html, body, [data-testid="stAppViewContainer"], .stApp {{ margin: 0; padding: 0; font-family: 'Inter', sans-serif; }}
-.block-container {{ padding-top: 0 !important; margin-top: 0 !important; }}
-#MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stSidebar"], [data-testid="collapsedControl"] {{ display: none !important; }}
-.top-nav {{ position: absolute; top: 0; left: 0; width: 100%; height: 90px; background: #ffffff; border-bottom: 2px solid #f0f0f0; display: flex; align-items: stretch; justify-content: space-between; padding: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }}
+
+/* 핵심: 사이트 전체 풀 너비 강제 */
+html, body, [data-testid="stAppViewContainer"], .stApp {{ 
+    margin: 0; padding: 0; 
+    font-family: 'Inter', sans-serif;
+}}
+
+.block-container {{ 
+    padding: 0 !important; 
+    margin: 0 !important; 
+    max-width: 100% !important; 
+    width: 100% !important;
+}}
+
+/* 툴바 및 기본 헤더 숨김 */
+#MainMenu, header, footer, 
+[data-testid="stHeader"], 
+[data-testid="stToolbar"], 
+[data-testid="stSidebar"], 
+[data-testid="collapsedControl"] {{ 
+    display: none !important; 
+}}
+
+.top-nav {{ 
+    position: absolute; top: 0; left: 0; width: 100%; 
+    height: 90px; background: #ffffff; border-bottom: 2px solid #f0f0f0; 
+    display: flex; align-items: stretch; justify-content: space-between; 
+    padding: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+}}
 {header_css}
+
 .nav-left {{ display: flex; align-items: center; padding: 0 30px; border-right: 1px solid #eee; }}
 .nav-brand-img {{ height: 45px; width: auto; }}
 .nav-center {{ display: flex; flex: 1; justify-content: center; }}
@@ -100,7 +125,6 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{ margin: 0; padding: 0;
 </style>
     """).strip()
     
-    # CSS와 HTML을 합쳐서 단일 마크다운으로 전송
     st.markdown(common_css + nav_html, unsafe_allow_html=True)
 
     # 4. Mouse Follower JS
