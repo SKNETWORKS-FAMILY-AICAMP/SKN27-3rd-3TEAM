@@ -12,9 +12,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from graph.neo4j_client import Neo4jClient, get_neo4j
-from services.team_analysis_service import analyze_team
-from services.team_builder_service import recommend_team_member
-from services.team_rag_service import run_team_rag
+from build_services.team_analysis_service import analyze_team
+from build_services.team_builder_service import recommend_team_member
+from build_services.team_rag_service import run_team_rag
 
 
 # router는 팀 분석/추천 API 주소를 묶기 위한 FastAPI 라우터입니다.
@@ -31,6 +31,7 @@ router = APIRouter(
 # - Species 노드가 연결되어 있으면 세대 정보도 같이 내려줍니다.
 TEAM_BUILDER_POKEMON_OPTIONS = """
 MATCH (p:Pokemon)
+WHERE p.pokemon_id < 10000
 OPTIONAL MATCH (p)-[:HAS_TYPE]->(t:Type)
 OPTIONAL MATCH (p)-[:IS_SPECIES]->(s:Species)
 WITH p, s, collect(DISTINCT t.name) AS type_names
