@@ -5,6 +5,7 @@ import os
 import sys
 import base64
 import time
+import json
 
 # Ensure utils is importable
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -13,6 +14,7 @@ from utils.ui import inject_common_ui
 # ── Backend Configuration ─────────────────────────────────────
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
 API_V1_STR = "/api/v1/pokemon"
+LOG_API_STR = "/api/v1/users/game-log"
 ART_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
 
 # ── Page Config ───────────────────────────────────────────────
@@ -30,6 +32,40 @@ def get_base64_img(file_name):
             data = f.read()
         return f"data:image/png;base64,{base64.b64encode(data).decode()}"
     return ""
+
+def save_game_log(game_type, pokemon_id, is_correct, hint_used=False, wrong_answer_name=None, log_data=None):
+    """
+    백엔드 API를 호출하여 게임 로그를 저장합니다.
+    """
+    user = st.session_state.get("user")
+    user_id = user.get("db_id") if user else None
+    
+    # 만약 오답 이름이 있다면, DB에서 해당 포켓몬의 ID를 찾으려 시도할 수 있지만 
+    # 여기서는 간단히 log_data에 텍스트로 저장하거나, 검색 API를 통해 ID를 가져올 수 있습니다.
+    payload = {
+        "user_id": user_id,
+        "game_type": game_type,
+        "pokemon_id": pokemon_id,
+        "is_correct": is_correct,
+        "hint_used": hint_used,
+        "log_data": json.dumps(log_data) if log_data else None
+    }
+    
+    # 헷갈린 포켓몬 이름 기록
+    if wrong_answer_name:
+        if not payload["log_data"]:
+            payload["log_data"] = json.dumps({"wrong_name": wrong_answer_name})
+        else:
+            data = json.loads(payload["log_data"])
+            data["wrong_name"] = wrong_answer_name
+            payload["log_data"] = json.dumps(data)
+
+    try:
+        resp = requests.post(f"{BACKEND_URL}{LOG_API_STR}", json=payload, timeout=3)
+        if resp.status_code != 200:
+            st.warning(f"⚠️ 로그 저장 실패 (HTTP {resp.status_code}): {resp.text}")
+    except Exception as e:
+        st.warning(f"⚠️ 백엔드 연결 실패: {str(e)}")
 
 bg_img = get_base64_img("mini_game.png")
 inject_common_ui(spacer=False)
@@ -57,22 +93,20 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp
 [data-testid="stAppViewBlockContainer"], .main {{ background-color: transparent !important; }}
 .sil-main-card, .btn-marker {{ position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }}
 
-/* 메인 게임 보드 (외곽선 강화) */
 [data-testid="stVerticalBlock"]:has(> .element-container .sil-main-card) {{
     background: linear-gradient(135deg, rgba(42, 117, 187, 0.2) 0%, rgba(20, 20, 20, 0.8) 50%, rgba(227, 53, 53, 0.1) 100%) !important;
     backdrop-filter: blur(25px) !important;
     -webkit-backdrop-filter: blur(25px) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important; /* 외곽선 강화 */
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 35px !important;
     padding: 1rem 3rem !important;
     box-shadow: 0 40px 100px rgba(0,0,0,0.7) !important;
     margin-top: 90px !important;
 }}
 
-/* 입력창 스타일 (외곽선 및 간격 조정) */
 [data-testid="stTextInput"] {{ 
     width: 55% !important; 
-    margin: 30px auto 0 !important; /* 상단 여백 추가하여 아래로 내림 */
+    margin: 30px auto 0 !important;
 }}
 [data-testid="stTextInput"] [data-baseweb="input"], 
 [data-testid="stTextInput"] [data-baseweb="input"] > div,
@@ -82,12 +116,11 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp
     border-radius: 15px !important;
 }}
 [data-testid="stTextInput"] [data-baseweb="input"] {{ 
-    border: 3px solid #E33535 !important; /* 외곽선 두께 증가 */
+    border: 3px solid #E33535 !important;
     min-height: 55px !important; 
 }}
 [data-testid="stTextInput"] input {{ color: #ffffff !important; font-family: 'Outfit'; font-weight: 700; font-size: 1.2rem !important; text-align: center !important; }}
 
-/* 하단 버튼들 */
 div[data-testid="stColumn"]:has(.btn-marker) button {{
     border-radius: 12px !important; height: 45px !important; width: 100% !important;
     border: 2px solid #E33535 !important;
@@ -101,7 +134,6 @@ div[data-testid="stColumn"]:has(.btn-giveup) button p {{ color: #ffffff !importa
 div[data-testid="stColumn"]:has(.btn-next) button {{ background-color: #ffffff !important; }}
 div[data-testid="stColumn"]:has(.btn-next) button p {{ color: #000000 !important; }}
 
-/* 커스텀 힌트 텍스트 스타일 */
 .sil-hint-box {{
     background: rgba(10, 10, 10, 0.8) !important;
     border: 1px solid #E33535 !important;
@@ -183,12 +215,17 @@ def show_game():
                 guess = st.text_input("포켓몬 이름 입력", placeholder="이름 입력 후 엔터...", key="guess_input", label_visibility="collapsed")
 
                 if guess:
+                    hint_used = st.session_state.sil_hint_count > 0
                     if guess.strip() == target["name"]:
+                        # 정답 로그 저장
+                        save_game_log("silhouette", target["id"], is_correct=True, hint_used=hint_used)
                         st.balloons()
                         st.session_state.sil_revealed = True
                         st.session_state.sil_clear_input = True
                         st.rerun()
                     else:
+                        # 오답 로그 저장 (헷갈린 이름 포함)
+                        save_game_log("silhouette", target["id"], is_correct=False, hint_used=hint_used, wrong_answer_name=guess.strip())
                         st.error("❌ 틀렸습니다!")
                         time.sleep(1.5)
                         st.session_state.sil_clear_input = True
@@ -200,15 +237,20 @@ def show_game():
                 st.markdown('<div class="btn-marker btn-hint"></div>', unsafe_allow_html=True)
                 if st.button("힌트 보기", key="h_btn", use_container_width=True):
                     st.session_state.sil_hint_count += 1
+                    # 힌트 사용 자체도 로그로 남길 수 있지만, 정답 시점에 몰아서 hint_used로 처리합니다.
                     st.rerun()
             with h_col2:
                 st.markdown('<div class="btn-marker btn-giveup"></div>', unsafe_allow_html=True)
                 if st.button("정답 보기", key="g_btn", use_container_width=True):
+                    # 정답 보기(포기) 로그 저장
+                    save_game_log("silhouette", target["id"], is_correct=False, hint_used=(st.session_state.sil_hint_count > 0), log_data={"action": "give_up"})
                     st.session_state.sil_revealed = True
                     st.rerun()
             with h_col3:
                 st.markdown('<div class="btn-marker btn-next"></div>', unsafe_allow_html=True)
                 if st.button("스킵 하기", key="s_btn", use_container_width=True):
+                    # 스킵 로그 저장
+                    save_game_log("silhouette", target["id"], is_correct=False, hint_used=(st.session_state.sil_hint_count > 0), log_data={"action": "skip"})
                     reset_silhouette()
                     st.rerun()
 
