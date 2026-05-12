@@ -328,11 +328,26 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 .mp-xp-fill { height: 100%; background: linear-gradient(90deg, #FFCB05, #fd9644); border-radius: 99px; }
 
 .mp-logout {
-    padding: 8px 20px; border-radius: 100px; font-size: 0.8rem; font-weight: 700;
-    color: #b2bec3 !important; text-decoration: none !important;
-    border: 1px solid #f1f2f6; transition: 0.2s;
+    padding: 10px 24px; border-radius: 100px; font-size: 0.85rem; font-weight: 800;
+    color: #2d3436 !important; text-decoration: none !important;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid #FFCB05; /* 포켓몬 골드 테두리 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
 }
-.mp-logout:hover { background: #f1f2f6; color: #2d3436 !important; }
+.mp-logout:hover { background: #FFCB05; color: #fff !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,203,5,0.4); }
+
+.badge-case-footer {
+    margin-top: 25px; padding: 12px;
+    background: #2d3436; /* 어두운 배경으로 변경 */
+    border: 2px solid #FFCB05;
+    border-radius: 12px;
+    font-weight: 900; color: #ffffff !important; font-size: 1.1rem;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
 
 @media (max-width: 768px) {
     .mp-hero { flex-direction: column; text-align: center; padding: 30px; }
