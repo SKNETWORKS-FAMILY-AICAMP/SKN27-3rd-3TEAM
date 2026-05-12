@@ -428,8 +428,8 @@ content_html = f"""
     <div class="section-inner">
         <div class="text-box reveal-right">
             <div class="sec-badge">New Generation Tool</div>
-            <h2 class="sec-title">스마트 번역 도우미<br><b>피피고 (Pipigo)</b></h2>
-            <p class="sec-desc">당신의 웹 브라우저 속에 귀여운 포켓몬 파트너가 나타납니다!<br>실시간 양방향 AI 번역과 가상 펫의 만남. 지금 바로 경험해 보세요.</p>
+            <h2 class="sec-title">지능형 LLM 어시스턴트<br><b>피피고 (Pipigo)</b></h2>
+            <p class="sec-desc">당신의 웹 브라우저 속에 귀여운 포켓몬 파트너가 나타납니다!<br> 지금 바로 경험해 보세요.</p>
             <a href="https://chromewebstore.google.com/search/%ED%94%BC%ED%94%BC%EA%B3%A0?hl=ko" target="_blank" class="cta-btn">웹 스토어에서 보기</a>
         </div>
         <div class="visual-box reveal-left">
