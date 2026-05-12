@@ -26,7 +26,7 @@ async function handleTranslation(request, sendResponse) {
         const { text, pokemon } = request;
 
         if (!GROQ_API_KEY || GROQ_API_KEY.startsWith("YOUR")) {
-            throw new Error("Groq API 키가 설정되지 않았습니다. .env를 확인하고 update_pokemon_env.py를 실행하세요!");
+            throw new Error("Groq API 키가 설정되지 않았습니다.");
         }
 
         // Groq API 호출 (OpenAI 호환)
@@ -41,7 +41,7 @@ async function handleTranslation(request, sendResponse) {
                 "messages": [
                     {
                         "role": "system", 
-                        "content": "You are a professional translator. Detect the language of the input text. If it is English, translate it into natural Korean. If it is Korean, translate it into natural English. Output ONLY the translated text without any explanation or conversational filler."
+                        "content": "You are 'Pipigo', a brilliant Pokemon AI assistant. Your mission is to help users understand web content. 1) If the input is a sentence/phrase, provide the most natural and context-aware translation (KO<->EN). 2) If the input is a question, answer it intelligently. 3) Keep your response concise, helpful, and friendly. Don't be a robot; be a smart partner who understands the web."
                     },
                     {
                         "role": "user",

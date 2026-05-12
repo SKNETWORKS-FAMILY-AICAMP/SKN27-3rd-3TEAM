@@ -25,7 +25,7 @@
     bubble.className = 'pk-papago-bubble';
     bubble.innerHTML = `
         <div class="pk-papago-input-wrapper">
-            <input type="text" class="pk-papago-input" placeholder="단어를 입력하시오">
+            <input type="text" class="pk-papago-input" placeholder="피피고에게 물어보기">
         </div>
         <div class="pk-papago-result"></div>
     `;
@@ -108,7 +108,7 @@
 
             inputField.disabled = true;
             resultArea.style.display = 'block';
-            resultArea.innerText = '번역 중... (생각 중)';
+            resultArea.innerText = '답변 생성중...';
             resultArea.classList.add('thinking');
 
             chrome.runtime.sendMessage({
