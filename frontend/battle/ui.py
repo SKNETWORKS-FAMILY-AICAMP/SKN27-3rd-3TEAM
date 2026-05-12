@@ -146,9 +146,9 @@ def inject_battle_styles():
         unsafe_allow_html=True,
     )
 
-def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bool = True):
+def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bool = True, show_moves: bool = True):
     type_html = "".join(f"<span class='type-pill'>{type_name}</span>" for type_name in pokemon.type_names)
-    move_html = "".join(f"<span class='move-chip'>{move['name']}</span>" for move in pokemon.moves) if reveal_details else ""
+    move_html = "".join(f"<span class='move-chip'>{move['name']}</span>" for move in pokemon.moves) if reveal_details and show_moves else ""
     hp_text = f"HP {pokemon.current_hp}/{pokemon.max_hp}" if reveal_details else "HP"
     
     hp_ratio = max(0.0, min(1.0, pokemon.current_hp / pokemon.max_hp))

@@ -10,6 +10,7 @@ from battle.movetree import process_turn as run_battle_logic
 from battle.trainerbot import get_random_gym_leader_pokemon
 import re
 from dataclasses import asdict
+from battle.trainerbot import ROSTER_MAP
 
 # 페이지 설정
 st.set_page_config(
@@ -164,8 +165,19 @@ def show():
             st.subheader("관장 선택")
             gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"]
             selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
+            leader_roster = ROSTER_MAP.get(selected_leader, [])
 
-            
+            if leader_roster:
+                st.caption(f"**{selected_leader}의 엔트리:**")
+                cols = st.columns(len(leader_roster))
+                for idx, p in enumerate(leader_roster):
+                    pokemon_data = db.get_pokemon_data(p['id'])
+                    with cols[idx]:
+                        img_url = pokemon_data['image_url']
+                        st.image(img_url, use_container_width=True)
+                        st.markdown(f"<div style='text-align: center; font-size: 0.85rem; font-weight: 700; color: #cbd5e1;'>{p['name']}</div>", unsafe_allow_html=True)
+
+            st.markdown("<br>", unsafe_allow_html=True)
             st.subheader("포켓몬 선택")
             selected_name = st.selectbox(
                 "포켓몬 이름을 검색하세요",
@@ -174,8 +186,6 @@ def show():
                 placeholder="포켓몬 이름 입력..."
             )
 
-            
-            
             st.markdown("<hr>", unsafe_allow_html=True)
             if selected_name:
                 pokemon_id = pokemon_options[selected_name]
@@ -192,7 +202,7 @@ def show():
                     stats=stats, moves=pokemon_data['moves'],
                     max_hp=stats['hp'], current_hp=stats['hp']
                 )
-                render_pokemon_status("PLAYER PREVIEW", preview)
+                render_pokemon_status("PLAYER PREVIEW", preview, show_moves=False)
 
         with col2:
             if selected_name:
@@ -232,6 +242,7 @@ def show():
                         four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
                         player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
                         start_custom_battle(player_custom, leader_name=selected_leader)
+                        db.close()
                         st.rerun()
                 else:
                     st.info(f"기술을 {4 - len(selected_move_names)}개 더 선택해주세요.")
