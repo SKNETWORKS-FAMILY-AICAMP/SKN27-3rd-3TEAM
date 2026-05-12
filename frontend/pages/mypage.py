@@ -3,10 +3,24 @@ import os
 import base64
 import math
 import requests
+import json
 from datetime import datetime
 from utils.ui import inject_common_ui
 
 _FRONTEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_ROOT_DIR = os.path.dirname(_FRONTEND_DIR)
+
+@st.cache_data
+def get_pokemon_names():
+    try:
+        path = os.path.join(_ROOT_DIR, "database", "common", "data", "processed", "pokemon.json")
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return {str(p["id"]): p["name"] for p in data}
+    except:
+        pass
+    return {}
 
 def _b64_img(rel_path: str) -> str:
     full = os.path.join(_FRONTEND_DIR, rel_path)
@@ -359,6 +373,7 @@ def show():
     user     = st.session_state.user
     user_id  = user.get("db_id")
     username = user.get("login")
+    pkmn_names = get_pokemon_names()
 
     repos     = user.get("public_repos", 0)
     commits   = user.get("total_commits", 0)
@@ -537,16 +552,36 @@ def show():
         dex_items = []
         for pid in collected_ids:
             img_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png"
-            dex_items.append(f'<div style="text-align:center; background: rgba(255,255,255,0.4); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.6);"><img src="{img_url}" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));"><div style="font-size: 0.65rem; font-weight: 800; color: #2d3436; margin-top: 5px;">No.{pid}</div></div>')
+            p_name_k = pkmn_names.get(str(pid), f"No.{pid}")
+            dex_items.append(f'<div style="text-align:center; background: rgba(255,255,255,0.4); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.6);"><img src="{img_url}" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));"><div style="font-size: 0.65rem; font-weight: 800; color: #2d3436; margin-top: 5px;">{p_name_k}</div></div>')
         
         dex_grid = "".join(dex_items)
+        
+        # 포획률 계산 (전체 1025마리 기준)
+        total_pkmn_count = 1025
+        collected_count = len(collected_ids)
+        capture_rate = (collected_count / total_pkmn_count) * 100
+        
         st.markdown(f"""
 <div class="mp-card card-dex">
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px;">
 {dex_grid}
 </div>
-<div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); text-align: right;">
-<span style="font-weight: 900; color: #27ae60; font-size: 1.1rem;">Total Collected: {len(collected_ids)} POKEMON</span>
+<!-- 포획률 정보 섹션 -->
+<div style="margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(0,0,0,0.05);">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px;">
+<div>
+<div style="font-size: 0.8rem; font-weight: 800; color: #2d3436; opacity: 0.7; margin-bottom: 4px;">COLLECTION RATE</div>
+<div style="font-size: 1.8rem; font-weight: 900; color: #27ae60;">{collected_count} <span style="font-size: 1rem; color: #636e72;">/ {total_pkmn_count}</span></div>
+</div>
+<div style="text-align: right;">
+<div style="font-size: 1.8rem; font-weight: 900; color: #27ae60;">{capture_rate:.1f}%</div>
+<div style="font-size: 0.75rem; font-weight: 700; color: #636e72;">{total_pkmn_count - collected_count} Left to Complete</div>
+</div>
+</div>
+<div class="mp-xp-track" style="height: 12px; background: rgba(0,0,0,0.05);">
+<div class="mp-xp-fill" style="width: {capture_rate}%; background: linear-gradient(90deg, #2ecc71, #27ae60); box-shadow: 0 0 15px rgba(39, 174, 96, 0.4);"></div>
+</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -564,10 +599,10 @@ def show():
             is_correct = log.get("is_correct")
             tag_cls = "mp-tag-ok" if is_correct else "mp-tag-fail"
             tag_txt = "SUCCESS" if is_correct else "FAILED"
-            # 포켓몬 이름 결정 (이름이 없으면 ID로 표시하여 Unknown 방지)
-            p_name = log.get("pokemon_name")
+            # 포켓몬 이름 결정 (매핑 데이터 우선 사용)
+            p_id = log.get("pokemon_id")
+            p_name = pkmn_names.get(str(p_id)) if p_id else log.get("pokemon_name")
             if not p_name:
-                p_id = log.get("pokemon_id")
                 p_name = f"No. {p_id}" if p_id else "Unknown"
             
             g_icon = "QUIZ" if g_type == "silhouette" else "MEM"
