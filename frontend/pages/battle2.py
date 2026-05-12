@@ -23,7 +23,7 @@ inject_battle_styles()
 # DB 연결
 db = PokemonDB()
 
-def start_custom_battle(player_custom_data):
+def start_custom_battle(player_custom_data, leader_name="웅이"):
     """DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다."""
     with st.spinner("배틀 데이터를 준비 중..."):
         # 1. 플레이어 포켓몬 데이터 구성
@@ -41,13 +41,20 @@ def start_custom_battle(player_custom_data):
             current_hp=max_hp
         )
 
-        # 2. 봇 포켓몬 랜덤 선택 및 데이터 구성
-        all_p = db.get_all_pokemon_names()
-        bot_entry = random.choice([p for p in all_p if p['id'] != p_data['id']])
+        # 2. 봇 포켓몬(관장) 랜덤 선택 및 데이터 구성
+        from battle.trainerbot import get_random_gym_leader_pokemon
+        
+        bot_entry = get_random_gym_leader_pokemon(leader_name)
         b_data = db.get_pokemon_data(bot_entry['id'])
         
-        # 봇은 배울 수 있는 기술 중 랜덤하게 4개 선택
-        bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
+        # 봇은 관장 엔트리에 지정된 기술만 사용
+        bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
+        # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
+        if not bot_moves:
+            bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
+        elif len(bot_moves) > 4:
+            bot_moves = random.sample(bot_moves, 4)
+            
         b_max_hp = b_data['stats']['hp'] * 2
         
         st.session_state.battle_bot = BattlePokemon(
@@ -142,6 +149,12 @@ def show():
         col1, col2 = st.columns([1, 1.2])
 
         with col1:
+            st.markdown("<hr>", unsafe_allow_html=True)
+            st.subheader("관장 선택")
+            gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"]
+            selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
+
+            
             st.subheader("포켓몬 선택")
             selected_name = st.selectbox(
                 "포켓몬 이름을 검색하세요",
@@ -150,6 +163,9 @@ def show():
                 placeholder="포켓몬 이름 입력..."
             )
 
+            
+            
+            st.markdown("<hr>", unsafe_allow_html=True)
             if selected_name:
                 pokemon_id = pokemon_options[selected_name]
                 if "selected_pokemon_data" not in st.session_state or st.session_state.get("last_selected_id") != pokemon_id:
@@ -171,25 +187,43 @@ def show():
             if selected_name:
                 st.subheader("기술 선택")
                 pokemon_data = st.session_state.selected_pokemon_data
-                move_names = [m['name'] for m in pokemon_data['moves']]
+                if "selected_moves" not in st.session_state:
+                    st.session_state.selected_moves = []
                 
-                selected_move_names = st.multiselect(
-                    "사용할 기술 4개를 선택하세요",
-                    options=move_names,
-                    default=st.session_state.get("selected_moves", []),
-                    max_selections=4
-                )
-                st.session_state.selected_moves = selected_move_names
+                selected_move_names = st.session_state.selected_moves
+                
+                st.write(f"**선택된 기술 ({len(selected_move_names)}/4)**")
+                if selected_move_names:
+                    cols = st.columns(4)
+                    for i in range(4):
+                        if i < len(selected_move_names):
+                            cols[i].info(selected_move_names[i])
+                        else:
+                            cols[i].write("Empty")
+                
+                st.write("---")
+                move_cols = st.columns(4)
+                for i, move in enumerate(pokemon_data['moves']):
+                    m_name = move['name']
+                    is_selected = m_name in selected_move_names
+                    b_type = "primary" if is_selected else "secondary"
+                    if move_cols[i % 4].button(m_name, key=f"mv_{m_name}", use_container_width=True, type=b_type):
+                        if is_selected:
+                            st.session_state.selected_moves.remove(m_name)
+                        elif len(st.session_state.selected_moves) < 4:
+                            st.session_state.selected_moves.append(m_name)
+                        st.rerun()
 
+                st.write("---")
                 if len(selected_move_names) == 4:
-                    st.success("배틀 준비 완료!")
-                    if st.button("배틀 시작하기", use_container_width=True, type="primary"):
+                    st.success("모든 기술 선택 완료!")
+                    if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
                         four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
                         player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
-                        start_custom_battle(player_custom)
+                        start_custom_battle(player_custom, leader_name=selected_leader)
                         st.rerun()
                 else:
-                    st.warning(f"기술 {len(selected_move_names)}/4 선택됨")
+                    st.info(f"기술을 {4 - len(selected_move_names)}개 더 선택해주세요.")
     
     else:
         # 배틀 진행 화면 (battle.py 로직과 유사)
