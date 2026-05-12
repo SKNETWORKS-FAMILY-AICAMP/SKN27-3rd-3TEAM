@@ -84,37 +84,50 @@ MYPAGE_CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
 
 html, body, [data-testid="stAppViewContainer"], .stApp {
-    background-color: #f8f9fa !important;
+    background-color: #000000 !important; /* 기본 배경을 검정으로 설정하여 이미지와 조화 */
+}
+[data-testid="stAppViewContainer"] {
+    background-image: var(--bg-img) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-position: center top !important;
 }
 [data-testid="stHeader"], footer, [data-testid="stToolbar"] { display: none !important; }
-.block-container { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+.block-container { 
+    padding: 0 !important; 
+    margin: 0 !important; 
+    max-width: 100% !important; 
+}
 
 .mp-wrap {
-    padding: 60px 0 100px;
+    padding: 20px 0 10px;
     font-family: 'Inter', sans-serif;
     color: #2d3436;
+    min-height: 30vh;
 }
 .mp-container {
     margin: 0 auto;
-    width: 90%;
-    max-width: 1400px;
+    width: 75%;
+    max-width: 1000px;
 }
 
-/* ── Premium Light Card ── */
+/* ── Premium Glass Card ── */
 .mp-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
     border-radius: 28px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
     margin: 0 auto 40px;
-    width: 90%;
-    max-width: 1400px;
-    border: 1px solid rgba(0,0,0,0.03);
+    width: 75%;
+    max-width: 1000px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
     overflow: hidden;
     position: relative;
-    padding: 40px;
+    padding: 45px; /* 패딩 증가 */
 }
-.mp-card:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(0,0,0,0.08); }
+.mp-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.55); box-shadow: 0 20px 55px rgba(0,0,0,0.2); }
 
 /* 섹션별 보더 컬러 포인트 */
 .card-profile { border-top: 6px solid #FFCB05; padding: 50px; }
@@ -134,28 +147,31 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background: #f1f2f6;
-    color: #636e72;
+    background: rgba(241, 242, 246, 0.8);
+    color: #2d3436;
     margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.mp-pill-yellow { background: #FFCB05; color: #000; }
+.mp-pill-yellow { background: #FFCB05; color: #000; box-shadow: 0 0 15px rgba(255, 203, 5, 0.4); }
 
 /* ── Section Title (Minigame Style) ── */
 .mp-section-title {
     font-family: 'Outfit', sans-serif;
     font-weight: 900;
     font-size: 1.6rem;
-    color: #2d3436;
+    color: #ffffff;
     letter-spacing: -0.5px;
     margin: 0 auto 25px;
-    width: 90%;
-    max-width: 1400px;
+    width: 75%;
+    max-width: 1000px;
     display: flex;
     align-items: center;
     gap: 10px;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255, 203, 5, 0.3);
 }
 .mp-section-title::before {
     content: ''; width: 8px; height: 24px; background: #FFCB05; border-radius: 4px;
+    box-shadow: 0 0 10px #FFCB05;
 }
 
 /* ── Profile Hero ── */
@@ -172,18 +188,19 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     object-fit: cover;
     animation: mpfloat 6s ease-in-out infinite;
     flex-shrink: 0;
-    box-shadow: 0 10px 25px rgba(255, 203, 5, 0.2);
+    box-shadow: 0 10px 30px rgba(255, 203, 5, 0.3);
 }
 @keyframes mpfloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 .mp-name {
     font-family: 'Outfit', sans-serif;
     font-weight: 900;
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: #2d3436;
     letter-spacing: -1px;
     margin: 0;
+    text-shadow: 0 0 20px rgba(255,255,255,0.8);
 }
-.mp-handle { font-size: 1rem; color: #b2bec3; margin-bottom: 15px; }
+.mp-handle { font-size: 1rem; color: #2d3436; margin-bottom: 15px; font-weight: 600; }
 
 /* ── Hero Creature & Friends Animation ── */
 .mp-hero-creature-wrap {
@@ -250,14 +267,16 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     font-weight: 900;
     line-height: 1;
     color: #2d3436;
+    text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.1);
 }
 .mp-stat-label {
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #b2bec3;
+    color: #2d3436;
     margin-bottom: 8px;
+    opacity: 0.8;
 }
 
 /* ── Activity Log (Premium Light) ── */
@@ -265,25 +284,30 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 18px;
-    border-bottom: 1px solid #f1f2f6;
-    transition: background 0.2s;
+    padding: 22px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.2s;
 }
-.mp-log-item:hover { background: #fdfdfd; }
+.mp-log-item:hover { background: rgba(255,255,255,0.3); }
 .mp-log-icon {
-    width: 45px; height: 45px;
-    background: #f1f2f6;
-    border-radius: 12px;
+    width: 50px; height: 50px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; color: #b2bec3; font-size: 0.8rem;
+    font-weight: 900; color: #2d3436; font-size: 0.85rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
-.mp-log-main { font-weight: 700; font-size: 1rem; color: #2d3436; }
-.mp-log-sub { font-size: 0.85rem; color: #b2bec3; }
+.mp-log-main { 
+    font-weight: 800; font-size: 1.05rem; color: #2d3436;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+.mp-log-sub { font-size: 0.9rem; color: #636e72; font-weight: 500; }
 .mp-tag {
-    padding: 3px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
-.mp-tag-ok { background: #e6fffa; color: #27ae60; }
-.mp-tag-fail { background: #fff5f5; color: #e53e3e; }
+.mp-tag-ok { background: #e6fffa; color: #27ae60; border: 1px solid rgba(39, 174, 96, 0.2); }
+.mp-tag-fail { background: #fff5f5; color: #e53e3e; border: 1px solid rgba(229, 62, 62, 0.2); }
 
 /* ── Progress Bar ── */
 .mp-xp-track { background: #f1f2f6; border-radius: 99px; height: 8px; overflow: hidden; }
@@ -310,6 +334,20 @@ def show():
         layout="wide",
         initial_sidebar_state="collapsed"
     )
+
+    # 배경 이미지 로드 및 CSS 주입 (최상단 배치로 레이아웃 밀림 방지)
+    bg_b64 = _b64_img("img/mypage.png")
+    st.markdown(f"""
+    <style>
+    :root {{
+        --bg-img: url('{bg_b64}');
+    }}
+    /* 상단 공백 강제 제거 */
+    [data-testid="stAppViewBlockContainer"] {{ padding-top: 0 !important; }}
+    [data-testid="stVerticalBlock"] {{ gap: 0 !important; }}
+    </style>
+    """, unsafe_allow_html=True)
+    st.markdown(MYPAGE_CSS, unsafe_allow_html=True)
 
     inject_common_ui(spacer=False)
 
@@ -394,7 +432,6 @@ def show():
     avatar = user.get("avatar_url", "https://cdn-icons-png.flaticon.com/512/1144/1144760.png")
     name   = user.get("name") or user.get("login", "트레이너")
 
-    st.markdown(MYPAGE_CSS, unsafe_allow_html=True)
     st.markdown('<div class="mp-wrap">', unsafe_allow_html=True)
 
     # ══════════════════════════════════════════
@@ -427,74 +464,99 @@ def show():
     """, unsafe_allow_html=True)
 
     # ══════════════════════════════════════════
-    # 3. Stats Grid (Dev & Game)
+    # 3. Stats Grid & 4. Recent Activity (Inside Container)
     # ══════════════════════════════════════════
     st.markdown('<div class="mp-container">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2, gap="medium")
-
-    with col1:
-        st.markdown('<div class="mp-section-title" style="width:100%; max-width:none; margin:0 0 25px;">Developer Stats</div>', unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="mp-card card-dev" style="width:100%; max-width:none; margin:0 0 40px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <div class="mp-stat-label">Commits</div>
-                    <div class="mp-stat-value" style="color:#6c5ce7;">{commits:,}</div>
-                </div>
-                <div>
-                    <div class="mp-stat-label">Repos</div>
-                    <div class="mp-stat-value" style="color:#2ecc71;">{repos}</div>
-                </div>
-                <div>
-                    <div class="mp-stat-label">Stars</div>
-                    <div class="mp-stat-value" style="color:#f1c40f;">{stars}</div>
-                </div>
-                <div>
-                    <div class="mp-stat-label">Followers</div>
-                    <div class="mp-stat-value" style="color:#0984e3;">{followers}</div>
-                </div>
+    
+    # Developer Stats
+    st.markdown('<div class="mp-section-title">Developer Stats</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="mp-card card-dev">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+            <div>
+                <div class="mp-stat-label">Commits</div>
+                <div class="mp-stat-value" style="color:#6c5ce7; font-size: 2.2rem;">{commits:,}</div>
             </div>
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f2f6;">
-                <div class="mp-stat-label">Overall Rank</div>
-                <div style="font-weight: 900; font-size: 1.2rem; color: #6c5ce7;">{trainer_tier}</div>
+            <div>
+                <div class="mp-stat-label">Repos</div>
+                <div class="mp-stat-value" style="color:#2ecc71; font-size: 2.2rem;">{repos}</div>
+            </div>
+            <div>
+                <div class="mp-stat-label">Stars</div>
+                <div class="mp-stat-value" style="color:#f1c40f; font-size: 2.2rem;">{stars}</div>
+            </div>
+            <div>
+                <div class="mp-stat-label">Followers</div>
+                <div class="mp-stat-value" style="color:#0984e3; font-size: 2.2rem;">{followers}</div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.05);">
+            <div class="mp-stat-label">Overall Rank</div>
+            <div style="font-weight: 900; font-size: 1.2rem; color: #6c5ce7;">{trainer_tier}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with col2:
-        st.markdown('<div class="mp-section-title" style="width:100%; max-width:none; margin:0 0 25px;">Game Performance</div>', unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="mp-card card-game" style="width:100%; max-width:none; margin:0 0 40px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <div class="mp-stat-label">Quiz Accuracy</div>
-                    <div class="mp-stat-value" style="color:#ff4757;">{s_rate}%</div>
-                </div>
-                <div>
-                    <div class="mp-stat-label">Memory Record</div>
-                    <div class="mp-stat-value" style="color:#e67e22;">{m_rate}%</div>
-                </div>
+    # Game Performance
+    st.markdown('<div class="mp-section-title">Game Performance</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="mp-card card-game">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div>
+                <div class="mp-stat-label">Quiz Accuracy</div>
+                <div class="mp-stat-value" style="color:#ff4757;">{s_rate}%</div>
             </div>
-            <div style="margin-top: 30px;">
-                <div class="mp-stat-label">Trainer Score</div>
-                <div class="mp-stat-value" style="font-size: 2.2rem;">{total_score:,} PTS</div>
-            </div>
-            <div style="margin-top: 20px;">
-                <div class="mp-xp-track"><div class="mp-xp-fill" style="width:{xp_pct}%"></div></div>
-                <div style="font-size: 0.75rem; color: #b2bec3; margin-top: 5px;">Progress to Next Level: {xp_pct}%</div>
+            <div>
+                <div class="mp-stat-label">Memory Record</div>
+                <div class="mp-stat-value" style="color:#e67e22;">{m_rate}%</div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        <div style="margin-top: 30px;">
+            <div class="mp-stat-label">Trainer Score</div>
+            <div class="mp-stat-value" style="font-size: 2.2rem;">{total_score:,} PTS</div>
+        </div>
+        <div style="margin-top: 20px;">
+            <div class="mp-xp-track"><div class="mp-xp-fill" style="width:{xp_pct}%"></div></div>
+            <div style="font-size: 0.75rem; color: #2d3436; margin-top: 5px; font-weight:600;">Progress to Next Level: {xp_pct}%</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ══════════════════════════════════════════
-    # 4. Recent Activity (Gray Border)
+    # 4. My Pokemon Collection (Pokedex)
     # ══════════════════════════════════════════
+    # 획득한 포켓몬 ID 추출 (is_correct=True인 로그에서)
+    collected_ids = sorted(list(set([log.get("pokemon_id") for log in logs if log.get("is_correct") and log.get("pokemon_id")])))
+    
+    st.markdown('<div class="mp-section-title">My Pokemon Collection</div>', unsafe_allow_html=True)
+    
+    if not collected_ids:
+        st.markdown(f"""<div class="mp-card card-dex" style="text-align:center; padding: 60px;"><div style="font-size: 3rem; margin-bottom: 20px;">🥚</div><div style="font-weight: 800; color: #2d3436; font-size: 1.2rem;">아직 획득한 포켓몬이 없습니다.</div><div style="color: #636e72; margin-top: 10px;">퀴즈를 맞추고 도감을 채워보세요!</div></div>""", unsafe_allow_html=True)
+    else:
+        # 도감 그리드 생성 (공백 제거하여 코드 블록 오인 방지)
+        dex_items = []
+        for pid in collected_ids:
+            img_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png"
+            dex_items.append(f'<div style="text-align:center; background: rgba(255,255,255,0.4); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.6);"><img src="{img_url}" style="width: 100%; height: auto; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));"><div style="font-size: 0.65rem; font-weight: 800; color: #2d3436; margin-top: 5px;">No.{pid}</div></div>')
+        
+        dex_grid = "".join(dex_items)
+        st.markdown(f"""
+<div class="mp-card card-dex">
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px;">
+{dex_grid}
+</div>
+<div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); text-align: right;">
+<span style="font-weight: 900; color: #27ae60; font-size: 1.1rem;">Total Collected: {len(collected_ids)} POKEMON</span>
+</div>
+</div>
+""", unsafe_allow_html=True)
+
+    # 5. Recent Activity (Now inside Container)
     st.markdown('<div class="mp-section-title">Recent Activity Log</div>', unsafe_allow_html=True)
     
     activity_items = []
     if not logs:
-        activity_items.append('<div style="text-align:center; padding: 50px; color:#b2bec3;">No recent activity found.</div>')
+        activity_items.append('<div style="text-align:center; padding: 50px; color:#2d3436; font-weight:600;">No recent activity found.</div>')
     else:
         for log in logs:
             g_type = log.get("game_type", "")
@@ -502,7 +564,12 @@ def show():
             is_correct = log.get("is_correct")
             tag_cls = "mp-tag-ok" if is_correct else "mp-tag-fail"
             tag_txt = "SUCCESS" if is_correct else "FAILED"
-            p_name = log.get("pokemon_name", "Unknown")
+            # 포켓몬 이름 결정 (이름이 없으면 ID로 표시하여 Unknown 방지)
+            p_name = log.get("pokemon_name")
+            if not p_name:
+                p_id = log.get("pokemon_id")
+                p_name = f"No. {p_id}" if p_id else "Unknown"
+            
             g_icon = "QUIZ" if g_type == "silhouette" else "MEM"
             
             ts = log.get("created_at", "")
@@ -520,7 +587,7 @@ def show():
                 f'<div class="mp-log-main">{g_name} <span class="mp-tag {tag_cls}">{tag_txt}</span></div>'
                 f'<div class="mp-log-sub">대상 포켓몬: {p_name}</div>'
                 f'</div>'
-                f'<div style="font-size: 0.8rem; color: #b2bec3;">{time_str}</div>'
+                f'<div style="font-size: 0.8rem; color: #636e72; font-weight:600;">{time_str}</div>'
                 f'</div>'
             )
             activity_items.append(item_html)
