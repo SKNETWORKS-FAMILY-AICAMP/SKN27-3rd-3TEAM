@@ -563,32 +563,32 @@ def create_stat_nodes(conn: Neo4jConnection) -> None:
     """
     run_batched(conn, query, rows, "Stat nodes")
 
-def create_status_condition_nodes(conn: Neo4jConnection) -> None:
+def create_ailment_nodes(conn: Neo4jConnection) -> None:
     """
-    StatusCondition 노드를 생성합니다.
+    Ailment 노드를 생성합니다.
 
     Source:
-        status_conditions.json
+        ailments.json
 
     설명:
         배틀에 영향을 주는 상태 이상을 노드로 생성합니다.
     """
     rows = [
         {
-            "status_condition_id": row["id"],
+            "ailment_id": row["id"],
             "name": row["name"],
             "effect_text": row["effect_text"]
         }
-        for row in load_json("status_conditions.json")
+        for row in load_json("ailments.json")
     ]
 
     query = """
     UNWIND $rows AS row
-    MERGE (s:StatusCondition {status_condition_id: row.status_condition_id})
+    MERGE (s:Ailment {ailment_id: row.ailment_id})
     SET s.name = row.name,
         s.effect_text = row.effect_text
     """
-    run_batched(conn, query, rows, "StatusCondition nodes")
+    run_batched(conn, query, rows, "Ailment nodes")
 
 def create_phase_nodes(conn: Neo4jConnection) -> None:
     """
@@ -1166,9 +1166,9 @@ def create_effect_stat_relationships(conn: Neo4jConnection) -> None:
         run_batched(conn, query_id, rows_by_id, "Effect AFFECTS_STAT (by id)")
 
 
-def create_effect_status_condition_relationships(conn: Neo4jConnection) -> None:
+def create_effect_ailment_relationships(conn: Neo4jConnection) -> None:
     """
-    Effect - TRIGGERS -> StatusCondition 관계를 생성합니다.
+    Effect -TRIGGERS -> Ailment 관계를 생성합니다.
 
     Source:
         move_effects.json / ability_effects.json / item_effects.json 에서
@@ -1203,10 +1203,10 @@ def create_effect_status_condition_relationships(conn: Neo4jConnection) -> None:
     query = """
     UNWIND $rows AS row
     MATCH (e:Effect          {effect_id:           row.effect_id})
-    MATCH (s:StatusCondition {status_condition_id: row.ailment_id})
+    MATCH (s:Ailment {ailment_id: row.ailment_id})
     MERGE (e)-[:TRIGGERS]->(s)
     """
-    run_batched(conn, query, rows, "Effect TRIGGERS StatusCondition relationships")
+    run_batched(conn, query, rows, "Effect TRIGGERS Ailment relationships")
 
 
 def create_effect_type_relationships(conn: Neo4jConnection) -> None:
@@ -1501,7 +1501,7 @@ def create_all_nodes(conn: Neo4jConnection) -> None:
     create_generation_nodes(conn)
     create_effect_nodes(conn)
     create_stat_nodes(conn)
-    create_status_condition_nodes(conn)
+    create_ailment_nodes(conn)
     create_phase_nodes(conn)
     create_weather_nodes(conn)
     create_field_effect_nodes(conn)
@@ -1522,7 +1522,7 @@ def create_all_relationships(conn: Neo4jConnection) -> None:
     create_item_effect_relationships(conn)
     create_effect_phase_relationships(conn)
     create_effect_stat_relationships(conn)
-    create_effect_status_condition_relationships(conn)
+    create_effect_ailment_relationships(conn)
     create_effect_type_relationships(conn)
     create_effect_field_relationships(conn)
     create_effect_weather_relationships(conn)
