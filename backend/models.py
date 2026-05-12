@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, BigInteger, String, Boolean, Float, ForeignKey, Text, DateTime
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from pgvector.sqlalchemy import Vector
 from database import Base
 
@@ -157,3 +158,31 @@ class GameLog(Base):
     user = relationship("User", back_populates="game_logs")
     pokemon = relationship("Pokemon", foreign_keys=[pokemon_id])
     wrong_pokemon = relationship("Pokemon", foreign_keys=[wrong_answer_id])
+
+
+class TeamBuildLog(Base):
+    __tablename__ = "team_build_logs"
+
+    # id는 팀 빌더 저장 기록 1건을 구분하기 위한 고유 번호입니다.
+    id = Column(Integer, primary_key=True, index=True)
+
+    # user_id는 어떤 사용자가 만든 팀인지 연결하기 위한 값입니다. 로그인 없이도 저장할 수 있게 nullable=True로 둡니다.
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+
+    # selected_pokemon_ids는 사용자가 선택한 5마리 포켓몬 id 목록을 JSON 배열로 저장합니다.
+    selected_pokemon_ids = Column(JSONB, nullable=False)
+
+    # analysis_result는 덱 분석 화면에 보여준 전체 분석 결과를 JSON 형태로 저장합니다.
+    analysis_result = Column(JSONB, nullable=True)
+
+    # analysis_conclusion은 분석 AI 종합 해설 중 "결론:" 문장만 따로 저장합니다.
+    analysis_conclusion = Column(Text, nullable=True)
+
+    # recommended_pokemon_ids는 추천된 1~3순위 포켓몬 id 목록을 JSON 배열로 저장합니다.
+    recommended_pokemon_ids = Column(JSONB, nullable=True)
+
+    # recommendation_result는 추천 화면에 보여준 전체 추천 결과를 JSON 형태로 저장합니다.
+    recommendation_result = Column(JSONB, nullable=True)
+
+    # recommendation_conclusion은 추천 AI 종합 해설 중 "결론:" 문장만 따로 저장합니다.
+    recommendation_conclusion = Column(Text, nullable=True)
