@@ -160,6 +160,29 @@ def request_json(method: str, path: str, **kwargs: Any) -> Any:
         RAG_API_TIMEOUT if "/rag-" in path else DEFAULT_API_TIMEOUT,
     )
 
+    # user_id 자동 추가:
+    # - 팀 빌더 저장 로그는 backend의 user_id 컬럼에 로그인 사용자의 DB id를 저장합니다.
+    # - 분석/추천 버튼 쪽 payload를 각각 수정하지 않아도, 팀 빌더 RAG 요청이면 여기서 공통으로 붙입니다.
+    if path in ("/api/v1/team-builder/rag-analyze", "/api/v1/team-builder/rag-recommend"):
+        payload = kwargs.get("json")
+        if isinstance(payload, dict) and "user_id" not in payload:
+            user_id = get_current_user_id()
+            if user_id is not None:
+                payload["user_id"] = user_id
+
+    # 추천 저장용 분석 결과 자동 추가:
+    # - DB에는 추천이 끝난 시점에 분석 결과와 추천 결과를 한 행으로 같이 저장합니다.
+    # - 그래서 추천 API를 호출할 때, 화면에 들고 있던 직전 분석 결과를 함께 보냅니다.
+    if path == "/api/v1/team-builder/rag-recommend":
+        payload = kwargs.get("json")
+        if isinstance(payload, dict) and "analysis_result" not in payload:
+            analysis_result = st.session_state.get("analysis_result")
+            if analysis_result is not None:
+                payload["analysis_result"] = analysis_result
+                analysis_conclusion = extract_final_answer_conclusion(analysis_result)
+                if analysis_conclusion:
+                    payload["analysis_conclusion"] = analysis_conclusion
+
     for base_url in urls:
         try:
             # response:
@@ -179,6 +202,69 @@ def request_json(method: str, path: str, **kwargs: Any) -> Any:
             last_error = exc
 
     raise RuntimeError(f"백엔드 API 호출 실패: {last_error}")
+
+
+def get_current_user_id() -> Optional[int]:
+    """현재 로그인한 사용자의 DB user_id를 session_state에서 꺼내는 함수입니다."""
+
+    # user:
+    # - login.py에서 GitHub 로그인 후 st.session_state.user에 저장하는 사용자 정보입니다.
+    user = st.session_state.get("user")
+    if not isinstance(user, dict):
+        return None
+
+    # db_id:
+    # - backend users 테이블에 저장된 실제 PK입니다.
+    # - 팀 빌더 저장 로그의 user_id에는 GitHub id가 아니라 이 db_id를 넣어야 합니다.
+    db_id = user.get("db_id")
+    if db_id is None:
+        return None
+
+    return int(db_id)
+
+
+def extract_final_answer_conclusion(result: Optional[Dict[str, Any]]) -> Optional[str]:
+    """AI 종합 해설에서 DB에 따로 저장할 첫 결론 문단만 꺼내는 함수입니다."""
+
+    # final_answer:
+    # - RAG 분석/추천 API가 반환하는 최종 자연어 해설입니다.
+    if not result:
+        return None
+
+    final_answer = str(result.get("final_answer") or "").strip()
+    if not final_answer:
+        return None
+
+    # 결론 문단:
+    # - 답변을 두괄식으로 만들었기 때문에 보통 첫 문단이 결론입니다.
+    # - 혹시 앞에 다른 문장이 붙어도 "결론:" 이후 첫 문단만 안정적으로 저장합니다.
+    conclusion_marker = "결론:"
+    if conclusion_marker in final_answer:
+        conclusion_text = final_answer[final_answer.find(conclusion_marker):]
+        return conclusion_text.split("\n\n", 1)[0].strip()
+
+    return final_answer.split("\n\n", 1)[0].strip()
+
+
+def build_team_builder_payload(include_limit: bool = False) -> Dict[str, Any]:
+    """팀 빌더 분석/추천 API에 보낼 공통 payload를 만드는 함수입니다."""
+
+    # payload:
+    # - pokemon_ids는 팀 빌더의 핵심 입력이고, user_id는 로그인 상태일 때만 추가합니다.
+    payload: Dict[str, Any] = {"pokemon_ids": st.session_state.selected_pokemon_ids}
+
+    # user_id:
+    # - 로그인하지 않은 사용자는 NULL로 저장되도록 아예 보내지 않습니다.
+    user_id = get_current_user_id()
+    if user_id is not None:
+        payload["user_id"] = user_id
+
+    # limit:
+    # - 추천 API는 1~3순위 개수를 함께 전달해야 하므로 추천 버튼에서만 추가합니다.
+    if include_limit:
+        payload["limit"] = 3
+
+    return payload
 
 
 def get_generation_by_pokemon_id(pokemon_id: int) -> Optional[int]:
@@ -2092,6 +2178,9 @@ def show_v2() -> None:
             st.rerun()
 
     can_request = len(st.session_state.selected_pokemon_ids) == REQUIRED_TEAM_SIZE
+    # can_recommend:
+    # - 추천 결과는 덱 분석 결과와 같은 DB 기록에 이어서 저장되므로, 분석이 끝난 뒤에만 추천 버튼을 활성화합니다.
+    can_recommend = can_request and st.session_state.analysis_result is not None
     with action_col2:
         if st.button("덱 분석", disabled=not can_request, use_container_width=True):
             payload = {"pokemon_ids": st.session_state.selected_pokemon_ids}
@@ -2099,12 +2188,20 @@ def show_v2() -> None:
                 "POST", "/api/v1/team-builder/rag-analyze", json=payload
             )
 
+    # 분석 요청이 방금 성공한 경우에도 같은 화면 흐름에서 바로 추천 버튼이 활성화되도록 다시 계산합니다.
+    can_recommend = can_request and st.session_state.analysis_result is not None
+
     with action_col3:
-        if st.button("추천 받기", disabled=not can_request, use_container_width=True):
+        if st.button("추천 받기", disabled=not can_recommend, use_container_width=True):
             payload = {"pokemon_ids": st.session_state.selected_pokemon_ids, "limit": 3}
             st.session_state.recommendation_result = request_json(
                 "POST", "/api/v1/team-builder/rag-recommend", json=payload
             )
+
+    # 안내 문구:
+    # - 5마리는 골랐지만 아직 분석하지 않은 경우, 사용자가 다음 순서를 바로 이해할 수 있게 알려줍니다.
+    if can_request and st.session_state.analysis_result is None:
+        st.info("추천을 받기 전에 먼저 덱 분석을 진행해주세요.")
 
     if st.session_state.analysis_result:
         render_analysis_result(st.session_state.analysis_result)
