@@ -70,7 +70,8 @@ class PokemonDB:
                    m.category as category, m.stat_chance as stat_chance, 
                    m.stat_changes as stat_changes, m.ailment as ailment, 
                    m.ailment_chance as ailment_chance, m.drain as drain, 
-                   m.healing as healing, m.priority as priority
+                   m.healing as healing, m.priority as priority,
+                   m.flinch_chance as flinch_chance, m.crit_rate as crit_rate
             """
             moves_result = session.run(move_query, {"id": pokemon_id})
 

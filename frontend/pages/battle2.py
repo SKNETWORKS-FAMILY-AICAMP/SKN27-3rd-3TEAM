@@ -7,6 +7,7 @@ from utils.ui import inject_common_ui
 from battle.pokemon import PokemonDB
 from battle.data import BattlePokemon
 from battle.movetree import process_turn as run_battle_logic
+from battle.trainerbot import get_random_gym_leader_pokemon
 import re
 from dataclasses import asdict
 
@@ -24,29 +25,54 @@ inject_battle_styles()
 # DB 연결
 db = PokemonDB()
 
+def get_max_hp(base_hp: int, level: int = 50) -> int:
+    """
+    레벨에 따라 보정된 최대 HP 계산 (개체치, 노력치 제외)
+    공식: ((BaseHP × 2) + 100) × Level / 100 + 10
+    """
+
+    return int((((base_hp * 2) + 100) * (level / 100)) + 10)
+
+def get_stats(base_stats: dict, level: int = 50) -> dict:
+    """
+    HP를 제외한 나머지 능력치 레벨에 따라 보정된 수치 계산 (개체치, 노력치, 성격 제외)
+    공식: ((BaseStat × 2) × Level / 100) + 5
+    """
+    stats = {}
+    for stat_name in base_stats:
+        if stat_name == "hp":
+            stats[stat_name] = get_max_hp(base_stats[stat_name])
+        else:
+            stats[stat_name] = int(((base_stats[stat_name] * 2) * (level / 100)) + 5)
+    return stats
+
 def start_custom_battle(player_custom_data, leader_name="웅이"):
-    """DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다."""
+    """
+    DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다.
+    
+    - player_custom_data: {"id", "name", "moves"}
+    - leader_name: "웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"
+    """
     with st.spinner("배틀 데이터를 준비 중..."):
         # 1. 플레이어 포켓몬 데이터 구성
         p_data = db.get_pokemon_data(player_custom_data["id"])
-        max_hp = p_data['stats']['hp'] * 2
+        p_stats = get_stats(p_data['stats'])
         st.session_state.battle_player = BattlePokemon(
             id=p_data['id'],
             name=p_data['name'],
             image_url=p_data['image_url'],
             types=p_data['types'],
             type_names=p_data['type_names'],
-            stats=p_data['stats'],
+            stats=p_stats,
             moves=player_custom_data["moves"], # 사용자가 선택한 4개 기술
-            max_hp=max_hp,
-            current_hp=max_hp
+            max_hp=p_stats['hp'],
+            current_hp=p_stats['hp']
         )
 
         # 2. 봇 포켓몬(관장) 랜덤 선택 및 데이터 구성
-        from battle.trainerbot import get_random_gym_leader_pokemon
-        
         bot_entry = get_random_gym_leader_pokemon(leader_name)
         b_data = db.get_pokemon_data(bot_entry['id'])
+        b_stats = get_stats(b_data['stats'])
         
         # 봇은 관장 엔트리에 지정된 기술만 사용
         bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
@@ -55,8 +81,6 @@ def start_custom_battle(player_custom_data, leader_name="웅이"):
             bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
         elif len(bot_moves) > 4:
             bot_moves = random.sample(bot_moves, 4)
-            
-        b_max_hp = b_data['stats']['hp'] * 2
         
         st.session_state.battle_bot = BattlePokemon(
             id=b_data['id'],
@@ -64,10 +88,10 @@ def start_custom_battle(player_custom_data, leader_name="웅이"):
             image_url=b_data['image_url'],
             types=b_data['types'],
             type_names=b_data['type_names'],
-            stats=b_data['stats'],
+            stats=b_stats,
             moves=bot_moves,
-            max_hp=b_max_hp,
-            current_hp=b_max_hp
+            max_hp=b_stats['hp'],
+            current_hp=b_stats['hp']
         )
 
         # 3. 배틀 공통 데이터 및 메시지 초기화
@@ -161,12 +185,12 @@ def show():
                     st.session_state.selected_moves = []
 
                 pokemon_data = st.session_state.selected_pokemon_data
-                max_hp = pokemon_data['stats']['hp'] * 2
+                stats = get_stats(pokemon_data['stats'])
                 preview = BattlePokemon(
                     id=pokemon_data['id'], name=pokemon_data['name'], image_url=pokemon_data['image_url'],
                     types=pokemon_data['types'], type_names=pokemon_data['type_names'],
-                    stats=pokemon_data['stats'], moves=pokemon_data['moves'],
-                    max_hp=max_hp, current_hp=max_hp
+                    stats=stats, moves=pokemon_data['moves'],
+                    max_hp=stats['hp'], current_hp=stats['hp']
                 )
                 render_pokemon_status("PLAYER PREVIEW", preview)
 

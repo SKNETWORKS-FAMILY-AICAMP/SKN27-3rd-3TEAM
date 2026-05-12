@@ -42,5 +42,8 @@ STAT_STAGE_MAP = {
     "defense": "defense_stage",
     "special-attack": "sp_attack_stage",
     "special-defense": "sp_defense_stage",
-    "speed": "speed_stage"
+    "speed": "speed_stage",
+    "accuracy": "accuracy_stage",
+    "evasion": "evasion_stage",
+    "critical": "critical_stage"
 }
