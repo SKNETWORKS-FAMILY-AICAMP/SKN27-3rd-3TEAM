@@ -1,0 +1,147 @@
+{
+  "effect_changes": [],
+  "effect_entries": [
+    {
+      "effect": "Force Mémorielle booste une stat particulière, selon la forme d’un Ogerpon Téracristallisé.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Force Mémorielle booste une stat particulière, selon la forme d’un Ogerpon Téracristallisé."
+    },
+    {
+      "effect": "Embody Aspect boosts a particular stat, depending on the form of a Terastallized Ogerpon",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Embody Aspect boosts a particular stat, depending on the form of a Terastallized Ogerpon"
+    }
+  ],
+  "flavor_text_entries": [
+    {
+      "flavor_text": "Le Pokémon fait briller le Masque en puisant dans ses souvenirs, ce qui augmente ses stats.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    },
+    {
+      "flavor_text": "The Pokémon's heart fills with memories, causing the Mask to shine and one of the Pokémon's stats to be boosted.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    },
+    {
+      "flavor_text": "思い出を 心に 宿すことで\nおめんを かがやかせ\n自分の 能力を 上げる。",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "version_group": {
+        "name": "the-teal-mask",
+        "url": "https://pokeapi.co/api/v2/version-group/26/"
+      }
+    },
+    {
+      "flavor_text": "마음속에 깃든 추억의 힘으로 가면을 빛나게 하여 자신의 능력을 올린다.",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "generation": {
+    "name": "generation-ix",
+    "url": "https://pokeapi.co/api/v2/generation/9/"
+  },
+  "id": 303,
+  "is_main_series": true,
+  "name": "embody-aspect",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "おもかげやどし"
+    },
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "초상투영"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "面影輝映"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Force Mémorielle"
+    },
+    {
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      },
+      "name": "Erinnerungskraft"
+    },
+    {
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      },
+      "name": "Evocarrecuerdos"
+    },
+    {
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      },
+      "name": "Albergamemorie"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Embody Aspect"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "おもかげやどし"
+    },
+    {
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      },
+      "name": "面影辉映"
+    }
+  ],
+  "pokemon": []
+}
