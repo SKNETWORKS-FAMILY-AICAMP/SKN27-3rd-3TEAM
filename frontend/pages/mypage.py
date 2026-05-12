@@ -337,6 +337,100 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 @media (max-width: 768px) {
     .mp-hero { flex-direction: column; text-align: center; padding: 30px; }
 }
+
+/* ── Kanto Badge Case ── */
+.badge-case {
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%);
+    border-radius: 24px;
+    padding: 28px 28px 32px;
+    border: 3px solid #e94560;
+    box-shadow:
+        0 0 40px rgba(233,69,96,0.12),
+        0 20px 60px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.07);
+    max-width: 560px;
+    margin: 20px auto;
+}
+.badge-case-title {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    color: #e94560;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    text-shadow: 0 0 20px rgba(233,69,96,0.5);
+}
+.badge-case-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+.badge-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.badge-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+.badge-circle.locked {
+    background: radial-gradient(circle, #1e2740, #111827);
+    border: 2px solid #2d3748;
+    box-shadow: inset 0 4px 14px rgba(0,0,0,0.7);
+}
+.badge-circle.unlocked {
+    background: radial-gradient(circle at 35% 35%, #2d3f5a, #1a2535);
+    border: 2px solid rgba(255,255,255,0.25);
+}
+.badge-circle.unlocked:hover { transform: scale(1.12); }
+.badge-circle img.badge-img-lock {
+    width: 60px; height: 60px;
+    object-fit: contain;
+    filter: grayscale(1) brightness(0.22);
+}
+.badge-circle img.badge-img-unlock {
+    width: 64px; height: 64px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 10px rgba(0,0,0,0.6));
+    transition: transform 0.25s ease;
+}
+.badge-slot-name {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #718096;
+    text-align: center;
+    max-width: 85px;
+    line-height: 1.3;
+}
+.badge-slot-name.done { color: #e2e8f0; }
+.badge-slot-mission {
+    font-size: 0.57rem;
+    color: #4a5568;
+    text-align: center;
+    max-width: 85px;
+    line-height: 1.3;
+}
+.badge-slot-mission.done { color: #68d391; }
+.badge-case-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #4a5568;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+@keyframes badgePulse {
+    0%, 100% { opacity: 0.85; }
+    50%       { opacity: 1; }
+}
 </style>
 """
 
@@ -457,7 +551,9 @@ def show():
         <div style="display: flex; align-items: center; gap: 40px; flex: 1;">
             <img src="{avatar}" class="mp-avatar">
             <div class="mp-hero-info">
-                <div class="mp-pill mp-pill-yellow">{trainer_tier}</div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 5px;">
+                    <div class="mp-pill mp-pill-yellow">{trainer_tier}</div>
+                </div>
                 <h1 class="mp-name">{name}</h1>
                 <div class="mp-handle">@{username} &nbsp;·&nbsp; Pokemon Trainer</div>
                 <div style="display: flex; align-items: center; gap: 15px;">
@@ -480,6 +576,11 @@ def show():
 
     # ══════════════════════════════════════════
     # 3. Stats Grid & 4. Recent Activity (Inside Container)
+    # ══════════════════════════════════════════
+    st.markdown('<div class="mp-container">', unsafe_allow_html=True)
+    
+    # ══════════════════════════════════════════
+    # 3. Stats Grid & Badge Medallion
     # ══════════════════════════════════════════
     st.markdown('<div class="mp-container">', unsafe_allow_html=True)
     
@@ -511,6 +612,92 @@ def show():
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Kanto Badge Case ──
+    # collected_ids 미리 계산 (배지 미션 체크용)
+    _collected_ids = sorted(list(set([
+        log.get("pokemon_id") for log in logs
+        if log.get("is_correct") and log.get("pokemon_id")
+    ])))
+
+    KANTO_BADGES = [
+        {
+            "file": "회색배지.png",   "name": "볼더 배지",
+            "gym": "회색시티 · 브록",
+            "mission": "트레이너 등록",  "desc": "마이페이지 방문",
+            "glow": "#a0aec0",           "unlocked": True,
+        },
+        {
+            "file": "블루배지.png",   "name": "캐스케이드 배지",
+            "gym": "하늘색시티 · 미스티",
+            "mission": "퀴즈 첫 도전",   "desc": f"실루엣 퀴즈 1회+  ({s_total}회)",
+            "glow": "#63b3ed",           "unlocked": s_total >= 1,
+        },
+        {
+            "file": "골드배지.png",   "name": "썬더 배지",
+            "gym": "연분홍시티 · 덴류",
+            "mission": "번개 개발자",    "desc": f"GitHub 커밋 50+  ({commits}개)",
+            "glow": "#f6e05e",           "unlocked": commits >= 50,
+        },
+        {
+            "file": "무지개배지.png", "name": "레인보우 배지",
+            "gym": "무지개시티 · 마티스",
+            "mission": "도감 컬렉터",    "desc": f"포켓몬 10마리 수집  ({len(_collected_ids)}마리)",
+            "glow": "#f687b3",           "unlocked": len(_collected_ids) >= 10,
+        },
+        {
+            "file": "핑크배지.png",   "name": "소울 배지",
+            "gym": "셀라돈시티 · 강연",
+            "mission": "메모리 마스터",  "desc": f"메모리 게임 5회+  ({m_total}회)",
+            "glow": "#ed64a6",           "unlocked": m_total >= 5,
+        },
+        {
+            "file": "진홍색배지.png", "name": "볼케이노 배지",
+            "gym": "홍련섬 · 강석",
+            "mission": "불꽃 정신",      "desc": f"퀴즈 정답률 70%+  ({s_rate}%)",
+            "glow": "#fc8181",           "unlocked": s_rate >= 70,
+        },
+        {
+            "file": "오렌지배지.png", "name": "마쉬 배지",
+            "gym": "상록시티 · 사빈나",
+            "mission": "레포 빌더",      "desc": f"GitHub 레포 10+  ({repos}개)",
+            "glow": "#ed8936",           "unlocked": repos >= 10,
+        },
+        {
+            "file": "그린배지.png",   "name": "어스 배지",
+            "gym": "크리스탈 · 라이벌",
+            "mission": "챔피언 도전자",  "desc": f"트레이너 Lv.10+  (Lv.{level})",
+            "glow": "#68d391",           "unlocked": level >= 10,
+        },
+    ]
+
+    badge_count = sum(1 for b in KANTO_BADGES if b["unlocked"])
+    is_all = badge_count == 8
+
+    slot_parts = []
+    for b in KANTO_BADGES:
+        b64  = _b64_img(f"img/badge/{b['file']}")
+        glow = b["glow"]
+        if b["unlocked"]:
+            slot_parts.append(f'<div class="badge-slot"><div class="badge-circle unlocked" style="box-shadow:0 0 18px {glow}55,0 0 40px {glow}22,inset 0 2px 8px rgba(0,0,0,0.3);border-color:{glow}88;" title="{b["gym"]}"><img src="{b64}" class="badge-img-unlock" alt="{b["name"]}"></div><div class="badge-slot-name done">{b["name"]}</div><div class="badge-slot-mission done">✓ {b["mission"]}</div></div>')
+        else:
+            slot_parts.append(f'<div class="badge-slot"><div class="badge-circle locked" title="{b["gym"]}"><img src="{b64}" class="badge-img-lock" alt="{b["name"]}"></div><div class="badge-slot-name">{b["name"]}</div><div class="badge-slot-mission">🔒 {b["desc"]}</div></div>')
+
+    slots_html = "".join(slot_parts)
+    footer_msg = "🏆 관동 챔피언! 모든 배지를 획득했습니다!" if is_all else f"{badge_count} / 8 배지 획득"
+
+    st.markdown('<div class="mp-section-title">Kanto Badge Case</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+<div class="mp-card card-badge" style="padding:36px 40px;">
+<div class="badge-case">
+<div class="badge-case-title">KANTO REGION · BADGE CASE</div>
+<div class="badge-case-grid">
+{slots_html}
+</div>
+<div class="badge-case-footer">{footer_msg}</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     # Game Performance
     st.markdown('<div class="mp-section-title">Game Performance</div>', unsafe_allow_html=True)
