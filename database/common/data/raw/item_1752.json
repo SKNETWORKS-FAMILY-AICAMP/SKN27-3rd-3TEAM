@@ -1,0 +1,58 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "sandwich-ingredients",
+    "url": "https://pokeapi.co/api/v2/item-category/53/"
+  },
+  "cost": 140,
+  "effect_entries": [],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 1752,
+  "machines": [],
+  "name": "strawberry",
+  "names": [
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "いちごスライス"
+    },
+    {
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      },
+      "name": "草莓片"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Fraise"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Strawberry"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "いちごスライス"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}

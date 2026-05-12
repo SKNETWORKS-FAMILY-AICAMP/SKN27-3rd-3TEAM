@@ -1,0 +1,70 @@
+{
+  "attributes": [],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "held-items",
+    "url": "https://pokeapi.co/api/v2/item-category/12/"
+  },
+  "cost": 750,
+  "effect_entries": [],
+  "flavor_text_entries": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "text": "빛에 비추면 희미하게 빛나는 깃털. 지니게 하면 페어리타입 기술의 위력이 올라간다.",
+      "version_group": {
+        "name": "scarlet-violet",
+        "url": "https://pokeapi.co/api/v2/version-group/25/"
+      }
+    }
+  ],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2105,
+  "machines": [],
+  "name": "fairy-feather",
+  "names": [
+    {
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      },
+      "name": "요정의깃털"
+    },
+    {
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      },
+      "name": "ようせいのハネ"
+    },
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Plume Enchantée"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Fairy Feather"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": "ようせいのハネ"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}
