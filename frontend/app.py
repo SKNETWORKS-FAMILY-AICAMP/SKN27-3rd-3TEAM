@@ -18,12 +18,13 @@ bg3 = get_base64_img("main_3.png")
 bg4 = get_base64_img("main_4.png")
 bg5 = get_base64_img("main_5.png")
 obak = get_base64_img("Obak.png")
-bg6 = get_base64_img("main_6.png")
-bg7 = get_base64_img("main_7.png")
-bg8 = get_base64_img("main_1.png")
-login_img = get_base64_img("login.png")
-minigame1_img = get_base64_img("mini_game.png")
-minigame2_img = get_base64_img("game_2.png")
+bg6 = get_base64_img("login.png")
+bg7 = get_base64_img("mini_game.png")
+bg8 = get_base64_img("main_9.png")
+bg9 = get_base64_img("icon.png")
+pipigo_img = get_base64_img("main_10.png")
+minigame1_img = get_base64_img("silhouette_pikachu.png")
+minigame2_img = get_base64_img("rab_battle.png")
 
 # ── Image Assets ──
 ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
@@ -273,6 +274,15 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 .sec-dragon .cta-btn {{ background: #EA580C; color: #fff; box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3); }}
 .sec-dragon .main-artwork {{ filter: drop-shadow(0 0 80px rgba(249, 115, 22, 0.6)); }}
 
+.sec-pipigo {{ background: url('{bg9}') center/cover no-repeat fixed; }}
+.sec-pipigo .sec-badge {{ color: #000; border-color: #A3E635; background: #A3E635; }}
+.sec-pipigo .sec-title {{
+    color: #BEF264;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 10px 30px rgba(0,0,0,1), 0 0 40px rgba(190, 242, 100, 0.4);
+}}
+.sec-pipigo .cta-btn {{ background: #A3E635; color: #000; font-weight: 900; box-shadow: 0 10px 30px rgba(163, 230, 53, 0.3); border-color: #A3E635; }}
+.sec-pipigo .main-artwork {{ filter: drop-shadow(0 0 80px rgba(163, 230, 53, 0.6)); width: 320px; }}
+
 /* ── Reveal Animations ── */
 .js-ready .reveal-up {{ transform: translateY(80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }}
 .js-ready .reveal-left {{ transform: translateX(-80px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s; }}
@@ -378,7 +388,7 @@ content_html = f"""
             <a href="/login" target="_self" class="cta-btn">트레이너 등록하기</a>
         </div>
         <div class="visual-box reveal-right">
-            <img src="{login_img}" class="main-artwork">
+            <img src="{ART}/474.png" class="main-artwork">
         </div>
     </div>
 </div>
@@ -409,6 +419,21 @@ content_html = f"""
         </div>
         <div class="visual-box reveal-right">
             <img src="{minigame2_img}" class="main-artwork">
+        </div>
+    </div>
+</div>
+
+<!-- Section 8: Pipigo Extension -->
+<div class="full-section sec-pipigo reverse observer-target">
+    <div class="section-inner">
+        <div class="text-box reveal-right">
+            <div class="sec-badge">New Generation Tool</div>
+            <h2 class="sec-title">스마트 번역 도우미<br><b>피피고 (Pipigo)</b></h2>
+            <p class="sec-desc">당신의 웹 브라우저 속에 귀여운 포켓몬 파트너가 나타납니다!<br>실시간 양방향 AI 번역과 가상 펫의 만남. 지금 바로 경험해 보세요.</p>
+            <a href="https://chromewebstore.google.com/search/%ED%94%BC%ED%94%BC%EA%B3%A0?hl=ko" target="_blank" class="cta-btn">웹 스토어에서 보기</a>
+        </div>
+        <div class="visual-box reveal-left">
+            <img src="{pipigo_img}" class="main-artwork" style="border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
         </div>
     </div>
 </div>
