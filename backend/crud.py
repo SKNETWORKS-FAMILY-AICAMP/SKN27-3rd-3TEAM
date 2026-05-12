@@ -205,6 +205,74 @@ def create_game_log(db: Session, log_data: schemas.GameLogCreate):
         db.rollback()
         raise e
 
+
+def create_team_build_log(db: Session, log_data: schemas.TeamBuildLogCreate):
+    """팀 빌더의 분석/추천 완료 결과를 team_build_logs 테이블에 새 기록으로 저장합니다."""
+
+    try:
+        # db_log:
+        # - 추천까지 완료된 팀 빌더 결과를 한 번에 저장하는 기록입니다.
+        db_log = models.TeamBuildLog(
+            user_id=log_data.user_id,
+            selected_pokemon_ids=log_data.selected_pokemon_ids,
+            analysis_result=log_data.analysis_result,
+            analysis_conclusion=log_data.analysis_conclusion,
+            recommended_pokemon_ids=log_data.recommended_pokemon_ids,
+            recommendation_result=log_data.recommendation_result,
+            recommendation_conclusion=log_data.recommendation_conclusion,
+        )
+        db.add(db_log)
+        db.commit()
+        db.refresh(db_log)
+        return db_log
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def update_latest_team_build_recommendation(
+    db: Session,
+    selected_pokemon_ids: List[int],
+    recommended_pokemon_ids: List[int],
+    recommendation_result: dict,
+    recommendation_conclusion: Optional[str] = None,
+    user_id: Optional[int] = None,
+):
+    """같은 5마리 선택 조합의 최신 분석 기록에 추천 결과를 이어서 저장합니다."""
+
+    # query:
+    # - 추천은 보통 분석 이후에 실행되므로, 같은 selected_pokemon_ids를 가진 최신 로그를 찾습니다.
+    query = db.query(models.TeamBuildLog).filter(
+        models.TeamBuildLog.selected_pokemon_ids == selected_pokemon_ids
+    )
+
+    # user_id:
+    # - 로그인 사용자가 전달된 경우에는 같은 사용자 기록 안에서만 최신 로그를 찾습니다.
+    if user_id is not None:
+        query = query.filter(models.TeamBuildLog.user_id == user_id)
+
+    db_log = query.order_by(models.TeamBuildLog.id.desc()).first()
+
+    try:
+        # 추천만 먼저 실행된 경우에도 기록이 남도록 새 로그를 만들어 둡니다.
+        if db_log is None:
+            db_log = models.TeamBuildLog(
+                user_id=user_id,
+                selected_pokemon_ids=selected_pokemon_ids,
+            )
+            db.add(db_log)
+
+        db_log.recommended_pokemon_ids = recommended_pokemon_ids
+        db_log.recommendation_result = recommendation_result
+        db_log.recommendation_conclusion = recommendation_conclusion
+
+        db.commit()
+        db.refresh(db_log)
+        return db_log
+    except Exception as e:
+        db.rollback()
+        raise e
+
 def get_user_stats(db: Session, user_id: int):
     """마이페이지용 유저 통계 데이터를 조회합니다."""
     logs = db.query(models.GameLog).filter(models.GameLog.user_id == user_id).all()

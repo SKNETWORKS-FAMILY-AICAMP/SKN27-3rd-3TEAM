@@ -6,11 +6,16 @@ Team builder API router.
     Graph DB 기반 팀 분석과 추천 결과를 반환합니다.
 """
 
-from typing import List
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
+import crud
+import schemas
+from database import get_db
 from graph.neo4j_client import Neo4jClient, get_neo4j
 from build_services.team_analysis_service import analyze_team
 from build_services.team_builder_service import recommend_team_member
@@ -34,13 +39,18 @@ MATCH (p:Pokemon)
 WHERE p.pokemon_id < 10000
 OPTIONAL MATCH (p)-[:HAS_TYPE]->(t:Type)
 OPTIONAL MATCH (p)-[:IS_SPECIES]->(s:Species)
-WITH p, s, collect(DISTINCT t.name) AS type_names
+OPTIONAL MATCH (p)-[:CAN_HAVE]->(a:Ability)
+WITH p,
+     s,
+     collect(DISTINCT t.name) AS type_names,
+     collect(DISTINCT a.name) AS ability_names
 RETURN p.pokemon_id AS pokemon_id,
        p.name AS name,
        p.image_url AS image_url,
        s.generation AS generation,
        p.base_total AS base_total,
-       type_names AS types
+       type_names AS types,
+       ability_names AS abilities
 ORDER BY pokemon_id
 """
 
@@ -61,6 +71,12 @@ class TeamBuilderRequest(BaseModel):
     )
 
 
+    user_id: Optional[int] = Field(
+        None,
+        description="로그인 사용자가 있을 때만 전달하는 사용자 ID",
+    )
+
+
 class TeamRecommendationRequest(TeamBuilderRequest):
     """
     추천 요청 데이터를 표현하기 위해 작성한 모델입니다.
@@ -75,6 +91,14 @@ class TeamRecommendationRequest(TeamBuilderRequest):
         le=10,
         description="추천 후보 개수",
     )
+    analysis_result: Optional[Dict[str, Any]] = Field(
+        None,
+        description="추천 저장 시 함께 보관할 직전 덱 분석 전체 결과",
+    )
+    analysis_conclusion: Optional[str] = Field(
+        None,
+        description="추천 저장 시 함께 보관할 직전 덱 분석 결론 문장",
+    )
 
 
 def _handle_value_error(error: ValueError) -> None:
@@ -85,6 +109,51 @@ def _handle_value_error(error: ValueError) -> None:
         error: 서비스 함수에서 발생한 ValueError입니다.
     """
     raise HTTPException(status_code=400, detail=str(error))
+
+
+def _extract_conclusion(result: Dict[str, Any]) -> Optional[str]:
+    """AI 종합 해설에서 첫 번째 '결론:' 문단만 따로 꺼내 저장하기 위한 함수입니다."""
+
+    # final_answer:
+    # - RAG API가 사용자에게 보여주는 최종 AI 해설 문장입니다.
+    final_answer = str(result.get("final_answer") or "").strip()
+    if not final_answer:
+        return None
+
+    # 결론 문단은 화면 요약과 DB 목록 조회에서 바로 쓰기 좋도록 별도 컬럼에 저장합니다.
+    if final_answer.startswith("결론:"):
+        return final_answer.split("\n\n", 1)[0].strip()
+
+    conclusion_index = final_answer.find("결론:")
+    if conclusion_index >= 0:
+        return final_answer[conclusion_index:].split("\n\n", 1)[0].strip()
+
+    return final_answer.split("\n\n", 1)[0].strip()
+
+
+def _extract_recommended_pokemon_ids(result: Dict[str, Any]) -> List[int]:
+    """추천 결과 JSON에서 1~3순위 추천 포켓몬 ID만 뽑아 저장하기 위한 함수입니다."""
+
+    # recommendation_result:
+    # - RAG 추천 응답은 reranked_result 안에 최종 추천 목록이 들어갈 수 있습니다.
+    recommendation_result = result.get("reranked_result") or result.get("graph_result") or result
+    recommendations = recommendation_result.get("recommendations", [])
+
+    # recommended_ids:
+    # - DB에는 추천 카드 전체 JSON과 별도로 추천 포켓몬 id 목록만 따로 저장합니다.
+    recommended_ids: List[int] = []
+    for item in recommendations:
+        pokemon_id = item.get("pokemon_id")
+        if pokemon_id is not None:
+            recommended_ids.append(int(pokemon_id))
+
+    return recommended_ids
+
+
+def _json_ready(data: Dict[str, Any]) -> Dict[str, Any]:
+    """DB JSONB 컬럼에 안전하게 들어가도록 FastAPI JSON 변환을 적용합니다."""
+
+    return jsonable_encoder(data)
 
 
 @router.get("/pokemon-options")
@@ -156,6 +225,8 @@ def rag_analyze_team_endpoint(
         3. Graph DB 분석 결과, Vector 검색 근거, 최종 설명 문장을 함께 반환합니다.
     """
     try:
+        # 분석 단계는 화면에 보여줄 결과만 반환합니다.
+        # DB 저장은 추천까지 완료된 시점에 한 번만 수행해서 같은 팀 기록이 중복 저장되지 않게 합니다.
         return run_team_rag(
             pokemon_ids=request.pokemon_ids,
             graph=graph,
@@ -169,6 +240,7 @@ def rag_analyze_team_endpoint(
 def rag_recommend_team_member_endpoint(
     request: TeamRecommendationRequest,
     graph: Neo4jClient = Depends(get_neo4j),
+    db: Session = Depends(get_db),
 ):
     """
     LangGraph 기반 Hybrid RAG로 6번째 포켓몬 추천 설명을 생성하는 API입니다.
@@ -179,11 +251,33 @@ def rag_recommend_team_member_endpoint(
         3. Graph DB 추천 후보, 재정렬 결과, 최종 추천 설명 문장을 함께 반환합니다.
     """
     try:
-        return run_team_rag(
+        result = run_team_rag(
             pokemon_ids=request.pokemon_ids,
             graph=graph,
             request_type="recommendation",
             limit=request.limit,
         )
+
+        # 추천 결과가 정상 생성되면 같은 5마리 선택 조합의 최신 분석 로그에 이어서 저장합니다.
+        # 추천이 완료된 시점에 분석 결과와 추천 결과를 한 행으로 저장합니다.
+        # 이렇게 하면 "분석만 누른 기록"과 "추천까지 완료한 기록"이 따로 쌓이지 않습니다.
+        analysis_result = _json_ready(request.analysis_result) if request.analysis_result else None
+        analysis_conclusion = request.analysis_conclusion or _extract_conclusion(
+            request.analysis_result or {}
+        )
+        saved_log = crud.create_team_build_log(
+            db,
+            schemas.TeamBuildLogCreate(
+                user_id=request.user_id,
+                selected_pokemon_ids=request.pokemon_ids,
+                analysis_result=analysis_result,
+                analysis_conclusion=analysis_conclusion,
+                recommended_pokemon_ids=_extract_recommended_pokemon_ids(result),
+                recommendation_result=_json_ready(result),
+                recommendation_conclusion=_extract_conclusion(result),
+            ),
+        )
+        result["team_build_log_id"] = saved_log.id
+        return result
     except ValueError as error:
         _handle_value_error(error)

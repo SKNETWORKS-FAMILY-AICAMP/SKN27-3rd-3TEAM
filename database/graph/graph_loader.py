@@ -21,10 +21,20 @@ Pokemon Graph DB Loader
 import argparse
 import json
 import os
+import shutil
+import subprocess
+import sys
+import time
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from dotenv import load_dotenv
+
+# database/graph/neo4j 데이터 폴더가 공식 neo4j Python 패키지를 가리지 않도록 합니다.
+# graph_loader.py를 직접 실행하면 현재 파일 폴더가 sys.path 맨 앞에 들어가므로 import 충돌이 생길 수 있습니다.
+CURRENT_GRAPH_DIR = Path(__file__).resolve().parent
+sys.path = [path for path in sys.path if Path(path or ".").resolve() != CURRENT_GRAPH_DIR]
+
 from neo4j import GraphDatabase
 
 
@@ -41,6 +51,10 @@ PROCESSED_DATA_DIR = PROJECT_ROOT / "database" / "common" / "data" / "processed"
 
 # Neo4j 제약조건/인덱스가 들어있는 Cypher 파일입니다.
 CONSTRAINTS_PATH = Path(__file__).resolve().parent / "constraints.cypher"
+
+# Neo4j Docker 볼륨이 실제 파일로 저장되는 위치입니다.
+# --fresh 옵션은 이 폴더 안의 내용을 지워서 Neo4j 라벨 토큰까지 새로 만들 때 사용합니다.
+NEO4J_DATA_DIR = PROJECT_ROOT / "database" / "graph" / "neo4j" / "neo4j_data"
 
 # 한 번에 Neo4j로 보낼 데이터 개수입니다.
 # 너무 크면 메모리 부담이 생기고, 너무 작으면 느려질 수 있습니다.
@@ -1561,6 +1575,114 @@ def get_neo4j_connection_from_env() -> Neo4jConnection:
     return Neo4jConnection(uri=uri, user=user, password=password)
 
 
+def run_docker_compose_command(args: List[str]) -> None:
+    """
+    Docker Compose 명령을 실행합니다.
+
+    목적:
+        --fresh 옵션에서 Neo4j 컨테이너를 멈추고 다시 켤 때 사용합니다.
+        명령어를 문자열로 조합하지 않고 리스트로 넘겨서 쉘 해석 위험을 줄입니다.
+    """
+    command = ["docker", "compose", *args]
+    subprocess.run(command, cwd=PROJECT_ROOT, check=True)
+
+
+def assert_safe_neo4j_data_dir(data_dir: Path) -> Path:
+    """
+    Neo4j 데이터 폴더가 프로젝트 내부의 의도한 위치인지 확인합니다.
+
+    목적:
+        --fresh는 폴더 내용을 삭제하는 위험한 작업입니다.
+        실수로 프로젝트 루트나 엉뚱한 폴더를 지우지 않도록 경로를 강하게 검증합니다.
+    """
+    resolved_data_dir = data_dir.resolve()
+    resolved_project_root = PROJECT_ROOT.resolve()
+
+    if resolved_data_dir == resolved_project_root:
+        raise RuntimeError("Refusing to clear project root as Neo4j data dir")
+
+    if not str(resolved_data_dir).startswith(str(resolved_project_root)):
+        raise RuntimeError(f"Refusing to clear outside project: {resolved_data_dir}")
+
+    if resolved_data_dir.name != "neo4j_data":
+        raise RuntimeError(f"Unexpected Neo4j data dir name: {resolved_data_dir}")
+
+    return resolved_data_dir
+
+
+def clear_directory_contents(data_dir: Path) -> None:
+    """
+    지정한 폴더 자체는 남기고 내부 파일/폴더만 삭제합니다.
+
+    목적:
+        Neo4j가 다시 시작할 때 같은 마운트 경로를 사용할 수 있도록 neo4j_data 폴더는 유지합니다.
+    """
+    safe_data_dir = assert_safe_neo4j_data_dir(data_dir)
+    safe_data_dir.mkdir(parents=True, exist_ok=True)
+
+    for child in safe_data_dir.iterdir():
+        if child.is_dir():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
+
+
+def wait_for_neo4j_ready(timeout_seconds: Optional[int] = None) -> None:
+    """
+    Neo4j 컨테이너가 Bolt 연결을 받을 수 있을 때까지 기다립니다.
+
+    목적:
+        docker compose up -d neo4j 직후에는 컨테이너가 떠 있어도 DB가 아직 준비 중일 수 있습니다.
+        바로 적재를 시작하면 handshake/connection 오류가 날 수 있어 재시도합니다.
+    """
+    # Neo4j 최신 이미지에 APOC/GDS 플러그인을 같이 켜면 첫 부팅이 2분 가까이 걸릴 수 있습니다.
+    # timeout_seconds가 없으면 환경변수 또는 넉넉한 기본값을 사용합니다.
+    if timeout_seconds is None:
+        timeout_seconds = int(os.getenv("GRAPH_DB_READY_TIMEOUT", "240"))
+
+    uri = os.getenv("GRAPH_DB_URI", "bolt://localhost:7687")
+    user = os.getenv("GRAPH_DB_USER", "neo4j")
+    password = os.getenv("GRAPH_DB_PASSWORD", "test1234")
+
+    deadline = time.time() + timeout_seconds
+    last_error: Optional[Exception] = None
+
+    print(f"Waiting for Neo4j to become ready: timeout={timeout_seconds}s")
+
+    while time.time() < deadline:
+        driver = GraphDatabase.driver(uri, auth=(user, password))
+        try:
+            driver.verify_connectivity()
+            driver.close()
+            print("Neo4j is ready")
+            return
+        except Exception as exc:
+            last_error = exc
+            driver.close()
+            time.sleep(3)
+
+    raise RuntimeError(f"Neo4j did not become ready within {timeout_seconds}s: {last_error}")
+
+
+def fresh_neo4j_storage() -> None:
+    """
+    Neo4j 데이터 저장소를 완전히 초기화합니다.
+
+    목적:
+        MATCH (n) DETACH DELETE n 으로는 빈 라벨 토큰이 Neo4j Browser에 남을 수 있습니다.
+        --fresh는 Docker Neo4j를 멈추고 neo4j_data 내부를 비운 뒤 다시 켜서 라벨 토큰까지 새로 만듭니다.
+    """
+    print("Fresh reset requested")
+    print(f"Neo4j data dir: {NEO4J_DATA_DIR}")
+
+    run_docker_compose_command(["stop", "neo4j"])
+    clear_directory_contents(NEO4J_DATA_DIR)
+    run_docker_compose_command(["up", "-d", "neo4j"])
+    wait_for_neo4j_ready()
+
+    print("Neo4j storage cleared and restarted")
+
+
 def main() -> None:
     """
     graph_loader.py의 메인 실행 함수입니다.
@@ -1579,7 +1701,15 @@ def main() -> None:
         action="store_true",
         help="Delete all existing Neo4j nodes and relationships before loading",
     )
+    parser.add_argument(
+        "--fresh",
+        action="store_true",
+        help="Stop Neo4j, clear local Neo4j data files, restart Neo4j, then load from scratch",
+    )
     args = parser.parse_args()
+
+    if args.fresh:
+        fresh_neo4j_storage()
 
     conn = get_neo4j_connection_from_env()
 
@@ -1587,7 +1717,7 @@ def main() -> None:
         print("Neo4j graph loading started")
         print(f"Processed data dir: {PROCESSED_DATA_DIR}")
 
-        if args.reset:
+        if args.reset or args.fresh:
             drop_removed_graph_schema(conn)
             reset_graph(conn)
 

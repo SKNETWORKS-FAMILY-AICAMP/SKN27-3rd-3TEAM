@@ -33,39 +33,55 @@ def get_base64_img(file_name):
         return f"data:image/png;base64,{base64.b64encode(data).decode()}"
     return ""
 
+def load_pokemon_data():
+    """포켓몬 목록을 세션당 1회만 로드해서 캐시합니다 (라운드마다 API 호출 불필요)."""
+    if "_pokemon_data" in st.session_state:
+        return st.session_state["_pokemon_data"]
+    try:
+        resp = requests.get(
+            f"{BACKEND_URL}{API_V1_STR}/",
+            params={"limit": 2000, "max_id": 1025},
+            timeout=15,
+        )
+        if resp.status_code == 200:
+            items = resp.json().get("items", [])
+            # alternate form(id 10001+) 제외, 이름 없는 항목 제외
+            data = [
+                {"id": item["id"], "name": item["name"], "types": item.get("types", [])}
+                for item in items
+                if 1 <= item["id"] <= 1025 and item.get("name")
+            ]
+            if data:
+                st.session_state["_pokemon_data"] = data
+                return data
+    except Exception:
+        pass
+    # fallback: 1세대 하드코딩 없이 최소한 피카츄라도
+    fallback = [{"id": 25, "name": "피카츄", "types": [{"slot": 1, "type_": {"id": 13, "name": "전기"}}]}]
+    st.session_state["_pokemon_data"] = fallback
+    return fallback
+
 def save_game_log(game_type, pokemon_id, is_correct, hint_used=False, wrong_answer_name=None, log_data=None):
-    """
-    백엔드 API를 호출하여 게임 로그를 저장합니다.
-    """
     user = st.session_state.get("user")
     user_id = user.get("db_id") if user else None
-    
-    # 만약 오답 이름이 있다면, DB에서 해당 포켓몬의 ID를 찾으려 시도할 수 있지만 
-    # 여기서는 간단히 log_data에 텍스트로 저장하거나, 검색 API를 통해 ID를 가져올 수 있습니다.
+
+    extra = log_data or {}
+    if wrong_answer_name:
+        extra["wrong_name"] = wrong_answer_name
+
     payload = {
         "user_id": user_id,
         "game_type": game_type,
         "pokemon_id": pokemon_id,
         "is_correct": is_correct,
         "hint_used": hint_used,
-        "log_data": json.dumps(log_data) if log_data else None
+        "log_data": json.dumps(extra) if extra else None,
     }
-    
-    # 헷갈린 포켓몬 이름 기록
-    if wrong_answer_name:
-        if not payload["log_data"]:
-            payload["log_data"] = json.dumps({"wrong_name": wrong_answer_name})
-        else:
-            data = json.loads(payload["log_data"])
-            data["wrong_name"] = wrong_answer_name
-            payload["log_data"] = json.dumps(data)
 
     try:
-        resp = requests.post(f"{BACKEND_URL}{LOG_API_STR}", json=payload, timeout=3)
-        if resp.status_code != 200:
-            st.warning(f"⚠️ 로그 저장 실패 (HTTP {resp.status_code}): {resp.text}")
-    except Exception as e:
-        st.warning(f"⚠️ 백엔드 연결 실패: {str(e)}")
+        requests.post(f"{BACKEND_URL}{LOG_API_STR}", json=payload, timeout=3)
+    except Exception:
+        pass
 
 bg_img = get_base64_img("mini_game.png")
 inject_common_ui(spacer=False)
@@ -173,16 +189,9 @@ def reset_silhouette():
     st.session_state.sil_revealed = False
     st.session_state.sil_hint_count = 0
     st.session_state.sil_clear_input = True
-    
-    random_id = random.randint(1, 151)
-    try:
-        resp = requests.get(f"{BACKEND_URL}{API_V1_STR}/{random_id}")
-        if resp.status_code == 200:
-            st.session_state.sil_target = resp.json()
-        else:
-            st.session_state.sil_target = {"id": 25, "name": "피카츄", "types": [{"type_": {"name": "전기"}}]}
-    except:
-        st.session_state.sil_target = {"id": 25, "name": "피카츄", "types": [{"type_": {"name": "전기"}}]}
+
+    pokemon_list = load_pokemon_data()
+    st.session_state.sil_target = random.choice(pokemon_list)
 
 def show_game():
     if st.session_state.get("sil_clear_input", False):
