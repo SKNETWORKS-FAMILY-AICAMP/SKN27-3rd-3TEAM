@@ -13,6 +13,12 @@ PROCESSED_DATA_DIR = "database/common/data/processed"
 
 
 def get_db_connection():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        print(f"Connecting to database via DATABASE_URL...")
+        return psycopg2.connect(db_url)
+    
+    print(f"Connecting to database via individual parameters (localhost fallback)...")
     return psycopg2.connect(
         host=os.getenv("POSTGRES_HOST", "localhost"),
         database=os.getenv("POSTGRES_DB", "pokemon_db"),
@@ -89,7 +95,7 @@ def main():
         # "database/common/processing/api_collector.py",
         "database/common/processing/data_processor.py",
         "database/postgre/utils/db_loader.py",
-        # "database/postgre/utils/vectorizer.py"
+        #"database/postgre/utils/vectorizer.py"
     ]
 
     for script in scripts:

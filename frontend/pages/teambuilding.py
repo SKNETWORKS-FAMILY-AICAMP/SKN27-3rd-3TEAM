@@ -20,15 +20,11 @@ from utils.ui import inject_common_ui
 
 
 # BACKEND_API_URL:
-# - Docker 안의 frontend 컨테이너에서 실행되면 http://backend:8000 을 사용합니다.
-# - 로컬에서 직접 Streamlit을 실행하면 http://localhost:8080 을 fallback으로 사용합니다.
-BACKEND_API_URL = os.getenv("BACKEND_API_URL") or os.getenv("BACKEND_URL") or "http://backend:8000"
-LOCAL_BACKEND_API_URL = "http://localhost:8080"
+# - 클라우드 환경(Streamlit Cloud)이나 Docker에서는 환경 변수를 우선 사용합니다.
+BACKEND_API_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http://localhost:8000"
 
-# IS_DOCKER:
-# - Streamlit이 Docker 컨테이너 안에서 실행 중이면 localhost는 frontend 컨테이너 자신을 의미합니다.
-# - 그래서 Docker 안에서는 localhost fallback을 쓰지 않고 backend 서비스명만 사용합니다.
-IS_DOCKER = os.path.exists("/.dockerenv")
+# IS_CLOUD: Streamlit Cloud 환경인지 확인
+IS_CLOUD = os.getenv("STREAMLIT_SERVER_PORT") is not None or os.path.exists("/.dockerenv")
 
 # REQUIRED_TEAM_SIZE:
 # - 현재 팀 추천 API는 5마리를 선택한 뒤 1마리를 추천하는 흐름이므로 5로 고정합니다.
@@ -107,14 +103,13 @@ def request_json(method: str, path: str, **kwargs: Any) -> Any:
     """백엔드 API를 호출하고 JSON 응답을 반환하기 위한 함수입니다."""
 
     # urls:
-    # - 첫 번째 주소는 현재 실행 환경의 기본 백엔드 주소입니다.
-    # - 두 번째 주소는 Docker 밖에서 실행할 때를 대비한 로컬 fallback 주소입니다.
+    # - 기본적으로 설정된 백엔드 주소를 사용합니다.
     urls = [BACKEND_API_URL.rstrip("/")]
-    if not IS_DOCKER:
-        urls.append(LOCAL_BACKEND_API_URL)
-
-    # dict.fromkeys:
-    # - BACKEND_API_URL과 LOCAL_BACKEND_API_URL이 같은 값일 때 중복 호출을 막기 위한 간단한 중복 제거입니다.
+    
+    # 로컬 환경에서만 추가적인 fallback을 고려할 수 있습니다.
+    if not IS_CLOUD and BACKEND_API_URL != "http://localhost:8000":
+        urls.append("http://localhost:8000")
+    
     urls = list(dict.fromkeys(urls))
     last_error: Optional[Exception] = None
 

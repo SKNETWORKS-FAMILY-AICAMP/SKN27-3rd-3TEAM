@@ -107,6 +107,9 @@ class UserBase(BaseModel):
     name: Optional[str] = None
     avatar_url: Optional[str] = None
     email: Optional[str] = None
+    public_repos: Optional[int] = 0
+    total_commits: Optional[int] = 0
+    total_stars: Optional[int] = 0
 
 class UserCreate(UserBase):
     pass
@@ -115,6 +118,17 @@ class UserResponse(UserBase):
     id: int
     
     model_config = ConfigDict(from_attributes=True)
+
+
+# ── Game Log ──
+class GameLogCreate(BaseModel):
+    user_id: Optional[int] = None
+    game_type: str  # "silhouette", "memory"
+    pokemon_id: Optional[int] = None
+    is_correct: bool = False
+    hint_used: bool = False
+    wrong_answer_id: Optional[int] = None
+    log_data: Optional[str] = None
 
 
 # ── Pagination wrapper ──

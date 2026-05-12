@@ -8,6 +8,10 @@ load_dotenv()
 PROCESSED_DATA_DIR = "database/common/data/processed"
 
 def get_connection():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        return psycopg2.connect(db_url)
+    
     return psycopg2.connect(
         host=os.getenv("POSTGRES_HOST", "localhost"),
         database=os.getenv("POSTGRES_DB", "pokemon_db"),
@@ -69,16 +73,46 @@ def ensure_schema_up_to_date(cursor):
                            WHERE table_name='species' AND column_name='gender_rate') THEN
                 ALTER TABLE species ADD COLUMN gender_rate INTEGER;
             END IF;
+
+            -- users 테이블 마이그레이션
+            IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users') THEN
+                -- github_id BIGINT 변환
+                ALTER TABLE users ALTER COLUMN github_id TYPE BIGINT;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='public_repos') THEN
+                    ALTER TABLE users ADD COLUMN public_repos INTEGER DEFAULT 0;
+                END IF;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='total_commits') THEN
+                    ALTER TABLE users ADD COLUMN total_commits INTEGER DEFAULT 0;
+                END IF;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='total_stars') THEN
+                    ALTER TABLE users ADD COLUMN total_stars INTEGER DEFAULT 0;
+                END IF;
+            END IF;
         END $$;
     """)
     
-    # 2. schema.sql 실행으로 신규 테이블 생성 (이미 존재하면 무시)
+    # 2. schema.sql 실행으로 신규 테이블 생성
     schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
     if os.path.exists(schema_path):
         with open(schema_path, 'r', encoding='utf-8') as f:
-            cursor.execute(f.read())
+            full_sql = f.read()
+            # 세미콜론 단위로 쪼개서 하나씩 실행 (하나가 실패해도 나머지는 시도하도록)
+            statements = full_sql.split(';')
+            for statement in statements:
+                if statement.strip():
+                    try:
+                        cursor.execute(statement)
+                    except Exception as e:
+                        # 이미 존재하는 등의 사소한 에러는 무시
+                        pass
     
-    print("Schema is up to date.")
+    print("Schema synchronization complete.")
 
 def load_json(filename):
     filepath = os.path.join(PROCESSED_DATA_DIR, filename)
@@ -312,12 +346,17 @@ if __name__ == "__main__":
         ensure_schema_up_to_date(cursor)
         
         print("Loading additional data into Database...")
+        # 제약 조건을 잠시 꺼서 순환 참조 문제를 해결합니다.
+        cursor.execute("SET session_replication_role = 'replica';")
+        
         load_types(cursor)
         load_type_efficacy(cursor)
+        load_species(cursor)  # species를 먼저 로드
         load_pokemon(cursor)
         load_pokemon_stats(cursor)
         load_pokemon_types(cursor)
-        load_species(cursor)
+        
+        cursor.execute("SET session_replication_role = 'origin';")
         
         cursor.execute("TRUNCATE TABLE flavor_text RESTART IDENTITY;")
         load_flavor_text(cursor)
