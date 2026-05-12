@@ -1,104 +1,74 @@
 [
-  {
-    "id": 1,
-    "name": "상태이상 부여",
-    "effect_type": "ailment",
-    "effect_text": "대상에게 마비·잠듦·얼음·화상·독 등의 상태이상을 부여한다."
-  },
-  {
-    "id": 2,
-    "name": "상태이상 면역",
-    "effect_type": "ailment_immunity",
-    "effect_text": "특정 상태이상에 걸리지 않는다."
-  },
-  {
-    "id": 3,
-    "name": "능력치 랭크 변화",
-    "effect_type": "stat_change",
-    "effect_text": "공격·방어·속도 등의 능력치 랭크를 올리거나 내린다."
-  },
-  {
-    "id": 4,
-    "name": "능력치 배율 변화",
-    "effect_type": "stat_multiplier",
-    "effect_text": "능력치 자체에 배율 보정을 적용한다."
-  },
-  {
-    "id": 5,
-    "name": "데미지 배율 변화",
-    "effect_type": "damage_modifier",
-    "effect_text": "주고받는 데미지에 배율 보정을 적용한다."
-  },
-  {
-    "id": 6,
-    "name": "기술 위력 변화",
-    "effect_type": "power_modifier",
-    "effect_text": "특정 기술의 위력에 추가 보정을 적용한다."
-  },
-  {
-    "id": 7,
-    "name": "타입 기술 무효화",
-    "effect_type": "move_immunity",
-    "effect_text": "특정 타입의 기술을 완전히 무효화한다."
-  },
-  {
-    "id": 8,
-    "name": "기술 흡수",
-    "effect_type": "move_absorb",
-    "effect_text": "특정 타입의 기술을 무효화하고 HP 회복 또는 능력치를 상승시킨다."
-  },
-  {
-    "id": 9,
-    "name": "HP 회복",
-    "effect_type": "heal",
-    "effect_text": "HP를 회복한다."
-  },
-  {
-    "id": 10,
-    "name": "우선도 변화",
-    "effect_type": "priority_change",
-    "effect_text": "기술의 우선도를 변화시킨다."
-  },
-  {
-    "id": 11,
-    "name": "명중률·회피율 변화",
-    "effect_type": "accuracy_change",
-    "effect_text": "명중률 또는 회피율을 변화시킨다."
-  },
-  {
-    "id": 12,
-    "name": "급소율 변화",
-    "effect_type": "critical_change",
-    "effect_text": "급소율을 변화시킨다."
-  },
-  {
-    "id": 13,
-    "name": "날씨 변화",
-    "effect_type": "weather_change",
-    "effect_text": "배틀 중 날씨(쾌청·비·모래바람·싸라기눈 등)를 변화시킨다."
-  },
-  {
-    "id": 14,
-    "name": "필드 변화",
-    "effect_type": "terrain_change",
-    "effect_text": "배틀 중 필드(그래스필드·미스트필드 등)를 변화시킨다."
-  },
-  {
-    "id": 15,
-    "name": "도구 소모",
-    "effect_type": "consume_item",
-    "effect_text": "조건이 충족되면 지닌 도구를 소모하여 효과를 발동한다."
-  },
-  {
-    "id": 16,
-    "name": "방어 효과",
-    "effect_type": "defense_boost",
-    "effect_text": "특정 조건에서 데미지를 경감하거나 완전히 방어한다."
-  },
-  {
-    "id": 17,
-    "name": "강제 교체",
-    "effect_type": "force_switch",
-    "effect_text": "상대 포켓몬을 강제로 교체시킨다."
-  }
-]
+    {
+        "id": 1,
+        "name": "상태이상 부여",
+        "effect_type": "ailment",
+        "effect_text": "상태이상을 부여합니다."
+    },
+    {
+        "id": 2,
+        "name": "상태이상 면역",
+        "effect_type": "ailment_immunity",
+        "effect_text": "상태이상에 면역이 됩니다."
+    },
+    {
+        "id": 3,
+        "name": "능력치 랭크 변화",
+        "effect_type": "stat_change",
+        "effect_text": "능력치의 랭크를 변화시킵니다."
+    },
+    {
+        "id": 4,
+        "name": "능력치 배율 변화",
+        "effect_type": "stat_multiplier",
+        "effect_text": "능력치의 수치를 변화시킵니다."
+    },
+    {
+        "id": 5,
+        "name": "데미지 배율 변화",
+        "effect_type": "damage_modifier",
+        "effect_text": "기술 데미지를 수치로 변환하기전 곱해지는 배율을 변화시킵니다."
+    },
+    {
+        "id": 6,
+        "name": "기술 위력 변화",
+        "effect_type": "power_modifier",
+        "effect_text": "기술의 위력을 변화시킵니다."
+    },
+    {
+        "id": 7,
+        "name": "특정 기술 무효화",
+        "effect_type": "move_immunity",
+        "effect_text": "특정 기술을 무효화합니다."
+    },
+    {
+        "id": 8,
+        "name": "특정 기술 무효 + 회복/능력 상승",
+        "effect_type": "move_absorb",
+        "effect_text": "특정 기술을 무효화하고 회복하거나 능력을 상승시킵니다."
+    },
+    {
+        "id": 9,
+        "name": "HP 회복",
+        "effect_type": "heal",
+        "effect_text": "HP를 회복합니다."
+    },
+    {
+        "id": 10,
+        "name": "반동 피해",
+        "effect_type": "recoil",
+        "effect_text": "기술 사용 후 데미지의 일부를 자신도 받습니다."
+    },
+    {
+        "id": 11,
+        "name": "날씨 변화",
+        "effect_type": "weather_change",
+        "effect_text": "배틀 필드의 날씨를 변화시킵니다."
+    },
+    {
+        "id": 12,
+        "name": "필드 변화",
+        "effect_type": "terrain_change",
+        "effect_text": "배틀 필드의 상태를 변화시킵니다."
+    }
+]
