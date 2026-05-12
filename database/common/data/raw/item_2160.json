@@ -1,0 +1,78 @@
+{
+  "attributes": [
+    {
+      "name": "countable",
+      "url": "https://pokeapi.co/api/v2/item-attribute/1/"
+    },
+    {
+      "name": "consumable",
+      "url": "https://pokeapi.co/api/v2/item-attribute/2/"
+    },
+    {
+      "name": "usable-overworld",
+      "url": "https://pokeapi.co/api/v2/item-attribute/3/"
+    },
+    {
+      "name": "holdable",
+      "url": "https://pokeapi.co/api/v2/item-attribute/5/"
+    }
+  ],
+  "baby_trigger_for": null,
+  "category": {
+    "name": "evolution",
+    "url": "https://pokeapi.co/api/v2/item-category/10/"
+  },
+  "cost": 8000,
+  "effect_entries": [
+    {
+      "effect": " Le Fil de Liaison déclenche l'évolution d'un certain Pokémon (qui peuvent tous évoluer alternativement quand échangés) en l'utilisant. Ceci consomme le Fil de Liaison.",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "short_effect": "Permet à un Pokémon dont l'évolution est normalement déclenchée par échange d'évoluer."
+    },
+    {
+      "effect": " The Linking Cord triggers the evolution of certain Pokémon (all of which can alternatively evolve when traded) upon use. This consumes the Linking Cord.",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "short_effect": "Allows a Pokemon whose evolution is usually triggered by trading to evolve"
+    }
+  ],
+  "flavor_text_entries": [],
+  "fling_effect": null,
+  "fling_power": null,
+  "game_indices": [],
+  "held_by_pokemon": [],
+  "id": 2160,
+  "machines": [],
+  "name": "linking-cord",
+  "names": [
+    {
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      },
+      "name": "Fil de Liaison"
+    },
+    {
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      },
+      "name": "Linking Cord"
+    },
+    {
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      },
+      "name": " つながりのヒモ"
+    }
+  ],
+  "sprites": {
+    "default": null
+  }
+}

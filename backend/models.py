@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, Text, DateTime
+from sqlalchemy import Column, Integer, BigInteger, String, Boolean, Float, ForeignKey, Text, DateTime
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
@@ -128,11 +128,14 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    github_id = Column(Integer, unique=True, index=True)
+    github_id = Column(BigInteger, unique=True, index=True)
     login = Column(String(100), unique=True, index=True)
     name = Column(String(100), nullable=True)
     avatar_url = Column(String(255), nullable=True)
     email = Column(String(100), nullable=True)
+    public_repos = Column(Integer, default=0)
+    total_commits = Column(Integer, default=0)
+    total_stars = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     game_logs = relationship("GameLog", back_populates="user")

@@ -79,21 +79,50 @@ def get_user_info(token):
         st.error(f"사용자 정보 요청 오류: {str(e)}")
     return None
 
-def sync_user_to_db(user_info):
+def fetch_lifetime_stats(username):
+    stats = {"public_repos": 0, "total_commits": 0, "total_stars": 0}
+    headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "Pokemon-Trainer-App"}
+    try:
+        # 1. 커밋 수
+        search_url = f"https://api.github.com/search/commits?q=author:{username}"
+        search_headers = headers.copy()
+        search_headers["Accept"] = "application/vnd.github.cloak-preview+json"
+        s_resp = requests.get(search_url, headers=search_headers, timeout=5)
+        if s_resp.status_code == 200:
+            stats["total_commits"] = s_resp.json().get("total_count", 0)
+        
+        # 2. 레포 및 스타 수
+        u_resp = requests.get(f"https://api.github.com/users/{username}", headers=headers, timeout=5)
+        if u_resp.status_code == 200:
+            u_data = u_resp.json()
+            stats["public_repos"] = u_data.get("public_repos", 0)
+            
+        r_resp = requests.get(f"https://api.github.com/users/{username}/repos?per_page=100", headers=headers, timeout=5)
+        if r_resp.status_code == 200:
+            stats["total_stars"] = sum(r.get("stargazers_count", 0) for r in r_resp.json())
+    except: pass
+    return stats
+
+def sync_user_to_db(user_info, gh_stats):
     url = f"{BACKEND_URL}/api/v1/users/"
     payload = {
         "github_id": user_info.get("id"),
         "login": user_info.get("login"),
         "name": user_info.get("name"),
         "avatar_url": user_info.get("avatar_url"),
-        "email": user_info.get("email")
+        "email": user_info.get("email"),
+        "public_repos": gh_stats.get("public_repos", 0),
+        "total_commits": gh_stats.get("total_commits", 0),
+        "total_stars": gh_stats.get("total_stars", 0)
     }
     try:
-        resp = requests.post(url, json=payload, timeout=5)
+        resp = requests.post(url, json=payload, timeout=30) # 타임아웃 30초로 연장
         if resp.status_code == 200:
             return resp.json()
+        else:
+            st.error(f"백엔드 응답 오류 ({resp.status_code}): {resp.text}")
     except Exception as e:
-        st.warning(f"DB 동기화 중 오류 발생: {str(e)}")
+        st.error(f"DB 동기화 중 네트워크 오류 발생: {str(e)}")
     return None
 
 def show():
@@ -119,19 +148,37 @@ def show():
         code = query_params["code"]
         st.query_params.clear()
         
-        with st.spinner("트레이너 정보를 인증하는 중..."):
-            token = get_access_token(code)
-            if token:
-                user_info = get_user_info(token)
-                if user_info:
-                    db_user = sync_user_to_db(user_info)
-                    if db_user:
-                        user_info["db_id"] = db_user.get("id")
-                    st.session_state.user = user_info
-                    controller.set("user_session", user_info)
-                    st.success("인증 및 DB 등록 성공!")
-                    time.sleep(1)
-                    st.rerun()
+        # 커스텀 로딩 화면 표시
+        loading_placeholder = st.empty()
+        loading_placeholder.markdown(f"""
+            <div class="loading-screen">
+                <div class="loader-ball">{POKEBALL_SVG}</div>
+                <div class="loading-text">인증 및 로그인 중...</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        token = get_access_token(code)
+        if token:
+            user_info = get_user_info(token)
+            if user_info:
+                gh_stats = fetch_lifetime_stats(user_info.get("login"))
+                db_user = sync_user_to_db(user_info, gh_stats)
+                if db_user:
+                    user_info["db_id"] = db_user.get("id")
+                    user_info.update({
+                        "public_repos": db_user.get("public_repos"),
+                        "total_commits": db_user.get("total_commits"),
+                        "total_stars": db_user.get("total_stars")
+                    })
+                st.session_state.user = user_info
+                controller.set("user_session", user_info)
+                
+                loading_placeholder.empty() # 로딩 화면 제거
+                time.sleep(0.1) # 확실히 비워지도록 아주 잠깐 대기
+                st.switch_page("pages/mypage.py")
+        else:
+            loading_placeholder.empty()
+            st.error("인증 토큰을 가져오지 못했습니다.")
 
     # 5. 화면 렌더링
     if "user" in st.session_state:
@@ -167,7 +214,7 @@ def show():
 {name} <span style="font-size: 16px; opacity: 0.6; font-weight: 500; margin-left: 8px;">@{login}</span>
 </h2>
 <div style="height: 15px;"></div>
-<a href="/" target="_self" class="main-nav-btn">메인 화면으로 이동</a>
+<a href="/mypage" target="_self" class="main-nav-btn">마이페이지로 이동</a>
 <div style="height: 10px;"></div>
 <a href="/login?ask_logout=true" target="_self" class="github-btn" style="background: linear-gradient(135deg, #ff4b4b 0%, #b91c1c 100%); border-color: rgba(255,255,255,0.2);">로그아웃</a>
 </div>
