@@ -1,4 +1,6 @@
 import random
+from typing import List, Dict, Any
+from .efficacy import calculate_type_multiplier, calculate_stab_multiplier
 
 class MoveProcessor:
     def __init__(self, attacker: dict, defender: dict, move: dict):
@@ -31,9 +33,27 @@ class MoveProcessor:
             return 0
             
         # 기본 데미지 공식: (((2 * Level / 5 + 2) * Power * A / D) / 50 + 2)
-        damage = int((((2 * level / 5 + 2) * power * (a / d)) / 50 + 2))
+        base_damage = (((2 * level / 5 + 2) * power * (a / d)) / 50 + 2)
         
-        # 자속 보정(STAB)이나 상성(Type Effectiveness) 등은 별도로 추가해야 합니다.
+        # 자속 보정(STAB) 및 상성(Type Effectiveness) 적용
+        attack_type_id = self.move.get("type_id")
+        attacker_type_ids = self.attacker.get("types", [])
+        defender_type_ids = self.defender.get("types", [])
+        
+        stab = calculate_stab_multiplier(attack_type_id, attacker_type_ids)
+        type_eff = calculate_type_multiplier(attack_type_id, defender_type_ids)
+        
+        # 상성에 따른 로그 메시지 추가
+        if type_eff > 1.0:
+            self.log("효과가 굉장했다!")
+        elif type_eff < 1.0 and type_eff > 0:
+            self.log("효과가 별로인 듯하다")
+        elif type_eff == 0:
+            self.log(f"{self.defender.get('name', '상대')}에게는 효과가 없는 것 같다...")
+            return 0
+            
+        damage = int(base_damage * stab * type_eff)
+        
         return damage
 
     def apply_damage(self, damage: int):
@@ -47,11 +67,36 @@ class MoveProcessor:
         if not stat_changes:
             return
             
+        # 매핑: JSON 스탯 이름 -> 데이터 필드 이름
+        stat_map = {
+            "attack": "attack_stage",
+            "defense": "defense_stage",
+            "special-attack": "sp_attack_stage",
+            "special-defense": "sp_defense_stage",
+            "speed": "speed_stage"
+        }
+        
         target_name = target.get("name", "포켓몬")
         for stat, change in stat_changes:
-            direction = "올라갔다" if change > 0 else "떨어졌다"
-            self.log(f"{target_name}의 {stat}이(가) {direction}!")
-            # 실제 스탯 랭크 변화 적용 로직은 배틀 상태 관리쪽에 추가해야 합니다.
+            field = stat_map.get(stat)
+            if not field:
+                continue
+                
+            # 현재 랭크 가져오기 및 변화 적용 (-6 ~ +6 제한)
+            current_stage = target.get(field, 0)
+            new_stage = max(-6, min(6, current_stage + change))
+            
+            if new_stage == current_stage:
+                if change > 0:
+                    self.log(f"{target_name}의 {stat}이(가) 더 이상 올라갈 수 없다!")
+                else:
+                    self.log(f"{target_name}의 {stat}이(가) 더 이상 떨어질 수 없다!")
+            else:
+                target[field] = new_stage
+                direction = "올라갔다!" if change > 0 else "떨어졌다!"
+                if abs(change) >= 2:
+                    direction = "크게 " + direction
+                self.log(f"{target_name}의 {stat}이(가) {direction}")
 
     def apply_ailment(self, target: dict, ailment: str):
         """상태이상을 적용합니다."""
@@ -125,10 +170,10 @@ class MoveProcessor:
                 drain = self.move.get("drain", 0)
                 heal_amount = int(damage * (drain / 100.0))
                 
-                max_hp = self.attacker.get("stats", {}).get("hp", 100)
+                max_hp = self.attacker.get("max_hp", 100)
                 current_hp = self.attacker.get("current_hp", max_hp)
                 self.attacker["current_hp"] = min(max_hp, current_hp + heal_amount)
-                self.log(f"{attacker_name}의 체력이 회복되었다!")
+                self.log(f"{attacker_name}의 체력이 {heal_amount}만큼 회복되었다!")
                 
             elif self.category == "damage":
                 # 적에게 데미지를 줌 (이미 위에서 처리됨)
@@ -163,12 +208,12 @@ class MoveProcessor:
             elif self.category == "heal":
                 # 최대 HP * (healing/100) 만큼 HP를 회복함
                 healing = self.move.get("healing", 0)
-                max_hp = self.attacker.get("stats", {}).get("hp", 100)
+                max_hp = self.attacker.get("max_hp", 100)
                 current_hp = self.attacker.get("current_hp", max_hp)
                 
                 heal_amount = int(max_hp * (healing / 100.0))
                 self.attacker["current_hp"] = min(max_hp, current_hp + heal_amount)
-                self.log(f"{attacker_name}의 체력이 회복되었다!")
+                self.log(f"{attacker_name}의 체력이 {heal_amount}만큼 회복되었다!")
 
         return self.messages
 

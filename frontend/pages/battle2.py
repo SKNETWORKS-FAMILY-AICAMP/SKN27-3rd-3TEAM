@@ -96,9 +96,20 @@ def process_turn(player_move):
     # 배틀 로직 실행 (movetree.py에서 가져온 함수)
     messages = run_battle_logic(player_dict, bot_dict, player_move, bot_move)
     
-    # 결과 반영 (HP 등 상태 동기화)
+    # 결과 반영 (HP 및 스탯 랭크 동기화)
     player.current_hp = player_dict["current_hp"]
+    player.attack_stage = player_dict["attack_stage"]
+    player.defense_stage = player_dict["defense_stage"]
+    player.sp_attack_stage = player_dict["sp_attack_stage"]
+    player.sp_defense_stage = player_dict["sp_defense_stage"]
+    player.speed_stage = player_dict["speed_stage"]
+    
     bot.current_hp = bot_dict["current_hp"]
+    bot.attack_stage = bot_dict["attack_stage"]
+    bot.defense_stage = bot_dict["defense_stage"]
+    bot.sp_attack_stage = bot_dict["sp_attack_stage"]
+    bot.sp_defense_stage = bot_dict["sp_defense_stage"]
+    bot.speed_stage = bot_dict["speed_stage"]
     
     # 메시지 추가
     for msg in messages:
