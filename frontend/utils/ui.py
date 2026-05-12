@@ -11,8 +11,8 @@ controller = st.session_state.cookie_controller
 
 POKEBALL_SVG = '<svg class="splash-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="white" stroke="#333" stroke-width="2"/><path d="M5 50A45 45 0 0 1 95 50H70A20 20 0 0 0 30 50H5" fill="#E33535" stroke="#333" stroke-width="2"/><circle cx="50" cy="50" r="15" fill="white" stroke="#333" stroke-width="2"/><circle cx="50" cy="50" r="8" fill="white" stroke="#333" stroke-width="1"/></svg>'
 
-def inject_common_ui(spacer=False, show_header=True):
-    # 1. 로그인 정보 복구 (최적화: 이미 세션에 있으면 쿠키 호출 생략)
+def inject_common_ui(spacer=False, show_header=True, hide_sidebar=True):
+    # 1. 쿠키에서 로그인 정보 복구
     if "user" not in st.session_state:
         saved_user = controller.get("user_session")
         if saved_user:
@@ -64,8 +64,9 @@ def inject_common_ui(spacer=False, show_header=True):
 
 html, body, [data-testid="stAppViewContainer"], .stApp {{ margin: 0; padding: 0; font-family: 'Inter', sans-serif; }}
 .block-container {{ padding: 0 !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }}
-#MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stSidebar"], [data-testid="collapsedControl"] {{ display: none !important; }}
-.top-nav {{ position: absolute; top: 0; left: 0; width: 100%; height: 90px; background: #fff; border-bottom: 2px solid #f0f0f0; display: flex; align-items: stretch; justify-content: space-between; z-index: 1000; }}
+#MainMenu, header, footer, [data-testid="stHeader"], [data-testid="stToolbar"] {{ display: none !important; }}
+{'[data-testid="stSidebar"], [data-testid="collapsedControl"] { display: none !important; }' if hide_sidebar else ''}
+.top-nav {{ position: absolute; top: 0; left: 0; width: 100%; height: 90px; background: #ffffff; border-bottom: 2px solid #f0f0f0; display: flex; align-items: stretch; justify-content: space-between; padding: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }}
 {header_css}
 .nav-left {{ display: flex; align-items: center; padding: 0 30px; border-right: 1px solid #eee; }}
 .nav-brand-img {{ height: 40px; }}

@@ -1,50 +1,50 @@
 [
-    {
-        "id": 1,
-        "name": "그래스필드",
-        "name_en": "grassy-terrain",
-        "description": "5턴 동안 지속된다. 지면에 있는 포켓몬은 매 턴 최대 HP의 1/16을 회복한다. 풀타입 기술의 위력이 1.3배가 된다."
-    },
-    {
-        "id": 2,
-        "name": "미스트필드",
-        "name_en": "misty-terrain",
-        "description": "5턴 동안 지속된다. 지면에 있는 포켓몬은 상태 이상과 혼란 상태가 되지 않는다. 드래곤타입 기술의 위력이 0.5배가 된다."
-    },
-    {
-        "id": 3,
-        "name": "일렉트릭필드",
-        "name_en": "electric-terrain",
-        "description": "5턴 동안 지속된다. 지면에 있는 포켓몬은 잠듦 상태가 되지 않는다. 전기타입 기술의 위력이 1.3배가 된다."
-    },
-    {
-        "id": 4,
-        "name": "사이코필드",
-        "name_en": "psychic-terrain",
-        "description": "5턴 동안 지속된다. 지면에 있는 포켓몬은 우선도가 높은 기술의 대상이 되지 않는다. 에스퍼타입 기술의 위력이 1.3배가 된다."
-    },
-    {
-        "id": 5,
-        "name": "트릭룸",
-        "name_en": "trick-room",
-        "description": "5턴 동안 행동 순서가 역전된다. 스피드가 낮은 포켓몬이 먼저 행동한다."
-    },
-    {
-        "id": 6,
-        "name": "매직룸",
-        "name_en": "magic-room",
-        "description": "5턴 동안 모든 포켓몬이 지닌 도구의 효과가 없어진다."
-    },
-    {
-        "id": 7,
-        "name": "원더룸",
-        "name_en": "wonder-room",
-        "description": "5턴 동안 모든 포켓몬의 방어와 특수방어가 교체된다."
-    },
-    {
-        "id": 8,
-        "name": "중력",
-        "name_en": "gravity",
-        "description": "5턴 동안 강한 중력이 발생한다. 비행타입이나 부유 특성을 가진 포켓몬도 땅타입 기술을 맞게 된다. 비행 계열 기술을 사용할 수 없다."
-    }
+  {
+    "id": 1,
+    "name": "그래스필드",
+    "name_en": "grassy_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬의 HP를 매 턴 1/16 회복. 풀 기술 위력 1.3배, 지진·땅고르기·매그니튜드 위력 0.5배."
+  },
+  {
+    "id": 2,
+    "name": "미스트필드",
+    "name_en": "misty_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 상태이상·드래곤 기술 무효화."
+  },
+  {
+    "id": 3,
+    "name": "일렉트릭필드",
+    "name_en": "electric_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 잠듦 무효화. 전기 기술 위력 1.3배."
+  },
+  {
+    "id": 4,
+    "name": "사이코필드",
+    "name_en": "psychic_terrain",
+    "description": "5턴간 지속. 접지한 포켓몬에게 우선도 기술 무효화. 에스퍼 기술 위력 1.3배."
+  },
+  {
+    "id": 5,
+    "name": "트릭룸",
+    "name_en": "trick_room",
+    "description": "5턴간 지속. 스피드가 낮은 포켓몬이 먼저 행동한다."
+  },
+  {
+    "id": 6,
+    "name": "매직룸",
+    "name_en": "magic_room",
+    "description": "5턴간 지속. 모든 포켓몬이 지닌 도구의 효과를 무시한다."
+  },
+  {
+    "id": 7,
+    "name": "원더룸",
+    "name_en": "wonder_room",
+    "description": "5턴간 지속. 모든 포켓몬의 방어와 특수방어 수치를 교환한다."
+  },
+  {
+    "id": 8,
+    "name": "중력",
+    "name_en": "gravity",
+    "description": "5턴간 지속. 하늘 위·부유·공중 상태의 포켓몬이 접지된다. 비행·부유 관련 기술 불가."
+  }
 ]

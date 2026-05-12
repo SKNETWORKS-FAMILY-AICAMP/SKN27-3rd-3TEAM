@@ -1,68 +1,13 @@
 [
-    {
-        "id": 1,
-        "name": "on_switch_in",
-        "order": 10,
-        "description": "포켓몬이 필드에 나왔을 때 발생하는 변화를 처리하는 단계"
-    },
-    {
-        "id": 2,
-        "name": "before_turn",
-        "order": 20,
-        "description": "턴이 시작되기 직전 발생하는 변화를 처리하는 단계"
-    },
-    {
-        "id": 3,
-        "name": "action_order",
-        "order": 30,
-        "description": "턴 시작 후 기술의 사용 순서를 결정하는 단계"
-    },
-    {
-        "id": 4,
-        "name": "before_move",
-        "order": 40,
-        "description": "기술이 실제로 사용되기 직전에 발생하는 변화를 처리하는 단계"
-    },
-    {
-        "id": 5,
-        "name": "accuracy_check",
-        "order": 50,
-        "description": "기술 명중 여부를 판정하는 단계"
-    },
-    {
-        "id": 6,
-        "name": "before_damage",
-        "order": 60,
-        "description": "기술 데미지가 실제로 계산되기 직전"
-    },
-    {
-        "id": 7,
-        "name": "damage_calculation",
-        "order": 70,
-        "description": "기술 데미지를 최종적으로 확정하는 단계"
-    },
-    {
-        "id": 8,
-        "name": "after_damage",
-        "order": 80,
-        "description": "데미지가 실제 HP에 반영된 뒤 부가 효과를 처리하는 단계"
-    },
-    {
-        "id": 9,
-        "name": "after_move",
-        "order": 90,
-        "description": "기술이 실제로 사용된 직후 발생하는 변화를 처리하는 단계"
-    },
-    {
-        "id": 10,
-        "name": "end_turn",
-        "order": 100,
-        "description": "매 턴의 마지막에 발생하는 변화를 처리하는 단계"
-    },
-    {
-        "id": 11,
-        "name": "on_faint",
-        "order": 110,
-        "description": "포켓몬이 쓰러졌을 때 발생하는 변화를 처리하는 단계"
-    }
+  {"id": 1,  "name": "on_switch_in",      "order": 1,  "description": "포켓몬이 배틀에 등장할 때 발동하는 단계."},
+  {"id": 2,  "name": "before_turn",       "order": 2,  "description": "턴이 시작되기 전에 발동하는 단계."},
+  {"id": 3,  "name": "action_order",      "order": 3,  "description": "행동 순서를 결정하는 단계."},
+  {"id": 4,  "name": "before_move",       "order": 4,  "description": "기술을 사용하기 직전에 발동하는 단계."},
+  {"id": 5,  "name": "accuracy_check",    "order": 5,  "description": "기술 명중 여부를 판정하는 단계."},
+  {"id": 6,  "name": "before_damage",     "order": 6,  "description": "데미지를 계산하기 직전에 발동하는 단계."},
+  {"id": 7,  "name": "damage_calculation","order": 7,  "description": "기술의 데미지를 계산하는 단계."},
+  {"id": 8,  "name": "after_damage",      "order": 8,  "description": "데미지가 적용된 직후에 발동하는 단계."},
+  {"id": 9,  "name": "after_move",        "order": 9,  "description": "기술 사용이 완전히 종료된 후 발동하는 단계."},
+  {"id": 10, "name": "end_turn",          "order": 10, "description": "턴이 끝날 때 발동하는 단계. 독·화상·날씨 등의 지속 효과가 적용된다."},
+  {"id": 11, "name": "on_faint",          "order": 11, "description": "포켓몬이 기절할 때 발동하는 단계."}
 ]

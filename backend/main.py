@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from graph.neo4j_client import neo4j_client
-from routers import pokemon, team_builder, chat, users
+from routers import pokemon, team_builder, chat, users, chatbot
 
 # DB 테이블 생성 및 스키마 업데이트 (간이 마이그레이션)
 Base.metadata.create_all(bind=engine)
@@ -69,6 +69,7 @@ app.include_router(pokemon.router)
 app.include_router(team_builder.router)
 app.include_router(chat.router)
 app.include_router(users.router)
+app.include_router(chatbot.router)
 
 @app.get("/")
 def read_root():
