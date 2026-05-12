@@ -1,0 +1,80 @@
+/* 포켓몬 캐릭터 컨테이너 */
+.pk-papago-container {
+    position: fixed;
+    bottom: 20px;
+    right: 50px;
+    z-index: 999999;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.pk-papago-container:active {
+    cursor: grabbing;
+    opacity: 0.8;
+}
+
+/* 포켓몬 이미지 */
+.pk-papago-img {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 5px 20px rgba(0,0,0,0.15));
+    transition: transform 0.3s;
+}
+
+/* 말풍선 공통 스타일 */
+.pk-papago-bubble {
+    position: absolute;
+    bottom: 120%;
+    right: 0;
+    width: 280px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    display: none;
+    font-family: 'Segoe UI', 'Pretendard', sans-serif;
+}
+
+/* 말풍선 꼬리표 */
+.pk-papago-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 30px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* 입력창 스타일 */
+.pk-papago-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3436;
+    background: transparent;
+}
+
+/* 결과 출력 영역 */
+.pk-papago-result {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px solid #f1f2f6;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0984e3;
+    display: none;
+    line-height: 1.6;
+}
+
+/* 로딩 애니메이션 (간단하게) */
+@keyframes pk-thinking {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+.thinking { animation: pk-thinking 1s infinite; }
