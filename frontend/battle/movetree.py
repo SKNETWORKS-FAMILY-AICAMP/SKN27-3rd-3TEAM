@@ -1,12 +1,14 @@
 import random
+import copy
 from typing import List, Dict, Any
 from .efficacy import calculate_type_multiplier, calculate_stab_multiplier
+import streamlit as st
 
 class MoveProcessor:
     def __init__(self, attacker: dict, defender: dict, move: dict, user_pokemon: dict, bot_pokemon: dict):
-        self.attacker = attacker
-        self.defender = defender
-        self.move = move
+        self.attacker = attacker # 기술을 사용하는 포켓몬의 현재 상태
+        self.defender = defender # 기술을 맞는 포켓몬의 현재 상태
+        self.move = move         # 시전된 기술
         self.user_pokemon = user_pokemon
         self.bot_pokemon = bot_pokemon
         self.category = move.get("category", "damage")
@@ -14,7 +16,6 @@ class MoveProcessor:
 
     def log(self, message: str):
         """로그 메시지를 기록합니다."""
-        import copy
         self.messages.append({
             "message": message,
             "player_state": copy.deepcopy(self.user_pokemon),
@@ -23,22 +24,65 @@ class MoveProcessor:
 
     def calculate_damage(self) -> int:
         """데미지를 계산합니다. (간이 공식)"""
+        move_name = self.move.get("name", "")
+        level = self.attacker.get("level", 50)
+        
+        # 고정 데미지 기술 처리
+        if move_name in ["나이트헤드", "지구던지기"]:
+            return level
+        elif move_name == "소닉붐":
+            return 20
+        elif move_name == "용의분노":
+            return 40
+        elif move_name in ["분노의앞니", "자연의분노", "카타스트로피"]:
+            return max(1, self.defender.get("current_hp", 100) // 2)
+        elif move_name == "죽기살기":
+            diff = self.defender.get("current_hp", 100) - self.attacker.get("current_hp", 100)
+            return max(0, diff)
+        elif move_name == "목숨걸기":
+            return self.attacker.get("current_hp", 100)
+        elif move_name == "사이코웨이브":
+            import random
+            return max(1, int(level * random.uniform(0.5, 1.5)))
+        elif move_name in ["카운터", "미러코트", "메탈버스트", "앙갚음"]:
+            last_dmg = self.attacker.get("last_damage_taken", 0)
+            last_move = self.attacker.get("last_move_received")
+            
+            if last_dmg == 0 or not last_move:
+                return 0
+                
+            if move_name == "카운터":
+                if last_move.get("damage_class") == "physical":
+                    return last_dmg * 2
+                return 0
+            elif move_name == "미러코트":
+                if last_move.get("damage_class") == "special":
+                    return last_dmg * 2
+                return 0
+            elif move_name in ["메탈버스트", "앙갚음"]:
+                return int(last_dmg * 1.5)
+
         power = self.move.get("power")
         if not power:
             return 0
         
-        level = self.attacker.get("level", 50)
-        
         damage_class = self.move.get("damage_class", "physical")
         if damage_class == "physical":
-            a = self.attacker.get("stats", {}).get("attack", 50)
-            d = self.defender.get("stats", {}).get("defense", 50)
+            base_a = self.attacker.get("stats", {}).get("attack", 50)
+            base_d = self.defender.get("stats", {}).get("defense", 50)
+            a_stage = self.attacker.get("attack_stage", 0)
+            d_stage = self.defender.get("defense_stage", 0)
         elif damage_class == "special":
-            a = self.attacker.get("stats", {}).get("sp_attack", 50)
-            d = self.defender.get("stats", {}).get("sp_defense", 50)
+            base_a = self.attacker.get("stats", {}).get("sp_attack", 50)
+            base_d = self.defender.get("stats", {}).get("sp_defense", 50)
+            a_stage = self.attacker.get("sp_attack_stage", 0)
+            d_stage = self.defender.get("sp_defense_stage", 0)
         else:
             return 0
-            
+
+        a = base_a * (2 + max(0, a_stage)) / (2 - min(0, a_stage))
+        d = base_d * (2 + max(0, d_stage)) / (2 - min(0, d_stage))
+
         # 기본 데미지 공식: (((2 * Level / 5 + 2) * Power * A / D) / 50 + 2)
         base_damage = (((2 * level / 5 + 2) * power * (a / d)) / 50 + 2)
         
@@ -69,11 +113,45 @@ class MoveProcessor:
         return damage
 
     def apply_damage(self, damage: int):
-        """데미지를 적용합니다."""
+        """
+        데미지를 적용합니다. 단, 낮은 확률로 급소에 맞으면 데미지가 1.5배로 적용됩니다.
+        급소에 맞을 확률은 기술의 급소율에 따라 달라집니다.
+        """
         current_hp = self.defender.get("current_hp", self.defender.get("stats", {}).get("hp", 100))
-        self.defender["current_hp"] = max(0, current_hp - damage)
-        self.log(f"{self.defender.get('name', '상대')}에게 {damage}의 데미지!")
 
+        if self.category == "damage-fixed":
+            self.defender["current_hp"] = max(0, current_hp - damage)
+            self.defender["last_damage_taken"] = damage
+            self.defender["last_move_received"] = self.move
+            self.log(f"{self.defender.get('name', '상대')}에게 {damage}의 데미지!")
+            
+            if self.move.get("name", "") == "목숨걸기":
+                self.attacker["current_hp"] = 0
+                self.log(f"{self.attacker.get('name', '자신')}은(는) 쓰러졌다!")
+        else:
+            critical_prob = {0: 0.0417, 1: 0.125, 2: 0.5, 3: 1.0}.get(self.move.get("crit_rate", 0), 0.0417)
+            if random.random() < critical_prob:
+                damage = int(damage * 1.5)
+                self.defender["current_hp"] = max(0, current_hp - damage)
+                self.log(f"급소에 맞았다! {self.defender.get('name', '상대')}에게 {damage}의 데미지!")
+            else:
+                self.defender["current_hp"] = max(0, current_hp - damage)
+                self.log(f"{self.defender.get('name', '상대')}에게 {damage}의 데미지!")
+
+            self.defender["last_damage_taken"] = damage
+            self.defender["last_move_received"] = self.move
+
+            drain = self.move.get("drain", 0)
+            if drain < 0:
+                # 반동 데미지
+                recoil_dmg = abs(int(damage * drain / 100))
+                attacker_hp = self.attacker.get("current_hp", 100)
+                self.attacker["current_hp"] = max(0, attacker_hp - recoil_dmg)
+                self.log(f"{self.attacker.get('name', '자신')}은(는) 반동으로 데미지를 입었다!")
+
+                if self.attacker["current_hp"] == 0:
+                    self.log(f"{self.attacker.get('name', '자신')}은(는) 쓰러졌다!")
+        
     def apply_stat_changes(self, target: dict, stat_changes: list):
         """스탯 변화를 적용합니다."""
         if not stat_changes:
@@ -83,14 +161,14 @@ class MoveProcessor:
         
         target_name = target.get("name", "포켓몬")
         for stat, change in stat_changes:
-            field = STAT_STAGE_MAP.get(stat)
-            if not field:
+            stat_name = STAT_STAGE_MAP.get(stat) # special-attack -> sp_attack_stage
+            if not stat_name:
                 continue
                 
             stat_kor = STAT_KOR_NAMES.get(stat, stat)
                 
             # 현재 랭크 가져오기 및 변화 적용 (-6 ~ +6 제한)
-            current_stage = target.get(field, 0)
+            current_stage = target.get(stat_name, 0)
             new_stage = max(-6, min(6, current_stage + change))
             
             if new_stage == current_stage:
@@ -99,7 +177,7 @@ class MoveProcessor:
                 else:
                     self.log(f"{target_name}의 {stat_kor}이(가) 더 이상 떨어질 수 없다!")
             else:
-                target[field] = new_stage
+                target[stat_name] = new_stage
                 direction = "올라갔다!" if change > 0 else "떨어졌다!"
                 if abs(change) >= 2:
                     direction = "크게 " + direction
@@ -118,18 +196,25 @@ class MoveProcessor:
             if ailment not in AILMENT_KOR_NAMES or ailment == "none":
                 ailment = "etc"
                 
-            self.log(f"{target_name}은(는) {AILMENT_KOR_NAMES.get(ailment, ailment)} 상태가 되었다!")
             target["ailment"] = ailment
-            
             if ailment == "sleep":
                 target["sleep_turns"] = random.randint(1, 3)
+                
+            self.log(f"{target_name}은(는) {AILMENT_KOR_NAMES.get(ailment, ailment)} 상태가 되었다!")
 
-    def execute(self) -> list:
-        """기술의 카테고리에 따라 효과를 실행합니다."""
-        move_name = self.move.get("name", "기술")
+    def execute(self) -> List[Dict[str, Any]]:
+        """기술의 효과를 처리하고 메시지(상태) 리스트를 반환합니다."""
         attacker_name = self.attacker.get("name", "포켓몬")
+        move_name = self.move.get("name", "기술")
         
-        # 상태이상 행동 불가 체크
+        if self.category == "switch":
+            if self.move.get("is_bot"):
+                self.log(f"{st.session_state.leader_name}은 {attacker_name}으(로) 교체했다!")
+            else:
+                self.log(f"가라! {attacker_name}!")
+            return self.messages
+
+        # 0. 혼란 처리 (혼란 자해 확인)체크
         ailment = self.attacker.get("ailment")
         if ailment == "paralysis":
             if random.random() < 0.125:
@@ -142,12 +227,12 @@ class MoveProcessor:
                 self.attacker["sleep_turns"] = turns_left - 1
                 return self.messages
             else:
-                self.log(f"{attacker_name}은(는) 잠에서 깨어났다!")
                 self.attacker["ailment"] = None
+                self.log(f"{attacker_name}은(는) 잠에서 깨어났다!")
         elif ailment == "freeze":
             if random.random() < 0.2:
-                self.log(f"{attacker_name}의 얼음이 녹았다!")
                 self.attacker["ailment"] = None
+                self.log(f"{attacker_name}의 얼음이 녹았다!")
             else:
                 self.log(f"{attacker_name}은(는) 얼어붙어서 움직일 수 없다!")
                 return self.messages
@@ -155,8 +240,12 @@ class MoveProcessor:
             if random.random() < 0.333:
                 self.log(f"{attacker_name}은(는) 영문도 모르고 자신을 공격했다!")
                 level = self.attacker.get("level", 50)
-                a = self.attacker.get("stats", {}).get("attack", 50)
-                d = self.attacker.get("stats", {}).get("defense", 50)
+                base_a = self.attacker.get("stats", {}).get("attack", 50)
+                base_d = self.attacker.get("stats", {}).get("defense", 50)
+                a_stage = self.attacker.get("attack_stage", 0)
+                d_stage = self.attacker.get("defense_stage", 0)
+                a = base_a * (2 + max(0, a_stage)) / (2 - min(0, a_stage))
+                d = base_d * (2 + max(0, d_stage)) / (2 - min(0, d_stage))
                 damage = int((((2 * level / 5 + 2) * 40 * (a / d)) / 50 + 2))
                 current_hp = self.attacker.get("current_hp", self.attacker.get("stats", {}).get("hp", 100))
                 self.attacker["current_hp"] = max(0, current_hp - damage)
@@ -164,12 +253,19 @@ class MoveProcessor:
                 if self.attacker["current_hp"] == 0:
                     self.log(f"{attacker_name}은(는) 쓰러졌다!")
                 return self.messages
-                
+
         self.log(f"{attacker_name}의 {move_name}!")
         
-        # 명중률 체크
-        accuracy = self.move.get("accuracy")
-        if accuracy and accuracy < 100:
+        # 명중률 계산: 최종 명중률 = 기술의 명중률 * (3 + max(0, 공격자 명중률 랭크)) / (3 + min(0, 수비자 회피율 랭크))
+        # 기술의 명중률이 없으면 반드시 기술 성공
+        move_accuracy = self.move.get("accuracy")
+        if move_accuracy and move_accuracy < 100:
+            from .constants import STAT_STAGE_MAP
+            attacker_accuracy_stage = self.attacker.get(STAT_STAGE_MAP.get("accuracy"), 0)
+            defender_evasion_stage = self.defender.get(STAT_STAGE_MAP.get("evasion"), 0)
+            stage = sorted([-6, 6, attacker_accuracy_stage - defender_evasion_stage])[1]
+            accuracy = round(move_accuracy * (3 + max(0, stage)) / (3 - min(0, stage)))
+
             if random.randint(1, 100) > accuracy:
                 self.log("그러나 공격은 빗나갔다!")
                 return self.messages
@@ -179,7 +275,7 @@ class MoveProcessor:
         # ---------------------------------------------------------
         damage_categories = [
             "damage", "damage-raise", "damage-lower", 
-            "damage-ailment", "damage-heal", "ohko"
+            "damage-ailment", "damage-heal", "ohko", "damage-fixed"
         ]
         
         if self.category in damage_categories:
@@ -191,11 +287,16 @@ class MoveProcessor:
                 
             # 데미지 적용
             self.apply_damage(damage)
-            
+
             # 대상이 쓰러졌다면 부가 효과(상태이상, 스탯 하락 등) 무시
             if self.defender.get("current_hp", 0) == 0:
                 self.log(f"{self.defender.get('name', '상대')}은(는) 쓰러졌다!")
                 return self.messages
+
+            # 풀죽음 판정
+            flinch_chance = self.move.get("flinch_chance", 0)
+            if flinch_chance > 0 and random.random() < (flinch_chance / 100.0):
+                self.defender["flinched"] = True
 
             # stat_changes 있음
             if self.category == "damage-raise":
@@ -281,8 +382,13 @@ def process_turn(user_pokemon: dict, bot_pokemon: dict, user_move: dict, bot_mov
     """
     messages = []
     
-    user_speed = user_pokemon.get("stats", {}).get("speed", 50)
-    bot_speed = bot_pokemon.get("stats", {}).get("speed", 50)
+    user_speed_base = user_pokemon.get("stats", {}).get("speed", 50)
+    user_speed_stage = user_pokemon.get("speed_stage", 0)
+    user_speed = user_speed_base * (2 + max(0, user_speed_stage)) / (2 - min(0, user_speed_stage))
+    
+    bot_speed_base = bot_pokemon.get("stats", {}).get("speed", 50)
+    bot_speed_stage = bot_pokemon.get("speed_stage", 0)
+    bot_speed = bot_speed_base * (2 + max(0, bot_speed_stage)) / (2 - min(0, bot_speed_stage))
     
     if user_pokemon.get("ailment") == "paralysis":
         user_speed *= 0.5
@@ -312,13 +418,25 @@ def process_turn(user_pokemon: dict, bot_pokemon: dict, user_move: dict, bot_mov
         second_attacker, second_defender, second_move = user_pokemon, bot_pokemon, user_move
         
     # 첫 번째 공격
+    # 매 턴 시작 시 풀죽음 상태 초기화
+    first_attacker["flinched"] = False
+    first_defender["flinched"] = False
+    
     processor1 = MoveProcessor(first_attacker, first_defender, first_move, user_pokemon, bot_pokemon)
     messages.extend(processor1.execute())
     
-    # 두 번째 공격 (첫 번째 공격으로 쓰러지지 않았을 경우에만)
-    if first_defender.get("current_hp", 1) > 0:
-        processor2 = MoveProcessor(second_attacker, second_defender, second_move, user_pokemon, bot_pokemon)
-        messages.extend(processor2.execute())
+    # 두 번째 공격 (첫 번째 공격으로 수비자가 쓰러지지 않았고, 공격자도 스스로 쓰러지지 않았을 경우에만)
+    if first_defender.get("current_hp", 1) > 0 and first_attacker.get("current_hp", 1) > 0:
+        if first_defender.get("flinched"):
+            messages.append({
+                "message": f"{first_defender.get('name')}은(는) 풀이 죽어 기술을 쓸 수 없다!",
+                "player_state": copy.deepcopy(user_pokemon),
+                "bot_state": copy.deepcopy(bot_pokemon)
+            })
+            first_defender["flinched"] = False # 상태 초기화
+        else:
+            processor2 = MoveProcessor(second_attacker, second_defender, second_move, user_pokemon, bot_pokemon)
+            messages.extend(processor2.execute())
         
     # 턴 종료 상태이상 효과 (화상, 독)
     for pokemon in [user_pokemon, bot_pokemon]:
@@ -337,7 +455,6 @@ def process_turn(user_pokemon: dict, bot_pokemon: dict, user_move: dict, bot_mov
                 msg = f"{name}은(는) 독 데미지를 입었다!"
             
             pokemon["current_hp"] = max(0, current_hp - dmg)
-            import copy
             messages.append({
                 "message": msg,
                 "player_state": copy.deepcopy(user_pokemon),

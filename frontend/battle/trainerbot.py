@@ -78,22 +78,22 @@ N_ROSTER = [
     {"id": 601, "name": "기기기어르", "moves": ['기어소서', '와일드볼트', '기가임팩트', '보복']},
 ]
 
+ROSTER_MAP = {
+    "웅이": BROCK_ROSTER,
+    "이슬이": MISTY_ROSTER,
+    "아이리스": IRIS_ROSTER,
+    "민화": ERIKA_ROSTER,
+    "풍란": SKYLA_ROSTER,
+    "채두": BEA_ROSTER,
+    "순무": KABU_ROSTER,
+    "비주기": GIOVANNI_ROSTER,
+    "N": N_ROSTER
+}
+
 def get_random_gym_leader_pokemon(leader_name: str = "웅이") -> dict:
     """
     특정 관장의 엔트리 중 랜덤하게 한 마리의 포켓몬 데이터를 반환합니다.
     """
-    roster_map = {
-        "웅이": BROCK_ROSTER,
-        "이슬이": MISTY_ROSTER,
-        "아이리스": IRIS_ROSTER,
-        "민화": ERIKA_ROSTER,
-        "풍란": SKYLA_ROSTER,
-        "채두": BEA_ROSTER,
-        "순무": KABU_ROSTER,
-        "비주기": GIOVANNI_ROSTER,
-        "N": N_ROSTER
-    }
-    
-    roster = roster_map.get(leader_name, BROCK_ROSTER)
+    roster = ROSTER_MAP.get(leader_name, BROCK_ROSTER)
     return random.choice(roster)
 

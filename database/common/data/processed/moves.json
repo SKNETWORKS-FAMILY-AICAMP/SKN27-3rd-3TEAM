@@ -1236,7 +1236,7 @@
     "effect_text": "충격파를 상대에 부딪쳐서 공격한다. 언제나 20의 데미지를 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -1247,7 +1247,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": 20
   },
   {
     "id": 50,
@@ -1726,7 +1727,7 @@
     "effect_text": "상대로부터 받은 물리공격의 데미지를 2배로 만들어 같은 상대에게 돌려준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -1737,7 +1738,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "specific-move"
+    "target": "specific-move",
+    "fixed_damage": "last_physical_move_damage_received * 2"
   },
   {
     "id": 69,
@@ -1751,7 +1753,7 @@
     "effect_text": "인력을 사용해 내던진다. 자신의 레벨과 똑같은 데미지를 상대에게 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -1762,7 +1764,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "level"
   },
   {
     "id": 70,
@@ -2090,7 +2093,7 @@
     "effect_text": "분노의 충격파를 상대에게 부딪쳐서 공격한다. 언제나 40의 데미지를 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -2101,7 +2104,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": 40
   },
   {
     "id": 83,
@@ -2580,7 +2584,7 @@
     "effect_text": "무시무시한 환상을 보게 해서 자신의 레벨과 똑같은 만큼의 데미지를 상대에게 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -2591,7 +2595,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "level"
   },
   {
     "id": 102,
@@ -3845,7 +3850,7 @@
     "effect_text": "이상한 염력파를 상대에게 발사하여 공격한다. 사용할 때마다 데미지가 바뀐다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -3856,7 +3861,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "int((random.random() + 5) * (level / 10))"
   },
   {
     "id": 150,
@@ -4180,7 +4186,7 @@
     "effect_text": "날카로운 앞니로 강하게 물어서 공격한다. 상대의 HP는 절반이 된다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -4191,7 +4197,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "opponent's current_hp / 2"
   },
   {
     "id": 163,
@@ -6270,7 +6277,7 @@
     "effect_text": "상대에게 받은 특수공격의 데미지를 2배로 만들어 그 상대에게 돌려준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -6281,7 +6288,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "specific-move"
+    "target": "specific-move",
+    "fixed_damage": "last_special_move_damage_received * 2"
   },
   {
     "id": 244,
@@ -7338,7 +7346,7 @@
     "effect_text": "상대의 HP가 자신의 HP와 같아지도록 데미지를 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -7349,7 +7357,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "opponent's current_hp - current_hp"
   },
   {
     "id": 284,
@@ -9609,7 +9618,7 @@
     "effect_text": "기술을 쓰기 전에 마지막으로 받은 기술의 데미지를 늘려서 기술을 쓴 상대에게 돌려준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -9620,7 +9629,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "specific-move"
+    "target": "specific-move",
+    "fixed_damage": "last_move_damage_received * 1.5"
   },
   {
     "id": 369,
@@ -13483,7 +13493,7 @@
     "effect_text": "목숨을 걸고 상대를 공격한다. 자신은 기절하게 되지만 상대에게 HP만큼의 데미지를 준다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -13494,7 +13504,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "current_hp"
   },
   {
     "id": 516,
@@ -18825,7 +18836,7 @@
     "effect_text": "자연의 분노를 상대에게 부딪친다. 상대의 HP는 절반이 된다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -18836,7 +18847,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage":"opponent's current_hp / 2"
   },
   {
     "id": 718,
@@ -23093,7 +23105,7 @@
     "effect_text": "파멸적인 재앙에 휩쓸리게 하여 상대의 HP를 절반으로 만든다.",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -23104,7 +23116,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "selected-pokemon"
+    "target": "selected-pokemon",
+    "fixed_damage": "opponent's current_hp / 2"
   },
   {
     "id": 878,
@@ -23551,7 +23564,7 @@
     "effect_text": "기술을 쓰기 전에 마지막으로 받은 기술의 데미지를 1.5배 늘려서 기술을 쓴 상대에게 돌려준다.(우선도 0)",
     "ailment": "none",
     "ailment_chance": 0,
-    "category": "damage",
+    "category": "damage-fixed",
     "crit_rate": 0,
     "drain": 0,
     "flinch_chance": 0,
@@ -23562,7 +23575,8 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "specific-move"
+    "target": "specific-move",
+    "fixed_damage": "last_move_damage_received * 1.5"
   },
   {
     "id": 895,

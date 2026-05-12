@@ -7,8 +7,10 @@ from utils.ui import inject_common_ui
 from battle.pokemon import PokemonDB
 from battle.data import BattlePokemon
 from battle.movetree import process_turn as run_battle_logic
+from battle.trainerbot import get_random_gym_leader_pokemon
 import re
 from dataclasses import asdict
+from battle.trainerbot import ROSTER_MAP
 
 # 페이지 설정
 st.set_page_config(
@@ -24,63 +26,109 @@ inject_battle_styles()
 # DB 연결
 db = PokemonDB()
 
-def start_custom_battle(player_custom_data, leader_name="웅이"):
-    """DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다."""
-    with st.spinner("배틀 데이터를 준비 중..."):
-        # 1. 플레이어 포켓몬 데이터 구성
-        p_data = db.get_pokemon_data(player_custom_data["id"])
-        max_hp = p_data['stats']['hp'] * 2
-        st.session_state.battle_player = BattlePokemon(
-            id=p_data['id'],
-            name=p_data['name'],
-            image_url=p_data['image_url'],
-            types=p_data['types'],
-            type_names=p_data['type_names'],
-            stats=p_data['stats'],
-            moves=player_custom_data["moves"], # 사용자가 선택한 4개 기술
-            max_hp=max_hp,
-            current_hp=max_hp
-        )
+def get_max_hp(base_hp: int, level: int = 50) -> int:
+    """
+    레벨에 따라 보정된 최대 HP 계산 (개체치, 노력치 제외)
+    공식: ((BaseHP × 2) + 100) × Level / 100 + 10
+    """
 
-        # 2. 봇 포켓몬(관장) 랜덤 선택 및 데이터 구성
-        from battle.trainerbot import get_random_gym_leader_pokemon
-        
-        bot_entry = get_random_gym_leader_pokemon(leader_name)
-        b_data = db.get_pokemon_data(bot_entry['id'])
-        
-        # 봇은 관장 엔트리에 지정된 기술만 사용
-        bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
-        # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
-        if not bot_moves:
-            bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
-        elif len(bot_moves) > 4:
-            bot_moves = random.sample(bot_moves, 4)
+    return int((((base_hp * 2) + 100) * (level / 100)) + 10)
+
+def get_stats(base_stats: dict, level: int = 50) -> dict:
+    """
+    HP를 제외한 나머지 능력치 레벨에 따라 보정된 수치 계산 (개체치, 노력치, 성격 제외)
+    공식: ((BaseStat × 2) × Level / 100) + 5
+    """
+    stats = {}
+    for stat_name in base_stats:
+        if stat_name == "hp":
+            stats[stat_name] = get_max_hp(base_stats[stat_name])
+        else:
+            stats[stat_name] = int(((base_stats[stat_name] * 2) * (level / 100)) + 5)
+    return stats
+
+def start_custom_battle(player_team_data, leader_name="웅이"):
+    """
+    DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다.
+    
+    - player_team_data: 파티 리스트 [{"id", "name", "moves"}, ...]
+    """
+    with st.spinner("배틀 데이터를 준비 중..."):
+        # 1. 플레이어 파티 구성
+        player_party = []
+        for p_custom in player_team_data:
+            p_data = db.get_pokemon_data(p_custom["id"])
+            p_stats = get_stats(p_data['stats'])
+            pokemon_obj = BattlePokemon(
+                id=p_data['id'],
+                name=p_data['name'],
+                image_url=p_data['image_url'],
+                types=p_data['types'],
+                type_names=p_data['type_names'],
+                stats=p_stats,
+                moves=p_custom["moves"], 
+                max_hp=p_stats['hp'],
+                current_hp=p_stats['hp']
+            )
+            player_party.append(pokemon_obj)
             
-        b_max_hp = b_data['stats']['hp'] * 2
+        st.session_state.player_party = player_party
+        st.session_state.battle_player = player_party[0] # 선봉 포켓몬
+
+        # 2. 봇 파티 구성 (관장의 전체 엔트리 중 랜덤 3마리 선택)
+        leader_roster = ROSTER_MAP.get(leader_name, [])
+        bot_team = random.sample(leader_roster, min(3, len(leader_roster)))
+        bot_party = []
         
-        st.session_state.battle_bot = BattlePokemon(
-            id=b_data['id'],
-            name=b_data['name'],
-            image_url=b_data['image_url'],
-            types=b_data['types'],
-            type_names=b_data['type_names'],
-            stats=b_data['stats'],
-            moves=bot_moves,
-            max_hp=b_max_hp,
-            current_hp=b_max_hp
-        )
+        for bot_entry in bot_team:
+            b_data = db.get_pokemon_data(bot_entry['id'])
+            b_stats = get_stats(b_data['stats'])
+            
+            # 봇은 관장 엔트리에 지정된 기술만 사용
+            bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
+            # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
+            if not bot_moves:
+                bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
+            elif len(bot_moves) > 4:
+                bot_moves = random.sample(bot_moves, 4)
+            
+            bot_obj = BattlePokemon(
+                id=b_data['id'],
+                name=b_data['name'],
+                image_url=b_data['image_url'],
+                types=b_data['types'],
+                type_names=b_data['type_names'],
+                stats=b_stats,
+                moves=bot_moves,
+                max_hp=b_stats['hp'],
+                current_hp=b_stats['hp']
+            )
+            bot_party.append(bot_obj)
+
+        st.session_state.bot_party = bot_party
+        st.session_state.battle_bot = bot_party[0] # 관장 봇의 선봉 포켓몬
+        st.session_state.leader_name = leader_name
 
         # 3. 배틀 공통 데이터 및 메시지 초기화
         st.session_state.efficacy = db.get_type_efficacy()
         st.session_state.battle_messages = [
-            {"role": "assistant", "content": f"배틀이 시작되었습니다! 상대는 {fmt_bot(b_data['name'])}입니다. 어떤 기술을 사용하시겠습니까?"}
+            {"role": "assistant", "content": f"배틀이 시작되었습니다! 첫 상대는 {fmt_bot(bot_party[0].name)}입니다. 어떤 기술을 사용하시겠습니까?"}
         ]
         st.session_state.battle_started = True
         st.session_state.battle_over = False
         st.session_state.turn_count = 0
 
-def find_player_move(text: str, player: BattlePokemon):
+def find_player_action(text: str, player: BattlePokemon, player_party: list):
     normalized = re.sub(r"\s+", "", text.strip().lower())
+    
+    # 교체 시도 확인
+    for idx, p in enumerate(player_party):
+        if p.id == player.id or p.current_hp <= 0: continue
+        p_name = re.sub(r"\s+", "", p.name.lower())
+        if p_name in normalized:
+            return {"name": f"{p.name}(으)로 교체", "category": "switch", "target_index": idx, "priority": 6}
+
+    # 기술 시도 확인
     for move in player.moves:
         move_name = re.sub(r"\s+", "", move["name"].lower())
         if normalized == move_name or move_name in normalized:
@@ -91,33 +139,65 @@ def process_turn(player_move):
     """
     [한 턴의 배틀 진행 처리]
     """
+    # 1. 플레이어 교체 처리 (턴 소모)
+    if player_move.get("category") == "switch":
+        target_idx = player_move["target_index"]
+        st.session_state.battle_player = st.session_state.player_party[target_idx]
+        
     player = st.session_state.battle_player
     bot = st.session_state.battle_bot
+    bot_party = st.session_state.bot_party
     
-    # 봇의 기술 랜덤 선택
-    bot_move = random.choice(bot.moves)
+    # 봇 교체 로직 (생존한 다른 포켓몬이 있을 경우 15% 확률로 교체)
+    alive_other_bots = [bp for bp in bot_party if bp.id != bot.id and bp.current_hp > 0]
     
-    # 객체를 딕셔너리로 변환 (MoveProcessor가 딕셔너리 수정을 전제로 함)
+    if alive_other_bots and random.random() < 0.15:
+        target_bot = random.choice(alive_other_bots)
+        target_idx = bot_party.index(target_bot)
+        bot_move = {
+            "name": f"{target_bot.name}(으)로 교체",
+            "category": "switch",
+            "target_index": target_idx,
+            "priority": 6,
+            "is_bot": True
+        }
+        st.session_state.battle_bot = target_bot
+        bot = st.session_state.battle_bot
+    else:
+        # 봇의 기술 랜덤 선택
+        bot_move = random.choice(bot.moves)
+    
+    # 객체를 딕셔너리로 변환
     player_dict = asdict(player)
     bot_dict = asdict(bot)
     
-    # 배틀 로직 실행 (movetree.py에서 가져온 함수)
+    # 배틀 로직 실행
     messages = run_battle_logic(player_dict, bot_dict, player_move, bot_move)
     
-    # 최종 승패 판별을 위해 마지막 상태 확인
+    # 최종 상태 추출
     final_p_state = messages[-1]["player_state"]
     final_b_state = messages[-1]["bot_state"]
     
+    # 사망 시 봇 강제 교체 메시지만 미리 생성 (UI 루프에서 처리하기 위함)
     if final_b_state.get("current_hp", 100) <= 0:
-        st.session_state.battle_over = True
-        st.session_state.winner = player.name
-    elif final_p_state.get("current_hp", 100) <= 0:
-        st.session_state.battle_over = True
-        st.session_state.winner = bot.name
-        
+        bot_party = st.session_state.bot_party
+        alive_bots = [bp for bp in bot_party if bp.id != bot.id and bp.current_hp > 0]
+        if alive_bots:
+            next_bot = alive_bots[0]
+            messages.append({
+                "message": f"{st.session_state.leader_name}은(는) {next_bot.name}을(를) 내보냈다!",
+                "player_state": final_p_state,
+                "bot_state": asdict(next_bot),
+                "bot_switch": True,
+                "bot_next_index": bot_party.index(next_bot)
+            })
+            
     st.session_state.pending_messages = messages
 
 def show():
+    if "player_team" not in st.session_state:
+        st.session_state.player_team = []
+
     # 배틀이 시작되지 않았으면 선택 화면 표시
     if not st.session_state.get("battle_started", False):
         st.markdown(
@@ -140,8 +220,19 @@ def show():
             st.subheader("관장 선택")
             gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"]
             selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
+            leader_roster = ROSTER_MAP.get(selected_leader, [])
 
-            
+            if leader_roster:
+                st.caption(f"**{selected_leader}의 엔트리:**")
+                cols = st.columns(len(leader_roster))
+                for idx, p in enumerate(leader_roster):
+                    pokemon_data = db.get_pokemon_data(p['id'])
+                    with cols[idx]:
+                        img_url = pokemon_data['image_url']
+                        st.image(img_url, use_container_width=True)
+                        st.markdown(f"<div style='text-align: center; font-size: 0.85rem; font-weight: 700; color: #cbd5e1;'>{p['name']}</div>", unsafe_allow_html=True)
+
+            st.markdown("<br>", unsafe_allow_html=True)
             st.subheader("포켓몬 선택")
             selected_name = st.selectbox(
                 "포켓몬 이름을 검색하세요",
@@ -150,8 +241,6 @@ def show():
                 placeholder="포켓몬 이름 입력..."
             )
 
-            
-            
             st.markdown("<hr>", unsafe_allow_html=True)
             if selected_name:
                 pokemon_id = pokemon_options[selected_name]
@@ -161,16 +250,31 @@ def show():
                     st.session_state.selected_moves = []
 
                 pokemon_data = st.session_state.selected_pokemon_data
-                max_hp = pokemon_data['stats']['hp'] * 2
+                stats = get_stats(pokemon_data['stats'])
                 preview = BattlePokemon(
                     id=pokemon_data['id'], name=pokemon_data['name'], image_url=pokemon_data['image_url'],
                     types=pokemon_data['types'], type_names=pokemon_data['type_names'],
-                    stats=pokemon_data['stats'], moves=pokemon_data['moves'],
-                    max_hp=max_hp, current_hp=max_hp
+                    stats=stats, moves=pokemon_data['moves'],
+                    max_hp=stats['hp'], current_hp=stats['hp']
                 )
-                render_pokemon_status("PLAYER PREVIEW", preview)
+                render_pokemon_status("PLAYER PREVIEW", preview, show_moves=False)
 
         with col2:
+            st.subheader(f"내 파티 ({len(st.session_state.player_team)}/3)")
+            if st.session_state.player_team:
+                team_cols = st.columns(len(st.session_state.player_team))
+                for i, pt in enumerate(st.session_state.player_team):
+                    pokemon_data = db.get_pokemon_data(pt['id'])
+                    with team_cols[i]:
+                        img_url = pokemon_data['image_url']
+                        st.image(img_url, use_container_width=True)
+                        st.markdown(f"<div style='text-align: center; font-size: 0.8rem; margin-bottom: 8px;'>{pt['name']}</div>", unsafe_allow_html=True)
+                        if st.button("❌ 제외", key=f"remove_pt_{i}_{pt['name']}", use_container_width=True):
+                            st.session_state.player_team.pop(i)
+                            st.rerun()
+            
+            st.markdown("<hr>", unsafe_allow_html=True)
+
             if selected_name:
                 st.subheader("기술 선택")
                 pokemon_data = st.session_state.selected_pokemon_data
@@ -204,13 +308,25 @@ def show():
                 st.write("---")
                 if len(selected_move_names) == 4:
                     st.success("모든 기술 선택 완료!")
-                    if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
-                        four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
-                        player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
-                        start_custom_battle(player_custom, leader_name=selected_leader)
-                        st.rerun()
+                    if len(st.session_state.player_team) < 3:
+                        if st.button("➕ 엔트리에 추가하기", use_container_width=True, type="secondary"):
+                            four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
+                            player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
+                            st.session_state.player_team.append(player_custom)
+                            st.session_state.selected_moves = []
+                            st.session_state.last_selected_id = None
+                            st.rerun()
+                    else:
+                        st.warning("파티가 가득 찼습니다! (최대 3마리)")
                 else:
                     st.info(f"기술을 {4 - len(selected_move_names)}개 더 선택해주세요.")
+
+            if len(st.session_state.player_team) > 0:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
+                    start_custom_battle(st.session_state.player_team, leader_name=selected_leader)
+                    db.close()
+                    st.rerun()
     
     else:
         # 배틀 진행 화면 (battle.py 로직과 유사)
@@ -248,13 +364,19 @@ def show():
                         p_state = msg_event["player_state"]
                         b_state = msg_event["bot_state"]
                         
+                        if msg_event.get("bot_switch"):
+                            next_idx = msg_event["bot_next_index"]
+                            st.session_state.battle_bot = st.session_state.bot_party[next_idx]
+                            bot = st.session_state.battle_bot
+                        
                         player.current_hp = p_state.get("current_hp", player.max_hp)
                         player.attack_stage = p_state.get("attack_stage", 0)
                         player.defense_stage = p_state.get("defense_stage", 0)
                         player.sp_attack_stage = p_state.get("sp_attack_stage", 0)
                         player.sp_defense_stage = p_state.get("sp_defense_stage", 0)
                         player.speed_stage = p_state.get("speed_stage", 0)
-                        if hasattr(player, 'ailment'): player.ailment = p_state.get("ailment")
+                        player.ailment = p_state.get("ailment")
+                        player.sleep_turns = p_state.get("sleep_turns", 0)
 
                         bot.current_hp = b_state.get("current_hp", bot.max_hp)
                         bot.attack_stage = b_state.get("attack_stage", 0)
@@ -262,7 +384,8 @@ def show():
                         bot.sp_attack_stage = b_state.get("sp_attack_stage", 0)
                         bot.sp_defense_stage = b_state.get("sp_defense_stage", 0)
                         bot.speed_stage = b_state.get("speed_stage", 0)
-                        if hasattr(bot, 'ailment'): bot.ailment = b_state.get("ailment")
+                        bot.ailment = b_state.get("ailment")
+                        bot.sleep_turns = b_state.get("sleep_turns", 0)
                         
                         # 2. UI 갱신
                         with player_placeholder:
@@ -276,23 +399,88 @@ def show():
                         st.session_state.battle_messages.append({"role": "assistant", "content": msg_text})
                         
                     st.session_state.pending_messages = []
+                    
+                    # 애니메이션 종료 후 상태 판별 (현재 player, bot은 최종 상태임)
+                    if bot.current_hp <= 0:
+                        alive_bots = [bp for bp in st.session_state.bot_party if bp.current_hp > 0]
+                        if not alive_bots:
+                            st.session_state.battle_over = True
+                            st.session_state.winner = "사용자"
+                            
+                    if player.current_hp <= 0:
+                        alive_players = [pp for pp in st.session_state.player_party if pp.current_hp > 0]
+                        if alive_players:
+                            st.session_state.waiting_for_switch = True
+                        else:
+                            st.session_state.battle_over = True
+                            st.session_state.winner = st.session_state.get("leader_name", "관장")
+                            
                     st.rerun()
 
                 if st.session_state.get("battle_over", False):
-                    st.info(f"배틀 종료. 승리: {st.session_state.winner}")
+                    winner = st.session_state.winner
+                    if winner == "사용자":
+                        st.success(f"🎉 체육관 관장 {st.session_state.leader_name}과(와)의 승부에서 이겼다!")
+                        st.balloons()
+                    else:
+                        st.error(f"💀 주인공에게는 싸울 수 있는 포켓몬이 없다! 주인공은 눈앞이 캄캄해졌다!")
 
             if not st.session_state.battle_over:
-                prompt = st.chat_input(f"{player.name}에게 명령을 내리세요!")
-                if prompt:
-                    st.session_state.battle_messages.append({"role": "user", "content": prompt})
-                    player_move = find_player_move(prompt, player)
-                    if not player_move:
-                        st.session_state.battle_messages.append({
-                            "role": "assistant", "content": f"사용 불가능한 기술입니다. 가능 기술: {' / '.join(m['name'] for m in player.moves)}"
-                        })
-                    else:
-                        process_turn(player_move)
-                    st.rerun()
+                # ----------------- 행동 UI -----------------
+                if st.session_state.get("waiting_for_switch"):
+                    st.warning("포켓몬이 쓰러졌습니다! 교체할 포켓몬을 선택해주세요.")
+                    party_cols = st.columns(len(st.session_state.player_party))
+                    for i, p_obj in enumerate(st.session_state.player_party):
+                        with party_cols[i]:
+                            disabled = (p_obj.current_hp <= 0 or p_obj.id == player.id)
+                            label = f"{p_obj.name} (HP {p_obj.current_hp})"
+                            if st.button(label, disabled=disabled, use_container_width=True, key=f"force_switch_{i}"):
+                                st.session_state.battle_player = st.session_state.player_party[i]
+                                st.session_state.waiting_for_switch = False
+                                
+                                new_player = st.session_state.battle_player
+                                st.session_state.battle_messages.append({
+                                    "role": "assistant", 
+                                    "content": f"가라! {new_player.name}!"
+                                })
+                                st.rerun()
+                else:
+                    st.write("---")
+                    st.subheader("무엇을 할까?")
+                    
+                    action_choice = st.radio("행동 선택", ["기술 사용", "포켓몬 교체"], horizontal=True, label_visibility="collapsed")
+                    
+                    if action_choice == "기술 사용":
+                        prompt = st.chat_input(f"{player.name}에게 명령을 내리세요!")
+                        if prompt:
+                            st.session_state.battle_messages.append({"role": "user", "content": prompt})
+                            player_move = find_player_action(prompt, player, st.session_state.player_party)
+                            if not player_move:
+                                st.session_state.battle_messages.append({
+                                    "role": "assistant", 
+                                    "content": f"사용 불가능한 명령입니다. 가능 기술: {' / '.join(m['name'] for m in player.moves)}"
+                                })
+                            elif player_move.get("category") == "switch":
+                                st.session_state.battle_messages.append({
+                                    "role": "assistant",
+                                    "content": "포켓몬 교체는 '포켓몬 교체' 메뉴를 이용해주세요."
+                                })
+                            else:
+                                process_turn(player_move)
+                            st.rerun()
+                            
+                    elif action_choice == "포켓몬 교체":
+                        st.write("교체할 포켓몬을 선택하세요 (교체 시 턴이 소모되며, 우선도가 가장 높습니다).")
+                        party_cols = st.columns(len(st.session_state.player_party))
+                        for i, p_obj in enumerate(st.session_state.player_party):
+                            with party_cols[i]:
+                                disabled = (p_obj.current_hp <= 0 or p_obj.id == player.id)
+                                label = f"{p_obj.name} (HP {p_obj.current_hp})"
+                                if st.button(label, disabled=disabled, use_container_width=True, key=f"switch_{i}"):
+                                    switch_action = {"name": f"{p_obj.name}(으)로 교체", "category": "switch", "target_index": i, "priority": 6}
+                                    st.session_state.battle_messages.append({"role": "user", "content": f"{p_obj.name}(으)로 교체!"})
+                                    process_turn(switch_action)
+                                    st.rerun()
 
 if __name__ == "__main__":
     show()
