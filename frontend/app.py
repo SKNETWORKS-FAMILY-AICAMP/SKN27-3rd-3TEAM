@@ -330,7 +330,7 @@ content_html = f"""
             <div class="sec-badge">Simulation Arena</div>
             <h2 class="sec-title">실전 배틀 시뮬레이터</h2>
             <p class="sec-desc">치열한 배틀 현장을 시뮬레이션 하세요. 상성 분석과 정밀한 데미지 계산기를 통해 상대의 허점을 찌르는 최적의 전략을 수립할 수 있습니다.</p>
-            <a href="/battle" target="_self" class="cta-btn">배틀 시뮬레이션</a>
+            <a href="/battle2" target="_self" class="cta-btn">배틀 시뮬레이션</a>
         </div>
         <div class="visual-box reveal-left">
             <img src="{ART}/6.png" class="main-artwork">

@@ -289,7 +289,8 @@ def process_moves():
             'min_hits': meta.get('min_hits'),
             'min_turns': meta.get('min_turns'),
             'stat_chance': meta.get('stat_chance'),
-            'stat_changes': [(stat_change['stat']['name'], stat_change['change']) for stat_change in m_data.get('stat_changes', [])]
+            'stat_changes': [(stat_change['stat']['name'], stat_change['change']) for stat_change in m_data.get('stat_changes', [])],
+            'target': m_data.get('target', {}).get('name') if m_data.get('target') else None
         })
     save_json(moves_list, "moves.json")
 

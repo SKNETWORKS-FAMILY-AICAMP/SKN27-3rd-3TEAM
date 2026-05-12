@@ -21,7 +21,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 2,
@@ -45,7 +46,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 3,
@@ -69,7 +71,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 4,
@@ -93,7 +96,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 5,
@@ -117,7 +121,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 6,
@@ -141,7 +146,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 7,
@@ -165,7 +171,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 8,
@@ -189,7 +196,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 9,
@@ -213,7 +221,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 10,
@@ -237,7 +246,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 11,
@@ -261,7 +271,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 12,
@@ -285,7 +296,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 13,
@@ -309,7 +321,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 14,
@@ -338,7 +351,8 @@
         "attack",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 15,
@@ -362,7 +376,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 16,
@@ -386,7 +401,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 17,
@@ -410,7 +426,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 18,
@@ -434,7 +451,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 19,
@@ -458,7 +476,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 20,
@@ -482,7 +501,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 21,
@@ -506,7 +526,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 22,
@@ -530,7 +551,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 23,
@@ -554,7 +576,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 24,
@@ -578,7 +601,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 25,
@@ -602,7 +626,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 26,
@@ -626,7 +651,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 27,
@@ -650,7 +676,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 28,
@@ -679,7 +706,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 29,
@@ -703,7 +731,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 30,
@@ -727,7 +756,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 31,
@@ -751,7 +781,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 32,
@@ -775,7 +806,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 33,
@@ -799,7 +831,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 34,
@@ -823,7 +856,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 35,
@@ -847,7 +881,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 36,
@@ -871,7 +906,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 37,
@@ -895,7 +931,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 38,
@@ -919,7 +956,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 39,
@@ -948,7 +986,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 40,
@@ -972,7 +1011,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 41,
@@ -996,7 +1036,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 42,
@@ -1020,7 +1061,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 43,
@@ -1049,7 +1091,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 44,
@@ -1073,7 +1116,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 45,
@@ -1102,7 +1146,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 46,
@@ -1126,7 +1171,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 47,
@@ -1150,7 +1196,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 48,
@@ -1174,7 +1221,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 49,
@@ -1198,7 +1246,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 50,
@@ -1222,7 +1271,8 @@
     "min_hits": null,
     "min_turns": 4,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 51,
@@ -1251,7 +1301,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 52,
@@ -1275,7 +1326,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 53,
@@ -1299,7 +1351,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 54,
@@ -1323,7 +1376,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 55,
@@ -1347,7 +1401,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 56,
@@ -1371,7 +1426,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 57,
@@ -1395,7 +1451,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 58,
@@ -1419,7 +1476,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 59,
@@ -1443,7 +1501,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 60,
@@ -1467,7 +1526,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 61,
@@ -1496,7 +1556,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 62,
@@ -1525,7 +1586,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 63,
@@ -1549,7 +1611,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 64,
@@ -1573,7 +1636,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 65,
@@ -1597,7 +1661,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 66,
@@ -1621,7 +1686,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 67,
@@ -1645,7 +1711,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 68,
@@ -1669,7 +1736,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "specific-move"
   },
   {
     "id": 69,
@@ -1693,7 +1761,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 70,
@@ -1717,7 +1786,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 71,
@@ -1741,7 +1811,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 72,
@@ -1765,7 +1836,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 73,
@@ -1789,7 +1861,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 74,
@@ -1822,7 +1895,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 75,
@@ -1846,7 +1920,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 76,
@@ -1870,7 +1945,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 77,
@@ -1894,7 +1970,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 78,
@@ -1918,7 +1995,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 79,
@@ -1942,7 +2020,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 80,
@@ -1966,7 +2045,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 81,
@@ -1995,7 +2075,8 @@
         "speed",
         -2
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 82,
@@ -2019,7 +2100,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 83,
@@ -2043,7 +2125,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 84,
@@ -2067,7 +2150,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 85,
@@ -2091,7 +2175,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 86,
@@ -2115,7 +2200,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 87,
@@ -2139,7 +2225,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 88,
@@ -2163,7 +2250,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 89,
@@ -2187,7 +2275,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 90,
@@ -2211,7 +2300,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 91,
@@ -2235,7 +2325,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 92,
@@ -2259,7 +2350,8 @@
     "min_hits": null,
     "min_turns": 15,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 93,
@@ -2283,7 +2375,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 94,
@@ -2312,7 +2405,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 95,
@@ -2336,7 +2430,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 96,
@@ -2365,7 +2460,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 97,
@@ -2394,7 +2490,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 98,
@@ -2418,7 +2515,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 99,
@@ -2442,7 +2540,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 100,
@@ -2466,7 +2565,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 101,
@@ -2490,7 +2590,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 102,
@@ -2514,7 +2615,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 103,
@@ -2543,7 +2645,8 @@
         "defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 104,
@@ -2572,7 +2675,8 @@
         "evasion",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 105,
@@ -2596,7 +2700,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 106,
@@ -2625,7 +2730,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 107,
@@ -2654,7 +2760,8 @@
         "evasion",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 108,
@@ -2683,7 +2790,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 109,
@@ -2707,7 +2815,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 110,
@@ -2736,7 +2845,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 111,
@@ -2765,7 +2875,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 112,
@@ -2794,7 +2905,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 113,
@@ -2818,7 +2930,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 114,
@@ -2842,7 +2955,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 115,
@@ -2866,7 +2980,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 116,
@@ -2890,7 +3005,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 117,
@@ -2914,7 +3030,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 118,
@@ -2938,7 +3055,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 119,
@@ -2962,7 +3080,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 120,
@@ -2986,7 +3105,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 121,
@@ -3010,7 +3130,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 122,
@@ -3034,7 +3155,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 123,
@@ -3058,7 +3180,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 124,
@@ -3082,7 +3205,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 125,
@@ -3106,7 +3230,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 126,
@@ -3130,7 +3255,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 127,
@@ -3154,7 +3280,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 128,
@@ -3178,7 +3305,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 129,
@@ -3202,7 +3330,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 130,
@@ -3226,7 +3355,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 131,
@@ -3250,7 +3380,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 132,
@@ -3279,7 +3410,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 133,
@@ -3308,7 +3440,8 @@
         "special-defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 134,
@@ -3337,7 +3470,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 135,
@@ -3361,7 +3495,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 136,
@@ -3385,7 +3520,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 137,
@@ -3409,7 +3545,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 138,
@@ -3433,7 +3570,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 139,
@@ -3457,7 +3595,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 140,
@@ -3481,7 +3620,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 141,
@@ -3505,7 +3645,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 142,
@@ -3529,7 +3670,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 143,
@@ -3553,7 +3695,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 144,
@@ -3577,7 +3720,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 145,
@@ -3606,7 +3750,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 146,
@@ -3630,7 +3775,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 147,
@@ -3654,7 +3800,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 148,
@@ -3683,7 +3830,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 149,
@@ -3707,7 +3855,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 150,
@@ -3731,7 +3880,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 151,
@@ -3760,7 +3910,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 152,
@@ -3784,7 +3935,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 153,
@@ -3808,7 +3960,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 154,
@@ -3832,7 +3985,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 155,
@@ -3856,7 +4010,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 156,
@@ -3880,7 +4035,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 157,
@@ -3904,7 +4060,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 158,
@@ -3928,7 +4085,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 159,
@@ -3957,7 +4115,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 160,
@@ -3981,7 +4140,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 161,
@@ -4005,7 +4165,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 162,
@@ -4029,7 +4190,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 163,
@@ -4053,7 +4215,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 164,
@@ -4077,7 +4240,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 165,
@@ -4101,7 +4265,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 166,
@@ -4125,7 +4290,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 167,
@@ -4149,7 +4315,8 @@
     "min_hits": 3,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 168,
@@ -4173,7 +4340,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 169,
@@ -4197,7 +4365,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 170,
@@ -4221,7 +4390,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 171,
@@ -4245,7 +4415,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 172,
@@ -4269,7 +4440,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 173,
@@ -4293,7 +4465,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 174,
@@ -4317,7 +4490,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "specific-move"
   },
   {
     "id": 175,
@@ -4341,7 +4515,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 176,
@@ -4365,7 +4540,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 177,
@@ -4389,7 +4565,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 178,
@@ -4418,7 +4595,8 @@
         "speed",
         -2
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 179,
@@ -4442,7 +4620,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 180,
@@ -4466,7 +4645,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 181,
@@ -4490,7 +4670,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 182,
@@ -4514,7 +4695,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 183,
@@ -4538,7 +4720,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 184,
@@ -4567,7 +4750,8 @@
         "speed",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 185,
@@ -4591,7 +4775,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 186,
@@ -4615,7 +4800,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 187,
@@ -4639,7 +4825,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 188,
@@ -4663,7 +4850,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 189,
@@ -4692,7 +4880,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 190,
@@ -4721,7 +4910,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 191,
@@ -4745,7 +4935,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "opponents-field"
   },
   {
     "id": 192,
@@ -4769,7 +4960,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 193,
@@ -4793,7 +4985,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 194,
@@ -4817,7 +5010,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 195,
@@ -4841,7 +5035,8 @@
     "min_hits": null,
     "min_turns": 4,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-pokemon"
   },
   {
     "id": 196,
@@ -4870,7 +5065,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 197,
@@ -4894,7 +5090,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 198,
@@ -4918,7 +5115,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 199,
@@ -4942,7 +5140,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 200,
@@ -4966,7 +5165,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 201,
@@ -4990,7 +5190,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 202,
@@ -5014,7 +5215,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 203,
@@ -5038,7 +5240,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 204,
@@ -5067,7 +5270,8 @@
         "attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 205,
@@ -5091,7 +5295,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 206,
@@ -5115,7 +5320,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 207,
@@ -5144,7 +5350,8 @@
         "attack",
         2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 208,
@@ -5168,7 +5375,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 209,
@@ -5192,7 +5400,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 210,
@@ -5216,7 +5425,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 211,
@@ -5245,7 +5455,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 212,
@@ -5269,7 +5480,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 213,
@@ -5293,7 +5505,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 214,
@@ -5317,7 +5530,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 215,
@@ -5341,7 +5555,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user-and-allies"
   },
   {
     "id": 216,
@@ -5365,7 +5580,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 217,
@@ -5389,7 +5605,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 218,
@@ -5413,7 +5630,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 219,
@@ -5437,7 +5655,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 220,
@@ -5461,7 +5680,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 221,
@@ -5485,7 +5705,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 222,
@@ -5509,7 +5730,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 223,
@@ -5533,7 +5755,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 224,
@@ -5557,7 +5780,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 225,
@@ -5581,7 +5805,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 226,
@@ -5605,7 +5830,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 227,
@@ -5629,7 +5855,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 228,
@@ -5653,7 +5880,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 229,
@@ -5682,7 +5910,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 230,
@@ -5711,7 +5940,8 @@
         "evasion",
         -2
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 231,
@@ -5740,7 +5970,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 232,
@@ -5769,7 +6000,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 233,
@@ -5793,7 +6025,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 234,
@@ -5817,7 +6050,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 235,
@@ -5841,7 +6075,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 236,
@@ -5865,7 +6100,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 237,
@@ -5889,7 +6125,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 238,
@@ -5913,7 +6150,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 239,
@@ -5937,7 +6175,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 240,
@@ -5961,7 +6200,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 241,
@@ -5985,7 +6225,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 242,
@@ -6014,7 +6255,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 243,
@@ -6038,7 +6280,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "specific-move"
   },
   {
     "id": 244,
@@ -6062,7 +6305,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 245,
@@ -6086,7 +6330,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 246,
@@ -6131,7 +6376,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 247,
@@ -6160,7 +6406,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 248,
@@ -6184,7 +6431,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 249,
@@ -6213,7 +6461,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 250,
@@ -6237,7 +6486,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 251,
@@ -6261,7 +6511,8 @@
     "min_hits": 6,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 252,
@@ -6285,7 +6536,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 253,
@@ -6309,7 +6561,8 @@
     "min_hits": null,
     "min_turns": 3,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 254,
@@ -6342,7 +6595,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 255,
@@ -6366,7 +6620,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 256,
@@ -6390,7 +6645,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 257,
@@ -6414,7 +6670,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 258,
@@ -6438,7 +6695,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 259,
@@ -6462,7 +6720,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 260,
@@ -6491,7 +6750,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 261,
@@ -6515,7 +6775,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 262,
@@ -6548,7 +6809,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 263,
@@ -6572,7 +6834,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 264,
@@ -6596,7 +6859,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 265,
@@ -6620,7 +6884,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 266,
@@ -6644,7 +6909,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 267,
@@ -6668,7 +6934,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 268,
@@ -6697,7 +6964,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 269,
@@ -6721,7 +6989,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 270,
@@ -6745,7 +7014,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "ally"
   },
   {
     "id": 271,
@@ -6769,7 +7039,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 272,
@@ -6793,7 +7064,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 273,
@@ -6817,7 +7089,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 274,
@@ -6841,7 +7114,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 275,
@@ -6865,7 +7139,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 276,
@@ -6898,7 +7173,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 277,
@@ -6922,7 +7198,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 278,
@@ -6946,7 +7223,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 279,
@@ -6970,7 +7248,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 280,
@@ -6994,7 +7273,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 281,
@@ -7018,7 +7298,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 282,
@@ -7042,7 +7323,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 283,
@@ -7066,7 +7348,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 284,
@@ -7090,7 +7373,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 285,
@@ -7114,7 +7398,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 286,
@@ -7138,7 +7423,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 287,
@@ -7162,7 +7448,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 288,
@@ -7186,7 +7473,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 289,
@@ -7210,7 +7498,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 290,
@@ -7234,7 +7523,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 291,
@@ -7258,7 +7548,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 292,
@@ -7282,7 +7573,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 293,
@@ -7306,7 +7598,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 294,
@@ -7335,7 +7628,8 @@
         "special-attack",
         3
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 295,
@@ -7364,7 +7658,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 296,
@@ -7393,7 +7688,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 297,
@@ -7422,7 +7718,8 @@
         "attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 298,
@@ -7446,7 +7743,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 299,
@@ -7470,7 +7768,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 300,
@@ -7494,7 +7793,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 301,
@@ -7518,7 +7818,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 302,
@@ -7542,7 +7843,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 303,
@@ -7566,7 +7868,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 304,
@@ -7590,7 +7893,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 305,
@@ -7614,7 +7918,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 306,
@@ -7643,7 +7948,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 307,
@@ -7667,7 +7973,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 308,
@@ -7691,7 +7998,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 309,
@@ -7720,7 +8028,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 310,
@@ -7744,7 +8053,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 311,
@@ -7768,7 +8078,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 312,
@@ -7792,7 +8103,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user-and-allies"
   },
   {
     "id": 313,
@@ -7821,7 +8133,8 @@
         "special-defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 314,
@@ -7845,7 +8158,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 315,
@@ -7874,7 +8188,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 316,
@@ -7898,7 +8213,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 317,
@@ -7927,7 +8243,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 318,
@@ -7972,7 +8289,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 319,
@@ -8001,7 +8319,8 @@
         "special-defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 320,
@@ -8025,7 +8344,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 321,
@@ -8058,7 +8378,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 322,
@@ -8091,7 +8412,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 323,
@@ -8115,7 +8437,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 324,
@@ -8139,7 +8462,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 325,
@@ -8163,7 +8487,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 326,
@@ -8187,7 +8512,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 327,
@@ -8211,7 +8537,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 328,
@@ -8235,7 +8562,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 329,
@@ -8259,7 +8587,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 330,
@@ -8288,7 +8617,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 331,
@@ -8312,7 +8642,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 332,
@@ -8336,7 +8667,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 333,
@@ -8360,7 +8692,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 334,
@@ -8389,7 +8722,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 335,
@@ -8413,7 +8747,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 336,
@@ -8442,7 +8777,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "user-and-allies"
   },
   {
     "id": 337,
@@ -8466,7 +8802,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 338,
@@ -8490,7 +8827,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 339,
@@ -8523,7 +8861,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 340,
@@ -8547,7 +8886,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 341,
@@ -8576,7 +8916,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 342,
@@ -8600,7 +8941,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 343,
@@ -8624,7 +8966,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 344,
@@ -8648,7 +8991,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 345,
@@ -8672,7 +9016,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 346,
@@ -8696,7 +9041,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 347,
@@ -8729,7 +9075,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 348,
@@ -8753,7 +9100,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 349,
@@ -8786,7 +9134,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 350,
@@ -8810,7 +9159,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 351,
@@ -8834,7 +9184,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 352,
@@ -8858,7 +9209,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 353,
@@ -8882,7 +9234,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 354,
@@ -8911,7 +9264,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 355,
@@ -8935,7 +9289,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 356,
@@ -8959,7 +9314,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 357,
@@ -8983,7 +9339,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 358,
@@ -9007,7 +9364,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 359,
@@ -9036,7 +9394,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 360,
@@ -9060,7 +9419,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 361,
@@ -9084,7 +9444,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 362,
@@ -9108,7 +9469,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 363,
@@ -9132,7 +9494,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 364,
@@ -9156,7 +9519,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 365,
@@ -9180,7 +9544,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 366,
@@ -9204,7 +9569,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 367,
@@ -9228,7 +9594,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user-or-ally"
   },
   {
     "id": 368,
@@ -9252,7 +9619,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "specific-move"
   },
   {
     "id": 369,
@@ -9276,7 +9644,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 370,
@@ -9309,7 +9678,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 371,
@@ -9333,7 +9703,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 372,
@@ -9357,7 +9728,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 373,
@@ -9381,7 +9753,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 374,
@@ -9405,7 +9778,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 375,
@@ -9429,7 +9803,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 376,
@@ -9453,7 +9828,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 377,
@@ -9477,7 +9853,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 378,
@@ -9501,7 +9878,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 379,
@@ -9525,7 +9903,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 380,
@@ -9549,7 +9928,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 381,
@@ -9573,7 +9953,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 382,
@@ -9597,7 +9978,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 383,
@@ -9621,7 +10003,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 384,
@@ -9645,7 +10028,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 385,
@@ -9669,7 +10053,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 386,
@@ -9693,7 +10078,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 387,
@@ -9717,7 +10103,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 388,
@@ -9741,7 +10128,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 389,
@@ -9765,7 +10153,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 390,
@@ -9789,7 +10178,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "opponents-field"
   },
   {
     "id": 391,
@@ -9813,7 +10203,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 392,
@@ -9837,7 +10228,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 393,
@@ -9861,7 +10253,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 394,
@@ -9885,7 +10278,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 395,
@@ -9909,7 +10303,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 396,
@@ -9933,7 +10328,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 397,
@@ -9962,7 +10358,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 398,
@@ -9986,7 +10383,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 399,
@@ -10010,7 +10408,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 400,
@@ -10034,7 +10433,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 401,
@@ -10058,7 +10458,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 402,
@@ -10082,7 +10483,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 403,
@@ -10106,7 +10508,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 404,
@@ -10130,7 +10533,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 405,
@@ -10159,7 +10563,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 406,
@@ -10183,7 +10588,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 407,
@@ -10207,7 +10613,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 408,
@@ -10231,7 +10638,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 409,
@@ -10255,7 +10663,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 410,
@@ -10279,7 +10688,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 411,
@@ -10308,7 +10718,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 412,
@@ -10337,7 +10748,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 413,
@@ -10361,7 +10773,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 414,
@@ -10390,7 +10803,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 415,
@@ -10414,7 +10828,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 416,
@@ -10438,7 +10853,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 417,
@@ -10467,7 +10883,8 @@
         "special-attack",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 418,
@@ -10491,7 +10908,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 419,
@@ -10515,7 +10933,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 420,
@@ -10539,7 +10958,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 421,
@@ -10563,7 +10983,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 422,
@@ -10587,7 +11008,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 423,
@@ -10611,7 +11033,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 424,
@@ -10635,7 +11058,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 425,
@@ -10659,7 +11083,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 426,
@@ -10688,7 +11113,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 427,
@@ -10712,7 +11138,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 428,
@@ -10736,7 +11163,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 429,
@@ -10765,7 +11193,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 430,
@@ -10794,7 +11223,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 431,
@@ -10818,7 +11248,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 432,
@@ -10847,7 +11278,8 @@
         "evasion",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 433,
@@ -10871,7 +11303,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 434,
@@ -10900,7 +11333,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 435,
@@ -10924,7 +11358,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 436,
@@ -10948,7 +11383,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 437,
@@ -10977,7 +11413,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 438,
@@ -11001,7 +11438,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 439,
@@ -11025,7 +11463,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 440,
@@ -11049,7 +11488,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 441,
@@ -11073,7 +11513,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 442,
@@ -11097,7 +11538,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 443,
@@ -11121,7 +11563,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 444,
@@ -11145,7 +11588,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 445,
@@ -11174,7 +11618,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 446,
@@ -11198,7 +11643,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "opponents-field"
   },
   {
     "id": 447,
@@ -11222,7 +11668,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 448,
@@ -11246,7 +11693,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 449,
@@ -11270,7 +11718,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 450,
@@ -11294,7 +11743,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 451,
@@ -11323,7 +11773,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 452,
@@ -11347,7 +11798,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 453,
@@ -11371,7 +11823,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 454,
@@ -11395,7 +11848,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 455,
@@ -11428,7 +11882,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 456,
@@ -11452,7 +11907,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 457,
@@ -11476,7 +11932,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 458,
@@ -11500,7 +11957,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 459,
@@ -11524,7 +11982,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 460,
@@ -11548,7 +12007,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 461,
@@ -11572,7 +12032,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 462,
@@ -11596,7 +12057,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 463,
@@ -11620,7 +12082,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 464,
@@ -11644,7 +12107,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 465,
@@ -11673,7 +12137,8 @@
         "special-defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 466,
@@ -11718,7 +12183,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 467,
@@ -11742,7 +12208,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 468,
@@ -11775,7 +12242,8 @@
         "accuracy",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 469,
@@ -11799,7 +12267,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 470,
@@ -11823,7 +12292,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 471,
@@ -11847,7 +12317,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 472,
@@ -11871,7 +12342,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 473,
@@ -11895,7 +12367,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 474,
@@ -11919,7 +12392,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 475,
@@ -11948,7 +12422,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 476,
@@ -11972,7 +12447,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 477,
@@ -11996,7 +12472,8 @@
     "min_hits": null,
     "min_turns": 3,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 478,
@@ -12020,7 +12497,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 479,
@@ -12044,7 +12522,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 480,
@@ -12068,7 +12547,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 481,
@@ -12092,7 +12572,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 482,
@@ -12116,7 +12597,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 483,
@@ -12153,7 +12635,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 484,
@@ -12177,7 +12660,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 485,
@@ -12201,7 +12685,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 486,
@@ -12225,7 +12710,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 487,
@@ -12249,7 +12735,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 488,
@@ -12278,7 +12765,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 489,
@@ -12315,7 +12803,8 @@
         "accuracy",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 490,
@@ -12344,7 +12833,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 491,
@@ -12373,7 +12863,8 @@
         "special-defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 492,
@@ -12397,7 +12888,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 493,
@@ -12421,7 +12913,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 494,
@@ -12445,7 +12938,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 495,
@@ -12469,7 +12963,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 496,
@@ -12493,7 +12988,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 497,
@@ -12517,7 +13013,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 498,
@@ -12541,7 +13038,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 499,
@@ -12565,7 +13063,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 500,
@@ -12589,7 +13088,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 501,
@@ -12613,7 +13113,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 502,
@@ -12637,7 +13138,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 503,
@@ -12661,7 +13163,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 504,
@@ -12706,7 +13209,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 505,
@@ -12730,7 +13234,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 506,
@@ -12754,7 +13259,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 507,
@@ -12778,7 +13284,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 508,
@@ -12811,7 +13318,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 509,
@@ -12835,7 +13343,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 510,
@@ -12859,7 +13368,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 511,
@@ -12883,7 +13393,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 512,
@@ -12907,7 +13418,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 513,
@@ -12931,7 +13443,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 514,
@@ -12955,7 +13468,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 515,
@@ -12979,7 +13493,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 516,
@@ -13003,7 +13518,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 517,
@@ -13027,7 +13543,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 518,
@@ -13051,7 +13568,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 519,
@@ -13075,7 +13593,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 520,
@@ -13099,7 +13618,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 521,
@@ -13123,7 +13643,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 522,
@@ -13152,7 +13673,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 523,
@@ -13181,7 +13703,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-other-pokemon"
   },
   {
     "id": 524,
@@ -13205,7 +13728,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 525,
@@ -13229,7 +13753,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 526,
@@ -13262,7 +13787,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 527,
@@ -13291,7 +13817,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 528,
@@ -13315,7 +13842,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 529,
@@ -13339,7 +13867,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 530,
@@ -13363,7 +13892,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 531,
@@ -13387,7 +13917,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 532,
@@ -13411,7 +13942,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 533,
@@ -13435,7 +13967,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 534,
@@ -13464,7 +13997,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 535,
@@ -13488,7 +14022,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 536,
@@ -13517,7 +14052,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 537,
@@ -13541,7 +14077,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 538,
@@ -13570,7 +14107,8 @@
         "defense",
         3
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 539,
@@ -13599,7 +14137,8 @@
         "accuracy",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 540,
@@ -13623,7 +14162,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 541,
@@ -13647,7 +14187,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 542,
@@ -13671,7 +14212,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 543,
@@ -13695,7 +14237,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 544,
@@ -13719,7 +14262,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 545,
@@ -13743,7 +14287,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 546,
@@ -13767,7 +14312,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 547,
@@ -13791,7 +14337,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 548,
@@ -13815,7 +14362,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 549,
@@ -13844,7 +14392,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 550,
@@ -13868,7 +14417,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 551,
@@ -13892,7 +14442,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 552,
@@ -13921,7 +14472,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 553,
@@ -13945,7 +14497,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 554,
@@ -13969,7 +14522,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 555,
@@ -13998,7 +14552,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 556,
@@ -14022,7 +14577,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 557,
@@ -14059,7 +14615,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 558,
@@ -14083,7 +14640,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 559,
@@ -14107,7 +14665,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 560,
@@ -14131,7 +14690,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 561,
@@ -14155,7 +14715,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 562,
@@ -14179,7 +14740,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 563,
@@ -14212,7 +14774,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "all-pokemon"
   },
   {
     "id": 564,
@@ -14236,7 +14799,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "opponents-field"
   },
   {
     "id": 565,
@@ -14260,7 +14824,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 566,
@@ -14284,7 +14849,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 567,
@@ -14308,7 +14874,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 568,
@@ -14341,7 +14908,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 569,
@@ -14365,7 +14933,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 570,
@@ -14389,7 +14958,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 571,
@@ -14413,7 +14983,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 572,
@@ -14437,7 +15008,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 573,
@@ -14461,7 +15033,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 574,
@@ -14485,7 +15058,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 575,
@@ -14518,7 +15092,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 576,
@@ -14542,7 +15117,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 577,
@@ -14566,7 +15142,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 578,
@@ -14590,7 +15167,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 579,
@@ -14619,7 +15197,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "all-pokemon"
   },
   {
     "id": 580,
@@ -14643,7 +15222,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 581,
@@ -14667,7 +15247,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 582,
@@ -14691,7 +15272,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 583,
@@ -14720,7 +15302,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 584,
@@ -14744,7 +15327,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 585,
@@ -14773,7 +15357,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 586,
@@ -14797,7 +15382,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 587,
@@ -14821,7 +15407,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 588,
@@ -14845,7 +15432,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 589,
@@ -14874,7 +15462,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 590,
@@ -14903,7 +15492,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 591,
@@ -14932,7 +15522,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 592,
@@ -14956,7 +15547,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 593,
@@ -14980,7 +15572,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 594,
@@ -15004,7 +15597,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 595,
@@ -15033,7 +15627,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 596,
@@ -15057,7 +15652,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 597,
@@ -15086,7 +15682,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "ally"
   },
   {
     "id": 598,
@@ -15115,7 +15712,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 599,
@@ -15152,7 +15750,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 600,
@@ -15176,7 +15775,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 601,
@@ -15213,7 +15813,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 602,
@@ -15246,7 +15847,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "user-and-allies"
   },
   {
     "id": 603,
@@ -15270,7 +15872,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 604,
@@ -15294,7 +15897,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 605,
@@ -15318,7 +15922,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 606,
@@ -15342,7 +15947,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 607,
@@ -15366,7 +15972,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "ally"
   },
   {
     "id": 608,
@@ -15395,7 +16002,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 609,
@@ -15419,7 +16027,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 610,
@@ -15443,7 +16052,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 611,
@@ -15467,7 +16077,8 @@
     "min_hits": null,
     "min_turns": 4,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 612,
@@ -15496,7 +16107,8 @@
         "attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 613,
@@ -15520,7 +16132,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 614,
@@ -15544,7 +16157,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 615,
@@ -15568,7 +16182,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 616,
@@ -15592,7 +16207,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 617,
@@ -15616,7 +16232,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 618,
@@ -15640,7 +16257,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 619,
@@ -15664,7 +16282,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 620,
@@ -15697,7 +16316,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 621,
@@ -15726,7 +16346,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 622,
@@ -15750,7 +16371,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 623,
@@ -15774,7 +16396,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 624,
@@ -15798,7 +16421,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 625,
@@ -15822,7 +16446,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 626,
@@ -15846,7 +16471,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 627,
@@ -15870,7 +16496,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 628,
@@ -15894,7 +16521,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 629,
@@ -15918,7 +16546,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 630,
@@ -15942,7 +16571,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 631,
@@ -15966,7 +16596,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 632,
@@ -15990,7 +16621,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 633,
@@ -16014,7 +16646,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 634,
@@ -16038,7 +16671,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 635,
@@ -16062,7 +16696,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 636,
@@ -16086,7 +16721,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 637,
@@ -16110,7 +16746,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 638,
@@ -16134,7 +16771,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 639,
@@ -16158,7 +16796,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 640,
@@ -16182,7 +16821,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 641,
@@ -16206,7 +16846,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 642,
@@ -16230,7 +16871,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 643,
@@ -16254,7 +16896,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 644,
@@ -16278,7 +16921,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 645,
@@ -16302,7 +16946,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 646,
@@ -16326,7 +16971,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 647,
@@ -16350,7 +16996,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 648,
@@ -16374,7 +17021,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 649,
@@ -16398,7 +17046,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 650,
@@ -16422,7 +17071,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 651,
@@ -16446,7 +17096,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 652,
@@ -16470,7 +17121,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 653,
@@ -16494,7 +17146,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 654,
@@ -16518,7 +17171,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 655,
@@ -16542,7 +17196,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 656,
@@ -16566,7 +17221,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 657,
@@ -16590,7 +17246,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 658,
@@ -16614,7 +17271,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 659,
@@ -16638,7 +17296,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 660,
@@ -16662,7 +17321,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 661,
@@ -16686,7 +17346,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 662,
@@ -16710,7 +17371,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 663,
@@ -16734,7 +17396,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 664,
@@ -16758,7 +17421,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 665,
@@ -16787,7 +17451,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 666,
@@ -16811,7 +17476,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 667,
@@ -16835,7 +17501,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 668,
@@ -16864,7 +17531,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 669,
@@ -16888,7 +17556,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 670,
@@ -16912,7 +17581,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 671,
@@ -16936,7 +17606,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 672,
@@ -16965,7 +17636,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 673,
@@ -16989,7 +17661,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 674,
@@ -17022,7 +17695,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "user-and-allies"
   },
   {
     "id": 675,
@@ -17046,7 +17720,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 676,
@@ -17070,7 +17745,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 677,
@@ -17094,7 +17770,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 678,
@@ -17118,7 +17795,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 679,
@@ -17147,7 +17825,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 680,
@@ -17176,7 +17855,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 681,
@@ -17200,7 +17880,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 682,
@@ -17224,7 +17905,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 683,
@@ -17248,7 +17930,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 684,
@@ -17272,7 +17955,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 685,
@@ -17296,7 +17980,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 686,
@@ -17320,7 +18005,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 687,
@@ -17344,7 +18030,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 688,
@@ -17373,7 +18060,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 689,
@@ -17397,7 +18085,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 690,
@@ -17421,7 +18110,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 691,
@@ -17450,7 +18140,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 692,
@@ -17474,7 +18165,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 693,
@@ -17498,7 +18190,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 694,
@@ -17522,7 +18215,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "users-field"
   },
   {
     "id": 695,
@@ -17546,7 +18240,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 696,
@@ -17570,7 +18265,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 697,
@@ -17594,7 +18290,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 698,
@@ -17618,7 +18315,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 699,
@@ -17642,7 +18340,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 700,
@@ -17666,7 +18365,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 701,
@@ -17690,7 +18390,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 702,
@@ -17735,7 +18436,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 703,
@@ -17759,7 +18461,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 704,
@@ -17783,7 +18486,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 705,
@@ -17812,7 +18516,8 @@
         "special-attack",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 706,
@@ -17836,7 +18541,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 707,
@@ -17860,7 +18566,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 708,
@@ -17889,7 +18596,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 709,
@@ -17913,7 +18621,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 710,
@@ -17942,7 +18651,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 711,
@@ -17966,7 +18676,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 712,
@@ -17990,7 +18701,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 713,
@@ -18014,7 +18726,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 714,
@@ -18038,7 +18751,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 715,
@@ -18071,7 +18785,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 716,
@@ -18095,7 +18810,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 717,
@@ -18119,7 +18835,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 718,
@@ -18143,7 +18860,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 719,
@@ -18167,7 +18885,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 720,
@@ -18191,7 +18910,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 721,
@@ -18215,7 +18935,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 722,
@@ -18239,7 +18960,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 723,
@@ -18263,7 +18985,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 724,
@@ -18287,7 +19010,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 725,
@@ -18311,7 +19035,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 726,
@@ -18335,7 +19060,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 727,
@@ -18359,7 +19085,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 728,
@@ -18404,7 +19131,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 729,
@@ -18433,7 +19161,8 @@
         "evasion",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 730,
@@ -18457,7 +19186,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 731,
@@ -18481,7 +19211,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 732,
@@ -18505,7 +19236,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 733,
@@ -18529,7 +19261,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 734,
@@ -18553,7 +19286,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 735,
@@ -18577,7 +19311,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 736,
@@ -18601,7 +19336,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 737,
@@ -18625,7 +19361,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 738,
@@ -18649,7 +19386,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 739,
@@ -18673,7 +19411,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 740,
@@ -18697,7 +19436,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 741,
@@ -18721,7 +19461,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 742,
@@ -18745,7 +19486,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 743,
@@ -18769,7 +19511,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 744,
@@ -18793,7 +19536,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 745,
@@ -18817,7 +19561,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 746,
@@ -18841,7 +19586,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 747,
@@ -18870,7 +19616,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 748,
@@ -18915,7 +19662,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 749,
@@ -18944,7 +19692,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 750,
@@ -18968,7 +19717,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 751,
@@ -18992,7 +19742,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 752,
@@ -19016,7 +19767,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-pokemon"
   },
   {
     "id": 753,
@@ -19040,7 +19792,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 754,
@@ -19064,7 +19817,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 755,
@@ -19088,7 +19842,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 756,
@@ -19112,7 +19867,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 757,
@@ -19136,7 +19892,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 758,
@@ -19160,7 +19917,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 759,
@@ -19184,7 +19942,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 760,
@@ -19208,7 +19967,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 761,
@@ -19232,7 +19992,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 762,
@@ -19256,7 +20017,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 763,
@@ -19280,7 +20042,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 764,
@@ -19304,7 +20067,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 765,
@@ -19328,7 +20092,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 766,
@@ -19352,7 +20117,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 767,
@@ -19376,7 +20142,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 768,
@@ -19400,7 +20167,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 769,
@@ -19424,7 +20192,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 770,
@@ -19448,7 +20217,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 771,
@@ -19472,7 +20242,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 772,
@@ -19496,7 +20267,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 773,
@@ -19520,7 +20292,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 774,
@@ -19544,7 +20317,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon-me-first"
   },
   {
     "id": 775,
@@ -19589,7 +20363,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 776,
@@ -19613,7 +20388,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 777,
@@ -19646,7 +20422,8 @@
         "special-attack",
         2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 778,
@@ -19675,7 +20452,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 779,
@@ -19699,7 +20477,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 780,
@@ -19723,7 +20502,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 781,
@@ -19747,7 +20527,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 782,
@@ -19771,7 +20552,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 783,
@@ -19800,7 +20582,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 784,
@@ -19829,7 +20612,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 785,
@@ -19853,7 +20637,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 786,
@@ -19877,7 +20662,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 787,
@@ -19906,7 +20692,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 788,
@@ -19935,7 +20722,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 789,
@@ -19964,7 +20752,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 790,
@@ -19988,7 +20777,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 791,
@@ -20012,7 +20802,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user-and-allies"
   },
   {
     "id": 792,
@@ -20036,7 +20827,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 793,
@@ -20060,7 +20852,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 794,
@@ -20084,7 +20877,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 795,
@@ -20108,7 +20902,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 796,
@@ -20132,7 +20927,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 797,
@@ -20156,7 +20952,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 798,
@@ -20180,7 +20977,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 799,
@@ -20204,7 +21002,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 800,
@@ -20228,7 +21027,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 801,
@@ -20252,7 +21052,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 802,
@@ -20276,7 +21077,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 803,
@@ -20300,7 +21102,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 804,
@@ -20324,7 +21127,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 805,
@@ -20348,7 +21152,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 806,
@@ -20377,7 +21182,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 807,
@@ -20401,7 +21207,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 808,
@@ -20425,7 +21232,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 809,
@@ -20449,7 +21257,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 810,
@@ -20473,7 +21282,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-other-pokemon"
   },
   {
     "id": 811,
@@ -20506,7 +21316,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "user-and-allies"
   },
   {
     "id": 812,
@@ -20530,7 +21341,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 813,
@@ -20554,7 +21366,8 @@
     "min_hits": 3,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 814,
@@ -20578,7 +21391,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 815,
@@ -20602,7 +21416,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 816,
@@ -20626,7 +21441,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user-and-allies"
   },
   {
     "id": 817,
@@ -20650,7 +21466,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 818,
@@ -20674,7 +21491,8 @@
     "min_hits": 3,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 819,
@@ -20698,7 +21516,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 820,
@@ -20722,7 +21541,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 821,
@@ -20746,7 +21566,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 822,
@@ -20770,7 +21591,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 823,
@@ -20799,7 +21621,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 824,
@@ -20823,7 +21646,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 825,
@@ -20847,7 +21671,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 826,
@@ -20871,7 +21696,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 827,
@@ -20895,7 +21721,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 828,
@@ -20924,7 +21751,8 @@
         "defense",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 829,
@@ -20948,7 +21776,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 830,
@@ -20972,7 +21801,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 831,
@@ -21001,7 +21831,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 832,
@@ -21030,7 +21861,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 833,
@@ -21054,7 +21886,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "random-opponent"
   },
   {
     "id": 834,
@@ -21078,7 +21911,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 835,
@@ -21102,7 +21936,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 836,
@@ -21126,7 +21961,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 837,
@@ -21163,7 +21999,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 838,
@@ -21196,7 +22033,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 839,
@@ -21220,7 +22058,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 840,
@@ -21249,7 +22088,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 841,
@@ -21278,7 +22118,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 842,
@@ -21307,7 +22148,8 @@
         "defense",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 843,
@@ -21336,7 +22178,8 @@
         "defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 844,
@@ -21360,7 +22203,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 845,
@@ -21384,7 +22228,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 846,
@@ -21413,7 +22258,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 847,
@@ -21437,7 +22283,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 848,
@@ -21461,7 +22308,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 849,
@@ -21485,7 +22333,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-allies"
   },
   {
     "id": 850,
@@ -21518,7 +22367,8 @@
         "special-defense",
         1
       ]
-    ]
+    ],
+    "target": "all-allies"
   },
   {
     "id": 851,
@@ -21551,7 +22401,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 852,
@@ -21584,7 +22435,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 853,
@@ -21608,7 +22460,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 854,
@@ -21632,7 +22485,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 855,
@@ -21665,7 +22519,8 @@
         "special-defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 856,
@@ -21689,7 +22544,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 857,
@@ -21713,7 +22569,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 858,
@@ -21754,7 +22611,8 @@
         "defense",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 859,
@@ -21787,7 +22645,8 @@
         "speed",
         -2
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 860,
@@ -21811,7 +22670,8 @@
     "min_hits": 1,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 861,
@@ -21835,7 +22695,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 862,
@@ -21859,7 +22720,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 863,
@@ -21883,7 +22745,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "fainting-pokemon"
   },
   {
     "id": 864,
@@ -21907,7 +22770,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 865,
@@ -21931,7 +22795,8 @@
     "min_hits": 3,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 866,
@@ -21955,7 +22820,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 867,
@@ -21979,7 +22845,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 868,
@@ -22028,7 +22895,8 @@
         "speed",
         2
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 869,
@@ -22052,7 +22920,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 870,
@@ -22076,7 +22945,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 871,
@@ -22109,7 +22979,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 872,
@@ -22142,7 +23013,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 873,
@@ -22166,7 +23038,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 874,
@@ -22199,7 +23072,8 @@
         "special-attack",
         -1
       ]
-    ]
+    ],
+    "target": "all-opponents"
   },
   {
     "id": 875,
@@ -22223,7 +23097,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 876,
@@ -22247,7 +23122,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 877,
@@ -22271,7 +23147,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 878,
@@ -22295,7 +23172,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 879,
@@ -22319,7 +23197,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 880,
@@ -22343,7 +23222,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 881,
@@ -22367,7 +23247,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 882,
@@ -22408,7 +23289,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "user"
   },
   {
     "id": 883,
@@ -22432,7 +23314,8 @@
     "min_hits": null,
     "min_turns": 5,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "entire-field"
   },
   {
     "id": 884,
@@ -22465,7 +23348,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 885,
@@ -22498,7 +23382,8 @@
         "speed",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 886,
@@ -22531,7 +23416,8 @@
         "attack",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 887,
@@ -22555,7 +23441,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 888,
@@ -22579,7 +23466,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 889,
@@ -22603,7 +23491,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 890,
@@ -22644,7 +23533,8 @@
         "special-defense",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 891,
@@ -22668,7 +23558,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 892,
@@ -22692,7 +23583,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 893,
@@ -22716,7 +23608,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 894,
@@ -22740,7 +23633,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "specific-move"
   },
   {
     "id": 895,
@@ -22764,7 +23658,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 896,
@@ -22788,7 +23683,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 897,
@@ -22812,7 +23708,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 898,
@@ -22836,7 +23733,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 899,
@@ -22860,7 +23758,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 900,
@@ -22884,7 +23783,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 901,
@@ -22908,7 +23808,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 902,
@@ -22932,7 +23833,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 903,
@@ -22965,7 +23867,8 @@
         "speed",
         -1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 904,
@@ -22989,7 +23892,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 905,
@@ -23022,7 +23926,8 @@
         "special-attack",
         1
       ]
-    ]
+    ],
+    "target": "selected-pokemon"
   },
   {
     "id": 906,
@@ -23046,7 +23951,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-opponents"
   },
   {
     "id": 907,
@@ -23070,7 +23976,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 908,
@@ -23094,7 +24001,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "user"
   },
   {
     "id": 909,
@@ -23118,7 +24026,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 910,
@@ -23142,7 +24051,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 911,
@@ -23166,7 +24076,8 @@
     "min_hits": 2,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 912,
@@ -23190,7 +24101,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 913,
@@ -23214,7 +24126,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "all-allies"
   },
   {
     "id": 914,
@@ -23238,7 +24151,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 915,
@@ -23262,7 +24176,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 916,
@@ -23286,7 +24201,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 917,
@@ -23310,7 +24226,8 @@
     "min_hits": null,
     "min_turns": 2,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 918,
@@ -23334,7 +24251,8 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   },
   {
     "id": 919,
@@ -23358,6 +24276,7 @@
     "min_hits": null,
     "min_turns": null,
     "stat_chance": 0,
-    "stat_changes": []
+    "stat_changes": [],
+    "target": "selected-pokemon"
   }
 ]
