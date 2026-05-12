@@ -67,11 +67,25 @@ class BattlePokemon:
     defense_stage: int = 0
     sp_defense_stage: int = 0
     speed_stage: int = 0
+    accuracy_stage: int = 0
+    evasion_stage: int = 0
+    status: Optional[str] = None
+    status_turns: int = 0
 
 @st.cache_data(show_spinner=False)
 def load_json(filename: str):
-    path = os.path.join(data_dir, filename)
-    with open(path, "r", encoding="utf-8") as f:
+    # database/common/data/processed 와 database/graph 두 곳을 모두 확인
+    processed_path = os.path.join(data_dir, filename)
+    graph_path = os.path.join(root_dir, "database", "graph", filename)
+    
+    if os.path.exists(processed_path):
+        target_path = processed_path
+    elif os.path.exists(graph_path):
+        target_path = graph_path
+    else:
+        raise FileNotFoundError(f"JSON 파일을 찾을 수 없습니다: {filename}")
+
+    with open(target_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 @st.cache_data(show_spinner=False)
@@ -80,7 +94,23 @@ def load_battle_data():
     stats = {s["pokemon_id"]: s for s in load_json("pokemon_stats.json")}
     types = {t["id"]: t["name"] for t in load_json("types.json")}
     moves = {m["id"]: m for m in load_json("moves.json")}
-    moves_by_name = {m["name"]: m for m in moves.values()}
+    
+    # 기술 효과 데이터 로드
+    move_effects = {}
+    try:
+        effects_list = load_json("move_effects.json")
+        for eff in effects_list:
+            move_effects[eff["move_id"]] = eff
+    except Exception as e:
+        st.error(f"기술 효과 데이터를 불러오는 중 오류 발생: {e}")
+
+    moves_by_name = {}
+    for m in moves.values():
+        move_data = dict(m)
+        if m["id"] in move_effects:
+            move_data["effect"] = move_effects[m["id"]]
+        moves_by_name[m["name"]] = move_data
+        
     moves_by_name.update(CUSTOM_MOVES)
 
     pokemon_types = {}

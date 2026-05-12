@@ -19,7 +19,7 @@ from battle.data import (
     ROSTER, load_battle_data, get_roster_entry, 
     display_name, build_battle_pokemon, PRIORITY_MOVES
 )
-from battle.engine import resolve_attack, find_player_move, stat_value
+from battle.engine import resolve_attack, find_player_move, stat_value, apply_end_of_turn_effects
 from battle.ai import call_llm_for_move
 from battle.ui import inject_battle_styles, render_pokemon_status, fmt_player, fmt_bot, fmt_move
 from utils.ui import inject_common_ui
@@ -95,10 +95,13 @@ def process_turn(player_move, efficacy):
             random.shuffle(order)
 
     # 공격 실행
-    for attacker, defender, move in order:
+    for i, (attacker, defender, move) in enumerate(order):
         if attacker.current_hp <= 0:
             continue
-        lines.append(resolve_attack(attacker, defender, move, efficacy))
+        
+        # 상대방의 기술 정보 가져오기 (기습 등의 판정을 위해 필요)
+        opponent_move = order[1-i][2]
+        lines.append(resolve_attack(attacker, defender, move, efficacy, opponent_move))
         if defender.current_hp <= 0:
             defender_name = fmt_player(defender.name) if defender is player else fmt_bot(defender.name)
             winner_label = "USER" if attacker is player else "LLM"
@@ -107,6 +110,22 @@ def process_turn(player_move, efficacy):
             st.session_state.winner = winner_label
             lines.append(f"승리: {winner_label}")
             break
+
+    # 턴 종료 후 상태 정비 (예: 방어 해제, 상태 이상 데미지)
+    for p in [player, bot]:
+        if p.status == "방어":
+            p.status = None
+        
+        # 독, 화상 등 데미지 정산
+        status_logs = apply_end_of_turn_effects(p)
+        lines.extend(status_logs)
+        
+        # 상태 이상 데미지로 인해 쓰러졌는지 확인
+        if p.current_hp <= 0:
+            p_name = fmt_player(p.name) if p is player else fmt_bot(p.name)
+            lines.append(f"{p_name}은(는) 상태 이상 데미지로 쓰러졌다!")
+            st.session_state.battle_over = True
+            st.session_state.winner = "LLM" if p is player else "USER"
 
     st.session_state.battle_messages.append({"role": "assistant", "content": "\n\n".join(lines)})
 
