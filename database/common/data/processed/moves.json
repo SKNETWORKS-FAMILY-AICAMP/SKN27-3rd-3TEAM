@@ -22430,10 +22430,6 @@
       [
         "speed",
         -1
-      ],
-      [
-        "speed",
-        -1
       ]
     ],
     "target": "user"
@@ -22511,10 +22507,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "special-defense",
-        -2
-      ],
       [
         "special-defense",
         -2
@@ -22602,14 +22594,6 @@
       [
         "defense",
         -2
-      ],
-      [
-        "attack",
-        2
-      ],
-      [
-        "defense",
-        -2
       ]
     ],
     "target": "selected-pokemon"
@@ -22637,10 +22621,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "speed",
-        -2
-      ],
       [
         "speed",
         -2
@@ -22882,18 +22862,6 @@
       [
         "speed",
         2
-      ],
-      [
-        "attack",
-        2
-      ],
-      [
-        "special-attack",
-        2
-      ],
-      [
-        "speed",
-        2
       ]
     ],
     "target": "user"
@@ -22974,10 +22942,6 @@
       [
         "special-attack",
         1
-      ],
-      [
-        "special-attack",
-        1
       ]
     ],
     "target": "selected-pokemon"
@@ -23005,10 +22969,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "speed",
-        1
-      ],
       [
         "speed",
         1
@@ -23064,10 +23024,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "special-attack",
-        -1
-      ],
       [
         "special-attack",
         -1
@@ -23280,14 +23236,6 @@
       [
         "speed",
         1
-      ],
-      [
-        "attack",
-        1
-      ],
-      [
-        "speed",
-        1
       ]
     ],
     "target": "user"
@@ -23343,10 +23291,6 @@
       [
         "speed",
         -1
-      ],
-      [
-        "speed",
-        -1
       ]
     ],
     "target": "selected-pokemon"
@@ -23377,10 +23321,6 @@
       [
         "speed",
         1
-      ],
-      [
-        "speed",
-        1
       ]
     ],
     "target": "selected-pokemon"
@@ -23408,10 +23348,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "attack",
-        -1
-      ],
       [
         "attack",
         -1
@@ -23517,14 +23453,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "defense",
-        -1
-      ],
-      [
-        "special-defense",
-        -1
-      ],
       [
         "defense",
         -1
@@ -23862,10 +23790,6 @@
       [
         "speed",
         -1
-      ],
-      [
-        "speed",
-        -1
       ]
     ],
     "target": "selected-pokemon"
@@ -23918,10 +23842,6 @@
     "min_turns": null,
     "stat_chance": 100,
     "stat_changes": [
-      [
-        "special-attack",
-        1
-      ],
       [
         "special-attack",
         1

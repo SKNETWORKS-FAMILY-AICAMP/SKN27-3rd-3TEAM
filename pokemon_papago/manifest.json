@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "피피고",
+  "version": "1.0",
+  "description": "화면을 돌아다니는 포켓몬이 번역을 도와주는 가상 펫 번역기",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://api.groq.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["img/*.png", "img/*.gif"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

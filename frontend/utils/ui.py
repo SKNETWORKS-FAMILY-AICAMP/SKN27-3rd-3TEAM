@@ -27,9 +27,11 @@ def inject_common_ui(spacer=False, show_header=True, hide_sidebar=True):
         user = st.session_state.get("user")
         if user:
             avatar_url = user.get("avatar_url", "https://cdn-icons-png.flaticon.com/512/1144/1144760.png")
-            nav_right_content = f'<a href="/mypage" target="_self" class="nav-aux"><img src="{avatar_url}" style="border-radius:50%; width:28px; height:28px; object-fit:cover;"><span style="color:#2a75bb; font-weight:800; font-size:11px;">{user.get("login", "")}</span></a>'
+            nav_right_content = f'<a href="https://chromewebstore.google.com/search/%ED%94%BC%ED%94%BC%EA%B3%A0?hl=ko" target="_blank" class="pipigo-btn"><span>피피고 다운로드</span></a>'
+            nav_right_content += f'<a href="/mypage" target="_self" class="nav-aux"><img src="{avatar_url}" style="border-radius:50%; width:28px; height:28px; object-fit:cover;"><span style="color:#2a75bb; font-weight:800; font-size:11px;">{user.get("login", "")}</span></a>'
         else:
-            nav_right_content = '<a href="/login" target="_self" class="nav-aux"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" style="width:28px; height:28px;"><span>로그인</span></a>'
+            nav_right_content = f'<a href="https://chromewebstore.google.com/search/%ED%94%BC%ED%94%BC%EA%B3%A0?hl=ko" target="_blank" class="pipigo-btn"><span>피피고 다운로드</span></a>'
+            nav_right_content += '<a href="/login" target="_self" class="nav-aux"><img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" style="width:28px; height:28px;"><span>로그인</span></a>'
 
         nav_html = textwrap.dedent(f"""
 <nav class="top-nav">
@@ -77,6 +79,31 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{ margin: 0; padding: 0;
 .nav-item:hover {{ background: #fafafa; color: #3b82f6 !important; }}
 .nav-right {{ display: flex; align-items: stretch; }}
 .nav-aux {{ display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px; color: #000 !important; text-decoration: none !important; border-left: 1px solid #eee; min-width: 80px; }}
+
+/* Pipigo Download Button (Capsule Style) */
+.pipigo-btn {{
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #2a75bb; border-radius: 50px;
+    padding: 0 25px; margin: 22px 15px;
+    color: #2a75bb !important; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 13px;
+    text-decoration: none !important; transition: all 0.2s ease;
+    background: #ffffff; cursor: pointer;
+    outline: none !important; -webkit-tap-highlight-color: transparent;
+}}
+.pipigo-btn:hover {{
+    background: #2a75bb; color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(42, 117, 187, 0.25);
+    transform: translateY(-1px);
+}}
+.pipigo-btn:active {{
+    transform: scale(0.96);
+    background: #1e4f8a; color: #ffffff !important;
+    border-radius: 50px !important; /* 원형 유지 강제 */
+}}
+.pipigo-btn:focus {{
+    outline: none !important;
+    border-radius: 50px !important;
+}}
 </style>
     """).strip()
     st.markdown(common_css + splash_html + nav_html, unsafe_allow_html=True)
