@@ -81,6 +81,33 @@ def inject_battle_styles():
             font-size: .84rem;
             font-weight: 800;
         }
+        .stat-badge {
+            display: inline-flex;
+            margin: 2px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .stat-up { background: #ef4444; }
+        .stat-down { background: #3b82f6; }
+        .stat-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .stat-item {
+            background: rgba(15, 23, 42, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            font-weight: 700;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
         .secret-card {
             height: 235px;
             display: grid;
@@ -134,19 +161,51 @@ def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bo
     else:
         hp_color = "#ef4444"
 
+    # 스탯 표시 구성 (기본 스탯 + 랭크 변화)
+    stat_items = []
+    stat_labels = {
+        "attack": ("공격", "attack_stage"),
+        "defense": ("방어", "defense_stage"),
+        "sp_attack": ("특공", "sp_attack_stage"),
+        "sp_defense": ("특방", "sp_defense_stage"),
+        "speed": ("스피드", "speed_stage")
+    }
+    
+    for key, (label, stage_field) in stat_labels.items():
+        base_val = pokemon.stats.get(key, 0)
+        stage = getattr(pokemon, stage_field, 0)
+        
+        stage_html = ""
+        if stage != 0:
+            color = "#ef4444" if stage > 0 else "#3b82f6"
+            sign = "+" if stage > 0 else ""
+            stage_html = f"<span style='color:{color};'>{sign}{stage}</span>"
+            
+        if reveal_details:
+            # 플레이어: 전체 스탯 + 랭크 변화 표시
+            stage_text = f" ({stage_html})" if stage_html else ""
+            stat_items.append(f"<span class='stat-item'>{label} {base_val}{stage_text}</span>")
+        else:
+            # 봇: 랭크 변화가 있는 경우에만 해당 스탯 이름과 랭크 표시
+            if stage != 0:
+                stat_items.append(f"<span class='stat-item'>{label} {stage_html}</span>")
+    
+    stat_html = f"<div class='stat-container'>{''.join(stat_items)}</div>" if stat_items else ""
+
     st.markdown(
         f"""
-        <div class="status-card" style="min-height: 280px;">
-            <div style="color:rgba(226,232,240,.72);font-weight:900;">{title}</div>
-            <img src="{pokemon.image_url}" alt="{pokemon.name}">
-            <div class="pokemon-name">{pokemon.name}</div>
-            <div>{type_html}</div>
-            <div class="hp-label">{hp_text}</div>
-            <div style="margin-top:8px; margin-bottom: 14px;">{move_html}</div>
-            <div style="width: 100%; height: 24px; background-color: rgba(15, 23, 42, 0.6); border-radius: 12px; overflow: hidden; border: 1px solid rgba(148, 163, 184, 0.3);">
-                <div style="width: {hp_percent}%; height: 100%; background-color: {hp_color}; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 2px 4px rgba(255,255,255,0.15);"></div>
-            </div>
-        </div>
-        """,
+<div class="status-card" style="min-height: 280px;">
+<div style="color:rgba(226,232,240,.72);font-weight:900;">{title}</div>
+<img src="{pokemon.image_url}" alt="{pokemon.name}">
+<div class="pokemon-name">{pokemon.name}</div>
+<div>{type_html}</div>
+<div class="hp-label">{hp_text}</div>
+{stat_html}
+<div style="margin-top:8px; margin-bottom: 14px;">{move_html}</div>
+<div style="width: 100%; height: 24px; background-color: rgba(15, 23, 42, 0.6); border-radius: 12px; overflow: hidden; border: 1px solid rgba(148, 163, 184, 0.3);">
+<div style="width: {hp_percent}%; height: 100%; background-color: {hp_color}; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 2px 4px rgba(255,255,255,0.15);"></div>
+</div>
+</div>
+""",
         unsafe_allow_html=True,
     )
