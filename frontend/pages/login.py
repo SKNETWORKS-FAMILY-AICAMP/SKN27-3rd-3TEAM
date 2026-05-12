@@ -79,29 +79,40 @@ def get_user_info(token):
         st.error(f"사용자 정보 요청 오류: {str(e)}")
     return None
 
-def fetch_lifetime_stats(username):
-    stats = {"public_repos": 0, "total_commits": 0, "total_stars": 0}
+def fetch_lifetime_stats(user_info):
+    from concurrent.futures import ThreadPoolExecutor
+    username = user_info.get("login")
     headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "Pokemon-Trainer-App"}
-    try:
-        # 1. 커밋 수
-        search_url = f"https://api.github.com/search/commits?q=author:{username}"
-        search_headers = headers.copy()
-        search_headers["Accept"] = "application/vnd.github.cloak-preview+json"
-        s_resp = requests.get(search_url, headers=search_headers, timeout=5)
-        if s_resp.status_code == 200:
-            stats["total_commits"] = s_resp.json().get("total_count", 0)
-        
-        # 2. 레포 및 스타 수
-        u_resp = requests.get(f"https://api.github.com/users/{username}", headers=headers, timeout=5)
-        if u_resp.status_code == 200:
-            u_data = u_resp.json()
-            stats["public_repos"] = u_data.get("public_repos", 0)
-            
-        r_resp = requests.get(f"https://api.github.com/users/{username}/repos?per_page=100", headers=headers, timeout=5)
-        if r_resp.status_code == 200:
-            stats["total_stars"] = sum(r.get("stargazers_count", 0) for r in r_resp.json())
-    except: pass
-    return stats
+
+    def fetch_commits():
+        try:
+            h = {**headers, "Accept": "application/vnd.github.cloak-preview+json"}
+            r = requests.get(f"https://api.github.com/search/commits?q=author:{username}", headers=h, timeout=4)
+            if r.status_code == 200:
+                return r.json().get("total_count", 0)
+        except: pass
+        return 0
+
+    def fetch_stars():
+        try:
+            r = requests.get(f"https://api.github.com/users/{username}/repos?per_page=100", headers=headers, timeout=4)
+            if r.status_code == 200:
+                return sum(repo.get("stargazers_count", 0) for repo in r.json())
+        except: pass
+        return 0
+
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        f_commits = ex.submit(fetch_commits)
+        f_stars = ex.submit(fetch_stars)
+        total_commits = f_commits.result()
+        total_stars = f_stars.result()
+
+    return {
+        "public_repos": user_info.get("public_repos", 0),
+        "total_commits": total_commits,
+        "total_stars": total_stars,
+        "followers": user_info.get("followers", 0),
+    }
 
 def sync_user_to_db(user_info, gh_stats):
     url = f"{BACKEND_URL}/api/v1/users/"
@@ -116,16 +127,21 @@ def sync_user_to_db(user_info, gh_stats):
         "total_stars": gh_stats.get("total_stars", 0)
     }
     try:
-        resp = requests.post(url, json=payload, timeout=30) # 타임아웃 30초로 연장
+        resp = requests.post(url, json=payload, timeout=3)
         if resp.status_code == 200:
             return resp.json()
-        else:
-            st.error(f"백엔드 응답 오류 ({resp.status_code}): {resp.text}")
-    except Exception as e:
-        st.error(f"DB 동기화 중 네트워크 오류 발생: {str(e)}")
+    except Exception:
+        pass
     return None
 
 def show():
+    st.set_page_config(
+        page_title="트레이너 인증",
+        page_icon="https://pokemonkorea.co.kr/img/_con.ico",
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+
     # 1. 공통 UI 주입 및 쿠키 복구
     inject_common_ui(show_header=False)
 
@@ -161,14 +177,23 @@ def show():
         if token:
             user_info = get_user_info(token)
             if user_info:
-                gh_stats = fetch_lifetime_stats(user_info.get("login"))
+                gh_stats = fetch_lifetime_stats(user_info)
                 db_user = sync_user_to_db(user_info, gh_stats)
                 if db_user:
                     user_info["db_id"] = db_user.get("id")
                     user_info.update({
-                        "public_repos": db_user.get("public_repos"),
-                        "total_commits": db_user.get("total_commits"),
-                        "total_stars": db_user.get("total_stars")
+                        "public_repos": db_user.get("public_repos", 0),
+                        "total_commits": db_user.get("total_commits", 0),
+                        "total_stars": db_user.get("total_stars", 0),
+                        "followers": db_user.get("followers", 0)
+                    })
+                else:
+                    # DB 실패해도 이미 가져온 GitHub 통계를 세션에 저장
+                    user_info.update({
+                        "public_repos": gh_stats.get("public_repos", 0),
+                        "total_commits": gh_stats.get("total_commits", 0),
+                        "total_stars": gh_stats.get("total_stars", 0),
+                        "followers": gh_stats.get("followers", 0),
                     })
                 st.session_state.user = user_info
                 controller.set("user_session", user_info)
@@ -238,7 +263,7 @@ def show():
 {POKEBALL_SVG}
 <h1 class="login-title">트레이너 인증</h1>
 <p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p>
-<a href="{auth_url}" target="_blank" class="github-btn">
+<a href="{auth_url}" target="_self" class="github-btn">
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">
 GitHub 계정으로 시작하기
 </a>
