@@ -226,10 +226,45 @@ def get_login_styles(bg_img=""):
 .avatar-img {{
     width: 100%; height: 100%;
     border-radius: 50%;
-    object-fit: cover;
     border: 3px solid #080416;
 }}
 
+/* ── 로딩 화면 스타일 ── */
+.loading-screen {{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}}
+.loader-ball {{
+    width: 80px;
+    height: 80px;
+    margin-bottom: 30px;
+    animation: loader-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}}
+@keyframes loader-spin {{
+    0% {{ transform: rotate(0deg); }}
+    100% {{ transform: rotate(360deg); }}
+}}
+.loading-text {{
+    color: var(--poke-yellow);
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: text-pulse 1.5s ease-in-out infinite;
+}}
+@keyframes text-pulse {{
+    0%, 100% {{ opacity: 1; transform: scale(1); }}
+    50% {{ opacity: 0.5; transform: scale(0.95); }}
+}}
 </style>
 """
 

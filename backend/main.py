@@ -9,22 +9,45 @@ Base.metadata.create_all(bind=engine)
 
 def update_schema():
     from sqlalchemy import text
-    with engine.begin() as conn:  # begin()을 사용하여 자동 커밋/롤백 처리
+    # Try to add each column one by one in separate transactions
+    columns_to_add = [
+        ("public_repos", "INTEGER DEFAULT 0"),
+        ("total_commits", "INTEGER DEFAULT 0"),
+        ("total_stars", "INTEGER DEFAULT 0")
+    ]
+    
+    with engine.connect() as conn:
+        # Check if users table exists first
+        table_exists = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users')")).scalar()
+        if not table_exists:
+            print("Users table does not exist yet. create_all will handle it.")
+            return
+
+        for col_name, col_type in columns_to_add:
+            try:
+                # We use individual begin() blocks for each column to ensure one failure doesn't block others
+                with engine.begin() as transaction_conn:
+                    # Check if column exists to avoid noisy error logs
+                    check_sql = f"SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='{col_name}'"
+                    col_exists = transaction_conn.execute(text(check_sql)).fetchone()
+                    
+                    if not col_exists:
+                        print(f"Adding column {col_name} to users table...")
+                        transaction_conn.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+            except Exception as e:
+                print(f"Skipping {col_name} addition: {e}")
+
+        # Update github_id type to BIGINT
         try:
-            # public_repos 컬럼이 있는지 확인
-            conn.execute(text("SELECT public_repos FROM users LIMIT 1"))
-        except Exception:
-            # PostgreSQL에서는 IF NOT EXISTS를 지원하므로 안전하게 추가 가능
-            conn.execute(text("ALTER TABLE users ALTER COLUMN github_id TYPE BIGINT"))
-            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS public_repos INTEGER DEFAULT 0"))
-            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_commits INTEGER DEFAULT 0"))
-            conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_stars INTEGER DEFAULT 0"))
-            print("Migration complete.")
+            with engine.begin() as transaction_conn:
+                transaction_conn.execute(text("ALTER TABLE users ALTER COLUMN github_id TYPE BIGINT"))
+        except Exception as e:
+            print(f"Skipping github_id type update: {e}")
 
 try:
     update_schema()
 except Exception as e:
-    print(f"Migration failed (possibly already applied): {e}")
+    print(f"Migration failed: {e}")
 
 app = FastAPI(
     title="Pokemon App Backend",

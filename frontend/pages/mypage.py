@@ -32,40 +32,49 @@ def get_mypage_styles():
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
     
     :root {
-        --neon-blue: #00d2ff;
-        --neon-yellow: #ffcb05;
-        --neon-green: #4ade80;
-        --glass-bg: rgba(255, 255, 255, 0.03);
-        --glass-border: rgba(255, 255, 255, 0.1);
+        --neon-blue: #0984e3;
+        --neon-yellow: #f1c40f;
+        --neon-green: #27ae60;
+        --glass-bg: rgba(255, 255, 255, 0.8);
+        --glass-border: rgba(0, 0, 0, 0.05);
+        --text-main: #2d3436;
+        --text-sub: #636e72;
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     }
 
-    .stApp { background-color: #050505 !important; }
+    .stApp { background-color: #f8f9fa !important; }
     
+    /* Streamlit default padding removal */
+    .block-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
     .mypage-container {
-        padding: 100px 5% 60px;
-        background: #050505;
-        min-height: 100vh;
+        padding: 0 5% 60px;
+        background: #f8f9fa;
         position: relative;
         overflow: hidden;
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
     }
 
-    /* Pokedex Scanline & Grid Effect */
+    /* Subtle Grid Background for Light Mode */
     .mypage-container::after {
         content: ''; position: absolute; inset: 0;
-        background: 
-            linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
-            linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-        background-size: 100% 4px, 3px 100%;
+        background-image: radial-gradient(#dee2e6 0.5px, transparent 0.5px);
+        background-size: 20px 20px;
+        opacity: 0.3;
         pointer-events: none;
         z-index: 1;
     }
     
-    /* Profile Section */
+    /* Profile Section (Hero) */
     .profile-hero {
         position: relative;
         z-index: 10;
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
+        background: #ffffff;
         border: 1px solid var(--glass-border);
         border-radius: 40px;
         padding: 60px;
@@ -73,26 +82,23 @@ def get_mypage_styles():
         display: flex;
         align-items: center;
         gap: 50px;
-        box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        box-shadow: var(--card-shadow);
     }
     
-    .profile-avatar-wrap {
-        position: relative;
-    }
-
+    .profile-avatar-wrap { position: relative; }
     .profile-avatar {
         width: 180px;
         height: 180px;
         border-radius: 50%;
         border: 4px solid var(--neon-blue);
-        box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+        box-shadow: 0 0 20px rgba(9, 132, 227, 0.1);
         object-fit: cover;
         animation: float 6s ease-in-out infinite;
     }
     
     @keyframes float { 
         0%, 100% { transform: translateY(0); } 
-        50% { transform: translateY(-20px); } 
+        50% { transform: translateY(-15px); } 
     }
 
     .profile-info h1 {
@@ -100,14 +106,13 @@ def get_mypage_styles():
         font-weight: 900;
         margin: 0;
         font-size: clamp(2rem, 5vw, 3.5rem);
-        color: #fff;
+        color: var(--text-main);
         letter-spacing: -2px;
-        text-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
     
     .profile-info p {
         margin: 10px 0 0;
-        color: rgba(255,255,255,0.5);
+        color: var(--text-sub);
         font-size: 1.2rem;
         font-weight: 300;
     }
@@ -123,7 +128,7 @@ def get_mypage_styles():
         margin-top: 25px;
         text-transform: uppercase;
         letter-spacing: 2px;
-        box-shadow: 0 10px 25px rgba(255, 203, 5, 0.3);
+        box-shadow: 0 5px 15px rgba(241, 196, 15, 0.2);
     }
     
     /* Stats Grid */
@@ -137,24 +142,22 @@ def get_mypage_styles():
     }
     
     .stat-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
+        background: #ffffff;
         border-radius: 30px;
         padding: 40px;
         border: 1px solid var(--glass-border);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
     }
     
     .stat-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        background: rgba(255,255,255,0.06);
-        border-color: var(--neon-blue);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(0, 210, 255, 0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     }
     
     .stat-label {
         font-size: 0.85rem;
-        color: rgba(255,255,255,0.4);
+        color: var(--text-sub);
         font-weight: 700;
         margin-bottom: 15px;
         text-transform: uppercase;
@@ -165,23 +168,23 @@ def get_mypage_styles():
         font-family: 'Outfit', sans-serif;
         font-size: 3rem;
         font-weight: 900;
-        color: #fff;
+        color: var(--text-main);
         line-height: 1;
     }
     
     .stat-desc {
         font-size: 0.9rem;
-        color: rgba(255,255,255,0.3);
+        color: var(--text-sub);
         margin-top: 10px;
     }
     
     /* Activity List */
     .activity-section {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
+        background: #ffffff;
         border-radius: 40px;
         padding: 50px;
         border: 1px solid var(--glass-border);
+        box-shadow: var(--card-shadow);
         position: relative;
         z-index: 10;
     }
@@ -191,30 +194,21 @@ def get_mypage_styles():
         font-weight: 900;
         font-size: 2rem;
         margin-bottom: 40px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 20px;
+        color: var(--text-main);
     }
     
     .activity-item {
         display: flex;
         align-items: center;
         padding: 25px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .activity-item:hover {
-        background: rgba(255,255,255,0.02);
-        padding-left: 15px;
-        padding-right: 15px;
+        border-bottom: 1px solid #f1f2f6;
+        transition: all 0.2s ease;
     }
     
     .activity-icon {
         width: 54px;
         height: 54px;
-        background: rgba(255,255,255,0.05);
+        background: #f1f2f6;
         border-radius: 16px;
         display: flex;
         align-items: center;
@@ -223,21 +217,9 @@ def get_mypage_styles():
         font-size: 1.5rem;
     }
     
-    .activity-main {
-        font-weight: 700;
-        color: #fff;
-        font-size: 1.1rem;
-    }
-    
-    .activity-sub {
-        font-size: 0.9rem;
-        color: rgba(255,255,255,0.4);
-    }
-    
-    .activity-time {
-        font-size: 0.9rem;
-        color: rgba(255,255,255,0.2);
-    }
+    .activity-main { font-weight: 700; color: var(--text-main); font-size: 1.1rem; }
+    .activity-sub { font-size: 0.9rem; color: var(--text-sub); }
+    .activity-time { font-size: 0.9rem; color: #b2bec3; }
     
     .status-tag {
         padding: 5px 12px;
@@ -248,29 +230,24 @@ def get_mypage_styles():
         text-transform: uppercase;
     }
     
-    .status-success { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); border: 1px solid rgba(74, 222, 128, 0.2); }
-    .status-fail { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+    .status-success { background: #e6fffa; color: #27ae60; border: 1px solid #c6f6d5; }
+    .status-fail { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; }
 
     .logout-btn {
         display: inline-block;
         padding: 10px 24px;
-        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-        color: white !important;
+        background: #f1f2f6;
+        color: var(--text-main) !important;
         text-decoration: none !important;
         border-radius: 12px;
         font-weight: 700;
         font-size: 0.9rem;
         margin-top: 25px;
         margin-left: 15px;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255,255,255,0.1);
+        transition: 0.2s;
     }
     
-    .logout-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
-        filter: brightness(1.1);
-    }
+    .logout-btn:hover { background: #dfe6e9; }
 
     @media (max-width: 768px) {
         .profile-hero { flex-direction: column; text-align: center; padding: 40px; }
@@ -314,7 +291,20 @@ def fetch_github_details(username):
     return stats
 
 def show():
+    # 0. 필수 UI 주입 (헤더 포함)
     inject_common_ui(spacer=False)
+    
+    # 1. 스트림릿 기본 여백 제거 및 헤더 대응
+    st.markdown("""
+        <style>
+            .block-container { padding: 0 !important; }
+            /* 헤더 높이가 90px이므로 컨테이너는 90px 이상 패딩 필요 */
+            .mypage-container { 
+                padding-top: 90px !important; 
+                margin-top: 0 !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
     
     if "user" not in st.session_state:
         st.warning("로그인이 필요한 페이지입니다.")

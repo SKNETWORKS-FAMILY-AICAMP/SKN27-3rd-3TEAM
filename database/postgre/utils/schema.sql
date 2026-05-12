@@ -155,3 +155,36 @@ CREATE TABLE IF NOT EXISTS pokemon_moves (
     level_learned_at INTEGER,
     PRIMARY KEY (pokemon_id, move_id, learn_method, level_learned_at)
 );
+
+-- ==========================================
+-- 8. 사용자 및 게임 로그 (Users & Game Logs)
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    github_id BIGINT UNIQUE,
+    login VARCHAR(100) UNIQUE,
+    name VARCHAR(100),
+    avatar_url VARCHAR(255),
+    email VARCHAR(100),
+    public_repos INTEGER DEFAULT 0,
+    total_commits INTEGER DEFAULT 0,
+    total_stars INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS game_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    game_type VARCHAR(50) NOT NULL,
+    pokemon_id INTEGER REFERENCES pokemon(id) ON DELETE SET NULL,
+    is_correct BOOLEAN DEFAULT FALSE,
+    hint_used BOOLEAN DEFAULT FALSE,
+    wrong_answer_id INTEGER REFERENCES pokemon(id) ON DELETE SET NULL,
+    log_data TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_github_id ON users(github_id);
+CREATE INDEX IF NOT EXISTS idx_users_login ON users(login);
+CREATE INDEX IF NOT EXISTS idx_game_logs_user_id ON game_logs(user_id);

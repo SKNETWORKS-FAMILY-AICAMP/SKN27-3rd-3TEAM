@@ -73,6 +73,27 @@ def ensure_schema_up_to_date(cursor):
                            WHERE table_name='species' AND column_name='gender_rate') THEN
                 ALTER TABLE species ADD COLUMN gender_rate INTEGER;
             END IF;
+
+            -- users 테이블 마이그레이션
+            IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users') THEN
+                -- github_id BIGINT 변환
+                ALTER TABLE users ALTER COLUMN github_id TYPE BIGINT;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='public_repos') THEN
+                    ALTER TABLE users ADD COLUMN public_repos INTEGER DEFAULT 0;
+                END IF;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='total_commits') THEN
+                    ALTER TABLE users ADD COLUMN total_commits INTEGER DEFAULT 0;
+                END IF;
+
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                               WHERE table_name='users' AND column_name='total_stars') THEN
+                    ALTER TABLE users ADD COLUMN total_stars INTEGER DEFAULT 0;
+                END IF;
+            END IF;
         END $$;
     """)
     

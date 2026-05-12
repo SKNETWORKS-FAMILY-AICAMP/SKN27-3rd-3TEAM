@@ -148,27 +148,37 @@ def show():
         code = query_params["code"]
         st.query_params.clear()
         
-        with st.spinner("트레이너 정보를 인증하는 중..."):
-            token = get_access_token(code)
-            if token:
-                user_info = get_user_info(token)
-                if user_info:
-                    gh_stats = fetch_lifetime_stats(user_info.get("login"))
-                    st.write("DEBUG: Fetched GitHub Stats:", gh_stats) # 디버그용
-                    db_user = sync_user_to_db(user_info, gh_stats)
-                    if db_user:
-                        user_info["db_id"] = db_user.get("id")
-                        # DB에서 가져온 최신 스탯을 세션에 병합
-                        user_info.update({
-                            "public_repos": db_user.get("public_repos"),
-                            "total_commits": db_user.get("total_commits"),
-                            "total_stars": db_user.get("total_stars")
-                        })
-                    st.session_state.user = user_info
-                    controller.set("user_session", user_info)
-                    st.success("인증 및 DB 등록 성공! 마이페이지로 이동합니다...")
-                    time.sleep(1)
-                    st.switch_page("pages/mypage.py")
+        # 커스텀 로딩 화면 표시
+        loading_placeholder = st.empty()
+        loading_placeholder.markdown(f"""
+            <div class="loading-screen">
+                <div class="loader-ball">{POKEBALL_SVG}</div>
+                <div class="loading-text">인증 및 로그인 중...</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        token = get_access_token(code)
+        if token:
+            user_info = get_user_info(token)
+            if user_info:
+                gh_stats = fetch_lifetime_stats(user_info.get("login"))
+                db_user = sync_user_to_db(user_info, gh_stats)
+                if db_user:
+                    user_info["db_id"] = db_user.get("id")
+                    user_info.update({
+                        "public_repos": db_user.get("public_repos"),
+                        "total_commits": db_user.get("total_commits"),
+                        "total_stars": db_user.get("total_stars")
+                    })
+                st.session_state.user = user_info
+                controller.set("user_session", user_info)
+                
+                loading_placeholder.empty() # 로딩 화면 제거
+                time.sleep(0.1) # 확실히 비워지도록 아주 잠깐 대기
+                st.switch_page("pages/mypage.py")
+        else:
+            loading_placeholder.empty()
+            st.error("인증 토큰을 가져오지 못했습니다.")
 
     # 5. 화면 렌더링
     if "user" in st.session_state:
