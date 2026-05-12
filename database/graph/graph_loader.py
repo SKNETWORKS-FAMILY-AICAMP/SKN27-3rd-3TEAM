@@ -365,8 +365,25 @@ def create_move_nodes(conn: Neo4jConnection) -> None:
             "type_id": row.get("type_id"),
             "power": row.get("power"),
             "accuracy": row.get("accuracy"),
+            "pp": row.get("pp"),
+            "priority": row.get("priority"),
             "damage_class": row.get("damage_class"),
             "effect_text": row.get("effect_text"),
+            "ailment": row.get("ailment"),
+            "ailment_chance": row.get("ailment_chance"),
+            "category": row.get("category"),
+            "crit_rate": row.get("crit_rate"),
+            "drain": row.get("drain"),
+            "flinch_chance": row.get("flinch_chance"),
+            "healing": row.get("healing"),
+            "max_hits": row.get("max_hits"),
+            "max_turns": row.get("max_turns"),
+            "min_hits": row.get("min_hits"),
+            "min_turns": row.get("min_turns"),
+            "stat_chance": row.get("stat_chance"),
+            # 중첩 리스트인 stat_changes는 JSON 문자열로 저장하여 나중에 파싱 가능하게 함
+            "stat_changes": json.dumps(row.get("stat_changes", [])),
+            "target": json.dumps(row.get("target", []))
         }
         for row in load_json("moves.json")
     ]
@@ -378,8 +395,24 @@ def create_move_nodes(conn: Neo4jConnection) -> None:
         m.type_id = row.type_id,
         m.power = row.power,
         m.accuracy = row.accuracy,
+        m.pp = row.pp,
+        m.priority = row.priority,
         m.damage_class = row.damage_class,
-        m.effect_text = row.effect_text
+        m.effect_text = row.effect_text,
+        m.ailment = row.ailment,
+        m.ailment_chance = row.ailment_chance,
+        m.category = row.category,
+        m.crit_rate = row.crit_rate,
+        m.drain = row.drain,
+        m.flinch_chance = row.flinch_chance,
+        m.healing = row.healing,
+        m.max_hits = row.max_hits,
+        m.max_turns = row.max_turns,
+        m.min_hits = row.min_hits,
+        m.min_turns = row.min_turns,
+        m.stat_chance = row.stat_chance,
+        m.stat_changes = row.stat_changes,
+        m.target = row.target
     """
     run_batched(conn, query, rows, "Move nodes")
 

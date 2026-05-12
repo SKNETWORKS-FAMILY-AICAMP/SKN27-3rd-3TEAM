@@ -253,9 +253,7 @@ with st.container(border=True):
         st.markdown("</div>", unsafe_allow_html=True)
     with bc2:
         st.markdown('<div class="dex-btn-reset">', unsafe_allow_html=True)
-        if st.button("초기화", key="btn_reset", use_container_width=True):
-            do_reset()
-            st.rerun()
+        st.button("초기화", key="btn_reset", use_container_width=True, on_click=do_reset)
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ── Pokemon grid ─────────────────────────────────────────────
