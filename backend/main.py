@@ -14,8 +14,8 @@ def update_schema():
             # public_repos 컬럼이 있는지 확인
             conn.execute(text("SELECT public_repos FROM users LIMIT 1"))
         except Exception:
-            print("Migrating: Adding GitHub stats columns to users table...")
             # PostgreSQL에서는 IF NOT EXISTS를 지원하므로 안전하게 추가 가능
+            conn.execute(text("ALTER TABLE users ALTER COLUMN github_id TYPE BIGINT"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS public_repos INTEGER DEFAULT 0"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_commits INTEGER DEFAULT 0"))
             conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS total_stars INTEGER DEFAULT 0"))

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
+from fastapi import HTTPException
 import models
 import schemas
 from typing import List, Optional
@@ -143,40 +144,43 @@ def get_pokemon_by_id(db: Session, pokemon_id: int):
 
 
 def create_or_update_user(db: Session, user_data: schemas.UserCreate):
-    print(f"DEBUG: Syncing user data: {user_data}")
-    db_user = db.query(models.User).filter(models.User.github_id == user_data.github_id).first()
-    
-    if db_user:
-        print(f"DEBUG: Updating existing user ID {db_user.id}")
-        db_user.login = user_data.login
-        db_user.name = user_data.name
-        db_user.avatar_url = user_data.avatar_url
-        db_user.email = user_data.email
-        db_user.public_repos = user_data.public_repos
-        db_user.total_commits = user_data.total_commits
-        db_user.total_stars = user_data.total_stars
-    else:
-        print("DEBUG: Creating new user")
-        db_user = models.User(
-            github_id=user_data.github_id,
-            login=user_data.login,
-            name=user_data.name,
-            avatar_url=user_data.avatar_url,
-            email=user_data.email,
-            public_repos=user_data.public_repos,
-            total_commits=user_data.total_commits,
-            total_stars=user_data.total_stars
-        )
-        db.add(db_user)
-    
     try:
+        print(f"DEBUG: Syncing user data for {user_data.login} (ID: {user_data.github_id})")
+        db_user = db.query(models.User).filter(models.User.github_id == user_data.github_id).first()
+        
+        if db_user:
+            print(f"DEBUG: Updating existing user ID {db_user.id}")
+            db_user.login = user_data.login
+            db_user.name = user_data.name
+            db_user.avatar_url = user_data.avatar_url
+            db_user.email = user_data.email
+            # 이 지점에서 컬럼이 없으면 에러가 날 수 있음
+            db_user.public_repos = user_data.public_repos
+            db_user.total_commits = user_data.total_commits
+            db_user.total_stars = user_data.total_stars
+        else:
+            print("DEBUG: Creating new user")
+            db_user = models.User(
+                github_id=user_data.github_id,
+                login=user_data.login,
+                name=user_data.name,
+                avatar_url=user_data.avatar_url,
+                email=user_data.email,
+                public_repos=user_data.public_repos,
+                total_commits=user_data.total_commits,
+                total_stars=user_data.total_stars
+            )
+            db.add(db_user)
+        
         db.commit()
         db.refresh(db_user)
         print(f"DEBUG: Successfully synced user {db_user.login}")
+        return db_user
     except Exception as e:
-        print(f"DEBUG: DB Sync Error: {str(e)}")
+        print(f"CRITICAL: User Sync Failed: {str(e)}")
         db.rollback()
-    return db_user
+        # 500 에러 원인을 클라이언트에게 조금 더 힌트 주기 위해 에러 메시지 포함
+        raise HTTPException(status_code=500, detail=f"Database Sync Error: {str(e)}")
 
 
 def create_game_log(db: Session, log_data: schemas.GameLogCreate):
