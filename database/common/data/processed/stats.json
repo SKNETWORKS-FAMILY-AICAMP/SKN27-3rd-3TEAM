@@ -1,11 +1,47 @@
 [
-  {"id": 1, "name": "hp",          "description": "HP(체력). 0이 되면 기절한다. 배틀 스테이지에는 적용되지 않는다."},
-  {"id": 2, "name": "attack",      "description": "물리 공격력. 물리 기술의 데미지를 결정한다."},
-  {"id": 3, "name": "defense",     "description": "물리 방어력. 물리 기술로 받는 데미지를 줄인다."},
-  {"id": 4, "name": "sp_attack",   "description": "특수 공격력. 특수 기술의 데미지를 결정한다."},
-  {"id": 5, "name": "sp_defense",  "description": "특수 방어력. 특수 기술로 받는 데미지를 줄인다."},
-  {"id": 6, "name": "speed",       "description": "스피드. 행동 순서를 결정한다."},
-  {"id": 7, "name": "accuracy",    "description": "명중률. 기술이 명중하는 확률에 영향을 준다."},
-  {"id": 8, "name": "evasion",     "description": "회피율. 상대 기술이 빗나갈 확률에 영향을 준다."},
-  {"id": 9, "name": "critical",    "description": "급소율. 급소에 맞을 확률에 영향을 준다."}
+  {
+    "id": 1,
+    "name": "hp",
+    "description": "이 수치가 높을수록 최대 HP가 증가한다."
+  },
+  {
+    "id": 2,
+    "name": "attack",
+    "description": "이 수치가 높을수록 physical move로 가하는 데미지가 증가한다."
+  },
+  {
+    "id": 3,
+    "name": "defense",
+    "description": "이 수치가 높을수록 physical move에 받는 데미지가 감소한다."
+  },
+  {
+    "id": 4,
+    "name": "sp_attack",
+    "description": "이 수치가 높을수록 special move로 가하는 데미지가 증가한다."
+  },
+  {
+    "id": 5,
+    "name": "sp_defense",
+    "description": "이 수치가 높을수록 special move에 받는 데미지가 감소한다."
+  },
+  {
+    "id": 6,
+    "name": "speed",
+    "description": "이 수치가 높을수록 먼저 행동한다."
+  },
+  {
+    "id": 7,
+    "name": "accuracy",
+    "description": "이 수치가 높을수록 기술 명중률이 증가한다."
+  },
+  {
+    "id": 8,
+    "name": "evasion",
+    "description": "이 수치가 높을수록 기술 회피율이 증가한다."
+  },
+  {
+    "id": 9,
+    "name": "critical",
+    "description": "이 수치가 높을수록 기술 급소율이 증가한다."
+  }
 ]
