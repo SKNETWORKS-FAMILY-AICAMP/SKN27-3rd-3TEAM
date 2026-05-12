@@ -195,12 +195,25 @@ def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bo
     
     stat_html = f"<div class='stat-container'>{''.join(stat_items)}</div>" if stat_items else ""
 
+    ailment_html = ""
+    if getattr(pokemon, "ailment", None) and pokemon.ailment not in ["none", ""]:
+        ailment_map = {
+            "paralysis": ("마비", "#eab308"),
+            "burn": ("화상", "#ef4444"),
+            "poison": ("독", "#a855f7"),
+            "sleep": ("잠듦", "#64748b"),
+            "freeze": ("얼음", "#38bdf8"),
+            "confusion": ("혼란", "#ec4899"),
+        }
+        kor_name, bg_color = ailment_map.get(pokemon.ailment, (pokemon.ailment, "#64748b"))
+        ailment_html = f"<span style='background-color: {bg_color}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-left: 8px; vertical-align: middle;'>{kor_name}</span>"
+
     st.markdown(
         f"""
 <div class="status-card" style="min-height: 280px;">
 <div style="color:rgba(226,232,240,.72);font-weight:900;">{title}</div>
 <img src="{pokemon.image_url}" alt="{pokemon.name}">
-<div class="pokemon-name">{pokemon.name}</div>
+<div class="pokemon-name">{pokemon.name}{ailment_html}</div>
 <div>{type_html}</div>
 <div class="hp-label">{hp_text}</div>
 {stat_html}

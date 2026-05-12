@@ -56,6 +56,8 @@ class BattlePokemon:
     defense_stage: int = 0
     sp_defense_stage: int = 0
     speed_stage: int = 0
+    ailment: Optional[str] = None
+    sleep_turns: int = 0
 
 @st.cache_data(show_spinner=False)
 def load_json(filename: str):

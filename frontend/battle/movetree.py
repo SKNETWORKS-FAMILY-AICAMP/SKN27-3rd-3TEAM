@@ -2,6 +2,7 @@ import random
 import copy
 from typing import List, Dict, Any
 from .efficacy import calculate_type_multiplier, calculate_stab_multiplier
+import streamlit as st
 
 class MoveProcessor:
     def __init__(self, attacker: dict, defender: dict, move: dict, user_pokemon: dict, bot_pokemon: dict):
@@ -195,18 +196,25 @@ class MoveProcessor:
             if ailment not in AILMENT_KOR_NAMES or ailment == "none":
                 ailment = "etc"
                 
-            self.log(f"{target_name}은(는) {AILMENT_KOR_NAMES.get(ailment, ailment)} 상태가 되었다!")
             target["ailment"] = ailment
-            
             if ailment == "sleep":
                 target["sleep_turns"] = random.randint(1, 3)
+                
+            self.log(f"{target_name}은(는) {AILMENT_KOR_NAMES.get(ailment, ailment)} 상태가 되었다!")
 
-    def execute(self) -> list:
-        """기술의 카테고리에 따라 효과를 실행합니다."""
-        move_name = self.move.get("name", "기술")
+    def execute(self) -> List[Dict[str, Any]]:
+        """기술의 효과를 처리하고 메시지(상태) 리스트를 반환합니다."""
         attacker_name = self.attacker.get("name", "포켓몬")
+        move_name = self.move.get("name", "기술")
         
-        # 상태이상 행동 불가 체크
+        if self.category == "switch":
+            if self.move.get("is_bot"):
+                self.log(f"{st.session_state.leader_name}은 {attacker_name}으(로) 교체했다!")
+            else:
+                self.log(f"가라! {attacker_name}!")
+            return self.messages
+
+        # 0. 혼란 처리 (혼란 자해 확인)체크
         ailment = self.attacker.get("ailment")
         if ailment == "paralysis":
             if random.random() < 0.125:
@@ -219,12 +227,12 @@ class MoveProcessor:
                 self.attacker["sleep_turns"] = turns_left - 1
                 return self.messages
             else:
-                self.log(f"{attacker_name}은(는) 잠에서 깨어났다!")
                 self.attacker["ailment"] = None
+                self.log(f"{attacker_name}은(는) 잠에서 깨어났다!")
         elif ailment == "freeze":
             if random.random() < 0.2:
-                self.log(f"{attacker_name}의 얼음이 녹았다!")
                 self.attacker["ailment"] = None
+                self.log(f"{attacker_name}의 얼음이 녹았다!")
             else:
                 self.log(f"{attacker_name}은(는) 얼어붙어서 움직일 수 없다!")
                 return self.messages
