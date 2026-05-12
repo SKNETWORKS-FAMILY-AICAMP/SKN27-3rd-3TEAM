@@ -161,19 +161,22 @@ def render_pokemon_status(title: str, pokemon: BattlePokemon, reveal_details: bo
     else:
         hp_color = "#ef4444"
 
+    from .constants import STAT_SHORT_NAMES, STAT_STAGE_MAP
+    
     # 스탯 표시 구성 (기본 스탯 + 랭크 변화)
     stat_items = []
-    stat_labels = {
-        "attack": ("공격", "attack_stage"),
-        "defense": ("방어", "defense_stage"),
-        "sp_attack": ("특공", "sp_attack_stage"),
-        "sp_defense": ("특방", "sp_defense_stage"),
-        "speed": ("스피드", "speed_stage")
-    }
+    display_stats = ["attack", "defense", "special-attack", "special-defense", "speed"]
     
-    for key, (label, stage_field) in stat_labels.items():
-        base_val = pokemon.stats.get(key, 0)
-        stage = getattr(pokemon, stage_field, 0)
+    for key in display_stats:
+        label = STAT_SHORT_NAMES.get(key, key)
+        stage_field = STAT_STAGE_MAP.get(key)
+        
+        # ui 표기를 위한 필드 변환 (ui의 데이터 구조상 sp_attack 등을 키로 쓰는지 확인)
+        # 만약 db의 stats 내 키 이름이 sp_attack이라면:
+        db_key = key.replace("special-", "sp_") if "special" in key else key
+        base_val = pokemon.stats.get(db_key, 0)
+        
+        stage = getattr(pokemon, stage_field, 0) if stage_field else 0
         
         stage_html = ""
         if stage != 0:

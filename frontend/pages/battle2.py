@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import time
 from typing import List, Dict
 from battle.ui import inject_battle_styles, render_pokemon_status, fmt_player, fmt_bot, fmt_move
 from utils.ui import inject_common_ui
@@ -103,32 +104,18 @@ def process_turn(player_move):
     # 배틀 로직 실행 (movetree.py에서 가져온 함수)
     messages = run_battle_logic(player_dict, bot_dict, player_move, bot_move)
     
-    # 결과 반영 (HP 및 스탯 랭크 동기화)
-    player.current_hp = player_dict["current_hp"]
-    player.attack_stage = player_dict["attack_stage"]
-    player.defense_stage = player_dict["defense_stage"]
-    player.sp_attack_stage = player_dict["sp_attack_stage"]
-    player.sp_defense_stage = player_dict["sp_defense_stage"]
-    player.speed_stage = player_dict["speed_stage"]
+    # 최종 승패 판별을 위해 마지막 상태 확인
+    final_p_state = messages[-1]["player_state"]
+    final_b_state = messages[-1]["bot_state"]
     
-    bot.current_hp = bot_dict["current_hp"]
-    bot.attack_stage = bot_dict["attack_stage"]
-    bot.defense_stage = bot_dict["defense_stage"]
-    bot.sp_attack_stage = bot_dict["sp_attack_stage"]
-    bot.sp_defense_stage = bot_dict["sp_defense_stage"]
-    bot.speed_stage = bot_dict["speed_stage"]
-    
-    # 메시지 추가
-    for msg in messages:
-        st.session_state.battle_messages.append({"role": "assistant", "content": msg})
-    
-    # 승패 판별
-    if bot.current_hp <= 0:
+    if final_b_state.get("current_hp", 100) <= 0:
         st.session_state.battle_over = True
         st.session_state.winner = player.name
-    elif player.current_hp <= 0:
+    elif final_p_state.get("current_hp", 100) <= 0:
         st.session_state.battle_over = True
         st.session_state.winner = bot.name
+        
+    st.session_state.pending_messages = messages
 
 def show():
     # 배틀이 시작되지 않았으면 선택 화면 표시
@@ -232,9 +219,14 @@ def show():
         col1, col2 = st.columns([1, 1.2])
 
         with col1:
-            render_pokemon_status("PLAYER", player)
+            player_placeholder = st.empty()
             st.markdown("<hr>", unsafe_allow_html=True)
-            render_pokemon_status("LLM BOT", bot, reveal_details=False)
+            bot_placeholder = st.empty()
+            
+            with player_placeholder:
+                render_pokemon_status("PLAYER", player)
+            with bot_placeholder:
+                render_pokemon_status("LLM BOT", bot, reveal_details=False)
             
             if st.button("배틀 중단 및 다시 선택", use_container_width=True):
                 st.session_state.battle_started = False
@@ -245,7 +237,48 @@ def show():
                 for message in st.session_state.battle_messages:
                     with st.chat_message(message["role"]):
                         st.markdown(message["content"], unsafe_allow_html=True)
-                if st.session_state.battle_over:
+                        
+                # 대기 중인 메시지가 있다면 지연을 두고 하나씩 출력
+                if "pending_messages" in st.session_state and st.session_state.pending_messages:
+                    for msg_event in st.session_state.pending_messages:
+                        time.sleep(0.8) # 0.8초 딜레이
+                        
+                        # 1. 상태 업데이트 및 동기화
+                        msg_text = msg_event["message"]
+                        p_state = msg_event["player_state"]
+                        b_state = msg_event["bot_state"]
+                        
+                        player.current_hp = p_state.get("current_hp", player.max_hp)
+                        player.attack_stage = p_state.get("attack_stage", 0)
+                        player.defense_stage = p_state.get("defense_stage", 0)
+                        player.sp_attack_stage = p_state.get("sp_attack_stage", 0)
+                        player.sp_defense_stage = p_state.get("sp_defense_stage", 0)
+                        player.speed_stage = p_state.get("speed_stage", 0)
+                        if hasattr(player, 'ailment'): player.ailment = p_state.get("ailment")
+
+                        bot.current_hp = b_state.get("current_hp", bot.max_hp)
+                        bot.attack_stage = b_state.get("attack_stage", 0)
+                        bot.defense_stage = b_state.get("defense_stage", 0)
+                        bot.sp_attack_stage = b_state.get("sp_attack_stage", 0)
+                        bot.sp_defense_stage = b_state.get("sp_defense_stage", 0)
+                        bot.speed_stage = b_state.get("speed_stage", 0)
+                        if hasattr(bot, 'ailment'): bot.ailment = b_state.get("ailment")
+                        
+                        # 2. UI 갱신
+                        with player_placeholder:
+                            render_pokemon_status("PLAYER", player)
+                        with bot_placeholder:
+                            render_pokemon_status("LLM BOT", bot, reveal_details=False)
+                            
+                        # 3. 메시지 출력
+                        with st.chat_message("assistant"):
+                            st.markdown(msg_text, unsafe_allow_html=True)
+                        st.session_state.battle_messages.append({"role": "assistant", "content": msg_text})
+                        
+                    st.session_state.pending_messages = []
+                    st.rerun()
+
+                if st.session_state.get("battle_over", False):
                     st.info(f"배틀 종료. 승리: {st.session_state.winner}")
 
             if not st.session_state.battle_over:
