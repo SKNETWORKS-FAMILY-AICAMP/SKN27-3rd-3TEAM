@@ -47,58 +47,71 @@ def get_stats(base_stats: dict, level: int = 50) -> dict:
             stats[stat_name] = int(((base_stats[stat_name] * 2) * (level / 100)) + 5)
     return stats
 
-def start_custom_battle(player_custom_data, leader_name="웅이"):
+def start_custom_battle(player_team_data, leader_name="웅이"):
     """
     DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다.
     
-    - player_custom_data: {"id", "name", "moves"}
-    - leader_name: "웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"
+    - player_team_data: 파티 리스트 [{"id", "name", "moves"}, ...]
     """
     with st.spinner("배틀 데이터를 준비 중..."):
-        # 1. 플레이어 포켓몬 데이터 구성
-        p_data = db.get_pokemon_data(player_custom_data["id"])
-        p_stats = get_stats(p_data['stats'])
-        st.session_state.battle_player = BattlePokemon(
-            id=p_data['id'],
-            name=p_data['name'],
-            image_url=p_data['image_url'],
-            types=p_data['types'],
-            type_names=p_data['type_names'],
-            stats=p_stats,
-            moves=player_custom_data["moves"], # 사용자가 선택한 4개 기술
-            max_hp=p_stats['hp'],
-            current_hp=p_stats['hp']
-        )
+        # 1. 플레이어 파티 구성
+        player_party = []
+        for p_custom in player_team_data:
+            p_data = db.get_pokemon_data(p_custom["id"])
+            p_stats = get_stats(p_data['stats'])
+            pokemon_obj = BattlePokemon(
+                id=p_data['id'],
+                name=p_data['name'],
+                image_url=p_data['image_url'],
+                types=p_data['types'],
+                type_names=p_data['type_names'],
+                stats=p_stats,
+                moves=p_custom["moves"], 
+                max_hp=p_stats['hp'],
+                current_hp=p_stats['hp']
+            )
+            player_party.append(pokemon_obj)
+            
+        st.session_state.player_party = player_party
+        st.session_state.battle_player = player_party[0] # 선봉 포켓몬
 
-        # 2. 봇 포켓몬(관장) 랜덤 선택 및 데이터 구성
-        bot_entry = get_random_gym_leader_pokemon(leader_name)
-        b_data = db.get_pokemon_data(bot_entry['id'])
-        b_stats = get_stats(b_data['stats'])
+        # 2. 봇 파티 구성 (관장의 전체 엔트리 중 랜덤 3마리 선택)
+        leader_roster = ROSTER_MAP.get(leader_name, [])
+        bot_team = random.sample(leader_roster, min(3, len(leader_roster)))
+        bot_party = []
         
-        # 봇은 관장 엔트리에 지정된 기술만 사용
-        bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
-        # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
-        if not bot_moves:
-            bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
-        elif len(bot_moves) > 4:
-            bot_moves = random.sample(bot_moves, 4)
-        
-        st.session_state.battle_bot = BattlePokemon(
-            id=b_data['id'],
-            name=b_data['name'],
-            image_url=b_data['image_url'],
-            types=b_data['types'],
-            type_names=b_data['type_names'],
-            stats=b_stats,
-            moves=bot_moves,
-            max_hp=b_stats['hp'],
-            current_hp=b_stats['hp']
-        )
+        for bot_entry in bot_team:
+            b_data = db.get_pokemon_data(bot_entry['id'])
+            b_stats = get_stats(b_data['stats'])
+            
+            # 봇은 관장 엔트리에 지정된 기술만 사용
+            bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
+            # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
+            if not bot_moves:
+                bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
+            elif len(bot_moves) > 4:
+                bot_moves = random.sample(bot_moves, 4)
+            
+            bot_obj = BattlePokemon(
+                id=b_data['id'],
+                name=b_data['name'],
+                image_url=b_data['image_url'],
+                types=b_data['types'],
+                type_names=b_data['type_names'],
+                stats=b_stats,
+                moves=bot_moves,
+                max_hp=b_stats['hp'],
+                current_hp=b_stats['hp']
+            )
+            bot_party.append(bot_obj)
+
+        st.session_state.bot_party = bot_party
+        st.session_state.battle_bot = bot_party[0] # 관장 봇의 선봉 포켓몬
 
         # 3. 배틀 공통 데이터 및 메시지 초기화
         st.session_state.efficacy = db.get_type_efficacy()
         st.session_state.battle_messages = [
-            {"role": "assistant", "content": f"배틀이 시작되었습니다! 상대는 {fmt_bot(b_data['name'])}입니다. 어떤 기술을 사용하시겠습니까?"}
+            {"role": "assistant", "content": f"배틀이 시작되었습니다! 첫 상대는 {fmt_bot(bot_party[0].name)}입니다. 어떤 기술을 사용하시겠습니까?"}
         ]
         st.session_state.battle_started = True
         st.session_state.battle_over = False
@@ -143,6 +156,9 @@ def process_turn(player_move):
     st.session_state.pending_messages = messages
 
 def show():
+    if "player_team" not in st.session_state:
+        st.session_state.player_team = []
+
     # 배틀이 시작되지 않았으면 선택 화면 표시
     if not st.session_state.get("battle_started", False):
         st.markdown(
@@ -205,6 +221,21 @@ def show():
                 render_pokemon_status("PLAYER PREVIEW", preview, show_moves=False)
 
         with col2:
+            st.subheader(f"내 파티 ({len(st.session_state.player_team)}/3)")
+            if st.session_state.player_team:
+                team_cols = st.columns(len(st.session_state.player_team))
+                for i, pt in enumerate(st.session_state.player_team):
+                    pokemon_data = db.get_pokemon_data(pt['id'])
+                    with team_cols[i]:
+                        img_url = pokemon_data['image_url']
+                        st.image(img_url, use_container_width=True)
+                        st.markdown(f"<div style='text-align: center; font-size: 0.8rem; margin-bottom: 8px;'>{pt['name']}</div>", unsafe_allow_html=True)
+                        if st.button("❌ 제외", key=f"remove_pt_{i}_{pt['name']}", use_container_width=True):
+                            st.session_state.player_team.pop(i)
+                            st.rerun()
+            
+            st.markdown("<hr>", unsafe_allow_html=True)
+
             if selected_name:
                 st.subheader("기술 선택")
                 pokemon_data = st.session_state.selected_pokemon_data
@@ -238,14 +269,25 @@ def show():
                 st.write("---")
                 if len(selected_move_names) == 4:
                     st.success("모든 기술 선택 완료!")
-                    if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
-                        four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
-                        player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
-                        start_custom_battle(player_custom, leader_name=selected_leader)
-                        db.close()
-                        st.rerun()
+                    if len(st.session_state.player_team) < 3:
+                        if st.button("➕ 엔트리에 추가하기", use_container_width=True, type="secondary"):
+                            four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
+                            player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
+                            st.session_state.player_team.append(player_custom)
+                            st.session_state.selected_moves = []
+                            st.session_state.last_selected_id = None
+                            st.rerun()
+                    else:
+                        st.warning("파티가 가득 찼습니다! (최대 3마리)")
                 else:
                     st.info(f"기술을 {4 - len(selected_move_names)}개 더 선택해주세요.")
+
+            if len(st.session_state.player_team) > 0:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
+                    start_custom_battle(st.session_state.player_team, leader_name=selected_leader)
+                    db.close()
+                    st.rerun()
     
     else:
         # 배틀 진행 화면 (battle.py 로직과 유사)
