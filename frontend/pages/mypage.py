@@ -1,9 +1,20 @@
 import streamlit as st
 import os
+import base64
+import math
 import requests
 from datetime import datetime
 import textwrap
 from utils.ui import inject_common_ui
+
+_FRONTEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+def _b64_img(rel_path: str) -> str:
+    full = os.path.join(_FRONTEND_DIR, rel_path)
+    if os.path.exists(full):
+        with open(full, "rb") as f:
+            return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
+    return ""
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
@@ -266,7 +277,7 @@ def get_mypage_styles():
     .pokedex-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #f1c40f, #fd9644); }
     .pokedex-foot { margin-top: 10px; font-size: 0.82rem; color: rgba(255,255,255,0.4); }
 
-    /* ── Gym Badges ── */
+    /* ── Gym Badge Wheel ── */
     .badge-section {
         background: #fff;
         border-radius: 24px;
@@ -274,33 +285,82 @@ def get_mypage_styles():
         margin-bottom: var(--section-gap);
         border: 1px solid var(--glass-border);
         box-shadow: var(--card-shadow);
+        display: flex;
+        align-items: center;
+        gap: 60px;
     }
-    .badge-grid {
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
-        gap: 16px;
-        margin-top: 24px;
-    }
-    .badge-item { text-align: center; }
-    .badge-icon {
-        width: 64px; height: 64px;
+    .badge-wheel-wrap { flex-shrink: 0; }
+    .badge-wheel {
+        position: relative;
+        width: 320px; height: 320px;
         border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.8rem;
-        margin: 0 auto 8px;
-        transition: all 0.3s;
+        background: radial-gradient(circle at 40% 35%, #f5e87a, #d4a830 55%, #a07420);
+        box-shadow: 0 0 0 6px #c8993a, 0 0 0 10px #e8c060, 0 12px 40px rgba(180,130,30,0.5);
     }
-    .badge-unlocked {
-        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-        box-shadow: 0 6px 20px rgba(253,203,110,0.4);
+    /* sector dividers */
+    .badge-wheel::before {
+        content: '';
+        position: absolute; inset: 12px;
+        border-radius: 50%;
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.15);
+        pointer-events: none;
     }
-    .badge-locked {
-        background: #f1f2f6;
-        filter: grayscale(1);
+    .badge-slot {
+        position: absolute;
+        width: 72px; height: 72px;
+        border-radius: 50%;
+        overflow: hidden;
+        transition: all 0.4s ease;
+    }
+    .badge-slot img {
+        width: 100%; height: 100%;
+        object-fit: contain;
+        display: block;
+        transition: all 0.4s ease;
+    }
+    .badge-slot.locked img {
+        filter: grayscale(1) brightness(0.35);
+    }
+    .badge-slot.unlocked {
+        box-shadow: 0 0 16px 4px rgba(255,230,80,0.7), 0 0 0 2px rgba(255,220,50,0.5);
+    }
+    .badge-slot.unlocked img {
+        filter: drop-shadow(0 0 6px rgba(255,230,100,0.9));
+    }
+    .wheel-center {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        background: radial-gradient(circle, #7a5010, #4a3008);
+        border-radius: 50%;
+        width: 72px; height: 72px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        box-shadow: 0 0 0 3px #c8993a, inset 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .wheel-count { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; color: #f5e87a; line-height: 1; }
+    .wheel-label { font-size: 0.6rem; color: rgba(245,232,122,0.7); font-weight: 700; letter-spacing: 1px; }
+
+    /* badge legend list */
+    .badge-legend { flex: 1; }
+    .badge-legend-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
+    .badge-legend-item {
+        display: flex; align-items: center; gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f2f6;
         opacity: 0.4;
+        transition: opacity 0.3s;
     }
-    .badge-name { font-size: 0.7rem; font-weight: 700; color: var(--text-sub); }
-    .badge-desc { font-size: 0.65rem; color: #b2bec3; margin-top: 2px; }
+    .badge-legend-item.unlocked { opacity: 1; }
+    .badge-legend-item:last-child { border-bottom: none; }
+    .legend-thumb { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
+    .legend-thumb.locked { filter: grayscale(1) brightness(0.5); }
+    .legend-info { flex: 1; }
+    .legend-name { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
+    .legend-cond { font-size: 0.78rem; color: var(--text-sub); margin-top: 2px; }
+    .legend-check { font-size: 1rem; }
 
     /* ── Activity ── */
     .activity-section {
@@ -375,7 +435,7 @@ def show():
         return
 
     user = st.session_state.user
-    user_id = user.get("db_id") or user.get("id")
+    user_id = user.get("db_id")
     username = user.get("login")
 
     repos    = user.get("public_repos", 0)
@@ -459,42 +519,6 @@ def show():
     """, unsafe_allow_html=True)
 
     # ════════════════════════════════
-    # 2. Quick Actions
-    # ════════════════════════════════
-    st.markdown("""
-    <div class="quick-actions">
-        <div class="section-title">⚡ 바로가기</div>
-        <div class="action-grid">
-            <a href="/pokedex" target="_self" class="action-card">
-                <div class="action-icon">📖</div>
-                <div class="action-label">포켓덱스</div>
-                <div class="action-sub">포켓몬 도감</div>
-            </a>
-            <a href="/teambuilding" target="_self" class="action-card">
-                <div class="action-icon">🏆</div>
-                <div class="action-label">팀 빌더</div>
-                <div class="action-sub">나만의 팀 구성</div>
-            </a>
-            <a href="/battle" target="_self" class="action-card">
-                <div class="action-icon">⚔️</div>
-                <div class="action-label">배틀</div>
-                <div class="action-sub">포켓몬 배틀</div>
-            </a>
-            <a href="/chatbot" target="_self" class="action-card">
-                <div class="action-icon">🤖</div>
-                <div class="action-label">AI 챗봇</div>
-                <div class="action-sub">포켓몬 박사</div>
-            </a>
-            <a href="/mini_game" target="_self" class="action-card">
-                <div class="action-icon">🎮</div>
-                <div class="action-label">미니게임</div>
-                <div class="action-sub">실루엣 · 메모리</div>
-            </a>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ════════════════════════════════
     # 3. GitHub Dev Stats
     # ════════════════════════════════
     st.markdown(f"""
@@ -570,37 +594,94 @@ def show():
     """, unsafe_allow_html=True)
 
     # ════════════════════════════════
-    # 6. Gym Badges
+    # 6. Gym Badge Wheel (가라르 배지)
     # ════════════════════════════════
+    # 배지 정의 — 파일명, 한글명, 해제 조건 순으로 (쉬운 것부터)
     badges = [
-        {"icon": "🪨", "name": "Boulder",  "desc": "첫 게임",         "unlocked": total_games >= 1},
-        {"icon": "💧", "name": "Cascade",  "desc": "첫 정답",         "unlocked": total_correct >= 1},
-        {"icon": "⚡", "name": "Thunder",  "desc": "10번 도전",       "unlocked": total_games >= 10},
-        {"icon": "🌈", "name": "Rainbow",  "desc": "정답률 70%",      "unlocked": (s_rate >= 70 and s_total >= 5) or (m_rate >= 70 and m_total >= 5)},
-        {"icon": "👻", "name": "Soul",     "desc": "50게임 돌파",     "unlocked": total_games >= 50},
-        {"icon": "🌿", "name": "Marsh",    "desc": "GitHub 연동",     "unlocked": repos > 0},
-        {"icon": "🔥", "name": "Volcano",  "desc": "커밋 100+",       "unlocked": commits >= 100},
-        {"icon": "🌍", "name": "Earth",    "desc": "레전더리 개발자", "unlocked": commits >= 1000 or repos >= 100},
+        {"file": "풀",    "name": "풀 배지",    "desc": "첫 게임 플레이",           "unlocked": total_games >= 1},
+        {"file": "물",    "name": "물 배지",    "desc": "첫 정답",                  "unlocked": total_correct >= 1},
+        {"file": "불꽃",  "name": "불꽃 배지",  "desc": "10번 도전",                "unlocked": total_games >= 10},
+        {"file": "페어리","name": "페어리 배지","desc": "정답률 70% 이상",           "unlocked": (s_rate >= 70 and s_total >= 5) or (m_rate >= 70 and m_total >= 5)},
+        {"file": "고스트","name": "고스트 배지","desc": "50게임 돌파",              "unlocked": total_games >= 50},
+        {"file": "얼음",  "name": "얼음 배지",  "desc": "GitHub 연동 (레포 보유)",  "unlocked": repos > 0},
+        {"file": "악",    "name": "악 배지",    "desc": "커밋 100개 이상",          "unlocked": commits >= 100},
+        {"file": "드래곤","name": "드래곤 배지","desc": "레전더리 개발자",           "unlocked": commits >= 1000 or repos >= 100},
     ]
-
     unlocked_count = sum(1 for b in badges if b["unlocked"])
 
-    badge_items = ""
+    # 배지 이미지: 세션당 1회만 로드 (base64 캐시)
+    if "_badge_imgs" not in st.session_state:
+        st.session_state["_badge_imgs"] = {
+            b["file"]: _b64_img(f"img/badge/{b['file']}.png") for b in badges
+        }
+    imgs = st.session_state["_badge_imgs"]
+
+    # ── 휠 슬롯 HTML (이미지 8개)
+    _r, _cx, _cy, _sz = 110, 160, 160, 72
+    wheel_slots = ""
+    for i, b in enumerate(badges):
+        rad = math.radians(i * 45)
+        lx  = _cx + _r * math.sin(rad) - _sz / 2
+        ty  = _cy - _r * math.cos(rad) - _sz / 2
+        cls = "unlocked" if b["unlocked"] else "locked"
+        wheel_slots += (
+            f'<div class="badge-slot {cls}" style="left:{lx:.0f}px;top:{ty:.0f}px;">'
+            f'<img src="{imgs[b["file"]]}" alt="{b["name"]}"></div>'
+        )
+
+    # ── 범례: 이미지 없이 타입 컬러 원 + 텍스트 (HTML 경량화)
+    TYPE_COLORS = {
+        "풀": "#27ae60", "물": "#2980b9", "불꽃": "#e74c3c",
+        "페어리": "#e91e8c", "고스트": "#7e57c2", "얼음": "#00bcd4",
+        "악": "#37474f", "드래곤": "#1565c0",
+    }
+    legend_rows = ""
     for b in badges:
-        cls  = "badge-unlocked" if b["unlocked"] else "badge-locked"
-        badge_items += f"""
-        <div class="badge-item">
-            <div class="badge-icon {cls}">{b['icon']}</div>
-            <div class="badge-name">{b['name']}</div>
-            <div class="badge-desc">{b['desc']}</div>
+        cls   = "unlocked" if b["unlocked"] else ""
+        check = "✅" if b["unlocked"] else "🔒"
+        color = TYPE_COLORS.get(b["file"], "#aaa")
+        dot_style = (
+            f"width:32px;height:32px;border-radius:50%;background:{color};"
+            f"flex-shrink:0;box-shadow:0 2px 8px {color}66;"
+            + ("" if b["unlocked"] else "filter:grayscale(1);opacity:0.3;")
+        )
+        legend_rows += f"""<div class="badge-legend-item {cls}">
+            <div style="{dot_style}"></div>
+            <div class="legend-info">
+                <div class="legend-name">{b["name"]}</div>
+                <div class="legend-cond">{b["desc"]}</div>
+            </div>
+            <span class="legend-check">{check}</span>
         </div>"""
 
-    st.markdown(f"""
-    <div class="badge-section">
-        <div class="section-title">🏅 도장 배지 &nbsp;<span style="font-size:1rem;font-weight:400;color:var(--text-sub);">{unlocked_count}/8 획득</span></div>
-        <div class="badge-grid">{badge_items}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    # ── 휠과 범례를 별도 컬럼으로 렌더링 (한 번에 base64 × 16개 방지)
+    col_w, col_l = st.columns([1, 1.3], gap="large")
+
+    with col_w:
+        st.markdown(f"""
+        <div style="background:#fff;border-radius:24px;padding:32px;
+                    border:1px solid #f0f0f0;box-shadow:0 10px 30px rgba(0,0,0,0.05);
+                    display:flex;flex-direction:column;align-items:center;gap:16px;">
+            <div class="badge-wheel" style="flex-shrink:0;">
+                {wheel_slots}
+                <div class="wheel-center">
+                    <div class="wheel-count">{unlocked_count}</div>
+                    <div class="wheel-label">/ 8</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_l:
+        st.markdown(f"""
+        <div style="background:#fff;border-radius:24px;padding:32px;
+                    border:1px solid #f0f0f0;box-shadow:0 10px 30px rgba(0,0,0,0.05);height:100%;">
+            <div class="badge-legend-title">🏅 가라르 도장 배지
+                <span style="font-size:0.9rem;font-weight:400;color:#636e72;margin-left:8px;">{unlocked_count}/8 획득</span>
+            </div>
+            {legend_rows}
+        </div>
+        """, unsafe_allow_html=True)
 
     # ════════════════════════════════
     # 7. Recent Activity
