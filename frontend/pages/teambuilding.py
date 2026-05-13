@@ -1,5 +1,6 @@
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from html import escape
 from typing import Any, Dict, List, Optional
 
@@ -1588,25 +1589,25 @@ def apply_page_style() -> None:
             border: 1px solid rgba(255,255,255,0.08);
             border-top: 4px solid #FFCB05;
             border-radius: 18px;
-            padding: 18px 14px 14px;
+            padding: 16px 12px 12px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
         }
         .ts-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid rgba(255,255,255,0.07);
         }
         .ts-icon {
-            width: 26px; height: 26px;
+            width: 24px; height: 24px;
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(227,53,53,0.5));
         }
         .ts-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 900;
             color: #FFCB05;
             letter-spacing: 0.5px;
@@ -1616,80 +1617,95 @@ def apply_page_style() -> None:
             background: rgba(255,203,5,0.12);
             border: 1px solid rgba(255,203,5,0.3);
             color: #FFCB05;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 800;
-            padding: 2px 10px;
+            padding: 2px 9px;
             border-radius: 20px;
             font-family: 'Outfit', sans-serif;
         }
+        /* 2열 3행 그리드 */
+        .ts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
         .ts-slot {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            padding: 7px 8px;
-            border-radius: 10px;
-            margin-bottom: 5px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            min-height: 54px;
+            justify-content: flex-start;
+            gap: 4px;
+            padding: 8px 4px 7px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.025);
+            border: 1px dashed rgba(255,255,255,0.09);
+            min-height: 92px;
             transition: all 0.2s;
         }
         .ts-slot.filled {
             background: rgba(255,203,5,0.05);
-            border-color: rgba(255,203,5,0.2);
+            border: 1px solid rgba(255,203,5,0.22);
+        }
+        .ts-slot-locked {
+            background: rgba(255,255,255,0.01) !important;
+            border: 1px dashed rgba(255,255,255,0.05) !important;
+            opacity: 0.45;
         }
         .ts-num {
-            font-size: 0.58rem;
+            font-size: 0.52rem;
             font-weight: 800;
-            color: #444;
-            width: 10px;
-            text-align: center;
-            flex-shrink: 0;
+            color: #555;
+            align-self: flex-start;
+            padding-left: 5px;
+            line-height: 1;
         }
         .ts-img {
-            width: 44px; height: 44px;
+            width: 52px; height: 48px;
             object-fit: contain;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-            flex-shrink: 0;
         }
         .ts-empty-circle {
-            width: 44px; height: 44px;
+            width: 40px; height: 40px;
             border: 2px dashed rgba(255,255,255,0.1);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: rgba(255,255,255,0.12);
             font-size: 1rem;
-            flex-shrink: 0;
         }
-        .ts-info { flex: 1; min-width: 0; }
+        .ts-lock-circle {
+            width: 40px; height: 40px;
+            border: 2px dashed rgba(255,255,255,0.06);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.12);
+            font-size: 1.1rem;
+            font-weight: 900;
+        }
         .ts-name {
-            font-size: 0.78rem;
+            font-size: 0.62rem;
             font-weight: 700;
             color: #e0e0e0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-family: 'Inter', sans-serif;
-        }
-        .ts-id {
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: #555;
+            width: 100%;
+            text-align: center;
+            padding: 0 3px;
             font-family: 'Inter', sans-serif;
         }
         .ts-empty-text {
-            font-size: 0.7rem;
+            font-size: 0.58rem;
             font-weight: 600;
             color: rgba(255,255,255,0.18);
-            flex: 1;
             text-align: center;
             font-family: 'Inter', sans-serif;
         }
         .ts-hint {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 700;
-            padding: 8px 0 2px;
+            padding: 6px 0 2px;
             font-family: 'Outfit', sans-serif;
             letter-spacing: 0.2px;
         }
@@ -1718,27 +1734,17 @@ def apply_page_style() -> None:
             color: #fff !important;
         }
         .element-container:has(.tb-act-analyze) + .element-container button {
-            background: #2a75bb !important;
+            background: linear-gradient(135deg, #2a75bb 0%, #FFCB05 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 14px rgba(42,117,187,0.4) !important;
+            box-shadow: 0 4px 18px rgba(42,117,187,0.4) !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.35) !important;
         }
         .element-container:has(.tb-act-analyze) + .element-container button:hover:not(:disabled) {
-            background: #3485cc !important;
+            filter: brightness(1.12) !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 8px 20px rgba(42,117,187,0.5) !important;
+            box-shadow: 0 8px 24px rgba(42,117,187,0.5) !important;
         }
-        .element-container:has(.tb-act-recommend) + .element-container button {
-            background: #FFCB05 !important;
-            color: #1a1a1a !important;
-            box-shadow: 0 4px 14px rgba(255,203,5,0.35) !important;
-        }
-        .element-container:has(.tb-act-recommend) + .element-container button:hover:not(:disabled) {
-            background: #ffd633 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 20px rgba(255,203,5,0.5) !important;
-        }
-        .element-container:has(.tb-act-analyze) + .element-container button:disabled,
-        .element-container:has(.tb-act-recommend) + .element-container button:disabled {
+        .element-container:has(.tb-act-analyze) + .element-container button:disabled {
             opacity: 0.35 !important;
             cursor: not-allowed !important;
             transform: none !important;
@@ -2316,48 +2322,51 @@ def apply_page_style() -> None:
 def render_team_side_panel(
     selected_pokemon: List[Dict[str, Any]],
     can_request: bool,
-    can_recommend: bool,
 ) -> None:
     """우측 팀 패널: 선택 슬롯 5개 + 상태 힌트 + 액션 버튼을 표시합니다."""
 
     count = len(selected_pokemon)
 
     # 슬롯 HTML
-    slot_rows = []
+    # 슬롯 1~5 (선택 가능) + 슬롯 6 (항상 잠금 "?")
+    slot_cells = []
     for i in range(REQUIRED_TEAM_SIZE):
         if i < count:
             p = selected_pokemon[i]
             img = escape(p.get("image_url", ""))
             name = escape(p.get("name", ""))
-            pid = p.get("pokemon_id", 0)
-            slot_rows.append(
+            slot_cells.append(
                 f'<div class="ts-slot filled">'
                 f'<span class="ts-num">{i + 1}</span>'
                 f'<img class="ts-img" src="{img}" alt="{name}">'
-                f'<div class="ts-info">'
                 f'<div class="ts-name">{name}</div>'
-                f'<div class="ts-id">No.{pid:04d}</div>'
-                f'</div>'
                 f'</div>'
             )
         else:
-            slot_rows.append(
+            slot_cells.append(
                 f'<div class="ts-slot">'
                 f'<span class="ts-num">{i + 1}</span>'
                 f'<div class="ts-empty-circle">＋</div>'
-                f'<span class="ts-empty-text">선택 대기</span>'
+                f'<div class="ts-empty-text">대기</div>'
                 f'</div>'
             )
+
+    # 6번째 슬롯 — 덱은 6마리지만 5마리만 선택, 나머지는 자유석
+    slot_cells.append(
+        f'<div class="ts-slot ts-slot-locked">'
+        f'<span class="ts-num">6</span>'
+        f'<div class="ts-lock-circle">?</div>'
+        f'<div class="ts-empty-text">자유석</div>'
+        f'</div>'
+    )
 
     # 상태 힌트
     if count == 0:
         hint, hint_color = "왼쪽에서 포켓몬을 선택하세요", "#555"
     elif count < REQUIRED_TEAM_SIZE:
         hint, hint_color = f"{REQUIRED_TEAM_SIZE - count}마리 더 선택하세요", "#888"
-    elif st.session_state.analysis_result is None:
-        hint, hint_color = "덱 분석을 먼저 진행해주세요", "#2a75bb"
     else:
-        hint, hint_color = "추천받을 준비가 됐습니다!", "#27ae60"
+        hint, hint_color = "팀 분석을 시작하세요!", "#FFCB05"
 
     st.markdown(
         f"""
@@ -2367,7 +2376,9 @@ def render_team_side_panel(
                 <span class="ts-title">나의 팀</span>
                 <span class="ts-badge">{count} / {REQUIRED_TEAM_SIZE}</span>
             </div>
-            {"".join(slot_rows)}
+            <div class="ts-grid">
+                {"".join(slot_cells)}
+            </div>
             <div class="ts-hint" style="color:{hint_color};">{hint}</div>
         </div>
         """,
@@ -2385,23 +2396,88 @@ def render_team_side_panel(
     st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown('<div class="tb-act-analyze">', unsafe_allow_html=True)
-    if st.button("덱 분석", use_container_width=True, disabled=not can_request, key="side_analyze"):
-        with st.spinner("분석 중..."):
-            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids}
-            st.session_state.analysis_result = request_json(
-                "POST", "/api/v1/team-builder/rag-analyze", json=payload
-            )
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    if st.button("팀 분석 & 추천", use_container_width=True, disabled=not can_request, key="side_analyze"):
+        ids = st.session_state.selected_pokemon_ids
 
-    st.markdown('<div class="tb-act-recommend">', unsafe_allow_html=True)
-    if st.button("추천 받기", use_container_width=True, disabled=not can_recommend, key="side_recommend"):
-        with st.spinner("추천 생성 중..."):
-            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids, "limit": 3}
-            st.session_state.recommendation_result = request_json(
-                "POST", "/api/v1/team-builder/rag-recommend", json=payload
-            )
-        st.rerun()
+        # 전체화면 로딩 오버레이를 즉시 스트리밍 — API 호출 중 브라우저에 표시됩니다.
+        st.markdown(
+            """
+            <style>
+            @keyframes tb-spin { to { transform: rotate(360deg); } }
+            @keyframes tb-pulse-ring {
+                0%   { transform: scale(0.8); opacity: 0.8; }
+                100% { transform: scale(1.6); opacity: 0; }
+            }
+            .tb-overlay {
+                position: fixed; inset: 0;
+                background: rgba(5, 5, 15, 0.97);
+                z-index: 999999;
+                display: flex; flex-direction: column;
+                align-items: center; justify-content: center;
+                gap: 26px;
+            }
+            .tb-ball-ring {
+                position: relative;
+                width: 120px; height: 120px;
+                display: flex; align-items: center; justify-content: center;
+            }
+            .tb-ball-ring::before {
+                content: '';
+                position: absolute;
+                width: 120px; height: 120px;
+                border-radius: 50%;
+                background: rgba(255, 203, 5, 0.18);
+                animation: tb-pulse-ring 1.4s ease-out infinite;
+            }
+            .tb-ball {
+                width: 90px; height: 90px;
+                animation: tb-spin 1s linear infinite;
+                filter: drop-shadow(0 0 18px rgba(255, 203, 5, 0.35));
+                position: relative; z-index: 1;
+            }
+            .tb-loading-title {
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.6rem; font-weight: 900;
+                color: #ffffff; letter-spacing: 2px;
+            }
+            .tb-loading-sub {
+                font-family: 'Inter', sans-serif;
+                font-size: 0.92rem;
+                color: rgba(255,255,255,0.35);
+                letter-spacing: 0.3px;
+                margin-top: -14px;
+            }
+            </style>
+            <div class="tb-overlay">
+                <div class="tb-ball-ring">
+                    <svg class="tb-ball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="white" stroke="#333" stroke-width="2"/>
+                        <path d="M5 50A45 45 0 0 1 95 50H70A20 20 0 0 0 30 50H5" fill="#E33535" stroke="#333" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="15" fill="white" stroke="#333" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="8" fill="white" stroke="#333" stroke-width="1"/>
+                    </svg>
+                </div>
+                <div class="tb-loading-title">분석 중...</div>
+                <div class="tb-loading-sub">팀 전력 분석 및 추천 포켓몬을 계산하고 있어요</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        def _analyze() -> Any:
+            return request_json("POST", "/api/v1/team-builder/rag-analyze", json={"pokemon_ids": ids})
+
+        def _recommend() -> Any:
+            return request_json("POST", "/api/v1/team-builder/rag-recommend", json={"pokemon_ids": ids, "limit": 3})
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            f_analyze = pool.submit(_analyze)
+            f_recommend = pool.submit(_recommend)
+            st.session_state.analysis_result = f_analyze.result()
+            st.session_state.recommendation_result = f_recommend.result()
+
+        st.session_state.team_result_type = "both"
+        st.switch_page("pages/team_result.py")
     st.markdown("</div>", unsafe_allow_html=True)
 
 
@@ -2527,7 +2603,6 @@ def show_v2() -> None:
 
     selected_pokemon = find_selected_pokemon(pokemon_list, st.session_state.selected_pokemon_ids)
     can_request = len(st.session_state.selected_pokemon_ids) == REQUIRED_TEAM_SIZE
-    can_recommend = can_request and st.session_state.analysis_result is not None
 
     # 좌우 2분할: 포켓몬 그리드(75%) + 팀 패널(25%)
     grid_col, panel_col = st.columns([3, 1], gap="medium")
@@ -2540,13 +2615,7 @@ def show_v2() -> None:
                     render_pokemon_card(pokemon)
 
     with panel_col:
-        render_team_side_panel(selected_pokemon, can_request, can_recommend)
-
-    if st.session_state.analysis_result:
-        render_analysis_result(st.session_state.analysis_result)
-
-    if st.session_state.recommendation_result:
-        render_recommendation_result(st.session_state.recommendation_result)
+        render_team_side_panel(selected_pokemon, can_request)
 
 
 if __name__ == "__main__":
