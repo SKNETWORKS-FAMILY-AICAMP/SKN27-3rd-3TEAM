@@ -79,7 +79,7 @@ MODELS = {
 }
 DEFAULT_MODEL = "gpt-4o-mini"
 
-FLAVOR_TOP_N = 3
+FLAVOR_TOP_N = 5
 
 
 # ══════════════════════════════════════════════════════════
@@ -96,8 +96,9 @@ _vectorstore = PGVector(
 _vector_retriever = _vectorstore.as_retriever(
     search_type="mmr",
     search_kwargs={
-        "k":       10,
-        "fetch_k": 20,
+        "k":           20,
+        "fetch_k":     50,
+        "lambda_mult": 0.7,
     }
 )
 
