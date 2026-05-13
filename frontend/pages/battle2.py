@@ -1,15 +1,14 @@
-import streamlit as st
-import random
+import re
 import time
-from typing import List, Dict
+from dataclasses import asdict
+
+import streamlit as st
 from battle.ui import inject_battle_styles, render_pokemon_status, fmt_player, fmt_bot, fmt_move
 from utils.ui import inject_common_ui
 from battle.pokemon import PokemonDB
-from battle.data import BattlePokemon
-from battle.movetree import process_turn as run_battle_logic
-from battle.trainerbot import get_random_gym_leader_pokemon
-import re
-from dataclasses import asdict
+from battle.utils import BattlePokemon
+from battle.movetree import run_battle_logic
+from battle.trainer_bot import BattleBot
 from battle.trainerbot import ROSTER_MAP
 
 # 페이지 설정
@@ -26,27 +25,6 @@ inject_battle_styles()
 # DB 연결
 db = PokemonDB()
 
-def get_max_hp(base_hp: int, level: int = 50) -> int:
-    """
-    레벨에 따라 보정된 최대 HP 계산 (개체치, 노력치 제외)
-    공식: ((BaseHP × 2) + 100) × Level / 100 + 10
-    """
-
-    return int((((base_hp * 2) + 100) * (level / 100)) + 10)
-
-def get_stats(base_stats: dict, level: int = 50) -> dict:
-    """
-    HP를 제외한 나머지 능력치 레벨에 따라 보정된 수치 계산 (개체치, 노력치, 성격 제외)
-    공식: ((BaseStat × 2) × Level / 100) + 5
-    """
-    stats = {}
-    for stat_name in base_stats:
-        if stat_name == "hp":
-            stats[stat_name] = get_max_hp(base_stats[stat_name])
-        else:
-            stats[stat_name] = int(((base_stats[stat_name] * 2) * (level / 100)) + 5)
-    return stats
-
 def start_custom_battle(player_team_data, leader_name="웅이"):
     """
     DB 데이터를 기반으로 BattlePokemon 객체를 생성하고 배틀을 초기화합니다.
@@ -57,18 +35,10 @@ def start_custom_battle(player_team_data, leader_name="웅이"):
         # 1. 플레이어 파티 구성
         player_party = []
         for p_custom in player_team_data:
-            p_data = db.get_pokemon_data(p_custom["id"])
-            p_stats = get_stats(p_data['stats'])
             pokemon_obj = BattlePokemon(
-                id=p_data['id'],
-                name=p_data['name'],
-                image_url=p_data['image_url'],
-                types=p_data['types'],
-                type_names=p_data['type_names'],
-                stats=p_stats,
-                moves=p_custom["moves"], 
-                max_hp=p_stats['hp'],
-                current_hp=p_stats['hp']
+                id=p_custom["id"],
+                name=p_custom["name"],
+                selected_moves=p_custom["moves"]
             )
             player_party.append(pokemon_obj)
             
@@ -76,34 +46,7 @@ def start_custom_battle(player_team_data, leader_name="웅이"):
         st.session_state.battle_player = player_party[0] # 선봉 포켓몬
 
         # 2. 봇 파티 구성 (관장의 전체 엔트리 중 랜덤 3마리 선택)
-        leader_roster = ROSTER_MAP.get(leader_name, [])
-        bot_team = random.sample(leader_roster, min(3, len(leader_roster)))
-        bot_party = []
-        
-        for bot_entry in bot_team:
-            b_data = db.get_pokemon_data(bot_entry['id'])
-            b_stats = get_stats(b_data['stats'])
-            
-            # 봇은 관장 엔트리에 지정된 기술만 사용
-            bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
-            # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
-            if not bot_moves:
-                bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
-            elif len(bot_moves) > 4:
-                bot_moves = random.sample(bot_moves, 4)
-            
-            bot_obj = BattlePokemon(
-                id=b_data['id'],
-                name=b_data['name'],
-                image_url=b_data['image_url'],
-                types=b_data['types'],
-                type_names=b_data['type_names'],
-                stats=b_stats,
-                moves=bot_moves,
-                max_hp=b_stats['hp'],
-                current_hp=b_stats['hp']
-            )
-            bot_party.append(bot_obj)
+        bot_party = BattleBot.initialize(leader_name)
 
         st.session_state.bot_party = bot_party
         st.session_state.battle_bot = bot_party[0] # 관장 봇의 선봉 포켓몬
@@ -148,25 +91,14 @@ def process_turn(player_move):
     bot = st.session_state.battle_bot
     bot_party = st.session_state.bot_party
     
-    # 봇 교체 로직 (생존한 다른 포켓몬이 있을 경우 15% 확률로 교체)
-    alive_other_bots = [bp for bp in bot_party if bp.id != bot.id and bp.current_hp > 0]
-    
-    if alive_other_bots and random.random() < 0.15:
-        target_bot = random.choice(alive_other_bots)
-        target_idx = bot_party.index(target_bot)
-        bot_move = {
-            "name": f"{target_bot.name}(으)로 교체",
-            "category": "switch",
-            "target_index": target_idx,
-            "priority": 6,
-            "is_bot": True
-        }
-        st.session_state.battle_bot = target_bot
-        bot = st.session_state.battle_bot
-    else:
-        # 봇의 기술 랜덤 선택
-        bot_move = random.choice(bot.moves)
-    
+    # =========================== 봇의 행동 결정 로직 =============================
+    # 봇의 전략 결정 (세션 상태에서 가져오거나 기본값 'random' 사용)
+    bot_strategy = st.session_state.get("bot_strategy", "random")
+    trainer_bot = BattleBot(leader_name=st.session_state.leader_name)
+    bot_move = trainer_bot.decide_action(strategy=bot_strategy)
+    bot = st.session_state.battle_bot  # 교체되었을 수 있으므로 갱신
+    # ===============================================================================
+
     # 객체를 딕셔너리로 변환
     player_dict = asdict(player)
     bot_dict = asdict(bot)
@@ -250,12 +182,8 @@ def show():
                     st.session_state.selected_moves = []
 
                 pokemon_data = st.session_state.selected_pokemon_data
-                stats = get_stats(pokemon_data['stats'])
                 preview = BattlePokemon(
-                    id=pokemon_data['id'], name=pokemon_data['name'], image_url=pokemon_data['image_url'],
-                    types=pokemon_data['types'], type_names=pokemon_data['type_names'],
-                    stats=stats, moves=pokemon_data['moves'],
-                    max_hp=stats['hp'], current_hp=stats['hp']
+                    id=pokemon_data['id'], name=pokemon_data['name'], selected_moves=st.session_state.selected_moves
                 )
                 render_pokemon_status("PLAYER PREVIEW", preview, show_moves=False)
 
