@@ -280,30 +280,18 @@ def get_user_stats(db: Session, user_id: int):
     stats = {
         "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
         "memory": {"total": 0, "correct": 0, "hint_used": 0},
-        "gym_battle": {"total": 0, "correct": 0, "defeated_leaders": []}
     }
     
-    import json
     for log in logs:
         g_type = log.game_type
         if g_type in stats:
             stats[g_type]["total"] += 1
             if log.is_correct:
                 stats[g_type]["correct"] += 1
-                
-                # 배지 시스템을 위한 승리 관장 목록 추출
-                if g_type == "gym_battle" and log.log_data:
-                    try:
-                        data = json.loads(log.log_data)
-                        leader = data.get("leader")
-                        if leader and leader not in stats["gym_battle"]["defeated_leaders"]:
-                            stats["gym_battle"]["defeated_leaders"].append(leader)
-                    except:
-                        pass
-
-            if "hint_used" in stats[g_type] and log.hint_used:
+            if log.hint_used:
                 stats[g_type]["hint_used"] += 1
-                
+    
+    stats["collected_pokemon_ids"] = sorted(list(collected_ids))
     return stats
 
 
