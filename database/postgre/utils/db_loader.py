@@ -33,12 +33,6 @@ def ensure_schema_up_to_date(cursor):
                 ALTER TABLE moves ADD COLUMN damage_class VARCHAR(20);
             END IF;
 
-<<<<<<< HEAD
-            -- moves 테이블에 embedding 추가
-            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
-                           WHERE table_name='moves' AND column_name='embedding') THEN
-                ALTER TABLE moves ADD COLUMN embedding VECTOR(1536);
-=======
             -- moves 테이블에 나머지 컬럼들 추가 (존재하지 않을 경우)
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='ailment') THEN
@@ -102,7 +96,6 @@ def ensure_schema_up_to_date(cursor):
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='fixed_damage') THEN
                 ALTER TABLE moves ADD COLUMN fixed_damage VARCHAR(30);
->>>>>>> 3ab774a91fd60d157d0915b6005c839098e35dbe
             END IF;
 
             -- abilities 테이블에 embedding 추가
@@ -350,17 +343,6 @@ def load_natures(cursor):
 
 def load_moves(cursor):
     data = load_json("moves.json")
-<<<<<<< HEAD
-    if not data: return
-    values = [(row['id'], row['name'], row['type_id'], row['power'], row['accuracy'], row['damage_class'], row['effect_text'], row.get('embedding')) for row in data]
-    execute_values(cursor, 
-        """INSERT INTO moves (id, name, type_id, power, accuracy, damage_class, effect_text, embedding) 
-           VALUES %s ON CONFLICT (id) DO UPDATE SET 
-           name = EXCLUDED.name, type_id = EXCLUDED.type_id, power = EXCLUDED.power, accuracy = EXCLUDED.accuracy, 
-           damage_class = EXCLUDED.damage_class, effect_text = EXCLUDED.effect_text, embedding = EXCLUDED.embedding""",
-        values
-    )
-=======
     for row in data:
         embedding = row.get('embedding')
         cursor.execute(
@@ -392,7 +374,6 @@ def load_moves(cursor):
              row['stat_chance'], json.dumps(row['stat_changes']), row['target'], row.get('fixed_damage'),
              row['effect_text'], embedding)
         )
->>>>>>> 3ab774a91fd60d157d0915b6005c839098e35dbe
     print(f"Loaded {len(data)} moves.")
 
 def load_evolutions(cursor):

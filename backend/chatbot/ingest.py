@@ -12,11 +12,17 @@
 
 이미 embedding이 있는 행은 건너뜁니다 (WHERE embedding IS NULL).
 """
-
+"""
+ingest_embeddings() — flavor_text.embedding 컬럼 채움 (psycopg2 직접)
+index_vectorstore() — langchain_pg_embedding 테이블에 PGVector 인덱싱
+"""
+import json
 import os
 import psycopg2
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import PGVector
+from langchain_core.documents import Document
 
 load_dotenv()
 
@@ -30,62 +36,81 @@ if DB_CONN.startswith("postgres://"):
 embeddings = OpenAIEmbeddings()
 
 
-def ingest_embeddings():
-    conn = psycopg2.connect(DB_CONN)
-    cur  = conn.cursor()
+# def ingest_embeddings():
+#     conn = psycopg2.connect(DB_CONN)
+#     cur  = conn.cursor()
 
-    # ── BM25용 GIN 인덱스 (없을 때만 생성) ─────────────────────
-    print("BM25 GIN 인덱스 확인/생성 중...")
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_flavor_text_fts
-        ON flavor_text USING GIN (to_tsvector('simple', content));
-    """)
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_pokemon_knowledge_fts
-        ON pokemon_knowledge USING GIN (to_tsvector('simple', content));
-    """)
-    conn.commit()
-    print("✅ GIN 인덱스 준비 완료")
 
-    # ── flavor_text 임베딩 ───────────────────────────────────────
-    cur.execute("""
-        SELECT ft.id, p.name, ft.version_name, ft.content
-        FROM flavor_text ft
-        JOIN species s ON ft.species_id = s.id
-        JOIN pokemon p ON s.pokemon_id  = p.id
-        WHERE ft.embedding IS NULL AND ft.content IS NOT NULL
-    """)
-    flavor_rows = cur.fetchall()
-    print(f"flavor_text 임베딩 대상: {len(flavor_rows)}개")
+#     # ── flavor_text 임베딩 ───────────────────────────────────────
+#     cur.execute("""
+#         SELECT ft.id, p.name, ft.version_name, ft.content
+#         FROM flavor_text ft
+#         JOIN species s ON ft.species_id = s.id
+#         JOIN pokemon p ON s.pokemon_id  = p.id
+#         WHERE ft.embedding IS NULL AND ft.content IS NOT NULL
+#     """)
+#     flavor_rows = cur.fetchall()
+#     print(f"flavor_text 임베딩 대상: {len(flavor_rows)}개")
 
-    for ft_id, name, version, content in flavor_rows:
-        text   = f"포켓몬: {name} (버전: {version})\n{content}"
-        vector = embeddings.embed_query(text)
-        cur.execute("UPDATE flavor_text SET embedding = %s WHERE id = %s", (vector, ft_id))
+#     for ft_id, name, version, content in flavor_rows:
+#         text   = f"포켓몬: {name} (버전: {version})\n{content}"
+#         vector = embeddings.embed_query(text)
+#         cur.execute("UPDATE flavor_text SET embedding = %s WHERE id = %s", (vector, ft_id))
 
-    # ── pokemon_knowledge 임베딩 ─────────────────────────────────
-    # ctid로 행을 개별 식별 — pokemon_id가 PK가 아니라 중복 행이 있을 수 있음
-    cur.execute("""
-        SELECT pk.ctid, p.name, pk.content
-        FROM pokemon_knowledge pk
-        JOIN pokemon p ON pk.pokemon_id = p.id
-        WHERE pk.embedding IS NULL AND pk.content IS NOT NULL
-    """)
-    knowledge_rows = cur.fetchall()
-    print(f"pokemon_knowledge 임베딩 대상: {len(knowledge_rows)}개")
+#     # ── pokemon_knowledge 임베딩 ─────────────────────────────────
+#     # ctid로 행을 개별 식별 — pokemon_id가 PK가 아니라 중복 행이 있을 수 있음
+#     cur.execute("""
+#         SELECT pk.ctid, p.name, pk.content
+#         FROM pokemon_knowledge pk
+#         JOIN pokemon p ON pk.pokemon_id = p.id
+#         WHERE pk.embedding IS NULL AND pk.content IS NOT NULL
+#     """)
+#     knowledge_rows = cur.fetchall()
+#     print(f"pokemon_knowledge 임베딩 대상: {len(knowledge_rows)}개")
 
-    for row_ctid, name, content in knowledge_rows:
-        text   = f"포켓몬: {name}\n{content}"
-        vector = embeddings.embed_query(text)
-        cur.execute(
-            "UPDATE pokemon_knowledge SET embedding = %s WHERE ctid = %s::tid",
-            (vector, row_ctid)
-        )
+#     for row_ctid, name, content in knowledge_rows:
+#         text   = f"포켓몬: {name}\n{content}"
+#         vector = embeddings.embed_query(text)
+#         cur.execute(
+#             "UPDATE pokemon_knowledge SET embedding = %s WHERE ctid = %s::tid",
+#             (vector, row_ctid)
+#         )
 
-    conn.commit()
-    conn.close()
-    print(f"✅ 임베딩 완료 — flavor_text {len(flavor_rows)}개 / knowledge {len(knowledge_rows)}개")
+#     conn.commit()
+#     conn.close()
+#     print(f"✅ 임베딩 완료 — flavor_text {len(flavor_rows)}개 / knowledge {len(knowledge_rows)}개")
+
+
+def index_vectorstore():
+    """JSON 파일을 PGVector(langchain_pg_embedding)에 인덱싱합니다. 1회만 실행하면 됩니다."""
+    file_path = os.path.join(
+        os.path.dirname(__file__),
+        "../../database/common/data/processed/flavor_text.json"
+    )
+    file_path = os.path.normpath(file_path)
+
+    vectorstore = PGVector(
+        connection_string=DB_CONN,
+        embedding_function=embeddings,
+        collection_name="flavor_text",
+    )
+
+    existing = vectorstore.similarity_search("포켓몬", k=1)
+    if existing:
+        print("⏭ PGVector 컬렉션에 이미 데이터가 있습니다. 인덱싱을 건너뜁니다.")
+        return
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    documents = [
+        Document(page_content=f"{row['species_id']}: {row['version_name']} {row['content']}")
+        for row in data
+    ]
+    print(f"PGVector 인덱싱 시작 — {len(documents)}개 문서")
+    vectorstore.add_documents(documents)
+    print(f"✅ PGVector 인덱싱 완료 — {len(documents)}개")
 
 
 if __name__ == "__main__":
-    ingest_embeddings()
+    #ingest_embeddings()
+    index_vectorstore()
