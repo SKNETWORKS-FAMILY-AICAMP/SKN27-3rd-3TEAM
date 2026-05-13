@@ -119,6 +119,17 @@ class UserResponse(UserBase):
     
     model_config = ConfigDict(from_attributes=True)
 
+# ── User Battle Team ──
+class UserBattleTeamCreate(BaseModel):
+    team_data: List[Dict[str, Any]]
+
+class UserBattleTeamResponse(BaseModel):
+    id: int
+    user_id: int
+    team_data: List[Dict[str, Any]]
+
+    model_config = ConfigDict(from_attributes=True)
+
 
 # ── Game Log ──
 class GameLogCreate(BaseModel):

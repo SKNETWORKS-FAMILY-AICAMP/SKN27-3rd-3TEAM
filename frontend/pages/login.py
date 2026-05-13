@@ -156,7 +156,7 @@ def show():
         if "user" in st.session_state:
             del st.session_state.user
         st.query_params.clear()
-        st.rerun()
+        st.switch_page("app.py")
 
     # 4. OAuth 콜백 처리
     query_params = st.query_params
@@ -200,7 +200,7 @@ def show():
                 
                 loading_placeholder.empty() # 로딩 화면 제거
                 time.sleep(0.1) # 확실히 비워지도록 아주 잠깐 대기
-                st.switch_page("pages/mypage.py")
+                st.switch_page("app.py")
         else:
             loading_placeholder.empty()
             st.error("인증 토큰을 가져오지 못했습니다.")
