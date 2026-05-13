@@ -290,9 +290,12 @@ section[data-testid="stMain"],
     transition: all 0.2s !important;
 }
 [data-testid="stRadio"] label:has(input:checked) {
-    background: linear-gradient(135deg, #EE1515 0%, #c0392b 100%) !important;
-    color: #fff !important;
-    box-shadow: 0 2px 10px rgba(238,21,21,0.35) !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+    font-weight: 900 !important;
+    border: 2px solid #1e293b !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+    transform: scale(1.02) !important;
 }
 [data-testid="stRadio"] label input {
     position: absolute !important; opacity: 0 !important;
@@ -433,7 +436,7 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
 [data-testid="stChatInput"] {
     position: fixed !important;
     bottom: 0 !important;
-    left: 25% !important;
+    left: 20% !important;
     right: 0 !important;
     background: #ffffff !important;
     border-top: 1px solid #e2e8f0 !important;
@@ -659,7 +662,7 @@ OAK_AVATAR = get_base64_img("Obak_chat.png")
 # 레이아웃 — 커스텀 사이드바(left) + 채팅(right)
 # ═══════════════════════════════════════════════════════
 
-left_col, right_col = st.columns([1, 3], gap="small")
+left_col, right_col = st.columns([1, 4], gap="small")
 
 # ───────────────────────────────────────────────────────
 # 왼쪽 패널 (커스텀 사이드바)
@@ -753,10 +756,10 @@ with right_col:
                 무엇이든 답해드립니다
             </div>
             <div class="cb-welcome-chips">
-                <span class="cb-chip">⚡ 피카츄의 스탯은?</span>
-                <span class="cb-chip">🔥 불꽃 타입 약점</span>
-                <span class="cb-chip">🌊 물 타입 추천 포켓몬</span>
-                <span class="cb-chip">🐉 드래곤 진화 경로</span>
+                <span class="cb-chip">피카츄의 스탯은?</span>
+                <span class="cb-chip">불꽃 타입 약점</span>
+                <span class="cb-chip">물 타입 추천 포켓몬</span>
+                <span class="cb-chip">파이리 진화 경로</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
