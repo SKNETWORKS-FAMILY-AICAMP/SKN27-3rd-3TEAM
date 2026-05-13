@@ -14,7 +14,7 @@ if frontend_dir not in sys.path:
     sys.path.append(frontend_dir)
 
 from utils.ui import inject_common_ui
-from pages.style.pokedex_styles import get_pokedex_styles, render_pokemon_card
+from pokedex.styles import get_pokedex_styles, render_pokemon_card
 
 BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
 API_V1_STR = "/api/v1/pokemon"

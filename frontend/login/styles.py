@@ -1,6 +1,6 @@
 def get_login_styles(bg_img=""):
     bg_style = f"background: url('{bg_img}') center/cover no-repeat !important;" if bg_img else "background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000 100%);"
-    
+
     return f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
@@ -113,7 +113,7 @@ def get_login_styles(bg_img=""):
     color: #FFCB05 !important;
     margin-bottom: 12px;
     letter-spacing: -0.5px;
-    text-shadow: 0 0 20px rgba(255, 203, 5, 0.5), 
+    text-shadow: 0 0 20px rgba(255, 203, 5, 0.5),
                  0 4px 10px rgba(0, 0, 0, 0.8);
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5);
 }}
@@ -127,19 +127,19 @@ def get_login_styles(bg_img=""):
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }}
 
-.user-name {{ 
-    font-size: 30px; 
-    font-weight: 900; 
-    color: #ffffff !important; 
-    margin-bottom: 8px; 
+.user-name {{
+    font-size: 30px;
+    font-weight: 900;
+    color: #ffffff !important;
+    margin-bottom: 8px;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255,255,255,0.2);
 }}
 
-.user-id {{ 
-    font-size: 16px; 
-    color: var(--poke-yellow); 
-    font-weight: 800; 
-    opacity: 1; 
+.user-id {{
+    font-size: 16px;
+    color: var(--poke-yellow);
+    font-weight: 800;
+    opacity: 1;
     letter-spacing: 0.5px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }}

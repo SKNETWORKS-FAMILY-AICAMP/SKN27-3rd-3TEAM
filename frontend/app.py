@@ -5,26 +5,37 @@ import os
 from utils.ui import inject_common_ui
 
 def get_base64_img(file_name):
-    path = os.path.join(os.path.dirname(__file__), "img", file_name)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            data = f.read()
-        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
+    subfolders = ["main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(os.path.dirname(__file__), "img", sub, file_name)
+        else:
+            path = os.path.join(os.path.dirname(__file__), "img", file_name)
+            
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                data = f.read()
+            return f"data:image/png;base64,{base64.b64encode(data).decode()}"
     return ""
 
-bg1 = get_base64_img("main_8.png")
-bg2 = get_base64_img("main_2.png")
-bg3 = get_base64_img("main_3.png")
-bg4 = get_base64_img("main_4.png")
-bg5 = get_base64_img("main_5.png")
+# 1. 배경 이미지 로드 (main_background 폴더 내)
+bg1 = get_base64_img("main_background.png")
+bg2 = get_base64_img("pokedex_background.png")
+bg3 = get_base64_img("bettle_background.png") # 파일명의 'bettle' 오타 반영
+bg4 = get_base64_img("chatbot_background.png")
+bg5 = get_base64_img("teambuilding_background.png")
+bg6 = get_base64_img("login_background.png")
+bg7 = get_base64_img("game1_background.png")
+bg8 = get_base64_img("game2_background.png")
+bg9 = get_base64_img("pipigo_background.png")
+
+# 2. 캐릭터 이미지 로드 (main_character 폴더 내)
 obak = get_base64_img("Obak.png")
-bg6 = get_base64_img("login.png")
-bg7 = get_base64_img("mini_game.png")
-bg8 = get_base64_img("main_9.png")
-bg9 = get_base64_img("icon.png")
-pipigo_img = get_base64_img("main_10.png")
-minigame1_img = get_base64_img("silhouette_pikachu.png")
-minigame2_img = get_base64_img("rab_battle.png")
+pipigo_img = get_base64_img("pipigo.png")
+minigame1_img = get_base64_img("game1.png")
+minigame2_img = get_base64_img("game2.png")
 
 # ── Image Assets ──
 ART = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
