@@ -1,7 +1,10 @@
 import os
 import sys
 import copy
+import uuid
+import html as _html
 import requests
+import base64
 import streamlit as st
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,9 +12,10 @@ from utils.ui import inject_common_ui
 
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
-# ── 백엔드 API 헬퍼 ──────────────────────────────────────────
-def _get(path):
-    return requests.get(f"{BACKEND_URL}{path}", timeout=10)
+# ── API helpers ───────────────────────────────────────────────────────────
+
+def _get(path, params=None):
+    return requests.get(f"{BACKEND_URL}{path}", params=params, timeout=10)
 
 def _post(path, **kwargs):
     return requests.post(f"{BACKEND_URL}{path}", timeout=180, **kwargs)
@@ -27,17 +31,19 @@ def fetch_models():
     except Exception:
         return ["gpt-4o-mini"], "gpt-4o-mini"
 
-def api_chat(query, history, model, session_id=None):
+def api_chat(query, history, model, session_id=None, user_id=None):
     r = _post("/api/v1/chatbot/chat", json={
         "query": query, "history": history,
         "model": model, "session_id": session_id,
+        "user_id": user_id,
     })
     r.raise_for_status()
-    return r.json()   # {answer, used_tools, session_id}
+    return r.json()
 
-def api_sessions():
+def api_sessions(user_id=None):
     try:
-        return _get("/api/v1/chatbot/sessions").json()
+        params = {"user_id": user_id} if user_id else {}
+        return _get("/api/v1/chatbot/sessions", params=params).json()
     except Exception:
         return []
 
@@ -55,390 +61,787 @@ def api_delete(session_id):
 
 MODELS_LIST, DEFAULT_MODEL = fetch_models()
 
-def render_tool_badges(tools: list) -> None:
-    if not tools:
-        return
-    TOOL_COLORS = {
-        "search_pokemon_db":      ("#3B4CCA", "#e8edff"),
-        "search_flavor_text":     ("#7c3aed", "#f3e8ff"),
-        "search_evolution_chain": ("#059669", "#d1fae5"),
-        "search_type_relations":  ("#d97706", "#fef3c7"),
-        "web_search":             ("#6b7280", "#f3f4f6"),
-    }
-    TOOL_LABELS = {
-        "search_pokemon_db":      "DB 검색",
-        "search_flavor_text":     "도감 검색",
-        "search_evolution_chain": "진화 체인",
-        "search_type_relations":  "타입 상성",
-        "web_search":             "웹 검색",
-    }
-    badges = []
-    for t in tools:
-        color, bg = TOOL_COLORS.get(t, ("#64748b", "#f1f5f9"))
-        label = TOOL_LABELS.get(t, t)
-        badges.append(
-            f'<span style="display:inline-flex;align-items:center;gap:4px;'
-            f'background:{bg};color:{color};border:1px solid {color}33;'
-            f'border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;'
-            f'letter-spacing:0.3px;margin-right:4px;">'
-            f'⚙ {label}</span>'
-        )
+# ── Tool badges ───────────────────────────────────────────────────────────
+
+_TOOL_COLORS = {
+    "search_pokemon_db":      ("#3B4CCA", "rgba(59,76,202,0.15)"),
+    "search_flavor_text":     ("#7c3aed", "rgba(124,58,237,0.15)"),
+    "search_evolution_chain": ("#059669", "rgba(5,150,105,0.15)"),
+    "search_type_relations":  ("#d97706", "rgba(217,119,6,0.15)"),
+    "web_search":             ("#6b7280", "rgba(107,114,128,0.15)"),
+}
+_TOOL_LABELS = {
+    "search_pokemon_db":      "DB 검색",
+    "search_flavor_text":     "도감 검색",
+    "search_evolution_chain": "진화 체인",
+    "search_type_relations":  "타입 상성",
+    "web_search":             "웹 검색",
+}
+
+def render_user_bubble(content: str, avatar_url: str) -> None:
+    escaped = _html.escape(content)
     st.markdown(
-        '<div style="margin-top:6px;line-height:2;">' + "".join(badges) + "</div>",
+        f'<div style="display:flex;justify-content:flex-end;align-items:flex-end;'
+        f'gap:10px;padding:6px 16px 6px 80px;">'
+        f'<div style="background:linear-gradient(135deg,#EE1515 0%,#c0392b 100%);'
+        f'color:#fff;padding:12px 16px;border-radius:18px 4px 18px 18px;'
+        f'font-size:14px;line-height:1.75;font-family:Inter,sans-serif;'
+        f'box-shadow:0 4px 14px rgba(238,21,21,0.22);word-break:break-word;'
+        f'white-space:pre-wrap;">{escaped}</div>'
+        f'<img src="{avatar_url}" style="width:51px;height:51px;border-radius:50%;'
+        f'flex-shrink:0;object-fit:cover;border:2px solid #fbd0d0;"></div>',
         unsafe_allow_html=True,
     )
 
-# ─────────────────────────────────────────────────────────────
+def render_tool_badges(tools: list) -> None:
+    if not tools:
+        return
+    badges = []
+    for t in tools:
+        color, bg = _TOOL_COLORS.get(t, ("#64748b", "rgba(100,116,139,0.15)"))
+        label = _TOOL_LABELS.get(t, t)
+        badges.append(
+            f'<span style="display:inline-flex;align-items:center;gap:4px;'
+            f'background:{bg};color:{color};border:1px solid {color}55;'
+            f'border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;'
+            f'letter-spacing:0.3px;margin-right:4px;">⚙ {label}</span>'
+        )
+    st.markdown(
+        '<div style="margin-top:8px;line-height:2.2;">' + "".join(badges) + "</div>",
+        unsafe_allow_html=True,
+    )
+
+# ── Page config ───────────────────────────────────────────────────────────
+
 st.set_page_config(
     page_title="포켓몬 박사 챗봇",
     page_icon="🔴",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-inject_common_ui(spacer=True, hide_sidebar=False)
+inject_common_ui(spacer=True, hide_sidebar=True)
 
-# ── Pokemon Theme CSS ─────────────────────────────────────────
+# ── CSS ───────────────────────────────────────────────────────────────────
+
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
+/* ── Light red theme background ── */
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+section[data-testid="stMain"],
+.stMain {
+    background: #fff5f5 !important;
+}
+.block-container {
+    background: #fff5f5 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+/* ── No page scroll ── */
+html, body { overflow: hidden !important; }
+
+/* ── Main layout — stretch both columns to full height ── */
+[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+}
+
+/* ── Left panel (warm pink) — full viewport height ── */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
+    background: #fce8e8 !important;
+    border-right: 2px solid #fbd0d0 !important;
+    min-height: calc(100vh - 80px) !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    > [data-testid="stVerticalBlock"] {
+    padding: 0 14px 14px !important;
+    min-height: calc(100vh - 80px) !important;
+}
+
+/* ── Right panel (white) — full viewport height ── */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
+    background: #ffffff !important;
+    min-height: calc(100vh - 80px) !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
+    > [data-testid="stVerticalBlock"] {
+    padding: 0 !important;
+    min-height: calc(100vh - 80px) !important;
+}
+
+/* ── Reset: nested columns inside left panel (Q-list rows) ── */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+    background: transparent !important;
+    min-height: unset !important;
+    border: none !important;
+}
+
+/* ── Left panel header ── */
+.cb-left-header {
+    padding: 18px 0 14px;
+    border-bottom: 1px solid #fbd0d0;
+    margin-bottom: 14px;
+}
+.cb-left-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #1a1a2e;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.cb-pokeball {
+    width: 28px; height: 28px;
+    background: radial-gradient(circle at 38% 38%, #EE1515 50%, #c0392b 50%);
+    border-radius: 50%;
+    border: 2.5px solid #fff;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(238,21,21,0.35);
+}
+.cb-pokeball::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 2px; background: #222;
+    transform: translateY(-50%);
+}
+
+/* ── Model selector radio ── */
 [data-testid="stRadio"] [data-testid="stWidgetLabel"] { display: none !important; }
 [data-testid="stRadio"] > div {
     flex-direction: row !important;
-    gap: 6px !important;
-    background: rgba(255,255,255,0.06);
+    gap: 4px !important;
+    background: rgba(238,21,21,0.06);
     border-radius: 30px;
-    padding: 4px 6px;
-    border: 1.5px solid rgba(255,255,255,0.15);
+    padding: 3px 5px;
+    border: 1px solid #fbd0d0;
     display: inline-flex !important;
+    width: 100%;
+    justify-content: center;
 }
 [data-testid="stRadio"] label {
     background: transparent !important;
     border: none !important;
     border-radius: 22px !important;
-    padding: 6px 22px !important;
-    font-size: 13px !important;
+    padding: 5px 12px !important;
+    font-size: 11.5px !important;
     font-weight: 700 !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    color: rgba(255,255,255,0.45) !important;
+    color: #9ca3af !important;
     white-space: nowrap !important;
     box-shadow: none !important;
+    flex: 1;
+    text-align: center;
+    transition: all 0.2s !important;
 }
 [data-testid="stRadio"] label:has(input:checked) {
     background: linear-gradient(135deg, #EE1515 0%, #c0392b 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 3px 12px rgba(238,21,21,0.45) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 10px rgba(238,21,21,0.35) !important;
 }
 [data-testid="stRadio"] label input {
     position: absolute !important; opacity: 0 !important;
     width: 1px !important; height: 1px !important;
 }
 div:has(> [data-testid="stRadio"]) {
-    margin-top: -6px !important; margin-bottom: 4px !important; padding: 0 !important;
+    margin: 10px 0 !important; padding: 0 !important;
 }
 
-.block-container [data-testid="stHorizontalBlock"] {
-    gap: 0 !important; align-items: stretch !important;
-    border-radius: 20px; overflow: hidden; border: none !important;
-    box-shadow: 0 8px 40px rgba(26,31,58,0.18), 0 2px 8px rgba(0,0,0,0.06);
-    margin-top: 0;
+/* ── Q list section label ── */
+.cb-section-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b91c1c;
+    margin: 14px 0 8px;
+    opacity: 0.7;
 }
-.block-container [data-testid="stHorizontalBlock"]
-    > [data-testid="stColumn"]:first-child {
-    background: linear-gradient(175deg, #1a1f3a 0%, #111827 100%);
-    border-right: 3px solid #EE1515; min-height: 620px;
-}
-.block-container [data-testid="stHorizontalBlock"]
-    > [data-testid="stColumn"]:first-child button {
-    background: transparent !important; color: #64748b !important;
-    border: none !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important;
-    border-radius: 0 !important; border-left: 3px solid transparent !important;
-    text-align: left !important; font-size: 12.5px !important; line-height: 1.5 !important;
-    padding: 10px 14px 10px 13px !important; white-space: normal !important;
-    height: auto !important; min-height: unset !important; box-shadow: none !important;
-    transition: all 0.15s !important; width: 100% !important;
-}
-.block-container [data-testid="stHorizontalBlock"]
-    > [data-testid="stColumn"]:first-child button:hover {
-    background: rgba(238,21,21,0.08) !important; color: #94a3b8 !important;
-    border-left: 3px solid rgba(238,21,21,0.3) !important;
-}
-.block-container [data-testid="stHorizontalBlock"]
-    > [data-testid="stColumn"]:first-child [data-testid="stBaseButton-primary"] {
-    background: rgba(238,21,21,0.12) !important; color: #fca5a5 !important;
-    border-left: 3px solid #EE1515 !important;
-}
-.block-container [data-testid="stHorizontalBlock"]
-    > [data-testid="stColumn"]:last-child {
-    background: #f8f9ff; min-height: 620px;
-}
-.q-panel-header {
-    padding: 14px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.07);
-    color: #475569; font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
-}
-.q-empty { padding: 32px 14px; color: #334155; font-size: 12px; text-align: center; line-height: 1.9; }
 
+/* ── Q list buttons ── */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child button {
+    background: transparent !important;
+    color: #4b5563 !important;
+    border: none !important;
+    border-left: 2px solid transparent !important;
+    border-radius: 0 8px 8px 0 !important;
+    text-align: left !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 8px 10px !important;
+    white-space: normal !important;
+    height: auto !important;
+    min-height: unset !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    line-height: 1.45 !important;
+    transition: all 0.15s !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child button:hover {
+    background: rgba(238,21,21,0.07) !important;
+    color: #1a1a2e !important;
+    border-left: 2px solid #EE1515 !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    [data-testid="stBaseButton-primary"] {
+    background: rgba(238,21,21,0.1) !important;
+    color: #b91c1c !important;
+    border-left: 2px solid #EE1515 !important;
+}
+
+/* ── Delete button (Q-list 🗑) — compact icon-only ── */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child button {
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #b91c1c !important;
+    border: 1.5px solid #fbd0d0 !important;
+    box-shadow: none !important;
+    line-height: 30px !important;
+    text-align: center !important;
+}
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child button:hover {
+    background: rgba(238,21,21,0.10) !important;
+    border-color: #EE1515 !important;
+}
+
+/* ── New chat button (outlined) ── */
+.cb-new-btn button {
+    background: transparent !important;
+    border: 2px solid #EE1515 !important;
+    border-radius: 10px !important;
+    color: #EE1515 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    font-family: 'Outfit', sans-serif !important;
+    height: 40px !important;
+    transition: all 0.2s !important;
+    box-shadow: none !important;
+}
+.cb-new-btn button:hover {
+    background: #EE1515 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(238,21,21,0.35) !important;
+}
+
+/* ── Oak avatar — same size/shape as user icon (51px round) ── */
+[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] {
+    width: 51px !important;
+    height: 51px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    border: 2px solid #fbd0d0 !important;
+    flex-shrink: 0 !important;
+}
+[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] img,
+[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] > span {
+    width: 51px !important;
+    height: 51px !important;
+    object-fit: cover !important;
+    object-position: 50% 0% !important;
+    font-size: 28px !important;
+}
+
+/* ── Chat messages ── */
 [data-testid="stChatMessage"] {
-    border-radius: 12px; border: 1px solid #e2e8f0;
-    padding: 12px 16px !important; margin-bottom: 8px;
-    background: #ffffff; box-shadow: 0 1px 6px rgba(59,76,202,0.06);
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 6px 16px !important;
+    margin: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    align-items: flex-start !important;
 }
-[data-testid="stChatMessage"] .stMarkdown { font-size: 15px; line-height: 1.8; }
+[data-testid="stChatMessage"] .stMarkdown {
+    font-size: 14.5px !important;
+    line-height: 1.85 !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #1f2937 !important;
+}
+
+/* Assistant message — no bubble, plain markdown */
+[data-testid="stChatMessage"] > div:last-child {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2px 0 4px !important;
+    max-width: 85% !important;
+}
+
+/* Chat message code/table styling */
 [data-testid="stChatMessage"] pre {
-    background: #1a1f3a; color: #cdd6f4; border-radius: 10px;
-    padding: 14px 18px; overflow-x: auto; font-size: 13px; margin: 10px 0;
+    background: #1f2937 !important; color: #e5e7eb;
+    border-radius: 10px; padding: 12px 16px; font-size: 13px;
+    border: 1px solid #374151;
 }
 [data-testid="stChatMessage"] code {
-    background: #fdf2f8; color: #c026d3; padding: 2px 6px; border-radius: 4px; font-size: 13px;
+    background: rgba(238,21,21,0.08); color: #b91c1c;
+    padding: 2px 6px; border-radius: 4px; font-size: 13px;
 }
 [data-testid="stChatMessage"] pre code { background: transparent; color: inherit; padding: 0; }
 [data-testid="stChatMessage"] table {
-    border-collapse: collapse; width: 100%; margin: 12px 0;
-    font-size: 14px; border-radius: 8px; overflow: hidden;
+    border-collapse: collapse; width: 100%;
+    font-size: 13px; border-radius: 8px; overflow: hidden; margin: 8px 0;
 }
 [data-testid="stChatMessage"] th {
-    background: #3B4CCA; color: #fff;
-    padding: 9px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    background: #EE1515; color: #fff;
+    padding: 8px 12px; font-size: 12px;
 }
-[data-testid="stChatMessage"] td { padding: 8px 14px; border-bottom: 1px solid #e5e7eb; }
-[data-testid="stChatMessage"] tr:nth-child(even) td { background: #f0f4ff; }
-[data-testid="stChatMessage"] tr:hover td { background: #e8edff; }
+[data-testid="stChatMessage"] td {
+    padding: 7px 12px; border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+}
+[data-testid="stChatMessage"] tr:nth-child(even) td { background: #f9fafb; }
 [data-testid="stChatMessage"] h1,
 [data-testid="stChatMessage"] h2,
-[data-testid="stChatMessage"] h3 { color: #3B4CCA; margin: 14px 0 6px; }
-[data-testid="stChatMessage"] ul,
-[data-testid="stChatMessage"] ol { padding-left: 22px; }
-[data-testid="stChatMessage"] li { margin: 4px 0; }
+[data-testid="stChatMessage"] h3 { color: #b91c1c; margin: 12px 0 5px; }
 [data-testid="stChatMessage"] blockquote {
-    border-left: 4px solid #FFCB05; padding: 8px 14px;
-    color: #555; margin: 10px 0; background: #fffbeb;
-    border-radius: 0 8px 8px 0; font-style: italic;
+    border-left: 3px solid #EE1515;
+    padding: 6px 12px; margin: 8px 0;
+    background: rgba(238,21,21,0.04);
+    border-radius: 0 8px 8px 0;
+    color: #6b7280;
 }
-[data-testid="stChatMessage"] hr { border: none; border-top: 1px solid #e5e7eb; margin: 12px 0; }
 
+/* ── Chat input — fixed inside right panel ── */
+[data-testid="stChatInput"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 25% !important;
+    right: 0 !important;
+    background: #fff5f5 !important;
+    border-top: 1px solid #fbd0d0 !important;
+    padding: 10px 16px !important;
+    z-index: 500 !important;
+}
 [data-testid="stChatInput"] textarea {
-    border-radius: 25px !important; border: 2px solid #c7d2fe !important;
-    background: #ffffff !important; font-size: 14px !important;
-    padding: 12px 22px !important; transition: all 0.2s !important;
+    background: #ffffff !important;
+    border: 1.5px solid #fbd0d0 !important;
+    border-radius: 24px !important;
+    color: #1a1a2e !important;
+    font-size: 14px !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 10px 18px !important;
 }
 [data-testid="stChatInput"] textarea:focus {
-    border-color: #3B4CCA !important;
-    box-shadow: 0 0 0 3px rgba(59,76,202,0.15) !important;
+    border-color: #EE1515 !important;
+    box-shadow: 0 0 0 3px rgba(238,21,21,0.12) !important;
 }
+[data-testid="stChatInput"] textarea::placeholder { color: #9ca3af !important; }
 [data-testid="stChatInput"] button {
     background: linear-gradient(135deg, #EE1515, #c0392b) !important;
-    border-radius: 50% !important; border: none !important;
-    box-shadow: 0 2px 8px rgba(238,21,21,0.4) !important;
+    border-radius: 50% !important;
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(238,21,21,0.45) !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    cursor: pointer !important;
 }
+[data-testid="stChatInput"] button:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 4px 18px rgba(238,21,21,0.55) !important;
+}
+[data-testid="stChatInput"] button svg {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* ── Welcome screen ── */
+.cb-welcome {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 400px; gap: 16px; padding: 40px;
+    text-align: center;
+}
+.cb-welcome-ball {
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at 38% 38%, #EE1515 50%, #c0392b 50%);
+    border-radius: 50%;
+    border: 4px solid #fff;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(238,21,21,0.3);
+    animation: cb-float 3s ease-in-out infinite;
+}
+.cb-welcome-ball::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 4px; background: #222;
+    transform: translateY(-50%);
+}
+.cb-welcome-ball::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 18px; height: 18px;
+    background: #fff; border: 3px solid #333;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+@keyframes cb-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.cb-welcome-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem; font-weight: 900; color: #1a1a2e;
+    letter-spacing: 1px;
+}
+.cb-welcome-sub {
+    color: #6b7280;
+    font-size: 0.9rem; line-height: 1.7;
+}
+.cb-welcome-chips {
+    display: flex; flex-wrap: wrap;
+    gap: 8px; justify-content: center;
+    margin-top: 8px;
+}
+.cb-chip {
+    background: #fff;
+    border: 1.5px solid #fbd0d0;
+    border-radius: 20px; padding: 7px 16px;
+    font-size: 12.5px; color: #374151;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 1px 4px rgba(238,21,21,0.08);
+}
+
+/* ── Typing animation ── */
+@keyframes cb-typing {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+.cb-thinking {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px;
+}
+.cb-thinking-bubble {
+    display: flex; gap: 6px; align-items: center;
+    padding: 14px 20px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px 18px 18px 18px;
+    width: fit-content;
+}
+.cb-thinking-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%; background: #EE1515;
+    animation: cb-typing 1.4s ease-in-out infinite;
+}
+.cb-thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+.cb-thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+.cb-thinking-label {
+    font-size: 12px; color: #9ca3af;
+    font-family: 'Inter', sans-serif;
+    margin-left: 4px;
+}
+
+/* ── Scrollbar light ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #fbd0d0; border-radius: 99px; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── 세션 상태 ─────────────────────────────────────────────────
-for k, v in {"session_id": None, "messages": [], "model": DEFAULT_MODEL, "selected_q": None}.items():
+# ── Session state init ─────────────────────────────────────────────────────
+
+for k, v in {
+    "session_id": None,
+    "messages": [],
+    "model": DEFAULT_MODEL,
+    "selected_q": None,
+    "is_loading": False,
+}.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
-# DEFAULT_MODEL 변경 시 session_state 동기화
 if st.session_state.model not in MODELS_LIST:
     st.session_state.model = DEFAULT_MODEL
 
-# ── 사이드바 ──────────────────────────────────────────────────
-with st.sidebar:
-    st.title("🔴 포켓몬 챗봇")
+# ── User ID & Cookie 설정 ─────────────────────────────────────────────────
 
-    if st.button("➕ 새 대화", use_container_width=True):
-        st.session_state.update(session_id=None, messages=[], selected_q=None)
-        st.rerun()
+_cookie = st.session_state.get("cookie_controller")
+_user_info = st.session_state.get("user") or {}
 
-    st.divider()
-    st.caption("이전 대화")
+if _user_info:
+    # 로그인: db_id 또는 github_id 사용
+    USER_ID = str(_user_info.get("db_id") or _user_info.get("github_id") or "")
+else:
+    # 비로그인: 쿠키에서 UUID 복구 또는 신규 발급
+    USER_ID = ""
+    if _cookie:
+        _anon = _cookie.get("anon_user_id")
+        if not _anon:
+            _anon = str(uuid.uuid4())
+            try:
+                _cookie.set("anon_user_id", _anon, max_age=30 * 24 * 3600)
+            except Exception:
+                pass
+        USER_ID = _anon or ""
 
-    for s in api_sessions():
-        # created_at은 ISO 문자열로 옴 ("2024-01-15T10:30:00")
-        created = s["created_at"][:16].replace("T", " ")
-        is_current = st.session_state.session_id == s["id"]
-        label = f"{'▶ ' if is_current else ''}{s['title']}"
+# 이전 session_id 쿠키 복구 → 메시지도 DB에서 즉시 로드
+if st.session_state.session_id is None:
+    _saved_sid = _cookie.get("cb_session_id") if _cookie else None
+    if not _saved_sid and USER_ID:
+        # 쿠키 없으면 이 유저의 가장 최근 세션 자동 로드
+        _recent = api_sessions(user_id=USER_ID or None)
+        if _recent:
+            _saved_sid = str(_recent[0]["id"])
+    if _saved_sid:
+        try:
+            _sid = int(_saved_sid)
+            st.session_state.session_id = _sid
+            if not st.session_state.messages:
+                _loaded = api_messages(_sid)
+                if _loaded:
+                    st.session_state.messages = _loaded
+        except Exception:
+            pass
 
-        col_btn, col_del = st.columns([6, 1])
-        with col_btn:
-            if st.button(label, key=f"sess_{s['id']}",
-                         help=f"{s['model']} · {created}", use_container_width=True):
-                st.session_state.update(
-                    session_id=s["id"], model=s["model"],
-                    messages=api_messages(s["id"]), selected_q=None,
-                )
-                st.rerun()
-        with col_del:
-            if st.button("🗑", key=f"del_{s['id']}"):
-                api_delete(s["id"])
-                if st.session_state.session_id == s["id"]:
-                    st.session_state.update(session_id=None, messages=[], selected_q=None)
-                st.rerun()
+# ── Avatars ───────────────────────────────────────────────────────────────
 
-# ── 최상단 헤더 바 ────────────────────────────────────────────
-st.markdown("""
-<div style="
-    background: linear-gradient(135deg, #1a1f3a 0%, #2d1f5e 50%, #1a1f3a 100%);
-    border-radius: 16px; padding: 14px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 20px rgba(26,31,58,0.25);
-    border: 1px solid rgba(255,255,255,0.08);
-">
-    <div style="display:flex; align-items:center; gap:14px;">
-        <div style="
-            width:42px; height:42px;
-            background: radial-gradient(circle at 35% 35%, #EE1515 50%, #c0392b 50%);
-            border-radius: 50%; border: 3px solid #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3); position: relative; flex-shrink: 0;
-        ">
-            <div style="position:absolute; top:50%; left:0; right:0;
-                height:3px; background:#111; transform:translateY(-50%);"></div>
-            <div style="position:absolute; top:50%; left:50%;
-                width:10px; height:10px; background:#fff; border:2px solid #333;
-                border-radius:50%; transform:translate(-50%,-50%);"></div>
-        </div>
-        <div>
-            <div style="font-size:20px; font-weight:900; color:#ffffff;
-                        letter-spacing:1px; font-family:'Black Han Sans',sans-serif;">
-                POKÉDEX AI
-            </div>
-            <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:0.5px;">
-                포켓몬 박사와 대화하세요
-            </div>
+def get_base64_img(file_name):
+    # frontend/pages/chatbot.py 위치에서 한 단계 위(frontend)인 프로젝트 루트의 img 폴더 확인
+    base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    path = os.path.join(base_path, "img", file_name)
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            data = f.read()
+        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+    return ""
+
+USER_AVATAR = (
+    _user_info.get("avatar_url")
+    or "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+)
+# 오박사 이미지를 Base64 데이터 URL로 로드하여 유저 아바타(URL)와 통일된 방식으로 처리합니다.
+OAK_AVATAR = get_base64_img("Obak_chat.png")
+
+# ── Layout ────────────────────────────────────────────────────────────────
+
+left_col, right_col = st.columns([1, 3], gap="small")
+
+# ═══════════════════════════════════════════════════
+# LEFT PANEL
+# ═══════════════════════════════════════════════════
+with left_col:
+    # Header
+    st.markdown("""
+    <div class="cb-left-header">
+        <div class="cb-left-title">
+            <div class="cb-pokeball"></div>
+            POKÉDEX AI
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# 모델 선택
-st.session_state.model = st.radio(
-    "모델",
-    options=MODELS_LIST,
-    index=MODELS_LIST.index(st.session_state.model) if st.session_state.model in MODELS_LIST else 0,
-    horizontal=True,
-    key="model_radio",
-)
+    # 새 채팅 시작 (헤더 바로 아래 최상단)
+    st.markdown('<div class="cb-new-btn">', unsafe_allow_html=True)
+    if st.button("＋ 새 채팅 시작", use_container_width=True, key="new_chat"):
+        if _cookie:
+            try:
+                _cookie.remove("cb_session_id")
+            except Exception:
+                pass
+        st.session_state.update(session_id=None, messages=[], selected_q=None, is_loading=False)
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# ── 메인 레이아웃 ─────────────────────────────────────────────
-left_col, right_col = st.columns([1, 3])
+    # Model selector
+    st.markdown('<div class="cb-section-label" style="margin-top:12px;">모델 선택</div>',
+                unsafe_allow_html=True)
+    st.session_state.model = st.radio(
+        "모델",
+        options=MODELS_LIST,
+        index=MODELS_LIST.index(st.session_state.model) if st.session_state.model in MODELS_LIST else 0,
+        horizontal=True,
+        key="model_radio",
+    )
 
-# ─── 왼쪽: 질문 목록 ─────────────────────────────────────────
-with left_col:
-    user_msgs = [
-        (i, m) for i, m in enumerate(st.session_state.messages)
-        if m["role"] == "user"
-    ]
+    # 대화 기록 (현재 세션 Q 목록 + 삭제)
+    user_msgs = [(i, m) for i, m in enumerate(st.session_state.messages) if m["role"] == "user"]
     count = len(user_msgs)
     badge = (
-        f'<span style="background:#EE1515;color:#fff;font-size:9px;'
-        f'padding:1px 7px;border-radius:10px;margin-left:6px;">{count}</span>'
+        f' <span style="background:#EE1515;color:#fff;font-size:9px;'
+        f'padding:1px 6px;border-radius:10px;">{count}</span>'
         if count else ""
     )
-    st.markdown(f'<div class="q-panel-header">🗂 질문 목록{badge}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="cb-section-label" style="margin-top:12px;">대화 기록{badge}</div>',
+                unsafe_allow_html=True)
 
     if not user_msgs:
         st.markdown(
-            '<div class="q-empty">🔴<br>아직 질문이 없습니다.<br>아래 입력창에서<br>대화를 시작하세요!</div>',
+            '<div style="font-size:11.5px;color:#9ca3af;padding:10px 4px;line-height:1.8;">'
+            '아직 질문이 없어요.<br>아래 입력창으로 시작하세요!</div>',
             unsafe_allow_html=True,
         )
     else:
         if st.session_state.selected_q is not None:
-            if st.button("↩ 전체 대화", key="back_all", use_container_width=True):
+            if st.button("↩ 전체 대화 보기", key="back_all", use_container_width=True):
                 st.session_state.selected_q = None
                 st.rerun()
 
-        with st.container(height=500, border=False):
+        with st.container(height=400, border=False):
             for list_idx, (msg_idx, msg) in enumerate(user_msgs):
                 text = msg["content"]
-                display = text[:30] + "…" if len(text) > 30 else text
+                display = text[:22] + "…" if len(text) > 22 else text
                 is_sel = st.session_state.selected_q == msg_idx
-                if st.button(
-                    f"Q{list_idx + 1}.  {display}",
-                    key=f"qlist_{list_idx}",
-                    use_container_width=True,
-                    help=text,
-                    type="primary" if is_sel else "secondary",
-                ):
-                    st.session_state.selected_q = None if is_sel else msg_idx
-                    st.rerun()
+                col_q, col_del = st.columns([5, 1])
+                with col_q:
+                    if st.button(
+                        f"Q{list_idx + 1}. {display}",
+                        key=f"qlist_{list_idx}",
+                        use_container_width=True,
+                        help=text,
+                        type="primary" if is_sel else "secondary",
+                    ):
+                        st.session_state.selected_q = None if is_sel else msg_idx
+                        st.rerun()
+                with col_del:
+                    if st.button("🗑", key=f"qdel_{list_idx}"):
+                        # 해당 Q와 바로 다음 assistant 응답 함께 삭제
+                        to_remove = {msg_idx}
+                        for _i in range(msg_idx + 1, len(st.session_state.messages)):
+                            if st.session_state.messages[_i]["role"] == "assistant":
+                                to_remove.add(_i)
+                                break
+                        st.session_state.messages = [
+                            m for _i, m in enumerate(st.session_state.messages)
+                            if _i not in to_remove
+                        ]
+                        if st.session_state.selected_q in to_remove:
+                            st.session_state.selected_q = None
+                        st.rerun()
 
-# ─── 오른쪽: 채팅 ────────────────────────────────────────────
+# ═══════════════════════════════════════════════════
+# RIGHT PANEL — CHAT AREA
+# ═══════════════════════════════════════════════════
 with right_col:
+    msgs = st.session_state.messages
     selected_q = st.session_state.selected_q
+    is_loading = st.session_state.get("is_loading", False)
 
-    if selected_q is not None:
+    # ── Empty state (welcome screen) ──
+    if not msgs and not is_loading:
+        st.markdown("""
+        <div class="cb-welcome">
+            <div class="cb-welcome-ball"></div>
+            <div class="cb-welcome-title">포켓몬 박사에게 물어보세요!</div>
+            <div class="cb-welcome-sub">
+                타입 상성 · 스탯 · 진화 경로 · 도감 설명<br>
+                무엇이든 답해드립니다
+            </div>
+            <div class="cb-welcome-chips">
+                <span class="cb-chip">⚡ 피카츄의 스탯은?</span>
+                <span class="cb-chip">🔥 불꽃 타입 약점</span>
+                <span class="cb-chip">🌊 물 타입 추천 포켓몬</span>
+                <span class="cb-chip">🐉 드래곤 진화 경로</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── Q detail view (single Q&A) ──
+    elif selected_q is not None:
         q_num = next(
             (i + 1 for i, (idx, _) in enumerate(user_msgs) if idx == selected_q), "?")
         st.markdown(
-            f'<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;'
-            f'padding:10px 16px;font-size:13px;color:#1d4ed8;margin-bottom:12px;">'
-            f'🔍 <b>Q{q_num}</b> 보는 중 &nbsp;—&nbsp; '
-            f'왼쪽 목록에서 다른 질문을 선택하거나 <b>↩ 전체 대화</b>를 눌러주세요.</div>',
+            f'<div style="padding:10px 20px;border-bottom:1px solid #f3f4f6;">'
+            f'<span style="font-size:12px;color:#9ca3af;">Q{q_num} 보는 중 —</span>'
+            f'<span style="font-size:12px;color:#6b7280;margin-left:6px;">'
+            f'왼쪽 목록에서 다른 질문 선택 또는 ↩ 전체 대화 클릭</span></div>',
             unsafe_allow_html=True,
         )
-        with st.container(height=530, border=False):
-            user_msg = st.session_state.messages[selected_q]
-            with st.chat_message("user", avatar="🧑"):
-                st.markdown(user_msg["content"], unsafe_allow_html=True)
-            asst_msg = None
-            for i in range(selected_q + 1, len(st.session_state.messages)):
-                if st.session_state.messages[i]["role"] == "assistant":
-                    asst_msg = st.session_state.messages[i]
+        with st.container(height=700, border=False):
+            render_user_bubble(msgs[selected_q]["content"], USER_AVATAR)
+            for i in range(selected_q + 1, len(msgs)):
+                if msgs[i]["role"] == "assistant":
+                    with st.chat_message("assistant", avatar=OAK_AVATAR):
+                        st.markdown(msgs[i]["content"])
+                        render_tool_badges(msgs[i].get("used_tools") or [])
                     break
-            if asst_msg:
-                with st.chat_message("assistant", avatar="🤖"):
-                    st.markdown(asst_msg["content"], unsafe_allow_html=True)
-                    render_tool_badges(asst_msg.get("used_tools") or [])
-            else:
-                st.caption("아직 답변이 없습니다.")
-    else:
-        if not st.session_state.messages:
-            st.markdown("""
-            <div style="text-align:center; padding:70px 20px; color:#94a3b8; line-height:1.9;">
-                <div style="font-size:52px; margin-bottom:10px;">⚫</div>
-                <div style="font-size:20px; font-weight:900; color:#3B4CCA;
-                    margin-bottom:6px; font-family:'Black Han Sans',sans-serif; letter-spacing:1px;">
-                    포켓몬 박사에게 물어보세요!
-                </div>
-                <div style="font-size:14px; color:#64748b;">
-                    타입 · 스탯 · 진화 경로 · 도감 설명<br>무엇이든 답해드립니다 🔴
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            with st.container(height=570, border=False):
-                for msg in st.session_state.messages:
-                    avatar = "🤖" if msg["role"] == "assistant" else "🧑"
-                    with st.chat_message(msg["role"], avatar=avatar):
-                        st.markdown(msg["content"], unsafe_allow_html=True)
-                        if msg["role"] == "assistant":
-                            render_tool_badges(msg.get("used_tools") or [])
 
-# ── 입력 처리 ─────────────────────────────────────────────────
+    # ── Full conversation (scrollable, input pinned bottom) ──
+    else:
+        with st.container(height=700, border=False):
+            for msg in msgs:
+                if msg["role"] == "user":
+                    render_user_bubble(msg["content"], USER_AVATAR)
+                else:
+                    with st.chat_message("assistant", avatar=OAK_AVATAR):
+                        st.markdown(msg["content"])
+                        render_tool_badges(msg.get("used_tools") or [])
+
+            if is_loading:
+                st.markdown("""
+                <div class="cb-thinking">
+                    <div class="cb-thinking-bubble">
+                        <div class="cb-thinking-dot"></div>
+                        <div class="cb-thinking-dot"></div>
+                        <div class="cb-thinking-dot"></div>
+                    </div>
+                    <span class="cb-thinking-label">포켓몬 박사가 생각 중...</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+                history = copy.deepcopy(msgs[:-1])
+                try:
+                    result = api_chat(
+                        query=msgs[-1]["content"],
+                        history=history,
+                        model=st.session_state.model,
+                        session_id=st.session_state.session_id,
+                        user_id=USER_ID or None,
+                    )
+                    answer = result["answer"]
+                    used_tools = result.get("used_tools", [])
+                    st.session_state.session_id = result["session_id"]
+                    if _cookie and st.session_state.session_id:
+                        try:
+                            _cookie.set("cb_session_id",
+                                        str(st.session_state.session_id),
+                                        max_age=30 * 24 * 3600)
+                        except Exception:
+                            pass
+                except Exception as e:
+                    answer = f"⚠️ 오류가 발생했어요 ({type(e).__name__}): {e}"
+                    used_tools = []
+
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer,
+                    "used_tools": used_tools,
+                })
+                st.session_state.is_loading = False
+                st.rerun()
+
+    pass  # right panel end
+
+# ── Chat input — columns 밖에 배치, CSS로 우측 패널 하단 고정 ──
 if prompt := st.chat_input("포켓몬에 대해 무엇이든 물어보세요... ⚡"):
     st.session_state.selected_q = None
-    history = copy.deepcopy(st.session_state.messages)
     st.session_state.messages.append({"role": "user", "content": prompt, "used_tools": []})
-
-    with st.spinner("포켓몬 박사가 생각 중..."):
-        try:
-            result = api_chat(
-                query=prompt,
-                history=history,
-                model=st.session_state.model,
-                session_id=st.session_state.session_id,
-            )
-            answer = result["answer"]
-            used_tools = result["used_tools"]
-            st.session_state.session_id = result["session_id"]
-        except Exception as e:
-            answer = f"⚠️ 오류 ({type(e).__name__}): {e}"
-            used_tools = []
-
-    st.session_state.messages.append({
-        "role": "assistant", "content": answer, "used_tools": used_tools,
-    })
+    st.session_state.is_loading = True
     st.rerun()
