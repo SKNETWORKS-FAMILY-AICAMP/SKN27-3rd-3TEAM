@@ -280,17 +280,22 @@ def get_user_stats(db: Session, user_id: int):
     stats = {
         "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
         "memory": {"total": 0, "correct": 0, "hint_used": 0},
+        "collected_pokemon_ids": []
     }
     
+    collected_ids = set()
     for log in logs:
         g_type = log.game_type
         if g_type in stats:
             stats[g_type]["total"] += 1
             if log.is_correct:
                 stats[g_type]["correct"] += 1
+                if log.pokemon_id:
+                    collected_ids.add(log.pokemon_id)
             if log.hint_used:
                 stats[g_type]["hint_used"] += 1
-                
+    
+    stats["collected_pokemon_ids"] = sorted(list(collected_ids))
     return stats
 
 
