@@ -280,15 +280,28 @@ def get_user_stats(db: Session, user_id: int):
     stats = {
         "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
         "memory": {"total": 0, "correct": 0, "hint_used": 0},
+        "gym_battle": {"total": 0, "correct": 0, "defeated_leaders": []}
     }
     
+    import json
     for log in logs:
         g_type = log.game_type
         if g_type in stats:
             stats[g_type]["total"] += 1
             if log.is_correct:
                 stats[g_type]["correct"] += 1
-            if log.hint_used:
+                
+                # 배지 시스템을 위한 승리 관장 목록 추출
+                if g_type == "gym_battle" and log.log_data:
+                    try:
+                        data = json.loads(log.log_data)
+                        leader = data.get("leader")
+                        if leader and leader not in stats["gym_battle"]["defeated_leaders"]:
+                            stats["gym_battle"]["defeated_leaders"].append(leader)
+                    except:
+                        pass
+
+            if "hint_used" in stats[g_type] and log.hint_used:
                 stats[g_type]["hint_used"] += 1
                 
     return stats
@@ -298,3 +311,27 @@ def get_user_logs(db: Session, user_id: int, limit: int = 10):
     """최근 게임 로그를 조회합니다."""
     return db.query(models.GameLog).filter(models.GameLog.user_id == user_id)\
              .order_by(models.GameLog.created_at.desc()).limit(limit).all()
+
+
+def save_user_battle_team(db: Session, user_id: int, team_data: list):
+    """사용자의 커스텀 배틀 팀을 저장합니다."""
+    db_team = db.query(models.UserBattleTeam).filter(models.UserBattleTeam.user_id == user_id).first()
+    
+    if db_team:
+        db_team.team_data = team_data
+    else:
+        db_team = models.UserBattleTeam(user_id=user_id, team_data=team_data)
+        db.add(db_team)
+        
+    try:
+        db.commit()
+        db.refresh(db_team)
+        return db_team
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def get_user_battle_team(db: Session, user_id: int):
+    """사용자의 커스텀 배틀 팀을 조회합니다."""
+    return db.query(models.UserBattleTeam).filter(models.UserBattleTeam.user_id == user_id).first()
