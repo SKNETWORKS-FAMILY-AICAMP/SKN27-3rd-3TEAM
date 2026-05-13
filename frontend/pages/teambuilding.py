@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from html import escape
@@ -655,6 +655,7 @@ def ensure_team_filter_state() -> None:
         "team_applied_ability": "전체",
         "team_applied_types": [],
         "team_applied_region": "전체",
+        "team_pokemon_limit": 50,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -1574,9 +1575,116 @@ def show_v2() -> None:
     with grid_col:
         with st.container(height=580, border=False):
             grid_columns = st.columns(4)
-            for index, pokemon in enumerate(filtered_pokemon):
+            limit = st.session_state.get("team_pokemon_limit", 50)
+            for index, pokemon in enumerate(filtered_pokemon[:limit]):
                 with grid_columns[index % 4]:
                     render_pokemon_card(pokemon)
+            
+            if len(filtered_pokemon) > limit:
+                # 버튼을 확실하게 숨기기 위한 마커와 스타일
+                st.markdown("""
+                    <style>
+                        /* 마커 바로 다음에 오는 스트림릿 버튼 감추기 */
+                        .team-load-more-marker + div[data-testid="stButton"] {
+                            display: none !important;
+                        }
+                        .team-load-more-marker + div[data-testid="stButton"] button {
+                            opacity: 0 !important;
+                            height: 0 !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+                            pointer-events: none !important;
+                        }
+
+                        .team-infinite-loader {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            padding: 20px 0;
+                            gap: 8px;
+                            color: #888;
+                            font-size: 0.85rem;
+                        }
+                        .pokeball-loader {
+                            width: 30px;
+                            height: 30px;
+                            border: 2px solid #333;
+                            border-radius: 50%;
+                            position: relative;
+                            background: linear-gradient(to bottom, #EE1515 50%, white 50%);
+                            animation: spin 1s linear infinite;
+                        }
+                        .pokeball-loader::after {
+                            content: '';
+                            position: absolute;
+                            width: 30px;
+                            height: 2px;
+                            background: #333;
+                            top: 50%;
+                            transform: translateY(-50%);
+                        }
+                        .pokeball-loader::before {
+                            content: '';
+                            position: absolute;
+                            width: 8px;
+                            height: 8px;
+                            background: white;
+                            border: 2px solid #333;
+                            border-radius: 50%;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            z-index: 10;
+                        }
+                        @keyframes spin {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                        }
+                    </style>
+                    <div class="team-load-more-marker"></div>
+                    <div class="team-infinite-loader">
+                        <div class="pokeball-loader"></div>
+                        <span>목록을 더 불러오고 있어요...</span>
+                    </div>
+                """, unsafe_allow_html=True)
+
+                if st.button("더 보기", key="team_btn_load_more"):
+                    st.session_state.team_pokemon_limit += 50
+                    st.rerun()
+
+                # 무한 스크롤 스크립트 개선
+                st.components.v1.html("""
+                    <script>
+                        function findAndClick() {
+                            const buttons = window.parent.document.querySelectorAll('button');
+                            for (const btn of buttons) {
+                                if (btn.textContent.includes("더 보기")) {
+                                    // 팀빌더 버튼인지 도감 버튼인지 구분하기 위해 세밀하게 체크 가능하지만
+                                    // 현재 페이지에서는 하나만 존재할 것이므로 바로 클릭
+                                    btn.click();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    findAndClick();
+                                }
+                            });
+                        }, { threshold: 0.1 });
+
+                        const interval = setInterval(() => {
+                            const marker = window.parent.document.querySelector('.team-load-more-marker');
+                            if (marker) {
+                                observer.observe(marker);
+                                clearInterval(interval);
+                            }
+                        }, 500);
+                    </script>
+                """, height=0)
 
     with panel_col:
         render_team_side_panel(selected_pokemon, can_request)
