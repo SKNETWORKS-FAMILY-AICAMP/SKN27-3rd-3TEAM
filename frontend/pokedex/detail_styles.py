@@ -3,13 +3,16 @@ import base64
 import os
 
 def get_base64_img(file_name):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    possible_paths = [
-        os.path.join(current_dir, "..", "img", "bg", file_name),
-        os.path.join(os.getcwd(), "frontend", "img", "bg", file_name),
-        os.path.join(os.getcwd(), "img", "bg", file_name),
-    ]
-    for path in possible_paths:
+    # 탐색 우선 순위: 1. 도감배경, 2. 배경폴더, 3. 캐릭터폴더, 4. 기본이미지폴더
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    subfolders = ["pokedex_background", "main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(base_dir, "img", sub, file_name)
+        else:
+            path = os.path.join(base_dir, "img", file_name)
+            
         if os.path.exists(path):
             with open(path, "rb") as f:
                 data = f.read()

@@ -3,16 +3,24 @@ import base64
 import streamlit as st
 
 def get_base64_img(file_name):
+    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(base_dir, "img", file_name)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            data = f.read()
-        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+    subfolders = ["main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(base_dir, "img", sub, file_name)
+        else:
+            path = os.path.join(base_dir, "img", file_name)
+            
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                data = f.read()
+            return f"data:image/png;base64,{base64.b64encode(data).decode()}"
     return ""
 
 def inject_game_1_style():
-    bg_img = get_base64_img("mini_game.png")
+    bg_img = get_base64_img("game1_background.png")
     st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@400;600;800&display=swap');

@@ -1,4 +1,4 @@
-﻿import streamlit as st
+import streamlit as st
 
 import os
 import copy
@@ -263,11 +263,19 @@ if not st.session_state.chat_history:
 # ── Avatars ───────────────────────────────────────────────────────────────
 
 def get_base64_img(file_name: str) -> str:
+    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    path = os.path.join(base_path, "img", file_name)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
+    subfolders = ["main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(base_path, "img", sub, file_name)
+        else:
+            path = os.path.join(base_path, "img", file_name)
+            
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
     return ""
 
 USER_AVATAR = (

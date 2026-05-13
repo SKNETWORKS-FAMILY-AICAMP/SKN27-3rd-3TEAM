@@ -1,4 +1,4 @@
-﻿import streamlit as st
+import streamlit as st
 import streamlit.components.v1 as components
 import requests
 import re
@@ -26,14 +26,23 @@ st.set_page_config(
 )
 
 # ── Assets ────────────────────────────────────────────────────
-def get_base64_img(name):
-    path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "img", name)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
+def get_base64_img(file_name):
+    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    subfolders = ["main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(base_dir, "img", sub, file_name)
+        else:
+            path = os.path.join(base_dir, "img", file_name)
+            
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
     return ""
 
-bg_img = get_base64_img("game_2.png")
+bg_img = get_base64_img("game2_background.png")
 inject_common_ui(spacer=False)
 
 # ── Data ──────────────────────────────────────────────────────

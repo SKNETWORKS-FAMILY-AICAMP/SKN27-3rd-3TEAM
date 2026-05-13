@@ -10,10 +10,20 @@ from .api import (
     fetch_lifetime_stats, sync_user_to_db, CLIENT_ID, CLIENT_SECRET
 )
 
-def get_base64_img(path):
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            data = f.read()
+def get_base64_img(file_name):
+    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    subfolders = ["main_background", "main_character", ""]
+    
+    for sub in subfolders:
+        if sub:
+            path = os.path.join(base_dir, "img", sub, file_name)
+        else:
+            path = os.path.join(base_dir, "img", file_name)
+            
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                data = f.read()
             return f"data:image/png;base64,{base64.b64encode(data).decode()}"
     return ""
 
@@ -22,9 +32,7 @@ def show_login_page():
     inject_common_ui(show_header=False)
 
     # 2. 배경 및 스타일 적용
-    _frontend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    bg_path = os.path.join(_frontend_dir, "img", "login.png")
-    bg_base64 = get_base64_img(bg_path)
+    bg_base64 = get_base64_img("login_background.png")
     st.markdown(get_login_styles(bg_base64), unsafe_allow_html=True)
 
     # 3. 로그아웃 최종 처리
