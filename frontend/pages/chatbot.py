@@ -108,13 +108,13 @@ def render_tool_badges(tools: list) -> None:
 def render_user_bubble(content: str, avatar_url: str) -> None:
     escaped = _html.escape(content)
     st.markdown(
-        f'<div style="display:flex;justify-content:flex-end;align-items:flex-end;'
-        f'gap:10px;padding:6px 16px 6px 80px;">'
+        f'<div style="display:flex;justify-content:flex-end;align-items:flex-start;'
+        f'gap:12px;padding:8px 16px;">'
         f'<div style="background:linear-gradient(135deg,#EE1515 0%,#c0392b 100%);'
         f'color:#fff;padding:12px 16px;border-radius:18px 4px 18px 18px;'
-        f'font-size:14px;line-height:1.75;font-family:Inter,sans-serif;'
+        f'font-size:14.5px;line-height:1.75;font-family:Inter,sans-serif;'
         f'box-shadow:0 4px 14px rgba(238,21,21,0.22);word-break:break-word;'
-        f'white-space:pre-wrap;">{escaped}</div>'
+        f'white-space:pre-wrap;max-width:80%;">{escaped}</div>'
         f'<img src="{avatar_url}" style="width:48px;height:48px;border-radius:50%;'
         f'flex-shrink:0;object-fit:cover;border:2px solid #e2e8f0;"></div>',
         unsafe_allow_html=True,
@@ -156,9 +156,14 @@ section[data-testid="stMain"],
     overflow: hidden !important;
 }
 
-/* ── 최상위 columns를 full-height stretch ── */
-[data-testid="stHorizontalBlock"] {
+/* ── 최상위 columns를 full-height stretch (메인 레이아웃 전용) ── */
+[data-testid="stAppViewBlockContainer"] > div > [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
     align-items: stretch !important;
+}
+
+/* 다이얼로그 내 버튼 늘어남 방지 */
+[data-testid="stDialog"] [data-testid="stHorizontalBlock"] {
+    align-items: flex-start !important;
 }
 
 /* ── 왼쪽 패널 (커스텀 사이드바) ── */
@@ -233,13 +238,13 @@ section[data-testid="stMain"],
 /* ── 섹션 레이블 ── */
 .cb-section-label {
     font-family: 'Outfit', sans-serif;
-    font-size: 0.62rem;
+    font-size: 0.9rem;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #64748b;
-    margin: 12px 0 6px;
-    opacity: 0.8;
+    color: #475569;
+    margin: 18px 0 10px;
+    opacity: 0.9;
 }
 
 /* ── 새 채팅 버튼 ── */
@@ -378,34 +383,58 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     opacity: 1 !important;
 }
 
-/* ── Oak 아바타 ── */
-[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] {
-    width: 48px !important; height: 48px !important;
-    border-radius: 50% !important; overflow: hidden !important;
-    border: 2px solid #e2e8f0 !important; flex-shrink: 0 !important;
-}
-[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] img,
-[data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] > span {
-    width: 48px !important; height: 48px !important;
-    object-fit: cover !important; object-position: 50% 0% !important;
-    font-size: 26px !important;
+/* ── 오박사 아바타 & 메시지 간격 최적화 ── */
+[data-testid="stChatMessage"] {
+    gap: 10px !important;
+    padding: 10px 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
 }
 
-/* ── 채팅 메시지 ── */
-[data-testid="stChatMessage"] {
-    border-radius: 0 !important; border: none !important;
-    padding: 6px 16px !important; margin: 0 !important;
-    background: transparent !important; box-shadow: none !important;
-    align-items: flex-start !important;
+/* ── 오박사 아바타 2배 확대 (컨테이너 포함 강제) ── */
+[data-testid="stChatMessage"] [data-testid="stChatMessageAvatarAssistant"],
+[data-testid="stChatMessage"] [data-avatar="assistant"] {
+    width: 92px !important;
+    height: 92px !important;
+    min-width: 92px !important;
+    flex-basis: 92px !important;
 }
+
+[data-testid="stChatMessage"] [data-testid="stChatAvatarImage"],
+[data-testid="stChatMessage"] [data-testid="stChatMessageAvatarAssistant"] img {
+    width: 100% !important;
+    height: 100% !important;
+    border: 3px solid #e2e8f0 !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* 아바타와 텍스트 레이아웃 정렬 */
+[data-testid="stChatMessage"] > div:first-child {
+    width: 92px !important;
+    min-width: 92px !important;
+    margin-right: 15px !important;
+}
+
 [data-testid="stChatMessage"] .stMarkdown {
-    font-size: 14.5px !important; line-height: 1.85 !important;
-    font-family: 'Inter', sans-serif !important; color: #1f2937 !important;
+    font-size: 14.5px !important;
+    line-height: 1.85 !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #1f2937 !important;
+    padding-top: 5px !important; /* 커진 아바타에 맞춰 텍스트 살짝 내림 */
 }
+
+[data-testid="stChatMessage"] .stMarkdown {
+    font-size: 14.5px !important;
+    line-height: 1.85 !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #1f2937 !important;
+}
+
 [data-testid="stChatMessage"] > div:last-child {
-    background: transparent !important; border: none !important;
-    box-shadow: none !important; padding: 2px 0 4px !important;
-    max-width: 85% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    max-width: 88% !important;
 }
 [data-testid="stChatMessage"] pre {
     background: #1f2937 !important; color: #e5e7eb;
@@ -713,8 +742,8 @@ with left_col:
     # 대화 목록
     count = len(st.session_state.chat_history)
     badge = (
-        f' <span style="background:#EE1515;color:#fff;font-size:9px;'
-        f'padding:1px 6px;border-radius:10px;">{count}</span>'
+        f' <span style="background:#EE1515;color:#fff;font-size:11px;'
+        f'padding:2px 8px;border-radius:12px;font-weight:900;vertical-align:middle;">{count}</span>'
         if count else ""
     )
     st.markdown(f'<div class="cb-section-label" style="margin-top:12px;">대화 목록{badge}</div>',
