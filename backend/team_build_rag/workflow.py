@@ -39,7 +39,7 @@ WORKFLOW_MERMAID = """
 flowchart TD
     START([__start__])
     SUP[supervisor<br/>요청 검증]
-    SELECT[select_graph_tool<br/>분석/추천 도구 선택]
+    SELECT[select_graph_tool<br/>분석/추천 Graph 도구 선택]
     GRAPH[execution_graph_tool<br/>Neo4j Graph DB 실행]
     VECTOR[vector_search<br/>pgvector 근거 검색]
     EVAL[evaluate_with_llm<br/>Graph + Vector 근거 결합]

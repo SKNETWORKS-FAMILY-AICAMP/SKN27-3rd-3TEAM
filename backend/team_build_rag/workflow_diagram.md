@@ -7,27 +7,36 @@
 ## Mermaid 원본
 
 아래 Mermaid 코드는 SVG를 다시 만들거나 구조를 수정할 때 참고하기 위한 원본입니다.
+실제 실행은 순차형이지만, 이해하기 쉽도록 Graph DB 계산 근거와 Vector DB 검색 근거를 좌우로 분리해 표현했습니다.
 
 ```mermaid
 flowchart TD
-    START(["__start__"])
-    SUP["supervisor<br/>선택한 포켓몬 5마리 검증"]
-    SELECT["select_graph_tool<br/>덱 분석 또는 추천 도구 선택"]
-    GRAPH["execution_graph_tool<br/>Neo4j 기반 타입/추천 계산"]
-    VECTOR["vector_search<br/>pgvector에서 설명 근거 검색"]
-    EVAL["evaluate_with_llm<br/>Graph 결과와 Vector 근거 결합"]
-    HYBRID["hybrid_scorer<br/>graph_score + vector_score"]
-    ANSWER["answer_generator<br/>LLM 기반 AI 해설 생성"]
-    END(["__end__"])
+    START(["5마리 포켓몬 선택"])
+    SUP["supervisor<br/>요청 검증"]
+    SELECT["select_graph_tool<br/>분석/추천 도구 선택"]
 
-    START --> SUP
-    SUP --> SELECT
-    SELECT --> GRAPH
-    GRAPH --> VECTOR
-    VECTOR --> EVAL
-    EVAL --> HYBRID
-    HYBRID --> ANSWER
-    ANSWER --> END
+    subgraph GRAPH_SIDE["Graph DB 기반 계산"]
+        GRAPH["execution_graph_tool<br/>약점/저항/추천 후보 계산"]
+        G_DOC["graph_result<br/>계산 근거"]
+    end
+
+    subgraph VECTOR_SIDE["Vector DB 기반 근거 검색"]
+        QUERY["vector_query 생성<br/>Graph 결과 기반 검색어"]
+        VECTOR["vector_search<br/>문서 근거 검색"]
+        V_DOC["vector_documents<br/>설명 근거"]
+    end
+
+    EVAL["evaluate_with_llm<br/>Graph + Vector 근거 결합"]
+    SCORE["hybrid_scorer<br/>hybrid_score 계산"]
+    ANSWER["answer_generator<br/>AI 해설 생성"]
+    END(["결과 반환"])
+
+    START --> SUP --> SELECT --> GRAPH
+    GRAPH --> G_DOC
+    G_DOC --> QUERY --> VECTOR --> V_DOC
+    G_DOC --> EVAL
+    V_DOC --> EVAL
+    EVAL --> SCORE --> ANSWER --> END
 ```
 
 ## 노드 역할
