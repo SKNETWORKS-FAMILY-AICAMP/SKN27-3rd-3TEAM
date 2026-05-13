@@ -32,6 +32,71 @@ def ensure_schema_up_to_date(cursor):
                 ALTER TABLE moves ADD COLUMN damage_class VARCHAR(20);
             END IF;
 
+            -- moves 테이블에 나머지 컬럼들 추가 (존재하지 않을 경우)
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='ailment') THEN
+                ALTER TABLE moves ADD COLUMN ailment VARCHAR(10);
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='ailment_chance') THEN
+                ALTER TABLE moves ADD COLUMN ailment_chance INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='category') THEN
+                ALTER TABLE moves ADD COLUMN category VARCHAR(20);
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='crit_rate') THEN
+                ALTER TABLE moves ADD COLUMN crit_rate INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='drain') THEN
+                ALTER TABLE moves ADD COLUMN drain INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='flinch_chance') THEN
+                ALTER TABLE moves ADD COLUMN flinch_chance INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='healing') THEN
+                ALTER TABLE moves ADD COLUMN healing INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='max_hits') THEN
+                ALTER TABLE moves ADD COLUMN max_hits INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='max_turns') THEN
+                ALTER TABLE moves ADD COLUMN max_turns INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='min_hits') THEN
+                ALTER TABLE moves ADD COLUMN min_hits INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='min_turns') THEN
+                ALTER TABLE moves ADD COLUMN min_turns INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='stat_chance') THEN
+                ALTER TABLE moves ADD COLUMN stat_chance INTEGER;
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='stat_changes') THEN
+                ALTER TABLE moves ADD COLUMN stat_changes VARCHAR(100);
+            ELSE
+                -- 이미 존재한다면 길이 확장
+                ALTER TABLE moves ALTER COLUMN stat_changes TYPE VARCHAR(100);
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='target') THEN
+                ALTER TABLE moves ADD COLUMN target VARCHAR(20);
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                           WHERE table_name='moves' AND column_name='fixed_damage') THEN
+                ALTER TABLE moves ADD COLUMN fixed_damage VARCHAR(30);
+            END IF;
+
             -- abilities 테이블에 embedding 추가
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='abilities' AND column_name='embedding') THEN
@@ -294,14 +359,33 @@ def load_moves(cursor):
     for row in data:
         embedding = row.get('embedding')
         cursor.execute(
-            """INSERT INTO moves (id, name, type_id, power, accuracy, damage_class, effect_text, embedding) 
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s) 
+            """INSERT INTO moves (
+                   id, name, type_id, power, accuracy, damage_class, 
+                   ailment, ailment_chance, category, crit_rate, 
+                   drain, flinch_chance, healing, max_hits, max_turns, 
+                   min_hits, min_turns, stat_chance, stat_changes, 
+                   target, fixed_damage, effect_text, embedding
+               ) 
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) 
                ON CONFLICT (id) DO UPDATE SET 
                name = EXCLUDED.name, type_id = EXCLUDED.type_id, power = EXCLUDED.power, 
-               accuracy = EXCLUDED.accuracy, damage_class = EXCLUDED.damage_class, 
-               effect_text = EXCLUDED.effect_text, embedding = EXCLUDED.embedding""",
+               accuracy = EXCLUDED.accuracy, damage_class = EXCLUDED.damage_class,
+               ailment = EXCLUDED.ailment, ailment_chance = EXCLUDED.ailment_chance,
+               category = EXCLUDED.category, crit_rate = EXCLUDED.crit_rate,
+               drain = EXCLUDED.drain, flinch_chance = EXCLUDED.flinch_chance,
+               healing = EXCLUDED.healing, max_hits = EXCLUDED.max_hits,
+               max_turns = EXCLUDED.max_turns, min_hits = EXCLUDED.min_hits,
+               min_turns = EXCLUDED.min_turns, stat_chance = EXCLUDED.stat_chance,
+               stat_changes = EXCLUDED.stat_changes, target = EXCLUDED.target,
+               fixed_damage = EXCLUDED.fixed_damage,
+               effect_text = EXCLUDED.effect_text, embedding = EXCLUDED.embedding
+            """,
             (row['id'], row['name'], row['type_id'], row['power'], row['accuracy'], 
-             row['damage_class'], row['effect_text'], embedding)
+             row['damage_class'], row['ailment'], row['ailment_chance'], row['category'],
+             row['crit_rate'], row['drain'], row['flinch_chance'], row['healing'],
+             row['max_hits'], row['max_turns'], row['min_hits'], row['min_turns'],
+             row['stat_chance'], json.dumps(row['stat_changes']), row['target'], row.get('fixed_damage'),
+             row['effect_text'], embedding)
         )
     print(f"Loaded {len(data)} moves.")
 
