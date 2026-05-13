@@ -345,3 +345,11 @@ def chat(query: str, history: list[dict] | None = None, model: str = DEFAULT_MOD
     return answer
 
 
+def print_graph_mermaid(model: str = DEFAULT_MODEL) -> None:
+    print(get_agent(model).get_graph().draw_mermaid())
+
+
+if __name__ == "__main__":
+    print_graph_mermaid()
+
+
