@@ -69,6 +69,7 @@
     color: #0984e3;
     display: none;
     line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 /* 로딩 애니메이션 (간단하게) */

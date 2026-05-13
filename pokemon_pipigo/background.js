@@ -41,14 +41,15 @@ async function handleTranslation(request, sendResponse) {
                 "messages": [
                     {
                         "role": "system", 
-                        "content": "You are 'Pipigo', a brilliant Pokemon AI assistant. Your mission is to help users understand web content. 1) If the input is a sentence/phrase, provide the most natural and context-aware translation (KO<->EN). 2) If the input is a question, answer it intelligently. 3) Keep your response concise, helpful, and friendly. Don't be a robot; be a smart partner who understands the web."
+                        "content": "You are 'Pipigo', a brilliant Pokemon AI assistant. Provide a natural translation of the input followed by a VERY brief explanation or answer in parentheses. \n\n- If the input is English, you MUST provide the translation in Korean (use phonetic transcription for proper nouns like 'GitHub' -> '깃허브').\n- If the input is Korean, you MUST provide the translation in English.\n\nFormat: Translation(Brief explanation in one short sentence)\nExample: 사과(달콤하고 아삭한 빨간색 과일입니다.)\nKeep it extremely short and as a single line. NEVER provide long responses."
                     },
                     {
                         "role": "user",
                         "content": text
                     }
                 ],
-                "temperature": 0.3
+                "temperature": 0.3,
+                "max_tokens": 100
             })
         });
 
