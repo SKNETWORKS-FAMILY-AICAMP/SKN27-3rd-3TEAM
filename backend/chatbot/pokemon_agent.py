@@ -38,8 +38,6 @@ from langchain_community.tools import TavilySearchResults
 from langchain_community.vectorstores import PGVector
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
-from langchain_community.document_loaders import JSONLoader
-
 
 # Neo4j 툴
 try:
@@ -93,17 +91,6 @@ _vectorstore = PGVector(
     embedding_function=embeddings,
     collection_name="flavor_text",
 )
-
-# 컬렉션이 비어있을 때만 JSON에서 문서를 로드해 임베딩 저장 (중복 방지)
-_existing = _vectorstore.similarity_search("씨앗", k=1)
-if not _existing:
-    _file_path = "database/common/data/processed/flavor_text.json"
-    _loader = JSONLoader(
-        file_path=_file_path,
-        jq_schema=r"\(.species_id): \(.version_name) \(.content)",
-        text_content=True,
-    )
-    _vectorstore.add_documents(_loader.load())
 
 # MMR Retriever — 유사도 + 다양성 동시 고려
 _vector_retriever = _vectorstore.as_retriever(
