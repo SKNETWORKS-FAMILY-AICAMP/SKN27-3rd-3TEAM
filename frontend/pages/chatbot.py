@@ -1,3 +1,5 @@
+import streamlit as st
+
 import os
 import copy
 import uuid
@@ -109,7 +111,7 @@ def render_user_bubble(content: str, avatar_url: str) -> None:
     escaped = _html.escape(content)
     st.markdown(
         f'<div style="display:flex;justify-content:flex-end;align-items:flex-start;'
-        f'gap:12px;padding:8px 16px;">'
+        f'gap:12px;padding:8px 16px;margin-bottom:8px;">'
         f'<div style="background:linear-gradient(135deg,#EE1515 0%,#c0392b 100%);'
         f'color:#fff;padding:12px 16px;border-radius:18px 4px 18px 18px;'
         f'font-size:14.5px;line-height:1.75;font-family:Inter,sans-serif;'
@@ -120,11 +122,34 @@ def render_user_bubble(content: str, avatar_url: str) -> None:
         unsafe_allow_html=True,
     )
 
+def render_assistant_bubble(content: str, avatar_url: str, used_tools: list = None) -> None:
+    # 툴 배지 HTML 생성
+    tool_html = ""
+    if used_tools:
+        badges = []
+        for t in used_tools:
+            badges.append(f'<span style="background:#f1f5f9;color:#475569;font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #e2e8f0;font-weight:600;">🛠️ {t}</span>')
+        tool_html = f'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">{"".join(badges)}</div>'
+
+    st.markdown(
+        f'<div style="display:flex;justify-content:flex-start;align-items:flex-start;'
+        f'gap:12px;padding:12px 16px;margin-bottom:24px;overflow:visible;">'
+        f'<img src="{avatar_url}" style="width:48px;height:48px;border-radius:50%;'
+        f'flex-shrink:0;object-fit:contain;border:2px solid #e2e8f0;background:#fff;">'
+        f'<div style="flex:1;max-width:85%;">'
+        f'<div style="background:#f8fafc;color:#1e293b;padding:16px 20px;'
+        f'border-radius:4px 22px 22px 22px;font-size:14.5px;line-height:1.85;'
+        f'font-family:Inter,sans-serif;border:1px solid #e2e8f0;'
+        f'box-shadow:0 2px 10px rgba(0,0,0,0.03);white-space:pre-wrap;">{content}</div>'
+        f'{tool_html}</div></div>',
+        unsafe_allow_html=True,
+    )
+
 # ── Page config ───────────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="포켓몬 박사 챗봇",
-    page_icon="🔴",
+    page_title="포켓몬 비공식 AI 박사",
+    page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -188,7 +213,7 @@ section[data-testid="stMain"],
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
     > [data-testid="stVerticalBlock"] {
-    padding: 0 !important;
+    padding: 0 0 180px 0 !important;
     height: 100% !important;
     overflow: hidden !important;
 }
@@ -385,10 +410,14 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
 
 /* ── 오박사 아바타 & 메시지 간격 최적화 ── */
 [data-testid="stChatMessage"] {
-    gap: 10px !important;
-    padding: 10px 0 !important;
+    gap: 15px !important;
+    padding: 20px 0 !important;
     margin: 0 !important;
     background: transparent !important;
+    min-height: 100px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
 }
 
 /* ── 오박사 아바타 2배 확대 (컨테이너 포함 강제) ── */
@@ -406,7 +435,8 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     height: 100% !important;
     border: 3px solid #e2e8f0 !important;
     border-radius: 50% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
+    background: #fff !important;
 }
 
 /* 아바타와 텍스트 레이아웃 정렬 */
@@ -421,7 +451,7 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     line-height: 1.85 !important;
     font-family: 'Inter', sans-serif !important;
     color: #1f2937 !important;
-    padding-top: 5px !important; /* 커진 아바타에 맞춰 텍스트 살짝 내림 */
+    padding-top: 10px !important;
 }
 
 [data-testid="stChatMessage"] .stMarkdown {
@@ -698,7 +728,8 @@ def get_base64_img(file_name: str) -> str:
 
 USER_AVATAR = (
     _user_info.get("avatar_url")
-    or "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+    or get_base64_img("지우.png")
+    or "https://cdn-icons-png.flaticon.com/512/188/188987.png"
 )
 OAK_AVATAR = get_base64_img("Obak_chat.png")
 
@@ -815,21 +846,27 @@ with right_col:
                 if msg["role"] == "user":
                     render_user_bubble(msg["content"], USER_AVATAR)
                 else:
-                    with st.chat_message("assistant", avatar=OAK_AVATAR or "🔬"):
-                        st.markdown(msg["content"])
-                        render_tool_badges(msg.get("used_tools") or [])
+                    render_assistant_bubble(msg["content"], OAK_AVATAR, msg.get("used_tools"))
+            
+            # 하단 입력창에 가려지지 않도록 여백 추가
+            st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
 
             if is_loading:
-                st.markdown("""
-                <div class="cb-thinking">
-                    <div class="cb-thinking-bubble">
-                        <div class="cb-thinking-dot"></div>
-                        <div class="cb-thinking-dot"></div>
-                        <div class="cb-thinking-dot"></div>
-                    </div>
-                    <span class="cb-thinking-label">포켓몬 박사가 생각 중...</span>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    f'<div style="display:flex;justify-content:flex-start;align-items:flex-start;'
+                    f'gap:12px;padding:12px 16px;margin-bottom:12px;">'
+                    f'<img src="{OAK_AVATAR}" style="width:48px;height:48px;border-radius:50%;'
+                    f'flex-shrink:0;object-fit:contain;border:2px solid #e2e8f0;background:#fff;">'
+                    f'<div style="flex:1;">'
+                    f'<div class="cb-thinking-bubble">'
+                    f'    <div class="cb-thinking-dot"></div>'
+                    f'    <div class="cb-thinking-dot"></div>'
+                    f'    <div class="cb-thinking-dot"></div>'
+                    f'</div>'
+                    f'<span class="cb-thinking-label">포켓몬 박사가 생각 중...</span>'
+                    f'</div></div>',
+                    unsafe_allow_html=True
+                )
 
                 history = copy.deepcopy(msgs[:-1])
                 try:
