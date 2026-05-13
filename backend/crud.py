@@ -231,6 +231,17 @@ def create_team_build_log(db: Session, log_data: schemas.TeamBuildLogCreate):
         raise e
 
 
+def get_user_team_build_logs(db: Session, user_id: int, limit: int = 10):
+    """사용자의 팀 빌더 분석/추천 히스토리를 최신순으로 조회합니다."""
+    return (
+        db.query(models.TeamBuildLog)
+        .filter(models.TeamBuildLog.user_id == user_id)
+        .order_by(models.TeamBuildLog.id.desc())
+        .limit(limit)
+        .all()
+    )
+
+
 def update_latest_team_build_recommendation(
     db: Session,
     selected_pokemon_ids: List[int],

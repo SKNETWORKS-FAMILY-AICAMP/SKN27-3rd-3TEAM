@@ -281,3 +281,14 @@ def rag_recommend_team_member_endpoint(
         return result
     except ValueError as error:
         _handle_value_error(error)
+
+
+@router.get("/history/{user_id}")
+def get_team_history(
+    user_id: int,
+    limit: int = 10,
+    db: Session = Depends(get_db),
+):
+    """사용자의 팀 빌더 분석/추천 히스토리를 최신순으로 반환합니다."""
+    logs = crud.get_user_team_build_logs(db, user_id, limit)
+    return [schemas.TeamBuildLogHistory.model_validate(log) for log in logs]

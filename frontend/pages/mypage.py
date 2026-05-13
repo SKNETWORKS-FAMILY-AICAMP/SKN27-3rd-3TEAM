@@ -50,6 +50,15 @@ def fetch_user_logs(user_id):
         pass
     return []
 
+def fetch_team_history(user_id):
+    try:
+        resp = requests.get(f"{BACKEND_URL}/api/v1/team-builder/history/{user_id}?limit=6", timeout=8)
+        if resp.status_code == 200:
+            return resp.json()
+    except:
+        pass
+    return []
+
 def fetch_github_details(username):
     from concurrent.futures import ThreadPoolExecutor
     headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "Pokemon-Trainer-App"}
@@ -137,13 +146,15 @@ def show():
             return gh
         return None
 
-    with ThreadPoolExecutor(max_workers=3) as ex:
-        f_gh    = ex.submit(_maybe_fetch_github)
-        f_stats = ex.submit(fetch_user_stats, user_id) if user_id else None
-        f_logs  = ex.submit(fetch_user_logs, user_id)  if user_id else None
-        gh      = f_gh.result()
-        stats   = f_stats.result() if f_stats else None
-        logs    = f_logs.result()  if f_logs  else []
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        f_gh      = ex.submit(_maybe_fetch_github)
+        f_stats   = ex.submit(fetch_user_stats, user_id)   if user_id else None
+        f_logs    = ex.submit(fetch_user_logs, user_id)    if user_id else None
+        f_history = ex.submit(fetch_team_history, user_id) if user_id else None
+        gh        = f_gh.result()
+        stats     = f_stats.result()   if f_stats   else None
+        logs      = f_logs.result()    if f_logs    else []
+        team_history = f_history.result() if f_history else []
 
     if gh:
         repos     = gh["repos"]
@@ -518,6 +529,83 @@ def show():
 
     activity_content = "".join(activity_items)
     st.markdown(f'<div class="mp-card card-activity">{activity_content}</div>', unsafe_allow_html=True)
+
+    # ══════════════════════════════════════════
+    # 6. Team Builder History
+    # ══════════════════════════════════════════
+    st.markdown('<div class="mp-section-title">Team Builder History</div>', unsafe_allow_html=True)
+
+    if not team_history:
+        st.markdown("""
+        <div class="mp-card card-history" style="text-align:center; padding: 60px;">
+            <div style="font-size: 3rem; margin-bottom: 20px;"></div>
+            <div style="font-weight: 800; color: #2d3436; font-size: 1.2rem;">팀 빌더 분석 기록이 없습니다.</div>
+            <div style="color: #636e72; margin-top: 10px;">팀을 구성하고 분석해보세요!</div>
+        </div>""", unsafe_allow_html=True)
+    else:
+        for log in team_history:
+            _, center, _ = st.columns([1, 8, 1])
+            with center:
+                sel_ids = log.get("selected_pokemon_ids", [])
+                rec_ids = log.get("recommended_pokemon_ids") or []
+
+                sel_imgs_html = "".join([
+                    f'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png" class="mp-hist-pkmn-img" alt="{pid}">'
+                    for pid in sel_ids[:5]
+                ])
+                rec_imgs_html = "".join([
+                    f'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png" class="mp-hist-pkmn-img mp-hist-pkmn-rec" alt="{pid}">'
+                    for pid in rec_ids[:3]
+                ]) if rec_ids else '<span style="color:#a0aec0;font-size:0.75rem;">없음</span>'
+
+                created_at = log.get("created_at", "")
+                date_str = ""
+                if created_at:
+                    try:
+                        dt = datetime.fromisoformat(str(created_at).replace("Z", "+00:00"))
+                        date_str = dt.strftime("%m/%d %H:%M")
+                    except Exception:
+                        pass
+
+                conclusion = log.get("analysis_conclusion") or log.get("recommendation_conclusion") or ""
+                if len(conclusion) > 260:
+                    conclusion = conclusion[:260] + "…"
+
+                conclusion_html = (
+                    f'<div class="mp-hist-conclusion-h">{conclusion}</div>'
+                    if conclusion
+                    else '<div class="mp-hist-conclusion-h" style="color:#4a5568;font-style:italic;">분석 결과 텍스트 없음</div>'
+                )
+
+                card_html = (
+                    '<div class="mp-hist-card-h">'
+                    '<div class="mp-hist-team-block">'
+                    f'<div class="mp-hist-date">{date_str}</div>'
+                    '<div class="mp-hist-label">나의 팀</div>'
+                    f'<div class="mp-hist-row">{sel_imgs_html}</div>'
+                    '</div>'
+                    '<div class="mp-hist-sep"></div>'
+                    f'<div class="mp-hist-text-block">{conclusion_html}</div>'
+                    '<div class="mp-hist-sep"></div>'
+                    '<div class="mp-hist-rec-block">'
+                    '<div class="mp-hist-label">추천 포켓몬</div>'
+                    f'<div class="mp-hist-row">{rec_imgs_html}</div>'
+                    '</div>'
+                    '</div>'
+                )
+                st.markdown(card_html, unsafe_allow_html=True)
+
+                has_result = bool(log.get("analysis_result") or log.get("recommendation_result"))
+                if st.button(
+                    "결과 보기",
+                    key=f"hist_{log['id']}",
+                    disabled=not has_result,
+                    use_container_width=True,
+                ):
+                    st.session_state.analysis_result = log.get("analysis_result")
+                    st.session_state.recommendation_result = log.get("recommendation_result")
+                    st.session_state.team_result_type = "both"
+                    st.switch_page("pages/team_result.py")
 
     st.markdown('</div>', unsafe_allow_html=True) # mp-wrap
 

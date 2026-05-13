@@ -666,11 +666,20 @@ def render_team_side_panel(
 
         from concurrent.futures import ThreadPoolExecutor
 
+        # user_id는 메인 스레드에서 미리 캡처 (스레드 내 session_state 접근 불안정 방지)
+        _uid = get_current_user_id()
+
         def _analyze() -> Any:
-            return request_json("POST", "/api/v1/team-builder/rag-analyze", json={"pokemon_ids": ids})
+            payload: Dict[str, Any] = {"pokemon_ids": ids}
+            if _uid is not None:
+                payload["user_id"] = _uid
+            return request_json("POST", "/api/v1/team-builder/rag-analyze", json=payload)
 
         def _recommend() -> Any:
-            return request_json("POST", "/api/v1/team-builder/rag-recommend", json={"pokemon_ids": ids, "limit": 3})
+            payload: Dict[str, Any] = {"pokemon_ids": ids, "limit": 3}
+            if _uid is not None:
+                payload["user_id"] = _uid
+            return request_json("POST", "/api/v1/team-builder/rag-recommend", json=payload)
 
         with ThreadPoolExecutor(max_workers=2) as pool:
             f_analyze = pool.submit(_analyze)
