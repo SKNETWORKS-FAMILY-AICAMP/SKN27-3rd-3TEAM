@@ -135,11 +135,15 @@ st.markdown("""
 section[data-testid="stMain"],
 .stMain {
     background: #ffffff !important;
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 .block-container {
     background: #ffffff !important;
     padding: 0 !important;
     max-width: 100% !important;
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 
 /* ── No page scroll ── */
@@ -154,25 +158,28 @@ html, body { overflow: hidden !important; }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
     background: #f8fafc !important;
     border-right: 1px solid #e2e8f0 !important;
-    height: 100vh !important;
-    position: sticky !important;
-    top: 0 !important;
+    height: calc(100vh - 50px) !important;
+    position: relative !important;
+    overflow: hidden !important;
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
     > [data-testid="stVerticalBlock"] {
     padding: 0 14px 14px !important;
-    height: 100vh !important;
+    height: 100% !important;
+    overflow-y: auto !important;
 }
 
 /* ── Right panel (White chat area) — full viewport height ── */
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
     background: #ffffff !important;
-    min-height: calc(100vh - 80px) !important;
+    height: calc(100vh - 50px) !important;
+    overflow: hidden !important;
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
     > [data-testid="stVerticalBlock"] {
     padding: 0 !important;
-    min-height: calc(100vh - 80px) !important;
+    height: 100% !important;
+    overflow: hidden !important;
 }
 
 /* ── Reset: nested columns inside left panel (Q-list rows) ── */
@@ -500,7 +507,7 @@ div:has(> [data-testid="stRadio"]) {
 .cb-welcome {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    min-height: 400px; gap: 16px; padding: 40px;
+    min-height: 800px; gap: 16px; padding: 40px;
     text-align: center;
 }
 .cb-welcome-ball {
