@@ -733,7 +733,7 @@ def show():
 
     gym_slot_parts = []
     for g in GYM_LEADERS:
-        img_path = f"img/{g['id']}_뱃지.png"
+        img_path = f"img/badges/{g['id']}_뱃지.png"
         b64 = _b64_img(img_path)
         glow = g["glow"]
         unlocked = g["id"] in gym_badges_owned
