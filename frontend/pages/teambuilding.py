@@ -19,9 +19,10 @@ from teambuilding.components import (
 )
 
 st.set_page_config(
-    page_title="Team Builder - Pokemon World",
+    page_title="팀빌딩",
     page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 inject_common_ui(spacer=True)
