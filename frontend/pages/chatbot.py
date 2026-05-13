@@ -89,7 +89,7 @@ def render_user_bubble(content: str, avatar_url: str) -> None:
         f'box-shadow:0 4px 14px rgba(238,21,21,0.22);word-break:break-word;'
         f'white-space:pre-wrap;">{escaped}</div>'
         f'<img src="{avatar_url}" style="width:51px;height:51px;border-radius:50%;'
-        f'flex-shrink:0;object-fit:cover;border:2px solid #fbd0d0;"></div>',
+        f'flex-shrink:0;object-fit:cover;border:2px solid #e2e8f0;"></div>',
         unsafe_allow_html=True,
     )
 
@@ -128,16 +128,16 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
-/* ── Light red theme background ── */
+/* ── White theme background ── */
 .stApp,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"],
 section[data-testid="stMain"],
 .stMain {
-    background: #fff5f5 !important;
+    background: #ffffff !important;
 }
 .block-container {
-    background: #fff5f5 !important;
+    background: #ffffff !important;
     padding: 0 !important;
     max-width: 100% !important;
 }
@@ -150,19 +150,21 @@ html, body { overflow: hidden !important; }
     align-items: stretch !important;
 }
 
-/* ── Left panel (warm pink) — full viewport height ── */
+/* ── Left panel (Grey sidebar) — full viewport height ── */
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
-    background: #fce8e8 !important;
-    border-right: 2px solid #fbd0d0 !important;
-    min-height: calc(100vh - 80px) !important;
+    background: #f8fafc !important;
+    border-right: 1px solid #e2e8f0 !important;
+    height: 100vh !important;
+    position: sticky !important;
+    top: 0 !important;
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
     > [data-testid="stVerticalBlock"] {
     padding: 0 14px 14px !important;
-    min-height: calc(100vh - 80px) !important;
+    height: 100vh !important;
 }
 
-/* ── Right panel (white) — full viewport height ── */
+/* ── Right panel (White chat area) — full viewport height ── */
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
     background: #ffffff !important;
     min-height: calc(100vh - 80px) !important;
@@ -184,7 +186,7 @@ html, body { overflow: hidden !important; }
 /* ── Left panel header ── */
 .cb-left-header {
     padding: 18px 0 14px;
-    border-bottom: 1px solid #fbd0d0;
+    border-bottom: 1px solid #e2e8f0;
     margin-bottom: 14px;
 }
 .cb-left-title {
@@ -219,10 +221,10 @@ html, body { overflow: hidden !important; }
 [data-testid="stRadio"] > div {
     flex-direction: row !important;
     gap: 4px !important;
-    background: rgba(238,21,21,0.06);
+    background: rgba(0,0,0,0.04);
     border-radius: 30px;
     padding: 3px 5px;
-    border: 1px solid #fbd0d0;
+    border: 1px solid #e2e8f0;
     display: inline-flex !important;
     width: 100%;
     justify-content: center;
@@ -262,9 +264,9 @@ div:has(> [data-testid="stRadio"]) {
     font-weight: 900;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #b91c1c;
+    color: #64748b;
     margin: 14px 0 8px;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 /* ── Q list buttons ── */
@@ -309,15 +311,16 @@ div:has(> [data-testid="stRadio"]) {
     font-size: 14px !important;
     border-radius: 6px !important;
     background: transparent !important;
-    color: #b91c1c !important;
-    border: 1.5px solid #fbd0d0 !important;
+    color: #94a3b8 !important;
+    border: 1.5px solid #e2e8f0 !important;
     box-shadow: none !important;
     line-height: 30px !important;
     text-align: center !important;
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child button:hover {
-    background: rgba(238,21,21,0.10) !important;
+    background: rgba(238,21,21,0.08) !important;
+    color: #EE1515 !important;
     border-color: #EE1515 !important;
 }
 
@@ -346,7 +349,7 @@ div:has(> [data-testid="stRadio"]) {
     height: 51px !important;
     border-radius: 50% !important;
     overflow: hidden !important;
-    border: 2px solid #fbd0d0 !important;
+    border: 2px solid #e2e8f0 !important;
     flex-shrink: 0 !important;
 }
 [data-testid="stChatMessage"] [data-testid="chatAvatarIcon-assistant"] img,
@@ -420,54 +423,77 @@ div:has(> [data-testid="stRadio"]) {
 }
 
 /* ── Chat input — fixed inside right panel ── */
+[data-testid="stBottom"],
 [data-testid="stChatInput"] {
     position: fixed !important;
     bottom: 0 !important;
     left: 25% !important;
     right: 0 !important;
-    background: #fff5f5 !important;
-    border-top: 1px solid #fbd0d0 !important;
-    padding: 10px 16px !important;
+    background: #ffffff !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 12px 20px 24px !important;
     z-index: 500 !important;
 }
-[data-testid="stChatInput"] textarea {
+
+/* 챗 입력기 전체 바 (가장 안쪽 컨테이너만 테두리 부여) */
+[data-testid="stChatInput"] > div {
     background: #ffffff !important;
-    border: 1.5px solid #fbd0d0 !important;
-    border-radius: 24px !important;
-    color: #1a1a2e !important;
-    font-size: 14px !important;
-    font-family: 'Inter', sans-serif !important;
-    padding: 10px 18px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 30px !important;
+    padding: 2px 2px 2px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
 }
-[data-testid="stChatInput"] textarea:focus {
+
+/* 중첩된 내부 div들의 배경/테두리 제거 (중복 방지) */
+[data-testid="stChatInput"] > div > div {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+[data-testid="stChatInput"] > div:focus-within {
     border-color: #EE1515 !important;
-    box-shadow: 0 0 0 3px rgba(238,21,21,0.12) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(238,21,21,0.1) !important;
+}
+
+[data-testid="stChatInput"] textarea {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #1a1a2e !important;
+    font-size: 14.5px !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 10px 0 !important;
 }
 [data-testid="stChatInput"] textarea::placeholder { color: #9ca3af !important; }
+
 [data-testid="stChatInput"] button {
     background: linear-gradient(135deg, #EE1515, #c0392b) !important;
     border-radius: 50% !important;
     border: none !important;
-    box-shadow: 0 2px 10px rgba(238,21,21,0.45) !important;
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px !important;
+    box-shadow: 0 2px 8px rgba(238,21,21,0.3) !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     transition: all 0.2s !important;
     cursor: pointer !important;
+    margin: 4px !important; /* 바 안쪽 여백 */
 }
 [data-testid="stChatInput"] button:hover {
     transform: scale(1.08) !important;
-    box-shadow: 0 4px 18px rgba(238,21,21,0.55) !important;
+    box-shadow: 0 4px 14px rgba(238,21,21,0.4) !important;
 }
 [data-testid="stChatInput"] button svg {
     fill: #ffffff !important;
     color: #ffffff !important;
     stroke: #ffffff !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 18px !important;
+    height: 18px !important;
 }
 
 /* ── Welcome screen ── */
