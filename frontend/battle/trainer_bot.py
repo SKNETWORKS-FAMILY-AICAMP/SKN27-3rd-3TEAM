@@ -16,10 +16,19 @@ class BattleBot:
         # 봇의 엔트리 정보 초기화
         battle_pokemons = []
         for pokemon in bot_entries:
+            # 관장 포켓몬 보정 로직
+            if leader_name == "지우" and pokemon['name'] == "피카츄":
+                # 지우의 피카츄: 모든 능력치 2배 (전기구슬 효과)
+                multiplier = 2.0
+            else:
+                # 그 외 모든 관장의 포켓몬: 모든 능력치 1.1배 보정 (난이도 향상)
+                multiplier = 1.1
+
             battle_pokemons.append(BattlePokemon(
                 id=pokemon['id'], 
                 name=pokemon['name'], 
-                selected_moves=pokemon['moves']
+                selected_moves=pokemon['moves'],
+                multiplier=multiplier
             ))
 
         # session_state 초기화
