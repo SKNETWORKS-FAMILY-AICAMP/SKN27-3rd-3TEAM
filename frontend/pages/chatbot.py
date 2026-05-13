@@ -71,6 +71,10 @@ def api_rename_session(session_id, title):
         pass
 
 MODELS_LIST, DEFAULT_MODEL = fetch_models()
+MODEL_DISPLAY_NAMES = {
+    "gpt-4o-mini": "빠른 모델",
+    "gemma4:e2b": "사고 모델"
+}
 
 # ── Tool badges ───────────────────────────────────────────────────────────
 
@@ -226,6 +230,9 @@ section[data-testid="stMain"],
     border: none !important;
     height: auto !important;
 }
+div:has(> [data-testid="stHorizontalBlock"]) {
+    margin-bottom: -10px !important; /* 세션 항목 간격 축소 */
+}
 
 /* ── 왼쪽 헤더 ── */
 .cb-left-header {
@@ -372,40 +379,34 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     font-weight: 700 !important;
 }
 
-/* ── 세션 목록 — 편집/삭제 아이콘 버튼 ── */
+/* ── 드롭다운 아래 수정/삭제 버튼 ── */
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-child(2) button,
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-child(3) button {
-    width: 28px !important;
-    min-width: 28px !important;
-    max-width: 28px !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    padding: 0 !important;
-    font-size: 12px !important;
-    border-radius: 6px !important;
-    background: transparent !important;
-    color: #94a3b8 !important;
+    [data-testid="stHorizontalBlock"] button {
     border: 1px solid #e2e8f0 !important;
-    box-shadow: none !important;
-    opacity: 0 !important;
-    transition: opacity 0.2s !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 6px 0 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    background: transparent !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+    transition: all 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* 두 버튼 모두 삭제(빨간색) 스타일로 통일 */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] button {
+    color: #ef4444 !important;
 }
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"]:hover > [data-testid="stColumn"]:nth-child(2) button,
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"]:hover > [data-testid="stColumn"]:nth-child(3) button {
-    opacity: 1 !important;
-}
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-child(2) button:hover,
-[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-child(3) button:hover {
-    background: rgba(238,21,21,0.08) !important;
-    color: #EE1515 !important;
-    border-color: #EE1515 !important;
-    opacity: 1 !important;
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] button:hover {
+    color: #dc2626 !important;
+    border-color: #ef4444 !important;
+    background: rgba(239,68,68,0.08) !important;
 }
 
 /* ── 오박사 아바타 & 메시지 간격 최적화 ── */
@@ -765,6 +766,7 @@ with left_col:
     st.session_state.model = st.radio(
         "모델",
         options=MODELS_LIST,
+        format_func=lambda x: MODEL_DISPLAY_NAMES.get(x, x),
         index=MODELS_LIST.index(st.session_state.model) if st.session_state.model in MODELS_LIST else 0,
         horizontal=True,
         key="model_radio",
@@ -787,31 +789,43 @@ with left_col:
             unsafe_allow_html=True,
         )
     else:
-        with st.container(height=420, border=False):
-            for chat in st.session_state.chat_history:
-                chat_id = chat["id"]
-                chat_title = chat.get("title") or f"대화 #{chat_id}"
-                is_active = chat_id == st.session_state.current_chat_id
+        with st.container(border=False):
+            chat_options = [None] + [chat["id"] for chat in st.session_state.chat_history]
+            
+            def chat_format(x):
+                if x is None:
+                    return "✨ 새 채팅"
+                return next((c.get("title") or f"대화 #{c['id']}") for c in st.session_state.chat_history if c["id"] == x)
+            
+            # current_chat_id에 맞는 인덱스 찾기
+            current_idx = 0
+            if st.session_state.current_chat_id in chat_options:
+                current_idx = chat_options.index(st.session_state.current_chat_id)
+                
+            selected_chat_id = st.selectbox(
+                "대화 선택",
+                options=chat_options,
+                format_func=chat_format,
+                index=current_idx,
+                label_visibility="collapsed",
+                key="chat_history_select"
+            )
+            
+            if selected_chat_id != st.session_state.current_chat_id:
+                st.session_state.current_chat_id = selected_chat_id
+                st.session_state.messages = api_messages(selected_chat_id) if selected_chat_id else []
+                st.session_state.is_loading = False
+                st.rerun()
 
-                col_t, col_e, col_d = st.columns([6, 1, 1])
-                with col_t:
-                    if st.button(
-                        chat_title,
-                        key=f"chat_{chat_id}",
-                        use_container_width=True,
-                        type="primary" if is_active else "secondary",
-                    ):
-                        if not is_active:
-                            st.session_state.current_chat_id = chat_id
-                            st.session_state.messages = api_messages(chat_id)
-                            st.session_state.is_loading = False
-                            st.rerun()
-                with col_e:
-                    if st.button("✏️", key=f"edit_{chat_id}", help="이름 수정"):
-                        show_rename_dialog(chat_id, chat_title)
-                with col_d:
-                    if st.button("🗑️", key=f"del_{chat_id}", help="삭제"):
-                        show_delete_dialog(chat_id, chat_title)
+            col_e, col_d = st.columns(2)
+            with col_e:
+                # 새 채팅 상태(None)일 때는 수정/삭제 비활성화
+                btn_disabled = (selected_chat_id is None)
+                if st.button("✏️ 이름 수정", key="btn_rename_current", use_container_width=True, disabled=btn_disabled):
+                    show_rename_dialog(selected_chat_id, chat_format(selected_chat_id))
+            with col_d:
+                if st.button("🗑️ 삭제", key="btn_delete_current", use_container_width=True, disabled=btn_disabled):
+                    show_delete_dialog(selected_chat_id, chat_format(selected_chat_id))
 
 # ───────────────────────────────────────────────────────
 # 오른쪽 패널 (채팅 영역)

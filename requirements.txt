@@ -25,7 +25,6 @@ langchain-tavily
 openai
 ollama
 sentence-transformers
-torchvision
 
 # [Frontend - Streamlit]
 streamlit
