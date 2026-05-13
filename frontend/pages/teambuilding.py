@@ -395,34 +395,32 @@ def normalize_pokemon_list(raw_data: Any) -> List[Dict[str, Any]]:
     return normalized
 
 
+@st.cache_data(show_spinner=False)
+def _fetch_ability_map() -> Dict[int, List[str]]:
+    """포켓몬 ID → 특성 목록 매핑을 한 번만 가져와 앱 전체에서 재사용합니다."""
+    try:
+        data = normalize_pokemon_list(request_json("GET", "/api/v1/pokemon/?skip=0&limit=2000"))
+        return {
+            p["pokemon_id"]: p.get("abilities", [])
+            for p in data
+            if p.get("abilities")
+        }
+    except RuntimeError:
+        return {}
+
+
 def enrich_pokemon_abilities(pokemon_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """가능하면 기존 포켓몬 API에서 특성 정보를 가져와 팀 빌더 목록에 보강하는 함수입니다."""
 
-    # 이미 특성이 있으면 추가 API 호출을 하지 않습니다.
-    # - 팀 빌더 전용 API가 abilities를 내려주는 구조로 바뀌면 이 함수는 거의 비용 없이 지나갑니다.
     if any(pokemon.get("abilities") for pokemon in pokemon_list):
         return pokemon_list
 
-    try:
-        # ability_source:
-        # - 도감/기존 포켓몬 API에 특성 정보가 포함되어 있을 때만 팀 빌더 필터에 활용합니다.
-        # - 실패해도 팀 선택 자체는 계속 가능해야 하므로 예외는 아래에서 조용히 무시합니다.
-        ability_source = normalize_pokemon_list(
-            request_json("GET", "/api/v1/pokemon/?skip=0&limit=2000")
-        )
-    except RuntimeError:
-        return pokemon_list
-
-    ability_by_id = {
-        pokemon["pokemon_id"]: pokemon.get("abilities", [])
-        for pokemon in ability_source
-        if pokemon.get("abilities")
-    }
-    if not ability_by_id:
+    ability_map = _fetch_ability_map()
+    if not ability_map:
         return pokemon_list
 
     for pokemon in pokemon_list:
-        pokemon["abilities"] = ability_by_id.get(pokemon["pokemon_id"], pokemon.get("abilities", []))
+        pokemon["abilities"] = ability_map.get(pokemon["pokemon_id"], pokemon.get("abilities", []))
     return pokemon_list
 
 
@@ -2591,7 +2589,6 @@ def show_v2() -> None:
         st.session_state.analysis_result = None
     if "recommendation_result" not in st.session_state:
         st.session_state.recommendation_result = None
-
     try:
         pokemon_list = load_pokemon_list()
     except RuntimeError as exc:
