@@ -11,12 +11,12 @@
 ```mermaid
 flowchart TD
     START(["__start__"])
-    SUP["supervisor<br/>선택한 포켓몬 5마리 검증"]
-    SELECT["select_graph_tool<br/>덱 분석 또는 추천 도구 선택"]
-    GRAPH["execution_graph_tool<br/>Neo4j 기반 타입/추천 계산"]
-    VECTOR["vector_search<br/>pgvector에서 설명 근거 검색"]
-    EVAL["evaluate_with_llm<br/>Graph 결과와 Vector 근거 결합"]
-    HYBRID["hybrid_scorer<br/>graph_score + vector_score"]
+    SUP["supervisor<br/>요청 검증"]
+    SELECT["select_graph_tool<br/>분석/추천 Graph 도구 선택"]
+    GRAPH["execution_graph_tool<br/>Neo4j Graph DB 실행"]
+    VECTOR["vector_search<br/>pgvector 근거 검색"]
+    EVAL["evaluate_with_llm<br/>Graph + Vector 근거 결합"]
+    HYBRID["hybrid_scorer<br/>Graph + Vector 점수 결합"]
     ANSWER["answer_generator<br/>LLM 기반 AI 해설 생성"]
     END(["__end__"])
 
@@ -28,6 +28,10 @@ flowchart TD
     EVAL --> HYBRID
     HYBRID --> ANSWER
     ANSWER --> END
+
+    GRAPH -. "Graph DB 계산 결과" .-> EVAL
+    VECTOR -. "Vector DB 검색 근거" .-> EVAL
+    EVAL -. "RAG Context" .-> ANSWER
 ```
 
 ## 노드 역할
