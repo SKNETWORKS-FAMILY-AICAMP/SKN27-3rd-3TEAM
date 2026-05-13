@@ -18,10 +18,6 @@
   pokemon → pokemon_types → types (N:M)
   pokemon → species → flavor_text (비정형, embedding 있음)
 """
-from dns import asyncquery
-from dns import asyncquery
-from dns import asyncquery
-from dns import asyncquery
 import sqlalchemy
 import os
 import threading
