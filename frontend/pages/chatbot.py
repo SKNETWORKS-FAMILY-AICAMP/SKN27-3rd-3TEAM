@@ -439,7 +439,7 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     left: 20% !important;
     right: 0 !important;
     background: #ffffff !important;
-    border-top: 1px solid #f0f0f0 !important;
+    border-top: none !important;
     padding: 15px 25px 30px !important;
     z-index: 500 !important;
 }
@@ -471,7 +471,9 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
 [data-testid="stChatInput"] textarea::placeholder { color: #9ca3af !important; }
 [data-testid="stChatInput"] button {
     background: linear-gradient(135deg, #EE1515, #c0392b) !important;
-    border-radius: 50% !important; border: none !important;
+    border-radius: 50% !important;
+    border: none !important;
+    outline: none !important;
     box-shadow: 0 2px 8px rgba(238,21,21,0.3) !important;
     width: 38px !important; height: 38px !important; min-width: 38px !important;
     display: flex !important; align-items: center !important; justify-content: center !important;
@@ -481,8 +483,16 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     transform: scale(1.08) !important;
     box-shadow: 0 4px 14px rgba(238,21,21,0.4) !important;
 }
+[data-testid="stChatInput"] button:focus,
+[data-testid="stChatInput"] button:active,
+[data-testid="stChatInput"] button:focus-visible {
+    outline: none !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(238,21,21,0.4) !important;
+}
 [data-testid="stChatInput"] button svg {
-    fill: #fff !important; color: #fff !important; stroke: #fff !important;
+    fill: #fff !important; color: #fff !important;
+    stroke: none !important; stroke-width: 0 !important;
     width: 18px !important; height: 18px !important;
 }
 
