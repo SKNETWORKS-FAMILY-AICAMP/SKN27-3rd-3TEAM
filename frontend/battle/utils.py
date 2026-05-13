@@ -43,6 +43,7 @@ class BattlePokemon:
     id: int
     name: str
     selected_moves: list[str]
+    multiplier: float = 1.0
     
     # DB에서 불러올 정보들
     image_url: str = field(init=False)
@@ -73,7 +74,14 @@ class BattlePokemon:
         self.image_url = data['image_url']
         self.types = data['types']
         self.type_names = data['type_names']
-        self.stats = get_stats(data['stats']) 
+
+        # 배틀 포켓몬의 multiplier 적용
+        if self.multiplier != 1.0:
+            base_stats = get_stats(data['stats'])
+            self.stats = {s: int(v * self.multiplier) for s, v in base_stats.items()}
+        else:
+            self.stats = get_stats(data['stats'])
+            
         self.max_hp = self.stats['hp']
         self.current_hp = self.stats['hp']
         
