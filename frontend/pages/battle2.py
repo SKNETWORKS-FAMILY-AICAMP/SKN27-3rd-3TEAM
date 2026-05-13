@@ -2,8 +2,8 @@ import re
 import time
 import os
 import requests
+import streamlit as st
 from dotenv import load_dotenv
-from typing import List, Dict
 
 load_dotenv()
 BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
@@ -15,6 +15,7 @@ from battle.utils import BattlePokemon
 from battle.movetree import run_battle_logic
 from battle.trainer_bot import BattleBot
 from battle.trainerbot import ROSTER_MAP
+from dataclasses import asdict
 
 # 페이지 설정
 st.set_page_config(
@@ -51,44 +52,7 @@ def start_custom_battle(player_team_data, leader_name="웅이"):
         st.session_state.battle_player = player_party[0] # 선봉 포켓몬
 
         # 2. 봇 파티 구성 (관장의 전체 엔트리 중 랜덤 3마리 선택)
-        leader_roster = ROSTER_MAP.get(leader_name, [])
-        bot_team = random.sample(leader_roster, min(3, len(leader_roster)))
-        bot_party = []
-        
-        for bot_entry in bot_team:
-            b_data = db.get_pokemon_data(bot_entry['id'])
-            b_stats = get_stats(b_data['stats'])
-            
-            # 관장 포켓몬 보정 로직
-            if leader_name == "지우" and bot_entry['name'] == "피카츄":
-                # 지우의 피카츄: 모든 능력치 2배 (전기구슬 효과)
-                for stat in b_stats:
-                    b_stats[stat] *= 2
-            else:
-                # 그 외 모든 관장의 포켓몬: 모든 능력치 1.1배 보정 (난이도 향상)
-                for stat in b_stats:
-                    b_stats[stat] = int(b_stats[stat] * 1.1)
-            
-            # 봇은 관장 엔트리에 지정된 기술만 사용
-            bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
-            # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
-            if not bot_moves:
-                bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
-            elif len(bot_moves) > 4:
-                bot_moves = random.sample(bot_moves, 4)
-            
-            bot_obj = BattlePokemon(
-                id=b_data['id'],
-                name=b_data['name'],
-                image_url=b_data['image_url'],
-                types=b_data['types'],
-                type_names=b_data['type_names'],
-                stats=b_stats,
-                moves=bot_moves,
-                max_hp=b_stats['hp'],
-                current_hp=b_stats['hp']
-            )
-            bot_party.append(bot_obj)
+        bot_party = BattleBot.initialize(leader_name)
 
         st.session_state.bot_party = bot_party
         st.session_state.battle_bot = bot_party[0] # 관장 봇의 선봉 포켓몬
