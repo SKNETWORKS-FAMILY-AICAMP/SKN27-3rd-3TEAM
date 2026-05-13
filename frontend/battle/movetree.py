@@ -209,7 +209,7 @@ class MoveProcessor:
         
         if self.category == "switch":
             if self.move.get("is_bot"):
-                self.log(f"{st.session_state.leader_name}은 {attacker_name}으(로) 교체했다!")
+                self.log(f"{st.session_state.leader_name}은(는) {attacker_name}으(로) 교체했다!")
             else:
                 self.log(f"가라! {attacker_name}!")
             return self.messages
