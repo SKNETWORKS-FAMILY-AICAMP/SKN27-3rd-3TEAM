@@ -44,6 +44,20 @@ def update_schema():
         except Exception as e:
             print(f"Skipping github_id type update: {e}")
 
+        # Add created_at to team_build_logs
+        try:
+            with engine.begin() as transaction_conn:
+                exists = transaction_conn.execute(text(
+                    "SELECT 1 FROM information_schema.columns "
+                    "WHERE table_name='team_build_logs' AND column_name='created_at'"
+                )).fetchone()
+                if not exists:
+                    transaction_conn.execute(text(
+                        "ALTER TABLE team_build_logs ADD COLUMN created_at TIMESTAMP DEFAULT NOW()"
+                    ))
+        except Exception as e:
+            print(f"Skipping created_at addition: {e}")
+
 try:
     update_schema()
 except Exception as e:

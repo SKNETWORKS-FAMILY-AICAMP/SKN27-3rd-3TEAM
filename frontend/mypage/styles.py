@@ -353,6 +353,111 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     0%, 100% { opacity: 0.85; }
     50%       { opacity: 1; }
 }
+
+/* ── Team Builder History (Horizontal Cards) ── */
+.card-history { border-top: 6px solid #a29bfe; }
+.mp-hist-card-h {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px) saturate(150%);
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
+    border-radius: 18px;
+    padding: 22px 28px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    margin-bottom: 8px;
+    gap: 0;
+    min-height: 110px;
+}
+.mp-hist-team-block {
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mp-hist-rec-block {
+    flex: 0 0 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mp-hist-text-block {
+    flex: 1;
+    min-width: 0;
+    padding: 0 4px;
+}
+.mp-hist-sep {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 22px;
+    flex-shrink: 0;
+}
+.mp-hist-date {
+    font-size: 0.63rem;
+    font-weight: 700;
+    color: #a0aec0;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.mp-hist-label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+}
+.mp-hist-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-wrap: wrap;
+}
+.mp-hist-pkmn-img {
+    width: 40px; height: 40px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+}
+.mp-hist-pkmn-rec {
+    width: 36px; height: 36px;
+    opacity: 0.9;
+}
+.mp-hist-conclusion-h {
+    font-size: 0.8rem;
+    color: #cbd5e0;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: keep-all;
+}
+/* 히스토리 결과 보기 버튼 */
+.stButton > button {
+    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.3px !important;
+    transition: opacity 0.2s, transform 0.2s !important;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.35) !important;
+}
+.stButton > button:hover {
+    opacity: 0.88 !important;
+    transform: translateY(-1px) !important;
+}
+.stButton > button:disabled {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #718096 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    opacity: 0.5 !important;
+}
 </style>
 """
 

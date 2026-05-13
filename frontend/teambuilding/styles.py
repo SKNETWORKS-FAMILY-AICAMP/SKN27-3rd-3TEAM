@@ -185,11 +185,6 @@ def apply_page_style() -> None:
             width: 100%;
             cursor: pointer;
         }
-        .team-type-button:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.2);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
         .team-type-button span {
             color: #ffffff;
             font-size: 0.85rem;
@@ -288,15 +283,8 @@ def apply_page_style() -> None:
         div[data-testid="stColumn"]:has(.team-filter-reset-button) button div {
             color: #1a1a1a !important;
         }
-        div[data-testid="stColumn"]:has(.team-filter-search-button) button:hover {
-            background: #ff4d4d !important;
-            transform: skew(-20deg) translateY(-2px) !important;
-            box-shadow: -8px 8px 0 rgba(227, 53, 53, 0.4) !important;
-        }
         div[data-testid="stColumn"]:has(.team-filter-reset-button) button:hover {
             background: #f0f0f0 !important;
-            transform: skew(-20deg) translateY(-2px) !important;
-            box-shadow: -8px 8px 0 rgba(0, 0, 0, 0.3) !important;
         }
         /* ── Team Side Panel ────────────────────────── */
         .ts-panel {
@@ -440,29 +428,18 @@ def apply_page_style() -> None:
             width: 100% !important;
         }
         .element-container:has(.tb-act-reset) + .element-container button {
-            background: rgba(255,255,255,0.08) !important;
-            color: #aaa !important;
-            border: 1px solid rgba(255,255,255,0.12) !important;
-        }
-        .element-container:has(.tb-act-reset) + .element-container button:hover {
-            background: rgba(255,255,255,0.14) !important;
-            color: #fff !important;
+            background: #2a2a2a !important;
+            color: #c0c0c0 !important;
+            border: 1px solid rgba(255,255,255,0.18) !important;
         }
         .element-container:has(.tb-act-analyze) + .element-container button {
-            background: linear-gradient(135deg, #2a75bb 0%, #FFCB05 100%) !important;
+            background: #E33535 !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 18px rgba(42,117,187,0.4) !important;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.35) !important;
-        }
-        .element-container:has(.tb-act-analyze) + .element-container button:hover:not(:disabled) {
-            filter: brightness(1.12) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 24px rgba(42,117,187,0.5) !important;
+            box-shadow: 0 4px 14px rgba(227,53,53,0.3) !important;
         }
         .element-container:has(.tb-act-analyze) + .element-container button:disabled {
             opacity: 0.35 !important;
             cursor: not-allowed !important;
-            transform: none !important;
             box-shadow: none !important;
         }
 
@@ -513,23 +490,19 @@ def apply_page_style() -> None:
             white-space: nowrap;
         }
         .pokemon-card {
-            min-height: 250px;
-            padding: 16px;
+            min-height: 220px;
+            padding: 12px;
             border: 1px solid #e5e7eb;
-            border-radius: 24px;
+            border-radius: 20px;
             background: #ffffff;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
             display: flex;
             flex-direction: column;
             text-align: left;
-            transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.12);
-            margin-bottom: 8px;
+            transition: all 0.25s ease;
+            margin-bottom: 6px;
             overflow: hidden;
-        }
-        .team-picker-card:hover {
-            transform: translateY(-8px);
-            border-color: #d1d5db;
-            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+            position: relative;
         }
         .selected-card {
             border: 3px solid #2f80ed;
@@ -537,23 +510,20 @@ def apply_page_style() -> None:
         }
         .pokemon-image-wrapper {
             position: relative;
-            height: 152px;
+            height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #f9fafb;
-            border-radius: 18px;
-            margin-bottom: 12px;
+            border-radius: 14px;
+            margin-bottom: 8px;
         }
         .pokemon-card-image {
-            width: 132px;
-            height: 132px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
-            filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.12));
+            filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.1));
             transition: transform 0.28s ease;
-        }
-        .team-picker-card:hover .pokemon-card-image {
-            transform: scale(1.08);
         }
         .pokemon-info {
             width: 100%;
@@ -567,10 +537,10 @@ def apply_page_style() -> None:
         }
         .pokemon-card-title {
             width: 100%;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 900;
             color: #111827;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -585,12 +555,12 @@ def apply_page_style() -> None:
         }
         .type-badge {
             flex: 1;
-            min-width: 58px;
-            padding: 6px 8px;
-            border-radius: 7px;
+            min-width: 45px;
+            padding: 4px 6px;
+            border-radius: 6px;
             background: #e0f2fe;
             color: #075985;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 900;
             text-align: center;
             border: 1px solid #bae6fd;
@@ -600,27 +570,58 @@ def apply_page_style() -> None:
             font-size: 14px;
             font-weight: 800;
         }
-        .team-card-button {
-            margin: 0 0 14px;
+        /* ── Pokemon card — 투명 버튼 오버레이 (카드 클릭 = 선택/해제) ── */
+        .pokemon-card-marker {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
         }
-        .team-card-button button {
-            min-height: 42px !important;
-            border-radius: 10px !important;
-            font-size: 16px !important;
-            font-weight: 800 !important;
-            background: #ffffff !important;
-            border: 1px solid #d1d5db !important;
-            color: #111827 !important;
+        div[data-testid="stColumn"]:has(.pokemon-card-marker) [data-testid="stVerticalBlock"] {
+            position: relative;
         }
-        .team-card-button button:hover {
-            border-color: #2563eb !important;
-            color: #2563eb !important;
-            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12) !important;
+        /* element-container 전체를 카드 위에 덮도록 절대위치 */
+        div[data-testid="stColumn"]:has(.pokemon-card-marker) .element-container:has(button) {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: 20 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
-        .team-card-button.selected-action button {
-            border-color: #2563eb !important;
+        /* stButton div도 100% 채우기 */
+        div[data-testid="stColumn"]:has(.pokemon-card-marker) [data-testid="stBaseButton-secondary"],
+        div[data-testid="stColumn"]:has(.pokemon-card-marker) .element-container:has(button) > div {
+            width: 100% !important;
+            height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        /* 버튼 자체를 절대위치로 카드 전체 커버 */
+        div[data-testid="stColumn"]:has(.pokemon-card-marker) button {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: unset !important;
+            opacity: 0 !important;
+            cursor: pointer !important;
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        .pokemon-card {
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .selected-card {
+            border: 3px solid #3b82f6 !important;
             background: #eff6ff !important;
-            color: #1d4ed8 !important;
         }
         .analysis-summary-card {
             margin: 16px 0 18px 0;
@@ -1018,15 +1019,115 @@ def apply_page_style() -> None:
             gap: 6px;
             margin-top: 10px;
         }
-        .missing-image {
-            width: 100%;
-            height: 112px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9aa4b2;
-            background: #eef3f8;
-            border-radius: 12px;
+        /* ── Streamlit Widget Overrides (Perfect Sync with Pokedex) ── */
+        
+        /* 1. 필터 라벨 공통 스타일 (빨간 그림자 효과 포함) */
+        .stSelectbox label p, .stSlider label p, .stTextInput label p,
+        [data-testid="stWidgetLabel"] p, .team-filter-label {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: 1.1rem !important;
+            font-weight: 900 !important;
+            color: #ffffff !important;
+            letter-spacing: 1px !important;
+            text-shadow: 0 2px 6px rgba(227, 53, 53, 0.4) !important;
+            margin-bottom: 12px !important;
+        }
+
+        /* 2. 검색창 (Text Input) - 도감과 100% 일치 */
+        [data-testid="stTextInput"] [data-baseweb="input"] {
+            background: #1e1e1e !important;
+            border: 2px solid #444 !important;
+            border-radius: 12px !important;
+            min-height: 64px !important;
+        }
+        [data-testid="stTextInput"] input {
+            color: #e0e0e0 !important;
+            font-size: 1.25rem !important;
+            padding: 22px 28px !important;
+        }
+
+        /* 3. 특성 선택창 (Selectbox) - 수직 중앙 정렬 정밀 수정 */
+        [data-testid="stSelectbox"] > div > div {
+            background: #1e1e1e !important;
+            border: 2px solid #444 !important;
+            border-radius: 12px !important;
+            min-height: 42px !important; /* 비율에 맞춘 42px */
+            height: 42px !important;
+        }
+        [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+            padding: 0 12px !important; /* 내부 패딩 초기화 */
+            min-height: 42px !important;
+            height: 42px !important;
+            display: flex !important;
+            align-items: center !important; /* 텍스트 수직 중앙 정렬 */
+        }
+        [data-testid="stSelectbox"] span {
+            color: #e0e0e0 !important;
+            font-size: 1.05rem !important;
+            line-height: 42px !important; /* 줄높이로 한 번 더 중앙 고정 */
+        }
+        /* 화살표 아이콘 위치 고정 */
+        [data-testid="stSelectbox"] svg {
+            fill: #888 !important;
+        }
+        [data-testid="stSelectbox"] [data-testid="stSelectboxArrow"] {
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+        
+        /* 4. 지방 버튼 - 도감과 100% 일치 */
+        .team-region-button {
+            min-height: 36px !important;
+            font-size: 0.78rem !important;
+            padding: 7px 4px !important;
+            background: #1e1e1e !important;
+            border: 1.5px solid #444 !important;
+            border-radius: 8px !important;
+            color: #aaa !important;
+            font-weight: 700 !important;
+        }
+        .region-active {
+            background: #E33535 !important;
+            border-color: #E33535 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(227, 53, 53, 0.4) !important;
+        }
+
+        /* 5. 타입 버튼 - 도감과 100% 일치 */
+        .team-type-button {
+            min-height: 48px !important;
+            padding: 8px 12px !important;
+            border-radius: 12px !important;
+        }
+        .team-type-button span {
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+        }
+
+        /* 6. 슬라이더 - 도감과 100% 일치 */
+        [data-testid="stSlider"] [data-testid="stSliderThumbValue"] {
+            color: #e0e0e0 !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
+        }
+        [data-testid="stTickBar"] div {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
+
+        /* 7. 하단 액션 버튼 (검색/초기화) - 도감 사선 스타일 적용 */
+        .team-filter-search-button + div button,
+        .team-filter-reset-button + div button {
+            transform: skew(-20deg) !important;
+            height: 50px !important;
+            border-radius: 0 !important;
+            border: none !important;
+        }
+        .team-filter-search-button + div button p,
+        .team-filter-reset-button + div button p {
+            transform: skew(20deg) !important;
+            font-size: 1.1rem !important;
+            font-weight: 900 !important;
         }
         </style>
         """,

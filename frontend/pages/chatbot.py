@@ -263,9 +263,8 @@ if not st.session_state.chat_history:
 # ── Avatars ───────────────────────────────────────────────────────────────
 
 def get_base64_img(file_name: str) -> str:
-    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    subfolders = ["main_background", "main_character", ""]
+    subfolders = ["chatbot"]
     
     for sub in subfolders:
         if sub:
@@ -280,10 +279,10 @@ def get_base64_img(file_name: str) -> str:
 
 USER_AVATAR = (
     _user_info.get("avatar_url")
-    or get_base64_img("지우.png")
+    or get_base64_img("default.png")
     or "https://cdn-icons-png.flaticon.com/512/188/188987.png"
 )
-OAK_AVATAR = get_base64_img("Obak_chat.png")
+OAK_AVATAR = get_base64_img("ai_default.png")
 
 # ═══════════════════════════════════════════════════════
 # 레이아웃 — 커스텀 사이드바(left) + 채팅(right)

@@ -83,7 +83,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Session state defaults ───────────────────────────────────
 for key, default in [
-    ("pokemon_limit", 2000),
+    ("pokemon_limit", 50),
     ("search_query", ""),
     ("selected_types", []),
     ("region_filter", "전체"),
@@ -118,7 +118,7 @@ def do_reset():
 
 
 def load_more():
-    st.session_state.pokemon_limit += 20
+    st.session_state.pokemon_limit += 50
 
 
 REGION_RANGES = {
@@ -290,6 +290,16 @@ try:
         if not pokemon_list:
             st.warning("검색 결과가 없습니다.")
         else:
+            # 버튼 노출 여부를 결정할 실제 전체 개수 (필터링된 결과의 전체 개수)
+            # 여기서는 API가 반환한 'total'을 우선 사용하거나, 타입 필터 등이 적용된 경우 리스트 길이를 사용
+            if not st.session_state.selected_types:
+                display_total = data.get("total", 0)
+            else:
+                # 타입 필터는 클라이언트 사이드에서 하므로 전체 리스트(limit 없이)를 가져와야 정확하지만, 
+                # 현재 구조상 API의 total을 믿거나 더 큰 값을 잡아야 버튼이 나옴.
+                # 일단 넉넉하게 잡아서 버튼이 나오게 함.
+                display_total = 1025 
+
             grid_html = '<div class="pokemon-grid">'
             for p in pokemon_list:
                 p_types_raw = sorted(p.get("types", []), key=lambda x: x.get("slot", 1))
@@ -305,10 +315,111 @@ try:
             grid_html += "</div>"
             st.markdown(grid_html, unsafe_allow_html=True)
 
-            if total_count > st.session_state.pokemon_limit:
-                st.markdown('<div class="load-more-container">', unsafe_allow_html=True)
-                st.button("더 보기", on_click=load_more)
-                st.markdown("</div>", unsafe_allow_html=True)
+            if display_total > st.session_state.pokemon_limit:
+                # 버튼을 확실하게 숨기기 위한 마커와 스타일
+                st.markdown("""
+                    <style>
+                        /* 마커 바로 다음에 오는 스트림릿 버튼 감추기 */
+                        .load-more-marker + div[data-testid="stButton"] {
+                            display: none !important;
+                        }
+                        /* 혹시 모르니 투명도와 크기까지 조절 */
+                        .load-more-marker + div[data-testid="stButton"] button {
+                            opacity: 0 !important;
+                            height: 0 !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
+                            pointer-events: none !important;
+                        }
+                        
+                        .infinite-loader {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            padding: 40px 0;
+                            gap: 10px;
+                            color: #888;
+                            font-family: 'Inter', sans-serif;
+                        }
+                        .pokeball-loader {
+                            width: 40px;
+                            height: 40px;
+                            border: 3px solid #333;
+                            border-radius: 50%;
+                            position: relative;
+                            background: linear-gradient(to bottom, #EE1515 50%, white 50%);
+                            animation: spin 1s linear infinite;
+                        }
+                        .pokeball-loader::after {
+                            content: '';
+                            position: absolute;
+                            width: 40px;
+                            height: 3px;
+                            background: #333;
+                            top: 50%;
+                            transform: translateY(-50%);
+                        }
+                        .pokeball-loader::before {
+                            content: '';
+                            position: absolute;
+                            width: 10px;
+                            height: 10px;
+                            background: white;
+                            border: 3px solid #333;
+                            border-radius: 50%;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            z-index: 10;
+                        }
+                        @keyframes spin {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                        }
+                    </style>
+                    <div class="load-more-marker"></div>
+                    <div class="infinite-loader">
+                        <div class="pokeball-loader"></div>
+                        <span>포켓몬을 더 불러오고 있어요...</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                if st.button("더 보기", key="btn_load_more", on_click=load_more):
+                    pass
+
+                # 무한 스크롤 스크립트: 숨겨진 버튼을 자동으로 클릭
+                st.components.v1.html("""
+                    <script>
+                        function findAndClick() {
+                            const buttons = window.parent.document.querySelectorAll('button');
+                            for (const btn of buttons) {
+                                if (btn.textContent.includes("더 보기")) {
+                                    // 클릭 전에 한 번 더 숨김 확인 (보장용)
+                                    btn.parentElement.style.display = 'none';
+                                    btn.click();
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    findAndClick();
+                                }
+                            });
+                        }, { threshold: 0.1 });
+
+                        const interval = setInterval(() => {
+                            const marker = window.parent.document.querySelector('.load-more-marker');
+                            if (marker) {
+                                observer.observe(marker);
+                                clearInterval(interval);
+                            }
+                        }, 500);
+                    </script>
+                """, height=0)
     else:
         st.error(f"백엔드 서버와 통신할 수 없습니다. (Status: {response.status_code})")
 

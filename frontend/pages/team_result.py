@@ -12,8 +12,9 @@ import streamlit as st
 
 st.set_page_config(
     page_title="팀 분석 결과",
-    page_icon="⚔️",
+    page_icon="https://pokemonkorea.co.kr/img/_con.ico",
     layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

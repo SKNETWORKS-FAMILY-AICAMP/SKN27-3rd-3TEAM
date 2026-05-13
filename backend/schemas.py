@@ -167,8 +167,19 @@ class TeamBuildLogCreate(BaseModel):
 
 
 class TeamBuildLogResponse(TeamBuildLogCreate):
-    # id는 저장된 팀 빌더 기록 1건을 식별하는 고유 번호입니다.
     id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TeamBuildLogHistory(BaseModel):
+    id: int
+    selected_pokemon_ids: List[int]
+    analysis_conclusion: Optional[str] = None
+    recommended_pokemon_ids: Optional[List[int]] = None
+    recommendation_conclusion: Optional[str] = None
+    analysis_result: Optional[Dict[str, Any]] = None
+    recommendation_result: Optional[Dict[str, Any]] = None
+    created_at: Optional[Any] = None
 
     model_config = ConfigDict(from_attributes=True)
 
