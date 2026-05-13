@@ -340,7 +340,7 @@ def show():
             bot_placeholder = st.empty()
             
             with player_placeholder:
-                render_pokemon_status("PLAYER", player)
+                render_pokemon_status("PLAYER", player, reveal_details=True)
             with bot_placeholder:
                 render_pokemon_status("LLM BOT", bot, reveal_details=False)
             
