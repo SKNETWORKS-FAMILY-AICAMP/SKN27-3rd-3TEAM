@@ -3,17 +3,12 @@ import base64
 import os
 
 def get_base64_img(file_name):
-    # 도커 컨테이너 내부 경로(/app)와 로컬 경로를 모두 고려한 경로 탐색
-    # detail_styles.py 위치: /app/pages/style/detail_styles.py
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 여러 가능한 경로 후보들 (img/bg 폴더 찾기)
     possible_paths = [
-        os.path.join(current_dir, "..", "..", "img", "bg", file_name),  # /app/img/bg/
-        os.path.join(os.getcwd(), "frontend", "img", "bg", file_name), # 로컬 실행 환경
-        os.path.join(os.getcwd(), "img", "bg", file_name),             # 도커 실행 환경
+        os.path.join(current_dir, "..", "img", "bg", file_name),
+        os.path.join(os.getcwd(), "frontend", "img", "bg", file_name),
+        os.path.join(os.getcwd(), "img", "bg", file_name),
     ]
-    
     for path in possible_paths:
         if os.path.exists(path):
             with open(path, "rb") as f:
@@ -22,7 +17,6 @@ def get_base64_img(file_name):
     return ""
 
 def get_detail_styles(main_type="노말"):
-    # 영어 이름과 한글 이름 매핑 (파일명이 어떤 것이든 대응할 수 있도록)
     type_map = {
         "fire": "불꽃", "water": "물", "grass": "풀", "electric": "전기",
         "ice": "얼음", "fighting": "격투", "poison": "독", "ground": "땅",
@@ -30,32 +24,26 @@ def get_detail_styles(main_type="노말"):
         "ghost": "고스트", "dragon": "드래곤", "dark": "악", "steel": "강철",
         "fairy": "페어리", "normal": "노말"
     }
-    
-    # 1. 원본 타입명으로 시도 (예: bg_불꽃.png 또는 bg_fire.png)
+
     bg_data = get_base64_img(f"bg_{main_type}.png")
-    
-    # 2. 실패 시 매핑된 이름으로 시도
+
     if not bg_data:
-        # 영어 -> 한글 변환 시도
         if main_type.lower() in type_map:
             bg_data = get_base64_img(f"bg_{type_map[main_type.lower()]}.png")
-        # 한글 -> 영어 변환 시도 (역매핑)
         else:
             rev_map = {v: k for k, v in type_map.items()}
             if main_type in rev_map:
                 bg_data = get_base64_img(f"bg_{rev_map[main_type]}.png")
 
-    # 타입별 대표 색상 맵핑
     TYPE_COLORS = {
-        "불꽃": "rgba(255, 68, 34, 0.15)", "물": "rgba(51, 153, 255, 0.15)", "풀": "rgba(119, 204, 85, 0.15)", 
-        "전기": "rgba(255, 204, 51, 0.15)", "얼음": "rgba(102, 204, 255, 0.15)", "격투": "rgba(187, 85, 68, 0.15)", 
-        "독": "rgba(170, 85, 153, 0.15)", "땅": "rgba(221, 187, 85, 0.15)", "비행": "rgba(136, 153, 255, 0.15)", 
-        "에스퍼": "rgba(255, 85, 153, 0.15)", "벌레": "rgba(170, 187, 34, 0.15)", "바위": "rgba(187, 170, 102, 0.15)", 
-        "고스트": "rgba(102, 102, 187, 0.15)", "드래곤": "rgba(119, 102, 238, 0.15)", "악": "rgba(119, 85, 68, 0.15)", 
+        "불꽃": "rgba(255, 68, 34, 0.15)", "물": "rgba(51, 153, 255, 0.15)", "풀": "rgba(119, 204, 85, 0.15)",
+        "전기": "rgba(255, 204, 51, 0.15)", "얼음": "rgba(102, 204, 255, 0.15)", "격투": "rgba(187, 85, 68, 0.15)",
+        "독": "rgba(170, 85, 153, 0.15)", "땅": "rgba(221, 187, 85, 0.15)", "비행": "rgba(136, 153, 255, 0.15)",
+        "에스퍼": "rgba(255, 85, 153, 0.15)", "벌레": "rgba(170, 187, 34, 0.15)", "바위": "rgba(187, 170, 102, 0.15)",
+        "고스트": "rgba(102, 102, 187, 0.15)", "드래곤": "rgba(119, 102, 238, 0.15)", "악": "rgba(119, 85, 68, 0.15)",
         "강철": "rgba(170, 170, 187, 0.15)", "페어리": "rgba(238, 153, 238, 0.15)", "노말": "rgba(170, 170, 153, 0.15)"
     }
-    
-    # 타입별 테두리/포인트 색상
+
     TYPE_POINTS = {
         "불꽃": "#ff4422", "물": "#3399ff", "풀": "#77cc55", "전기": "#ffcc33",
         "얼음": "#66ccff", "격투": "#bb5544", "독": "#aa5599", "땅": "#ddbb55",
@@ -67,9 +55,7 @@ def get_detail_styles(main_type="노말"):
     type_aura = TYPE_COLORS.get(main_type, "rgba(255, 255, 255, 0.05)")
     type_point = TYPE_POINTS.get(main_type, "#ffffff")
 
-    # 배경 스타일 설정
     if bg_data:
-        # linear-gradient 투명도를 0.75에서 0.3으로 낮춰 이미지를 더 선명하게 표시
         bg_style = f"""
             background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('{bg_data}') !important;
             background-size: cover !important;
@@ -78,7 +64,6 @@ def get_detail_styles(main_type="노말"):
             background-repeat: no-repeat !important;
         """
     else:
-        # 기본 배경
         bg_style = """
             background-color: #050505 !important;
         """
@@ -179,9 +164,9 @@ footer {{ visibility: hidden; }}
     animation: float 6s ease-in-out infinite;
 }}
 
-@keyframes float {{ 
-    0%, 100% {{ transform: translateY(0); }} 
-    50% {{ transform: translateY(-15px); }} 
+@keyframes float {{
+    0%, 100% {{ transform: translateY(0); }}
+    50% {{ transform: translateY(-15px); }}
 }}
 
 .pk-card-right {{
@@ -190,7 +175,7 @@ footer {{ visibility: hidden; }}
     background: rgba(0, 0, 0, 0.2);
 }}
 .pk-id   {{ color: var(--poke-yellow); font-size: 1.1rem; font-weight: 800; font-family: 'Outfit', sans-serif; }}
-.pk-name {{ 
+.pk-name {{
     font-family: 'Outfit', sans-serif;
     font-size: 3.2rem; font-weight: 900; color: #fff; margin: 0; line-height: 1;
     text-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -209,9 +194,9 @@ footer {{ visibility: hidden; }}
     justify-content: center; font-size: 11px; color: #000; flex-shrink: 0; font-weight: 900;
 }}
 
-.pk-desc {{ 
-    color: rgba(255, 255, 255, 0.8); 
-    font-size: 1.05rem; line-height: 1.8; 
+.pk-desc {{
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem; line-height: 1.8;
     font-weight: 400;
 }}
 
@@ -255,8 +240,8 @@ footer {{ visibility: hidden; }}
     width: 100%; border: none; cursor: pointer;
     text-transform: uppercase; letter-spacing: 1px;
 }}
-.back-btn:hover {{ 
-    transform: translateY(-3px); 
+.back-btn:hover {{
+    transform: translateY(-3px);
     box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 30px var(--type-aura);
     filter: brightness(1.1);
 }}
@@ -299,7 +284,7 @@ footer {{ visibility: hidden; }}
     position: relative; z-index: 1;
 }}
 .evo-card, .form-card {{
-    text-align: center; 
+    text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(5px);
@@ -318,14 +303,14 @@ footer {{ visibility: hidden; }}
     mask-composite: exclude;
     pointer-events: none;
 }}
-.evo-card:hover, .form-card:hover {{ 
+.evo-card:hover, .form-card:hover {{
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-8px) scale(1.05);
     border-color: var(--type-point);
     box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px var(--type-aura);
 }}
-.evo-img, .form-img {{ 
-    width: 135px; height: 135px; object-fit: contain; 
+.evo-img, .form-img {{
+    width: 135px; height: 135px; object-fit: contain;
     filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
 }}
 .evo-arrow {{ color: var(--type-point); font-size: 24px; opacity: 0.6; }}
@@ -381,10 +366,10 @@ footer {{ visibility: hidden; }}
     display: inline-block;
 }}
 .variety-btn:visited {{ color: #fff !important; }}
-.variety-btn:hover {{ 
-    background: var(--type-aura); 
+.variety-btn:hover {{
+    background: var(--type-aura);
     border-color: var(--type-point);
-    color: #fff !important; 
+    color: #fff !important;
     transform: translateY(-2px);
 }}
 .variety-btn.active {{
@@ -394,13 +379,13 @@ footer {{ visibility: hidden; }}
 }}
 
 .evo-card.active, .form-card.active {{ border: 2px solid var(--type-point); background: var(--type-aura); }}
-.form-name {{ 
-    font-weight: 800; font-size: 0.98rem; color: #fff; 
+.form-name {{
+    font-weight: 800; font-size: 0.98rem; color: #fff;
     margin-top: 10px; line-height: 1.2; font-family: 'Outfit', sans-serif;
     word-break: keep-all; overflow-wrap: break-word;
     max-width: 100%;
 }}
-.form-label {{ 
+.form-label {{
     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
     background: var(--type-point); color: #fff; font-size: 0.7rem; padding: 3px 12px;
     border-radius: 12px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.3);

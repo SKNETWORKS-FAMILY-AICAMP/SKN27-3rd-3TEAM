@@ -11,7 +11,7 @@ if root_dir not in sys.path:
     sys.path.append(root_dir)
 
 from utils.ui import inject_common_ui
-from pages.style.detail_styles import get_detail_styles
+from pokedex.detail_styles import get_detail_styles
 
 st.set_page_config(
     page_title="포켓몬 비공식 사이트",
