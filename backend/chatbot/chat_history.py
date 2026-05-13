@@ -33,6 +33,7 @@ def init_tables() -> None:
                     id         SERIAL PRIMARY KEY,
                     title      TEXT        NOT NULL,
                     model      TEXT        NOT NULL,
+                    user_id    TEXT,
                     created_at TIMESTAMP   DEFAULT NOW()
                 );
 
@@ -45,15 +46,20 @@ def init_tables() -> None:
                     created_at TIMESTAMP DEFAULT NOW()
                 );
             """)
+            # 기존 테이블에 user_id 컬럼이 없으면 추가
+            cur.execute("""
+                ALTER TABLE chat_sessions
+                ADD COLUMN IF NOT EXISTS user_id TEXT;
+            """)
         conn.commit()
 
 
-def create_session(title: str, model: str) -> int:
+def create_session(title: str, model: str, user_id: str | None = None) -> int:
     with _connect() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO chat_sessions (title, model) VALUES (%s, %s) RETURNING id",
-                (title[:60], model),
+                "INSERT INTO chat_sessions (title, model, user_id) VALUES (%s, %s, %s) RETURNING id",
+                (title[:60], model, user_id),
             )
             session_id = cur.fetchone()[0]
         conn.commit()
@@ -70,15 +76,25 @@ def save_message(session_id: int, role: str, content: str, used_tools: list | No
         conn.commit()
 
 
-def load_sessions(limit: int = 60) -> list[dict]:
+def load_sessions(user_id: str | None = None, limit: int = 60) -> list[dict]:
     with _connect() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
-                SELECT id, title, model, created_at
-                FROM chat_sessions
-                ORDER BY created_at DESC
-                LIMIT %s
-            """, (limit,))
+            if user_id:
+                cur.execute("""
+                    SELECT id, title, model, created_at
+                    FROM chat_sessions
+                    WHERE user_id = %s
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                """, (user_id, limit))
+            else:
+                cur.execute("""
+                    SELECT id, title, model, created_at
+                    FROM chat_sessions
+                    WHERE user_id IS NULL
+                    ORDER BY created_at DESC
+                    LIMIT %s
+                """, (limit,))
             return [dict(r) for r in cur.fetchall()]
 
 

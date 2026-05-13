@@ -247,7 +247,7 @@ auth_url = f"https://github.com/login/oauth/authorize?{urlencode(params)}"
 
    | 필드 | 값 |
    |---|---|
-   | Application name | Pokemon Battle (또는 원하는 이름) |
+   | Application name | Pokemon (또는 원하는 이름) |
    | Homepage URL | `http://localhost:8501` |
    | Authorization callback URL | `http://localhost:8501/login` |
 
@@ -271,25 +271,12 @@ BACKEND_URL=http://localhost:8000
 
 ### Step 3 — 실행
 
-**Docker (권장)**
+**Docker**
 
 ```bash
 docker-compose up
 ```
 
-**로컬 개발**
-
-```bash
-# 백엔드
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-
-# 프론트엔드 (별도 터미널)
-cd frontend
-pip install -r requirements.txt
-streamlit run app.py --server.port 8501 --server.address 0.0.0.0
-```
 
 ### Step 4 — 로그인 테스트
 

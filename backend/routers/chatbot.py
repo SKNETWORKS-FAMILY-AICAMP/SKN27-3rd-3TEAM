@@ -1,5 +1,6 @@
 import asyncio
 from typing import Optional
+from fastapi import Query
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -25,6 +26,7 @@ class ChatRequest(BaseModel):
     history: list[dict] = []
     model: str = DEFAULT_MODEL
     session_id: Optional[int] = None
+    user_id: Optional[str] = None
 
 class ChatResponse(BaseModel):
     answer: str
@@ -46,7 +48,7 @@ async def chat(req: ChatRequest):
 
     session_id = req.session_id
     if session_id is None:
-        session_id = create_session(req.query, req.model)
+        session_id = create_session(req.query, req.model, user_id=req.user_id)
 
     save_message(session_id, "user", req.query)
 
@@ -64,8 +66,8 @@ async def chat(req: ChatRequest):
 
 
 @router.get("/sessions")
-def get_sessions():
-    return load_sessions()
+def get_sessions(user_id: Optional[str] = Query(default=None)):
+    return load_sessions(user_id=user_id)
 
 
 @router.get("/sessions/{session_id}/messages")
