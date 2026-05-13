@@ -38,6 +38,7 @@ from langchain_community.tools import TavilySearchResults
 from langchain_community.vectorstores import PGVector
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
+from langchain_community.document_loaders import JSONLoader
 
 
 # Neo4j 툴
@@ -75,26 +76,32 @@ FLAVOR_TOP_N = 3
 
 
 # ══════════════════════════════════════════════════════════
-# [NEW] PGVector VectorStore 인스턴스
-# 기존: psycopg2로 ft.embedding <=> 직접 쿼리
-# 변경: PGVector 클래스가 내부적으로 동일한 쿼리를 추상화
-#       DB를 Chroma·Elasticsearch 등으로 교체 시 이 한 줄만 변경
+# PGVector VectorStore 인스턴스
 # ══════════════════════════════════════════════════════════
 
 _vectorstore = PGVector(
     connection_string=DB_CONN,
     embedding_function=embeddings,
-    collection_name="flavor_text",  # flavor_text 테이블과 연결
+    collection_name="flavor_text",
 )
 
+# 컬렉션이 비어있을 때만 JSON에서 문서를 로드해 임베딩 저장 (중복 방지)
+_existing = _vectorstore.similarity_search("씨앗", k=1)
+if not _existing:
+    _file_path = "database/common/data/processed/flavor_text.json"
+    _loader = JSONLoader(
+        file_path=_file_path,
+        jq_schema=r"\(.species_id): \(.version_name) \(.content)",
+        text_content=True,
+    )
+    _vectorstore.add_documents(_loader.load())
+
 # MMR Retriever — 유사도 + 다양성 동시 고려
-# 기존: 유사도만 기준으로 상위 K개 반환 → 비슷한 문서 중복 가능
-# 변경: MMR 으로 다양한 문서 후보 확보 → Re-ranking 품질 향상
 _vector_retriever = _vectorstore.as_retriever(
     search_type="mmr",
     search_kwargs={
         "k":       10,
-        "fetch_k": 20,  # MMR 후보풀 (40개 중 20개 선별)
+        "fetch_k": 20,
     }
 )
 
@@ -201,7 +208,6 @@ def search_flavor_text(query: str) -> str:
     if not docs:
         return "검색 결과가 없습니다."
 
-    # Re-ranking 제거 — VectorStore 순서 그대로 사용
     top = [doc.page_content for doc in docs[:FLAVOR_TOP_N]]
 
     return "✅ 관련 도감 설명:\n\n" + "\n\n---\n\n".join(top)
@@ -226,8 +232,7 @@ def web_search(query: str) -> str:
 # ══════════════════════════════════════════════════════════
 
 tools      = [search_pokemon_db, search_flavor_text,
-              search_evolution_chain, search_type_relations,
-              web_search]
+              search_evolution_chain, search_type_relations,]
 _tool_node = ToolNode(tools)
 
 MAX_TOOL_CALLS = 2

@@ -34,18 +34,6 @@ def ingest_embeddings():
     conn = psycopg2.connect(DB_CONN)
     cur  = conn.cursor()
 
-    # ── BM25용 GIN 인덱스 (없을 때만 생성) ─────────────────────
-    print("BM25 GIN 인덱스 확인/생성 중...")
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_flavor_text_fts
-        ON flavor_text USING GIN (to_tsvector('simple', content));
-    """)
-    cur.execute("""
-        CREATE INDEX IF NOT EXISTS idx_pokemon_knowledge_fts
-        ON pokemon_knowledge USING GIN (to_tsvector('simple', content));
-    """)
-    conn.commit()
-    print("✅ GIN 인덱스 준비 완료")
 
     # ── flavor_text 임베딩 ───────────────────────────────────────
     cur.execute("""
