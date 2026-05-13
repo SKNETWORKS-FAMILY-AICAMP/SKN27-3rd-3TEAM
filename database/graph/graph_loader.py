@@ -383,7 +383,8 @@ def create_move_nodes(conn: Neo4jConnection) -> None:
             "stat_chance": row.get("stat_chance"),
             # 중첩 리스트인 stat_changes는 JSON 문자열로 저장하여 나중에 파싱 가능하게 함
             "stat_changes": json.dumps(row.get("stat_changes", [])),
-            "target": json.dumps(row.get("target", []))
+            "target": row.get("target"),
+            "fixed_damage": row.get("fixed_damage")
         }
         for row in load_json("moves.json")
     ]
@@ -412,7 +413,8 @@ def create_move_nodes(conn: Neo4jConnection) -> None:
         m.min_turns = row.min_turns,
         m.stat_chance = row.stat_chance,
         m.stat_changes = row.stat_changes,
-        m.target = row.target
+        m.target = row.target,
+        m.fixed_damage = row.fixed_damage
     """
     run_batched(conn, query, rows, "Move nodes")
 
