@@ -617,31 +617,75 @@ def render_pokemon_card(pokemon: Dict[str, Any]) -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+_TEAM_ICON_FILENAME_OVERRIDE = {"얼음": "아이스"}
+
+
+@st.cache_data(show_spinner=False)
+def load_team_type_icons() -> dict:
+    """SVG 타입 아이콘을 로컬 파일에서 읽어 dict로 반환합니다."""
+    base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    icon_dir = os.path.join(base_path, "img", "type")
+    icons: dict = {}
+    for ko, _ in TEAM_FILTER_TYPES:
+        filename = _TEAM_ICON_FILENAME_OVERRIDE.get(ko, ko)
+        path = os.path.join(icon_dir, f"{filename}.svg")
+        try:
+            if os.path.exists(path):
+                with open(path, "r", encoding="utf-8") as f:
+                    icons[ko] = f.read()
+            else:
+                icons[ko] = ""
+        except Exception:
+            icons[ko] = ""
+    return icons
+
+
 def ensure_team_filter_state() -> None:
     """팀 빌더 검색 패널에서 사용하는 필터 상태값을 초기화하는 함수입니다."""
 
-    # 기본값:
-    # - Streamlit은 버튼 클릭마다 rerun되므로 필터 선택값을 session_state에 저장해야 유지됩니다.
     defaults = {
-        "team_filter_keyword": "",
+        # 위젯 입력값 (pending)
         "team_filter_region": "전체",
         "team_filter_dex_range": (1, 1025),
-        "team_filter_ability": "전체",
         "team_filter_types": [],
+        # 실제 결과에 반영되는 값 (applied) — 검색 버튼 클릭 시에만 갱신
+        "team_applied_keyword": "",
+        "team_applied_dex_start": 1,
+        "team_applied_dex_end": 1025,
+        "team_applied_ability": "전체",
+        "team_applied_types": [],
+        "team_applied_region": "전체",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
 
+def apply_team_search() -> None:
+    """검색 버튼 클릭 시 위젯 입력값을 applied 상태로 복사합니다."""
+    st.session_state.team_applied_keyword = st.session_state.get("team_input_keyword", "")
+    st.session_state.team_applied_ability = st.session_state.get("team_input_ability", "전체")
+    rng = st.session_state.get("team_filter_dex_range", (1, 1025))
+    st.session_state.team_applied_dex_start = rng[0]
+    st.session_state.team_applied_dex_end = rng[1]
+    st.session_state.team_applied_types = list(st.session_state.team_filter_types)
+    st.session_state.team_applied_region = st.session_state.team_filter_region
+
+
 def reset_team_filters() -> None:
     """검색/특성/지방/도감번호/타입 필터를 도감 초기 상태로 되돌리는 함수입니다."""
 
-    st.session_state.team_filter_keyword = ""
     st.session_state.team_filter_region = "전체"
     st.session_state.team_filter_dex_range = (1, 1025)
-    st.session_state.team_filter_ability = "전체"
     st.session_state.team_filter_types = []
+    st.session_state.team_input_keyword = ""
+    st.session_state.team_input_ability = "전체"
+    st.session_state.team_applied_keyword = ""
+    st.session_state.team_applied_dex_start = 1
+    st.session_state.team_applied_dex_end = 1025
+    st.session_state.team_applied_ability = "전체"
+    st.session_state.team_applied_types = []
+    st.session_state.team_applied_region = "전체"
 
 
 def select_team_region(region_name: str) -> None:
@@ -701,10 +745,11 @@ def pokemon_matches_selected_types(pokemon: Dict[str, Any], selected_types: List
 def filter_team_pokemon_list(pokemon_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """검색 패널의 조건을 모두 적용해 카드 영역에 보여줄 포켓몬 목록을 만드는 함수입니다."""
 
-    keyword = st.session_state.team_filter_keyword.strip().lower()
-    dex_start, dex_end = st.session_state.team_filter_dex_range
-    ability_name = st.session_state.team_filter_ability
-    selected_types = st.session_state.team_filter_types
+    keyword = st.session_state.get("team_applied_keyword", "").strip().lower()
+    dex_start = st.session_state.get("team_applied_dex_start", 1)
+    dex_end = st.session_state.get("team_applied_dex_end", 1025)
+    ability_name = st.session_state.get("team_applied_ability", "전체")
+    selected_types = st.session_state.get("team_applied_types", [])
 
     filtered: List[Dict[str, Any]] = []
     for pokemon in pokemon_list:
@@ -729,8 +774,10 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
 
     ensure_team_filter_state()
     ability_options = get_available_abilities(pokemon_list)
-    if st.session_state.team_filter_ability not in ability_options:
-        st.session_state.team_filter_ability = "전체"
+    if st.session_state.get("team_input_ability", "전체") not in ability_options:
+        st.session_state.team_input_ability = "전체"
+    if st.session_state.get("team_applied_ability", "전체") not in ability_options:
+        st.session_state.team_applied_ability = "전체"
 
     with st.container(border=True):
         st.markdown('<div class="team-filter-panel-marker"></div>', unsafe_allow_html=True)
@@ -748,8 +795,9 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
         with search_col:
             st.text_input(
                 "검색",
-                key="team_filter_keyword",
+                key="team_input_keyword",
                 placeholder="포켓몬 이름 또는 번호를 입력하세요.",
+                value=st.session_state.get("team_input_keyword", ""),
             )
         with dex_col:
             st.slider(
@@ -761,12 +809,13 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
 
         left_col, right_col = st.columns([1, 1.7])
         with left_col:
-            ability_index = ability_options.index(st.session_state.team_filter_ability)
+            cur_ability = st.session_state.get("team_input_ability", "전체")
+            ability_index = ability_options.index(cur_ability) if cur_ability in ability_options else 0
             st.selectbox(
                 "특성",
                 ability_options,
                 index=ability_index,
-                key="team_filter_ability",
+                key="team_input_ability",
             )
 
             st.markdown('<div class="team-filter-label">지방</div>', unsafe_allow_html=True)
@@ -792,6 +841,7 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
                             use_container_width=True,
                         )
 
+        type_icons = load_team_type_icons()
         with right_col:
             st.markdown('<div class="team-filter-label">타입</div>', unsafe_allow_html=True)
             for type_row in (
@@ -807,10 +857,14 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
                             if type_name in st.session_state.team_filter_types
                             else ""
                         )
+                        svg_icon = type_icons.get(type_name, "")
+                        icon_html = f'<div class="type-svg-wrap">{svg_icon}</div>' if svg_icon else ""
                         st.markdown(
                             (
                                 f'<div class="team-type-button type-bg-{type_key} {active_class}">'
-                                f'{escape(type_name)}</div>'
+                                f'{icon_html}'
+                                f'<span>{escape(type_name)}</span>'
+                                f'</div>'
                             ),
                             unsafe_allow_html=True,
                         )
@@ -824,10 +878,10 @@ def render_team_filter_panel(pokemon_list: List[Dict[str, Any]]) -> None:
 
         _, search_button_col, reset_button_col, _ = st.columns([2, 2, 2, 2])
         with search_button_col:
-            # 검색 버튼:
-            # - 필터는 입력 즉시 session_state에 반영되지만, 도감 화면과 동일한 사용감을 주기 위해 버튼을 둡니다.
             st.markdown('<div class="team-filter-search-button"></div>', unsafe_allow_html=True)
-            st.button("검색", key="team_filter_search_action", use_container_width=True)
+            if st.button("검색", key="team_filter_search_action", use_container_width=True):
+                apply_team_search()
+                st.rerun()
         with reset_button_col:
             st.markdown('<div class="team-filter-reset-button"></div>', unsafe_allow_html=True)
             st.button(
@@ -1235,6 +1289,7 @@ def apply_page_style() -> None:
     st.markdown(
         """
         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
         .stApp, .stMarkdown, .stText, .stButton button, .stSelectbox label, .stTextInput label {
             font-size: 18px;
         }
@@ -1279,30 +1334,33 @@ def apply_page_style() -> None:
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 0 0 18px;
+            margin: 0 0 16px;
         }
         .team-filter-title-icon {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(227, 53, 53, 0.55));
+            filter: drop-shadow(0 2px 6px rgba(227, 53, 53, 0.5));
         }
         .team-filter-title span {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
             color: #ffffff;
-            font-size: 32px;
-            font-weight: 950;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 8px rgba(227, 53, 53, 0.36);
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(227, 53, 53, 0.4);
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) label,
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) label p,
         .team-filter-label {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: 1.1rem !important;
+            font-weight: 900 !important;
             color: #ffffff !important;
-            font-size: 20px !important;
-            font-weight: 950 !important;
-            letter-spacing: 0.02em !important;
-            text-shadow: 0 2px 6px rgba(227, 53, 53, 0.35) !important;
-            margin: 12px 0 10px !important;
+            letter-spacing: 1px !important;
+            text-shadow: 0 2px 6px rgba(227, 53, 53, 0.4) !important;
+            margin-bottom: 12px !important;
+            display: block !important;
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stTextInput"] [data-baseweb="input"],
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stTextInput"] [data-baseweb="base-input"],
@@ -1310,19 +1368,23 @@ def apply_page_style() -> None:
             background: #1e1e1e !important;
             border: 2px solid #444 !important;
             border-radius: 12px !important;
-            color: #e5e7eb !important;
+            color: #e0e0e0 !important;
+            min-height: 64px !important;
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stTextInput"] input {
-            color: #e5e7eb !important;
-            font-size: 20px !important;
-            padding: 18px 22px !important;
+            color: #e0e0e0 !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 1.25rem !important;
+            padding: 22px 28px !important;
+            background: transparent !important;
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stTextInput"] input::placeholder {
-            color: #777 !important;
+            color: #666 !important;
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stSelectbox"] span {
-            color: #e5e7eb !important;
-            font-size: 18px !important;
+            color: #e0e0e0 !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 1rem !important;
         }
         [data-testid="stVerticalBlock"]:has(> .element-container .team-filter-panel-marker) [data-testid="stSlider"] div[role="slider"] {
             background-color: transparent !important;
@@ -1378,19 +1440,47 @@ def apply_page_style() -> None:
             border: none !important;
             padding: 0 !important;
         }
-        .team-type-button {
-            min-height: 48px;
-            margin-bottom: 10px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            color: #ffffff;
+        .type-svg-wrap {
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            font-weight: 900;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            flex-shrink: 0;
+        }
+        .team-type-button {
+            min-height: 48px;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
             transition: all 0.2s ease;
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+        }
+        .team-type-button:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        .team-type-button span {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            line-height: 1;
         }
         .team-type-button.type-active {
             outline: 3px solid #ffffff;
@@ -1438,28 +1528,223 @@ def apply_page_style() -> None:
         }
         div[data-testid="stColumn"]:has(.team-filter-search-button) button,
         div[data-testid="stColumn"]:has(.team-filter-reset-button) button {
-            height: 52px !important;
+            height: 50px !important;
             border: none !important;
             border-radius: 0 !important;
-            transform: skew(-18deg) !important;
-            font-size: 20px !important;
-            font-weight: 950 !important;
+            transform: skew(-20deg) !important;
             transition: all 0.2s ease !important;
+            margin-top: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button p,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button p,
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button div,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button div,
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button span,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button span {
+            transform: skew(0deg) !important;
+            display: inline-block !important;
+            font-family: 'Outfit', sans-serif !important;
+            font-weight: 900 !important;
+            font-size: 1.1rem !important;
+            letter-spacing: 1px !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
         div[data-testid="stColumn"]:has(.team-filter-search-button) button {
-            background: #ef3434 !important;
+            background: #E33535 !important;
             color: #ffffff !important;
-            box-shadow: -6px 6px 0 rgba(239, 52, 52, 0.3) !important;
+            box-shadow: -5px 5px 0 rgba(227, 53, 53, 0.3) !important;
+        }
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button p,
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button span,
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button div {
+            color: white !important;
         }
         div[data-testid="stColumn"]:has(.team-filter-reset-button) button {
             background: #ffffff !important;
-            color: #111827 !important;
-            box-shadow: -6px 6px 0 rgba(0, 0, 0, 0.16) !important;
+            box-shadow: -5px 5px 0 rgba(0, 0, 0, 0.15) !important;
         }
-        div[data-testid="stColumn"]:has(.team-filter-search-button) button:hover,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button p,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button span,
+        div[data-testid="stColumn"]:has(.team-filter-reset-button) button div {
+            color: #1a1a1a !important;
+        }
+        div[data-testid="stColumn"]:has(.team-filter-search-button) button:hover {
+            background: #ff4d4d !important;
+            transform: skew(-20deg) translateY(-2px) !important;
+            box-shadow: -8px 8px 0 rgba(227, 53, 53, 0.4) !important;
+        }
         div[data-testid="stColumn"]:has(.team-filter-reset-button) button:hover {
-            transform: skew(-18deg) translateY(-2px) !important;
+            background: #f0f0f0 !important;
+            transform: skew(-20deg) translateY(-2px) !important;
+            box-shadow: -8px 8px 0 rgba(0, 0, 0, 0.3) !important;
         }
+        /* ── Team Side Panel ────────────────────────── */
+        .ts-panel {
+            background: rgba(20, 20, 30, 0.97);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-top: 4px solid #FFCB05;
+            border-radius: 18px;
+            padding: 18px 14px 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        .ts-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .ts-icon {
+            width: 26px; height: 26px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(227,53,53,0.5));
+        }
+        .ts-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            color: #FFCB05;
+            letter-spacing: 0.5px;
+        }
+        .ts-badge {
+            margin-left: auto;
+            background: rgba(255,203,5,0.12);
+            border: 1px solid rgba(255,203,5,0.3);
+            color: #FFCB05;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-family: 'Outfit', sans-serif;
+        }
+        .ts-slot {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 8px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            min-height: 54px;
+            transition: all 0.2s;
+        }
+        .ts-slot.filled {
+            background: rgba(255,203,5,0.05);
+            border-color: rgba(255,203,5,0.2);
+        }
+        .ts-num {
+            font-size: 0.58rem;
+            font-weight: 800;
+            color: #444;
+            width: 10px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .ts-img {
+            width: 44px; height: 44px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+            flex-shrink: 0;
+        }
+        .ts-empty-circle {
+            width: 44px; height: 44px;
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.12);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .ts-info { flex: 1; min-width: 0; }
+        .ts-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'Inter', sans-serif;
+        }
+        .ts-id {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #555;
+            font-family: 'Inter', sans-serif;
+        }
+        .ts-empty-text {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.18);
+            flex: 1;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .ts-hint {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 8px 0 2px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.2px;
+        }
+
+        /* ── Team Action Buttons ─────────────────────── */
+        .element-container:has(.tb-act-reset) + .element-container button,
+        .element-container:has(.tb-act-analyze) + .element-container button,
+        .element-container:has(.tb-act-recommend) + .element-container button {
+            height: 44px !important;
+            border-radius: 10px !important;
+            border: none !important;
+            font-family: 'Outfit', sans-serif !important;
+            font-weight: 900 !important;
+            font-size: 0.95rem !important;
+            letter-spacing: 0.5px !important;
+            transition: all 0.2s ease !important;
+            width: 100% !important;
+        }
+        .element-container:has(.tb-act-reset) + .element-container button {
+            background: rgba(255,255,255,0.08) !important;
+            color: #aaa !important;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+        }
+        .element-container:has(.tb-act-reset) + .element-container button:hover {
+            background: rgba(255,255,255,0.14) !important;
+            color: #fff !important;
+        }
+        .element-container:has(.tb-act-analyze) + .element-container button {
+            background: #2a75bb !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(42,117,187,0.4) !important;
+        }
+        .element-container:has(.tb-act-analyze) + .element-container button:hover:not(:disabled) {
+            background: #3485cc !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(42,117,187,0.5) !important;
+        }
+        .element-container:has(.tb-act-recommend) + .element-container button {
+            background: #FFCB05 !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 4px 14px rgba(255,203,5,0.35) !important;
+        }
+        .element-container:has(.tb-act-recommend) + .element-container button:hover:not(:disabled) {
+            background: #ffd633 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(255,203,5,0.5) !important;
+        }
+        .element-container:has(.tb-act-analyze) + .element-container button:disabled,
+        .element-container:has(.tb-act-recommend) + .element-container button:disabled {
+            opacity: 0.35 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         .selected-count {
             text-align: center;
             color: #2563eb;
@@ -2028,6 +2313,98 @@ def apply_page_style() -> None:
     )
 
 
+def render_team_side_panel(
+    selected_pokemon: List[Dict[str, Any]],
+    can_request: bool,
+    can_recommend: bool,
+) -> None:
+    """우측 팀 패널: 선택 슬롯 5개 + 상태 힌트 + 액션 버튼을 표시합니다."""
+
+    count = len(selected_pokemon)
+
+    # 슬롯 HTML
+    slot_rows = []
+    for i in range(REQUIRED_TEAM_SIZE):
+        if i < count:
+            p = selected_pokemon[i]
+            img = escape(p.get("image_url", ""))
+            name = escape(p.get("name", ""))
+            pid = p.get("pokemon_id", 0)
+            slot_rows.append(
+                f'<div class="ts-slot filled">'
+                f'<span class="ts-num">{i + 1}</span>'
+                f'<img class="ts-img" src="{img}" alt="{name}">'
+                f'<div class="ts-info">'
+                f'<div class="ts-name">{name}</div>'
+                f'<div class="ts-id">No.{pid:04d}</div>'
+                f'</div>'
+                f'</div>'
+            )
+        else:
+            slot_rows.append(
+                f'<div class="ts-slot">'
+                f'<span class="ts-num">{i + 1}</span>'
+                f'<div class="ts-empty-circle">＋</div>'
+                f'<span class="ts-empty-text">선택 대기</span>'
+                f'</div>'
+            )
+
+    # 상태 힌트
+    if count == 0:
+        hint, hint_color = "왼쪽에서 포켓몬을 선택하세요", "#555"
+    elif count < REQUIRED_TEAM_SIZE:
+        hint, hint_color = f"{REQUIRED_TEAM_SIZE - count}마리 더 선택하세요", "#888"
+    elif st.session_state.analysis_result is None:
+        hint, hint_color = "덱 분석을 먼저 진행해주세요", "#2a75bb"
+    else:
+        hint, hint_color = "추천받을 준비가 됐습니다!", "#27ae60"
+
+    st.markdown(
+        f"""
+        <div class="ts-panel">
+            <div class="ts-header">
+                <img src="https://pokemonkorea.co.kr/img/_con.ico" class="ts-icon">
+                <span class="ts-title">나의 팀</span>
+                <span class="ts-badge">{count} / {REQUIRED_TEAM_SIZE}</span>
+            </div>
+            {"".join(slot_rows)}
+            <div class="ts-hint" style="color:{hint_color};">{hint}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="tb-act-reset">', unsafe_allow_html=True)
+    if st.button("선택 초기화", use_container_width=True, key="side_reset"):
+        st.session_state.selected_pokemon_ids = []
+        st.session_state.analysis_result = None
+        st.session_state.recommendation_result = None
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="tb-act-analyze">', unsafe_allow_html=True)
+    if st.button("덱 분석", use_container_width=True, disabled=not can_request, key="side_analyze"):
+        with st.spinner("분석 중..."):
+            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids}
+            st.session_state.analysis_result = request_json(
+                "POST", "/api/v1/team-builder/rag-analyze", json=payload
+            )
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="tb-act-recommend">', unsafe_allow_html=True)
+    if st.button("추천 받기", use_container_width=True, disabled=not can_recommend, key="side_recommend"):
+        with st.spinner("추천 생성 중..."):
+            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids, "limit": 3}
+            st.session_state.recommendation_result = request_json(
+                "POST", "/api/v1/team-builder/rag-recommend", json=payload
+            )
+        st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
 def show() -> None:
     """Streamlit 팀 빌더 페이지를 실행하는 메인 함수입니다."""
 
@@ -2128,18 +2505,14 @@ def show() -> None:
 
 
 def show_v2() -> None:
-    """도감형 검색 패널을 사용하는 팀 빌더 메인 화면입니다."""
+    """도감형 검색 패널 + 우측 팀 패널을 사용하는 팀 빌더 메인 화면입니다."""
 
     apply_page_style()
 
-    # selected_pokemon_ids:
-    # - 사용자가 선택한 5마리의 pokemon_id를 저장하는 팀 빌더 핵심 상태입니다.
     if "selected_pokemon_ids" not in st.session_state:
         st.session_state.selected_pokemon_ids = []
-
     if "analysis_result" not in st.session_state:
         st.session_state.analysis_result = None
-
     if "recommendation_result" not in st.session_state:
         st.session_state.recommendation_result = None
 
@@ -2149,59 +2522,25 @@ def show_v2() -> None:
         st.error(str(exc))
         st.stop()
 
-    # 도감형 검색 패널:
-    # - 검색, 특성, 지방, 도감번호, 타입 필터를 한 번에 조작하는 상단 영역입니다.
     render_team_filter_panel(pokemon_list)
     filtered_pokemon = filter_team_pokemon_list(pokemon_list)
 
-    st.divider()
-
-    # 카드 목록:
-    # - 포켓몬이 많기 때문에 높이를 고정한 스크롤 영역 안에 표시합니다.
-    with st.container(height=560, border=True):
-        grid_columns = st.columns(6)
-        for index, pokemon in enumerate(filtered_pokemon):
-            with grid_columns[index % 6]:
-                render_pokemon_card(pokemon)
-
-    # 선택 대기 슬롯:
-    # - 사용자가 선택한 포켓몬을 카드 목록 아래에서 확인하도록 배치합니다.
     selected_pokemon = find_selected_pokemon(pokemon_list, st.session_state.selected_pokemon_ids)
-    render_selected_slots(selected_pokemon)
-
-    action_col1, action_col2, action_col3 = st.columns([1, 1, 1])
-    with action_col1:
-        if st.button("선택 초기화", use_container_width=True):
-            st.session_state.selected_pokemon_ids = []
-            st.session_state.analysis_result = None
-            st.session_state.recommendation_result = None
-            st.rerun()
-
     can_request = len(st.session_state.selected_pokemon_ids) == REQUIRED_TEAM_SIZE
-    # can_recommend:
-    # - 추천 결과는 덱 분석 결과와 같은 DB 기록에 이어서 저장되므로, 분석이 끝난 뒤에만 추천 버튼을 활성화합니다.
-    can_recommend = can_request and st.session_state.analysis_result is not None
-    with action_col2:
-        if st.button("덱 분석", disabled=not can_request, use_container_width=True):
-            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids}
-            st.session_state.analysis_result = request_json(
-                "POST", "/api/v1/team-builder/rag-analyze", json=payload
-            )
-
-    # 분석 요청이 방금 성공한 경우에도 같은 화면 흐름에서 바로 추천 버튼이 활성화되도록 다시 계산합니다.
     can_recommend = can_request and st.session_state.analysis_result is not None
 
-    with action_col3:
-        if st.button("추천 받기", disabled=not can_recommend, use_container_width=True):
-            payload = {"pokemon_ids": st.session_state.selected_pokemon_ids, "limit": 3}
-            st.session_state.recommendation_result = request_json(
-                "POST", "/api/v1/team-builder/rag-recommend", json=payload
-            )
+    # 좌우 2분할: 포켓몬 그리드(75%) + 팀 패널(25%)
+    grid_col, panel_col = st.columns([3, 1], gap="medium")
 
-    # 안내 문구:
-    # - 5마리는 골랐지만 아직 분석하지 않은 경우, 사용자가 다음 순서를 바로 이해할 수 있게 알려줍니다.
-    if can_request and st.session_state.analysis_result is None:
-        st.info("추천을 받기 전에 먼저 덱 분석을 진행해주세요.")
+    with grid_col:
+        with st.container(height=580, border=False):
+            grid_columns = st.columns(4)
+            for index, pokemon in enumerate(filtered_pokemon):
+                with grid_columns[index % 4]:
+                    render_pokemon_card(pokemon)
+
+    with panel_col:
+        render_team_side_panel(selected_pokemon, can_request, can_recommend)
 
     if st.session_state.analysis_result:
         render_analysis_result(st.session_state.analysis_result)
