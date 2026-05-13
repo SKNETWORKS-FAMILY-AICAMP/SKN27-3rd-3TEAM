@@ -439,27 +439,32 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     left: 20% !important;
     right: 0 !important;
     background: #ffffff !important;
-    border-top: 1px solid #e2e8f0 !important;
-    padding: 12px 20px 24px !important;
+    border-top: 1px solid #f0f0f0 !important;
+    padding: 15px 25px 30px !important;
     z-index: 500 !important;
 }
 [data-testid="stChatInput"] > div {
     background: #ffffff !important;
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 30px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 35px !important;
     padding: 2px 2px 2px 12px !important;
     display: flex !important; align-items: center !important;
-    transition: all 0.2s !important;
-}
-[data-testid="stChatInput"] > div > div {
-    background: transparent !important; border: none !important; box-shadow: none !important;
+    transition: all 0.2s ease !important;
 }
 [data-testid="stChatInput"] > div:focus-within {
+    background: #ffffff !important;
     border-color: #EE1515 !important;
+    box-shadow: 0 4px 20px rgba(238,21,21,0.1) !important;
+}
+[data-testid="stChatInput"] > div > div {
+    background: #ffffff !important; border: none !important; box-shadow: none !important;
+}
+[data-testid="stChatInput"] > div:focus-within {
+    border-color: #ffffff !important;
     box-shadow: 0 0 0 3px rgba(238,21,21,0.10) !important;
 }
 [data-testid="stChatInput"] textarea {
-    background: transparent !important; border: none !important; box-shadow: none !important;
+    background: #ffffff !important; border: none !important; box-shadow: none !important;
     color: #1a1a2e !important; font-size: 14.5px !important;
     font-family: 'Inter', sans-serif !important; padding: 10px 0 !important;
 }
@@ -825,7 +830,7 @@ with right_col:
 
 # ── 채팅 입력 (CSS로 우측 패널 하단 고정) ──────────────────────────────────
 
-if prompt := st.chat_input("포켓몬에 대해 무엇이든 물어보세요... ⚡"):
+if prompt := st.chat_input("포켓몬에 대해 무엇이든 물어보세요..."):
     st.session_state.messages.append({"role": "user", "content": prompt, "used_tools": []})
     st.session_state.is_loading = True
     st.rerun()
