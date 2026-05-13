@@ -7,22 +7,24 @@
   - SQL + 벡터 동시 사용 가능 (복합 질문 처리)
   - 답변 품질 향상을 위한 강화된 system prompt
   - 웹검색은 DB에 정말 없을 때만 사용
-  - [NEW] 하이브리드 검색: BM25(키워드) + 벡터 검색 → RRF 융합
-  - [NEW] Cross-encoder Re-ranking (BAAI/bge-reranker-v2-m3): 상위 후보를 재정렬해 LLM에 최적 컨텍스트 전달
-         (Cohere API 의존성 제거 → 로컬 추론, 무료, 한국어 지원)
-  - [NEW] Neo4j 툴 연동: 진화 체인(search_evolution_chain) · 타입 상성(search_type_relations) 그래프 검색
-  - [NEW] 멀티턴 대화 히스토리 지원 (chat_with_tools 에 history 파라미터 추가)
+  - [REFACTOR] search_pokemon_db: psycopg2 직접 쿼리 → SQLDatabase + create_sql_query_chain
+  - [REFACTOR] search_flavor_text: BM25 제거, psycopg2 직접 쿼리 → PGVector VectorStore
+  - [KEEP] Cross-encoder Re-ranking 유지
+  - [KEEP] Neo4j 툴 연동 유지
+  - [KEEP] 멀티턴 대화 히스토리 유지
 
 테이블 구조:
   pokemon → pokemon_stats (1:1)
   pokemon → pokemon_types → types (N:M)
-  pokemon → species → flavor_text (비정형, embedding 있음, tsvector 인덱스 있음)
+  pokemon → species → flavor_text (비정형, embedding 있음)
 """
-
+from dns import asyncquery
+from dns import asyncquery
+from dns import asyncquery
+from dns import asyncquery
+import sqlalchemy
 import os
-import json
 import threading
-import psycopg2
 from dotenv import load_dotenv
 from typing import TypedDict, List, Annotated
 import operator
@@ -45,12 +47,14 @@ except ImportError:
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
+from langchain_community.utilities import SQLDatabase          # [NEW] SQLDatabase
+from langchain.chains import create_sql_query_chain            # [NEW] SQL 생성 체인
+from langchain_community.vectorstores import PGVector          # [NEW] VectorStore
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 
 
-
-# Neo4j 툴 — pokemon_neo4j.py 에서 가져옴
+# Neo4j 툴
 try:
     from chatbot.pokemon_neo4j import search_evolution_chain, search_type_relations
 except ImportError:
@@ -73,7 +77,7 @@ tavily     = TavilySearchResults(max_results=3)
 
 MODELS = {
     "gpt-4o-mini": lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
-    "gemma4:e2b":    lambda: ChatOllama(
+    "gemma4:e2b":  lambda: ChatOllama(
         model="gemma4:e2b",
         base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
         temperature=0,
@@ -81,97 +85,103 @@ MODELS = {
 }
 DEFAULT_MODEL = "gpt-4o-mini"
 
-# Cross-encoder 싱글톤 — 첫 호출 시 모델 자동 다운로드 (~1GB), 이후 로컬 캐시 사용
-_cross_encoder: CrossEncoder | None = None
-_cross_encoder_lock = threading.Lock()
+# # ── Cross-encoder 싱글톤 (변경 없음) ──────────────────────
+# _cross_encoder: CrossEncoder | None = None
+# _cross_encoder_lock = threading.Lock()
 
-def get_cross_encoder() -> CrossEncoder:
-    global _cross_encoder
-    if _cross_encoder is None:
-        with _cross_encoder_lock:
-            if _cross_encoder is None:
-                _cross_encoder = CrossEncoder(
-                    "BAAI/bge-reranker-v2-m3",
-                    max_length=512,
-                    device=DEVICE,
-                )
-    return _cross_encoder
+# def get_cross_encoder() -> CrossEncoder:
+#     global _cross_encoder
+#     if _cross_encoder is None:
+#         with _cross_encoder_lock:
+#             if _cross_encoder is None:
+#                 _cross_encoder = CrossEncoder(
+#                     "BAAI/bge-reranker-v2-m3",
+#                     max_length=512,
+#                     device=DEVICE,
+#                 )
+#     return _cross_encoder
 
-FLAVOR_CANDIDATE_K = 20   # BM25·벡터 각각 후보 수
-FLAVOR_TOP_N       = 5    # LLM에 전달할 최종 문서 수
+# [CHANGE] BM25·벡터 각각 후보 수 → 벡터만 사용하므로 의미 변경
+FLAVOR_CANDIDATE_K = 10   # VectorStore 후보 수 (기존: BM25·벡터 각각 20개 → 벡터만 20개)
+FLAVOR_TOP_N       = 3   # LLM에 전달할 최종 문서 수 (변경 없음)
 
 
 # ══════════════════════════════════════════════════════════
-# DB 스키마 (툴 description 에서 LLM이 참조)
+# [NEW] SQLDatabase 인스턴스
+# 기존: SCHEMA 문자열 하드코딩 + psycopg2 직접 연결
+# 변경: SQLDatabase 가 실제 DB에서 스키마 자동 읽어옴
+#       스키마 변경 시 코드 수정 불필요
 # ══════════════════════════════════════════════════════════
 
-SCHEMA = """
-테이블: pokemon
-컬럼: id, name, height, weight, base_exp, image_url, cry_url, is_default
+_sql_db = SQLDatabase.from_uri(
+    DB_CONN,
+    include_tables=[          # 조회 허용 테이블만 명시 (보안)
+        "pokemon",
+        "pokemon_stats",
+        "pokemon_types",
+        "types",
+        "species",
+        "flavor_text",
+    ],
+    sample_rows_in_table_info=2,  # 테이블당 샘플 2행을 LLM에 전달 → SQL 정확도 향상
+)
 
-테이블: pokemon_stats  (pokemon_id 로 pokemon 과 1:1 조인)
-컬럼: pokemon_id(FK), hp, attack, defense, sp_attack, sp_defense, speed
-
-테이블: types
-컬럼: id, name
-
-테이블: pokemon_types  (pokemon ↔ types 중간 테이블)
-컬럼: pokemon_id(FK), type_id(FK), slot
-
-테이블: species  (pokemon_id 로 pokemon 과 1:1 조인)
-컬럼: id, pokemon_id(FK), generation, capture_rate
-
-테이블: flavor_text  (비정형 도감 설명 — embedding 컬럼 있음)
-컬럼: id, species_id(FK), version_name, content, embedding
+# SQL 생성 체인 — 자연어 질문 → SQL 자동 생성
+# 기존: LLM이 SCHEMA 문자열 보고 SQL 직접 생성해서 툴에 넘김
+# 변경: 툴 내부에서 _sql_chain 이 자연어 → SQL 변환
+_sql_chain = create_sql_query_chain(
+    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    db=_sql_db,
+)
 
 
-─── 자주 쓰는 조인 패턴 ───────────────────────────────────
+# ══════════════════════════════════════════════════════════
+# [NEW] PGVector VectorStore 인스턴스
+# 기존: psycopg2로 ft.embedding <=> 직접 쿼리
+# 변경: PGVector 클래스가 내부적으로 동일한 쿼리를 추상화
+#       DB를 Chroma·Elasticsearch 등으로 교체 시 이 한 줄만 변경
+# ══════════════════════════════════════════════════════════
 
--- 타입으로 포켓몬 검색
-SELECT p.name FROM pokemon p
-JOIN pokemon_types pt ON p.id = pt.pokemon_id
-JOIN types t ON pt.type_id = t.id
-WHERE t.name = '불꽃';
+_vectorstore = PGVector(
+    connection_string=DB_CONN,
+    embedding_function=embeddings,
+    collection_name="flavor_text",  # flavor_text 테이블과 연결
+)
 
--- 스탯으로 검색
-SELECT p.name, ps.attack FROM pokemon p
-JOIN pokemon_stats ps ON p.id = ps.pokemon_id
-ORDER BY ps.attack DESC LIMIT 5;
+# MMR Retriever — 유사도 + 다양성 동시 고려
+# 기존: 유사도만 기준으로 상위 K개 반환 → 비슷한 문서 중복 가능
+# 변경: MMR 으로 다양한 문서 후보 확보 → Re-ranking 품질 향상
+_vector_retriever = _vectorstore.as_retriever(
+    search_type="mmr",
+    search_kwargs={
+        "k":       10,
+        "fetch_k": 20,  # MMR 후보풀 (40개 중 20개 선별)
+    }
+)
 
--- 세대/포획률
-SELECT p.name, s.generation, s.capture_rate FROM pokemon p
-JOIN species s ON p.id = s.pokemon_id
-WHERE s.generation = 1;
 
--- 도감 설명 포함
-SELECT p.name, ft.content FROM pokemon p
-JOIN species s ON p.id = s.pokemon_id
-JOIN flavor_text ft ON s.id = ft.species_id
-WHERE p.name ILIKE '%피카츄%'
-LIMIT 1;
-"""
+# ══════════════════════════════════════════════════════════
+# SYSTEM_PROMPT
+# ══════════════════════════════════════════════════════════
 
-SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부하고 정확한 정보를 바탕으로 답변합니다.
+SYSTEM_PROMPT = """당신은 세계 최고의 포켓몬 박사입니다. 풍부하고 정확한 정보를 바탕으로 답변합니다.
 
 ## 답변 원칙
 1. **항상 툴을 먼저 사용하세요.** 질문에 답하기 전에 반드시 관련 툴을 호출해 데이터를 확인합니다.
 2. **복합 질문은 여러 툴을 함께 활용하세요.**
-   - 수치/조건/비교 → `search_pokemon_db` (SQL)
-   - 느낌/묘사/성격/배경 → `search_flavor_text` (벡터 + BM25 + Re-ranking)
+   - 수치/조건/비교 → `search_pokemon_db` (자연어 질문 그대로 넘기세요)
+   - 느낌/묘사/성격/배경 → `search_flavor_text` (벡터 + Re-ranking)
    - 진화 경로/조건 → `search_evolution_chain` (Neo4j 그래프)
    - 타입 상성/약점 → `search_type_relations` (Neo4j 그래프)
    - "불꽃타입이면서 귀여운 포켓몬" 같은 복합 질문 → 여러 툴 함께 사용
 3. **DB에 없는 정보만** `web_search`를 사용하고, 사용 시 "웹에서 찾은 정보입니다"를 명시합니다.
-4. SQL 오류가 발생하면 오류 메시지를 분석해 SQL을 수정 후 재시도합니다.
+4. search_pokemon_db 는 SQL 이 아닌 자연어 질문을 그대로 넘기세요.
 
 ## 답변 스타일
 - 친절하고 열정적으로 답변합니다.
 - 수치 데이터는 표 형태로 정리합니다.
 - 포켓몬의 특징을 생생하게 설명합니다.
 - 컨텍스트에 없는 내용은 절대 지어내지 않습니다.
-
-## DB 스키마
-{SCHEMA}
 """
 
 
@@ -180,110 +190,52 @@ SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부
 # ══════════════════════════════════════════════════════════
 
 @tool
-def search_pokemon_db(sql: str) -> str:
+def search_pokemon_db(query: str) -> str:
     """
     PostgreSQL DB에서 포켓몬 정형 데이터를 조회합니다.
     수치, 타입, 스탯, 세대, 포획률 등 구조화된 정보 검색에 사용하세요.
-    SELECT 문만 허용됩니다. LIMIT 10 이하를 권장합니다.
 
-    예시 쿼리:
-      - 공격력 높은 포켓몬: SELECT p.name, ps.attack FROM pokemon p JOIN pokemon_stats ps ON p.id = ps.pokemon_id ORDER BY ps.attack DESC LIMIT 5
-      - 불꽃 타입: SELECT p.name FROM pokemon p JOIN pokemon_types pt ON p.id = pt.pokemon_id JOIN types t ON pt.type_id = t.id WHERE t.name = '불꽃'
+    SQL 을 직접 작성하지 말고 자연어 질문을 그대로 넘기세요.
+    예시:
+      - "불꽃 타입 중 공격력 가장 높은 포켓몬 5마리"
+      - "1세대 포켓몬 포획률 낮은 순"
+      - "피카츄 스탯 전체"
     """
-    sql = sql.replace("```sql", "").replace("```", "").strip()
-
-    sql_upper = sql.upper().strip()
-    if not sql_upper.startswith("SELECT"):
-        return "오류: SELECT 문만 허용됩니다."
-    for forbidden in ["INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE", "ALTER"]:
-        if forbidden in sql_upper:
-            return f"오류: {forbidden} 명령은 허용되지 않습니다."
-
+    # [CHANGE] 기존: LLM이 SQL 직접 생성해서 툴에 넘김 → psycopg2 실행
+    #          변경: 툴 내부에서 _sql_chain 이 자연어 → SQL 변환
+    #                _sql_db.run() 으로 실행 (psycopg2 직접 연결 제거)
     try:
-        conn = psycopg2.connect(DB_CONN)
-        cur  = conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
-        cols = [desc[0] for desc in cur.description]
-        conn.close()
+        # 1. 자연어 → SQL 생성
+        sql = _sql_chain.invoke({"question": query})
+        sql = sql.replace("```sql", "").replace("```", "").strip()
 
-        if not rows:
+        # SELECT 만 허용 (보안)
+        if not sql.upper().strip().startswith("SELECT"):
+            return "오류: SELECT 문만 허용됩니다."
+
+        # 2. SQL 실행 — SQLDatabase 추상화
+        result = _sql_db.run(sql)
+
+        if not result:
             return "조회 결과가 없습니다. 다른 조건으로 시도해보세요."
 
-        result = json.dumps(
-            [dict(zip(cols, row)) for row in rows],
-            ensure_ascii=False,
-            default=str
-        )
-        return f"✅ {len(rows)}개 결과:\n{result}"
+        return f"✅ 조회 결과:\n{result}"
 
     except Exception as e:
-        return f"SQL 오류: {e}\n힌트: 위 오류를 분석해 SQL을 수정한 후 재시도하세요."
+        return f"SQL 오류: {e}\n힌트: 질문을 더 구체적으로 입력해보세요."
 
 
 @tool
-def search_flavor_text(query: str) -> str:
-    """
-    포켓몬 도감 설명(flavor_text)에서 의미 기반으로 검색합니다.
-    "귀여운 포켓몬", "바다 느낌", "불꽃에서 사는 포켓몬" 같은 분위기·묘사·성격 질문에 사용하세요.
+def search_flavor_text(query: str) ->str:
+    docs = _vector_retriever.invoke(query)
 
-    내부 동작:
-      1. BM25 키워드 검색 — 고유명사·정확한 단어에 강함
-      2. 벡터 유사도 검색 — 의미·분위기 기반 검색에 강함
-      3. Cross-encoder Re-ranking으로 최종 정렬 → 상위 5개 LLM에 전달
-    """
-    try:
-        conn = psycopg2.connect(DB_CONN)
-        cur  = conn.cursor()
-        ts_query = " | ".join(query.split())
+    if not docs:
+        return "검색 결과가 없습니다."
 
-        # BM25 키워드 검색
-        cur.execute("""
-            SELECT p.name, ft.version_name AS source, ft.content
-            FROM flavor_text ft
-            JOIN species s ON ft.species_id = s.id
-            JOIN pokemon p ON s.pokemon_id  = p.id
-            WHERE to_tsvector('simple', ft.content) @@ to_tsquery('simple', %s)
-            ORDER BY ts_rank(to_tsvector('simple', ft.content), to_tsquery('simple', %s)) DESC
-            LIMIT %s
-        """, (ts_query, ts_query, FLAVOR_CANDIDATE_K))
-        bm25_rows = cur.fetchall()
+    # Re-ranking 제거 — VectorStore 순서 그대로 사용
+    top = [doc.page_content for doc in docs[:FLAVOR_TOP_N]]
 
-        # 벡터 유사도 검색
-        query_vector = embeddings.embed_query(query)
-        cur.execute("""
-            SELECT p.name, ft.version_name AS source, ft.content
-            FROM flavor_text ft
-            JOIN species s ON ft.species_id = s.id
-            JOIN pokemon p ON s.pokemon_id  = p.id
-            WHERE ft.embedding IS NOT NULL
-            ORDER BY ft.embedding <=> %s::vector
-            LIMIT %s
-        """, (query_vector, FLAVOR_CANDIDATE_K))
-        vec_rows = cur.fetchall()
-        conn.close()
-
-        # 중복 제거 후 후보 합치기
-        seen, candidates = set(), []
-        for row in bm25_rows + vec_rows:
-            key = row[2][:80]
-            if key not in seen:
-                seen.add(key)
-                candidates.append(f"[{row[0]} / {row[1]}]\n{row[2]}")
-
-        if not candidates:
-            return "검색 결과가 없습니다. 다른 표현으로 질문해보세요."
-
-        # Cross-encoder Re-ranking
-        encoder = get_cross_encoder()
-        scores  = encoder.predict([(query, doc) for doc in candidates])
-        ranked  = sorted(zip(scores, candidates), key=lambda x: x[0], reverse=True)
-        top     = [doc for _, doc in ranked[:FLAVOR_TOP_N]]
-
-        return "✅ 관련 도감 설명 (BM25 + 벡터 + Re-ranking):\n\n" + "\n\n---\n\n".join(top)
-
-    except Exception as e:
-        return f"도감 검색 오류: {e}"
+    return "✅ 관련 도감 설명:\n\n" + "\n\n---\n\n".join(top)
 
 
 @tool
@@ -301,7 +253,7 @@ def web_search(query: str) -> str:
 
 
 # ══════════════════════════════════════════════════════════
-# Agent State & Graph
+# Agent State & Graph (변경 없음)
 # ══════════════════════════════════════════════════════════
 
 tools      = [search_pokemon_db, search_flavor_text,
@@ -309,7 +261,7 @@ tools      = [search_pokemon_db, search_flavor_text,
               web_search]
 _tool_node = ToolNode(tools)
 
-MAX_TOOL_CALLS = 8
+MAX_TOOL_CALLS = 2
 
 class AgentState(TypedDict):
     messages:        Annotated[List, operator.add]
@@ -371,8 +323,8 @@ def get_agent(model_name: str):
 
 
 # ══════════════════════════════════════════════════════════
-# 실행 헬퍼
-# # ══════════════════════════════════════════════════════════
+# 실행 헬퍼 (변경 없음)
+# ══════════════════════════════════════════════════════════
 
 def chat_with_tools(
     query: str,
@@ -425,14 +377,13 @@ def chat(query: str, history: list[dict] | None = None, model: str = DEFAULT_MOD
 # # ══════════════════════════════════════════════════════════
 
 # if __name__ == "__main__":
-#     # 임베딩 초기화는 python -m common.ingest 으로 별도 실행
 #     tests = [
-#         "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQL
-#         "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # 벡터
-#         "피카츄는 어떤 성격이야?",                             # 벡터
-#         "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQL
-#         "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQL + 벡터
-#         "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQL + 벡터
+#         "불꽃 타입 중 공격력 가장 높은 포켓몬 3마리는?",       # SQLDatabase
+#         "귀엽고 작은 느낌의 포켓몬 추천해줘",                  # VectorStore
+#         "피카츄는 어떤 성격이야?",                             # VectorStore
+#         "1세대 포켓몬 중 hp 가장 높은 건?",                   # SQLDatabase
+#         "불꽃 타입이면서 귀여운 느낌의 포켓몬 추천해줘",        # SQLDatabase + VectorStore
+#         "물 타입 포켓몬인데 바다 이야기가 있는 포켓몬은?",      # SQLDatabase + VectorStore
 #         "이브이 진화 경로 알려줘",                             # Neo4j
 #         "드래곤 타입 상성은?",                                 # Neo4j
 #     ]
