@@ -218,7 +218,7 @@ def show():
         with col1:
             st.markdown("<hr>", unsafe_allow_html=True)
             st.subheader("관장 선택")
-            gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"]
+            gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "지우", "N"]
             selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
             leader_roster = ROSTER_MAP.get(selected_leader, [])
 
@@ -420,10 +420,10 @@ def show():
                 if st.session_state.get("battle_over", False):
                     winner = st.session_state.winner
                     if winner == "사용자":
-                        st.success(f"🎉 체육관 관장 {st.session_state.leader_name}과(와)의 승부에서 이겼다!")
-                        st.balloons()
+                        st.success(f"체육관 관장 {st.session_state.leader_name}과(와)의 승부에서 이겼다!")
+                        # 승리 기록을 바탕으로 배지를 획득하는 코드
                     else:
-                        st.error(f"💀 주인공에게는 싸울 수 있는 포켓몬이 없다! 주인공은 눈앞이 캄캄해졌다!")
+                        st.error(f"주인공에게는 싸울 수 있는 포켓몬이 없다! 주인공은 눈앞이 캄캄해졌다!")
 
             if not st.session_state.battle_over:
                 # ----------------- 행동 UI -----------------
