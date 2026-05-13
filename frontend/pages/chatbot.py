@@ -252,19 +252,29 @@ div:has(> [data-testid="stHorizontalBlock"]) {
 }
 .cb-pokeball {
     width: 26px; height: 26px;
-    background: radial-gradient(circle at 38% 38%, #EE1515 50%, #c0392b 50%);
+    background: linear-gradient(to bottom, #EE1515 50%, #ffffff 50%);
     border-radius: 50%;
-    border: 2px solid #fff;
+    border: 2px solid #333;
     position: relative;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(238,21,21,0.35);
 }
-.cb-pokeball::after {
+.cb-pokeball::before {
     content: '';
     position: absolute;
     top: 50%; left: 0; right: 0;
-    height: 2px; background: #222;
+    height: 2px; background: #333;
     transform: translateY(-50%);
+}
+.cb-pokeball::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* ── 섹션 레이블 ── */
@@ -278,6 +288,13 @@ div:has(> [data-testid="stHorizontalBlock"]) {
     margin: 18px 0 10px;
     opacity: 0.9;
 }
+
+/* ── 모델 선택 라디오 버튼 흔들림 방지 ── */
+[data-testid="stRadio"] div[data-baseweb="radio"] p {
+    font-weight: 600 !important;
+}
+
+
 
 /* ── 새 채팅 버튼 ── */
 .cb-new-btn button {
@@ -561,11 +578,12 @@ div:has(> [data-testid="stRadio"]) { margin: 8px 0 !important; padding: 0 !impor
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     min-height: 65vh; gap: 16px; padding: 40px; text-align: center;
+    margin-top: 8vh;
 }
 .cb-welcome-ball {
     width: 80px; height: 80px;
-    background: radial-gradient(circle at 38% 38%, #EE1515 50%, #c0392b 50%);
-    border-radius: 50%; border: 4px solid #fff;
+    background: linear-gradient(to bottom, #EE1515 50%, #ffffff 50%);
+    border-radius: 50%; border: 4px solid #333;
     position: relative; box-shadow: 0 8px 32px rgba(238,21,21,0.3);
     animation: cb-float 3s ease-in-out infinite;
 }
@@ -770,6 +788,7 @@ with left_col:
         index=MODELS_LIST.index(st.session_state.model) if st.session_state.model in MODELS_LIST else 0,
         horizontal=True,
         key="model_radio",
+        label_visibility="collapsed"
     )
 
     # 대화 목록
