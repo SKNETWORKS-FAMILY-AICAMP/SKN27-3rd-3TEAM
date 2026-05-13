@@ -630,10 +630,13 @@ def show():
 
     # ── Kanto Badge Case ──
     # collected_ids 미리 계산 (배지 미션 체크용)
-    _collected_ids = sorted(list(set([
-        log.get("pokemon_id") for log in logs
-        if log.get("is_correct") and log.get("pokemon_id")
-    ])))
+    if stats and "collected_pokemon_ids" in stats:
+        _collected_ids = stats["collected_pokemon_ids"]
+    else:
+        _collected_ids = sorted(list(set([
+            log.get("pokemon_id") for log in logs
+            if log.get("is_correct") and log.get("pokemon_id")
+        ])))
 
     KANTO_BADGES = [
         {
@@ -742,8 +745,11 @@ def show():
     # ══════════════════════════════════════════
     # 4. My Pokemon Collection (Pokedex)
     # ══════════════════════════════════════════
-    # 획득한 포켓몬 ID 추출 (is_correct=True인 로그에서)
-    collected_ids = sorted(list(set([log.get("pokemon_id") for log in logs if log.get("is_correct") and log.get("pokemon_id")])))
+    # 획득한 포켓몬 ID 추출 (stats에서 전체 목록 가져오거나, 없으면 최근 로그에서 추출)
+    if stats and "collected_pokemon_ids" in stats:
+        collected_ids = stats["collected_pokemon_ids"]
+    else:
+        collected_ids = sorted(list(set([log.get("pokemon_id") for log in logs if log.get("is_correct") and log.get("pokemon_id")])))
     
     st.markdown('<div class="mp-section-title">My Pokemon Collection</div>', unsafe_allow_html=True)
     

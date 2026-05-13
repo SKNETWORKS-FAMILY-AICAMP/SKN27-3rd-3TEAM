@@ -105,14 +105,29 @@ CREATE TABLE IF NOT EXISTS natures (
 -- ==========================================
 
 CREATE TABLE IF NOT EXISTS moves (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type_id INTEGER REFERENCES types(id) ON DELETE SET NULL,
-    power INTEGER,
-    accuracy INTEGER,
-    damage_class VARCHAR(20), -- physical, special, status
-    effect_text TEXT,
-    embedding VECTOR(1536) -- Optional for vector search
+    id              INTEGER PRIMARY KEY,
+    name            VARCHAR(100) NOT NULL,
+    type_id         INTEGER REFERENCES types(id) ON DELETE SET NULL,
+    power           INTEGER,
+    accuracy        INTEGER,
+    damage_class    VARCHAR(50) NOT NULL, -- physical, special, status
+    ailment         VARCHAR(50), -- paralysis, sleep, freeze, sleep, confusion
+    ailment_chance  INTEGER,
+    category        VARCHAR(50) NOT NULL, -- damage, damage-raise, damage-lower, damage-ailment, damage-heal, damage-fixed, ohko, ailment, net-good-stats, heal
+    crit_rate       INTEGER,
+    drain           INTEGER,
+    flinch_chance   INTEGER,
+    healing         INTEGER,
+    max_hits        INTEGER,
+    max_turns       INTEGER,
+    min_hits        INTEGER,
+    min_turns       INTEGER,
+    stat_chance     INTEGER,
+    stat_changes    VARCHAR(100),
+    target          VARCHAR(50),
+    fixed_damage    VARCHAR(50),
+    effect_text     TEXT,
+    embedding       VECTOR(1536) -- Optional for vector search
 );
 
 CREATE TABLE IF NOT EXISTS items (
