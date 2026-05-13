@@ -1,8 +1,13 @@
 import re
 import time
-from dataclasses import asdict
+import os
+import requests
+from dotenv import load_dotenv
+from typing import List, Dict
 
-import streamlit as st
+load_dotenv()
+BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL") or "http://localhost:8000"
+
 from battle.ui import inject_battle_styles, render_pokemon_status, fmt_player, fmt_bot, fmt_move
 from utils.ui import inject_common_ui
 from battle.pokemon import PokemonDB
@@ -46,7 +51,44 @@ def start_custom_battle(player_team_data, leader_name="웅이"):
         st.session_state.battle_player = player_party[0] # 선봉 포켓몬
 
         # 2. 봇 파티 구성 (관장의 전체 엔트리 중 랜덤 3마리 선택)
-        bot_party = BattleBot.initialize(leader_name)
+        leader_roster = ROSTER_MAP.get(leader_name, [])
+        bot_team = random.sample(leader_roster, min(3, len(leader_roster)))
+        bot_party = []
+        
+        for bot_entry in bot_team:
+            b_data = db.get_pokemon_data(bot_entry['id'])
+            b_stats = get_stats(b_data['stats'])
+            
+            # 관장 포켓몬 보정 로직
+            if leader_name == "지우" and bot_entry['name'] == "피카츄":
+                # 지우의 피카츄: 모든 능력치 2배 (전기구슬 효과)
+                for stat in b_stats:
+                    b_stats[stat] *= 2
+            else:
+                # 그 외 모든 관장의 포켓몬: 모든 능력치 1.1배 보정 (난이도 향상)
+                for stat in b_stats:
+                    b_stats[stat] = int(b_stats[stat] * 1.1)
+            
+            # 봇은 관장 엔트리에 지정된 기술만 사용
+            bot_moves = [m for m in b_data['moves'] if m['name'] in bot_entry['moves']]
+            # 예외 처리: DB에 해당 기술이 없어서 빈 리스트가 될 경우 대비
+            if not bot_moves:
+                bot_moves = random.sample(b_data['moves'], min(4, len(b_data['moves'])))
+            elif len(bot_moves) > 4:
+                bot_moves = random.sample(bot_moves, 4)
+            
+            bot_obj = BattlePokemon(
+                id=b_data['id'],
+                name=b_data['name'],
+                image_url=b_data['image_url'],
+                types=b_data['types'],
+                type_names=b_data['type_names'],
+                stats=b_stats,
+                moves=bot_moves,
+                max_hp=b_stats['hp'],
+                current_hp=b_stats['hp']
+            )
+            bot_party.append(bot_obj)
 
         st.session_state.bot_party = bot_party
         st.session_state.battle_bot = bot_party[0] # 관장 봇의 선봉 포켓몬
@@ -129,9 +171,82 @@ def process_turn(player_move):
 def show():
     if "player_team" not in st.session_state:
         st.session_state.player_team = []
+    if "battle_stage" not in st.session_state:
+        st.session_state.battle_stage = "menu"
 
-    # 배틀이 시작되지 않았으면 선택 화면 표시
-    if not st.session_state.get("battle_started", False):
+    gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "지우", "N"]
+
+    if st.session_state.battle_stage == "menu":
+        st.markdown(
+            """
+            <div class="battle-header" style="text-align:center; padding: 40px 0;">
+                <h1>포켓몬 배틀 아레나</h1>
+                <p>나만의 팀을 구성하거나 즉시 배틀을 시작하세요.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
+        st.subheader("관장 선택")
+        selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
+        st.session_state.selected_leader = selected_leader
+        
+        leader_roster = ROSTER_MAP.get(selected_leader, [])
+        if leader_roster:
+            st.caption(f"**{selected_leader}의 엔트리:**")
+            cols = st.columns(len(leader_roster))
+            for idx, p in enumerate(leader_roster):
+                pokemon_data = db.get_pokemon_data(p['id'])
+                with cols[idx]:
+                    img_url = pokemon_data['image_url']
+                    st.image(img_url, use_container_width=True)
+                    st.markdown(f"<div style='text-align: center; font-size: 0.85rem; font-weight: 700; color: #cbd5e1;'>{p['name']}</div>", unsafe_allow_html=True)
+                    
+        st.markdown("<hr>", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("🛠️ 팀 구성하기", use_container_width=True, type="primary"):
+                user = st.session_state.get("user")
+                if user and user.get("db_id"):
+                    try:
+                        resp = requests.get(f"{BACKEND_URL}/api/v1/users/{user['db_id']}/battle-team", timeout=3)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            if data and "team_data" in data:
+                                st.session_state.player_team = data["team_data"]
+                    except:
+                        pass # 불러오기 실패해도 빈 팀으로 시작
+                st.session_state.battle_stage = "teambuilding"
+                st.rerun()
+        with col2:
+            if st.button("⚔️ 배틀 시작하기", use_container_width=True, type="secondary"):
+                user = st.session_state.get("user")
+                if user and user.get("db_id"):
+                    try:
+                        resp = requests.get(f"{BACKEND_URL}/api/v1/users/{user['db_id']}/battle-team", timeout=3)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            if data and "team_data" in data and data["team_data"]:
+                                st.session_state.player_team = data["team_data"]
+                            else:
+                                st.warning("저장된 팀이 없습니다. '팀 구성하기'를 통해 팀을 먼저 구성해주세요.")
+                                return
+                        else:
+                            st.warning("저장된 팀을 불러올 수 없습니다. 팀을 먼저 구성해주세요.")
+                            return
+                    except Exception as e:
+                        st.error(f"서버와 통신할 수 없습니다: {e}")
+                        return
+                
+                if len(st.session_state.player_team) > 0:
+                    st.session_state.battle_stage = "battle"
+                    start_custom_battle(st.session_state.player_team, leader_name=st.session_state.selected_leader)
+                    db.close()
+                    st.rerun()
+                else:
+                    st.warning("자신의 포켓몬을 선택해주세요!")
+
+    elif st.session_state.battle_stage == "teambuilding":
         st.markdown(
             """
             <div class="battle-header">
@@ -149,28 +264,16 @@ def show():
 
         with col1:
             st.markdown("<hr>", unsafe_allow_html=True)
-            st.subheader("관장 선택")
-            gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "비주기", "N"]
-            selected_leader = st.selectbox("대결할 관장을 선택하세요", options=gym_leaders, index=0)
-            leader_roster = ROSTER_MAP.get(selected_leader, [])
-
-            if leader_roster:
-                st.caption(f"**{selected_leader}의 엔트리:**")
-                cols = st.columns(len(leader_roster))
-                for idx, p in enumerate(leader_roster):
-                    pokemon_data = db.get_pokemon_data(p['id'])
-                    with cols[idx]:
-                        img_url = pokemon_data['image_url']
-                        st.image(img_url, use_container_width=True)
-                        st.markdown(f"<div style='text-align: center; font-size: 0.85rem; font-weight: 700; color: #cbd5e1;'>{p['name']}</div>", unsafe_allow_html=True)
+            if "selected_leader" not in st.session_state:
+                st.session_state.selected_leader = "웅이"
+            st.info(f"현재 선택된 상대: **{st.session_state.selected_leader}**")
 
             st.markdown("<br>", unsafe_allow_html=True)
             st.subheader("포켓몬 선택")
             selected_name = st.selectbox(
                 "포켓몬 이름을 검색하세요",
                 options=list(pokemon_options.keys()),
-                index=None,
-                placeholder="포켓몬 이름 입력..."
+                index=None,                placeholder="포켓몬 이름 입력..."
             )
 
             st.markdown("<hr>", unsafe_allow_html=True)
@@ -249,14 +352,50 @@ def show():
                 else:
                     st.info(f"기술을 {4 - len(selected_move_names)}개 더 선택해주세요.")
 
+        with col2:
+            st.markdown("<hr>", unsafe_allow_html=True)
+            st.subheader("현재 나의 엔트리")
+            if not st.session_state.player_team:
+                st.info("선택된 포켓몬이 없습니다. 왼쪽에서 검색하여 추가해주세요.")
+            else:
+                party_cols = st.columns(3)
+                for idx, p in enumerate(st.session_state.player_team):
+                    with party_cols[idx]:
+                        p_data = db.get_pokemon_data(p['id'])
+                        st.image(p_data['image_url'], use_container_width=True)
+                        st.markdown(f"<div style='text-align: center; font-weight: bold;'>{p['name']}</div>", unsafe_allow_html=True)
+                        moves_text = ", ".join([m['name'] for m in p['moves']])
+                        st.caption(f"기술: {moves_text}")
+                
+                if st.button("🗑️ 엔트리 전체 비우기", use_container_width=True):
+                    st.session_state.player_team = []
+                    st.rerun()
+
             if len(st.session_state.player_team) > 0:
                 st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("🚀 배틀 시작하기", use_container_width=True, type="primary"):
-                    start_custom_battle(st.session_state.player_team, leader_name=selected_leader)
+                if st.button("💾 포켓몬 선택 완료 및 배틀로 이동", use_container_width=True, type="primary"):
+                    user = st.session_state.get("user")
+                    if user and user.get("db_id"):
+                        try:
+                            payload = {"team_data": st.session_state.player_team}
+                            resp = requests.post(f"{BACKEND_URL}/api/v1/users/{user['db_id']}/battle-team", json=payload, timeout=3)
+                            if resp.status_code == 200:
+                                st.success("팀이 성공적으로 저장되었습니다!")
+                            else:
+                                st.warning("팀 저장에 실패했습니다.")
+                        except Exception as e:
+                            st.warning(f"팀을 저장하는 중 오류가 발생했습니다: {e}")
+                    
+                    st.session_state.battle_stage = "battle"
+                    start_custom_battle(st.session_state.player_team, leader_name=st.session_state.selected_leader)
                     db.close()
                     st.rerun()
+                
+                if st.button("⬅️ 메뉴로 돌아가기", use_container_width=True):
+                    st.session_state.battle_stage = "menu"
+                    st.rerun()
     
-    else:
+    elif st.session_state.battle_stage == "battle":
         # 배틀 진행 화면 (battle.py 로직과 유사)
         player = st.session_state.battle_player
         bot = st.session_state.battle_bot
@@ -348,10 +487,34 @@ def show():
                 if st.session_state.get("battle_over", False):
                     winner = st.session_state.winner
                     if winner == "사용자":
-                        st.success(f"🎉 체육관 관장 {st.session_state.leader_name}과(와)의 승부에서 이겼다!")
-                        st.balloons()
+                        st.success(f"체육관 관장 {st.session_state.leader_name}과(와)의 승부에서 이겼다!")
+                        # 승리 기록 DB 저장
+                        if not st.session_state.get("victory_logged", False):
+                            user = st.session_state.get("user")
+                            if user and user.get("db_id"):
+                                try:
+                                    payload = {
+                                        "user_id": user["db_id"],
+                                        "game_type": "gym_battle",
+                                        "is_correct": True,
+                                        "log_data": f'{{"leader": "{st.session_state.leader_name}"}}'
+                                    }
+                                    requests.post(f"{BACKEND_URL}/api/v1/users/game-log", json=payload, timeout=3)
+                                except Exception as e:
+                                    print(f"Error logging victory: {e}")
+                            st.session_state.victory_logged = True
+                        
+                        if st.button("메인 메뉴로 돌아가기", use_container_width=True):
+                            st.session_state.battle_stage = "menu"
+                            st.session_state.battle_over = False
+                            st.session_state.victory_logged = False
+                            st.rerun()
                     else:
-                        st.error(f"💀 주인공에게는 싸울 수 있는 포켓몬이 없다! 주인공은 눈앞이 캄캄해졌다!")
+                        st.error(f"주인공에게는 싸울 수 있는 포켓몬이 없다! 주인공은 눈앞이 캄캄해졌다!")
+                        if st.button("메인 메뉴로 돌아가기", use_container_width=True):
+                            st.session_state.battle_stage = "menu"
+                            st.session_state.battle_over = False
+                            st.rerun()
 
             if not st.session_state.battle_over:
                 # ----------------- 행동 UI -----------------
