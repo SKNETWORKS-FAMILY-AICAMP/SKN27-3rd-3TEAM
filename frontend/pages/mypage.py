@@ -357,14 +357,14 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 .badge-case {
     background: linear-gradient(160deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%);
     border-radius: 24px;
-    padding: 28px 28px 32px;
+    padding: 32px;
     border: 3px solid #e94560;
     box-shadow:
         0 0 40px rgba(233,69,96,0.12),
         0 20px 60px rgba(0,0,0,0.55),
         inset 0 1px 0 rgba(255,255,255,0.07);
-    max-width: 560px;
-    margin: 20px auto;
+    width: 100%;
+    margin: 0;
 }
 .badge-case-title {
     text-align: center;
@@ -389,7 +389,7 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     gap: 6px;
 }
 .badge-circle {
-    width: 80px; height: 80px;
+    width: 120px; height: 120px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     position: relative;
@@ -407,30 +407,30 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 }
 .badge-circle.unlocked:hover { transform: scale(1.12); }
 .badge-circle img.badge-img-lock {
-    width: 60px; height: 60px;
+    width: 90px; height: 90px;
     object-fit: contain;
     filter: grayscale(1) brightness(0.22);
 }
 .badge-circle img.badge-img-unlock {
-    width: 64px; height: 64px;
+    width: 100px; height: 100px;
     object-fit: contain;
     filter: drop-shadow(0 3px 10px rgba(0,0,0,0.6));
     transition: transform 0.25s ease;
 }
 .badge-slot-name {
-    font-size: 0.62rem;
-    font-weight: 800;
+    font-size: 0.95rem;
+    font-weight: 900;
     color: #718096;
     text-align: center;
-    max-width: 85px;
+    max-width: 110px;
     line-height: 1.3;
 }
 .badge-slot-name.done { color: #e2e8f0; }
 .badge-slot-mission {
-    font-size: 0.57rem;
+    font-size: 0.8rem;
     color: #4a5568;
     text-align: center;
-    max-width: 85px;
+    max-width: 110px;
     line-height: 1.3;
 }
 .badge-slot-mission.done { color: #68d391; }
@@ -706,16 +706,61 @@ def show():
 
     st.markdown('<div class="mp-section-title">Kanto Badge Case</div>', unsafe_allow_html=True)
     st.markdown(f"""
-<div class="mp-card card-badge" style="padding:36px 40px;">
-<div class="badge-case">
+<div class="mp-card card-badge" style="padding:0 !important; overflow:hidden; border-radius: 28px; border:none;">
+<div class="badge-case" style="border:none; border-radius:0; padding: 40px;">
 <div class="badge-case-title">KANTO REGION · BADGE CASE</div>
 <div class="badge-case-grid">
 {slots_html}
 </div>
-<div class="badge-case-footer">{footer_msg}</div>
+<div class="badge-case-footer" style="margin-top:30px;">{footer_msg}</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
+
+    # ── Gym Leader Badges (New Section) ──
+    gym_badges_owned = stats.get("gym_badges", []) if stats else []
+    
+    GYM_LEADERS = [
+        {"id": "웅이", "glow": "#a0aec0"},
+        {"id": "이슬이", "glow": "#63b3ed"},
+        {"id": "아이리스", "glow": "#9f7aea"},
+        {"id": "민화", "glow": "#68d391"},
+        {"id": "풍란", "glow": "#4fd1c5"},
+        {"id": "채두", "glow": "#f6ad55"},
+        {"id": "순무", "glow": "#fc8181"},
+        {"id": "지우", "glow": "#FFCB05"},
+    ]
+
+    gym_slot_parts = []
+    for g in GYM_LEADERS:
+        img_path = f"img/{g['id']}_뱃지.png"
+        b64 = _b64_img(img_path)
+        glow = g["glow"]
+        unlocked = g["id"] in gym_badges_owned
+        
+        if unlocked:
+            html = f'<div class="badge-slot"><div class="badge-circle unlocked" style="box-shadow:0 0 18px {glow}55, 0 0 40px {glow}22; border-color:{glow}88;"><img src="{b64}" class="badge-img-unlock" alt="{g["id"]}"></div><div class="badge-slot-name done">{g["id"]}</div><div class="badge-slot-mission done">CLEARED</div></div>'
+        else:
+            html = f'<div class="badge-slot"><div class="badge-circle locked" style="opacity: 0.6;"><img src="{b64}" class="badge-img-lock" alt="{g["id"]}"></div><div class="badge-slot-name">{g["id"]}</div><div class="badge-slot-mission">LOCKED</div></div>'
+        gym_slot_parts.append(html)
+
+    gym_slots_html = "".join(gym_slot_parts)
+    gym_footer = f"🏅 {len(gym_badges_owned)} / {len(GYM_LEADERS)} 관장 제패"
+
+    st.markdown('<div class="mp-section-title">Gym Leader Medals</div>', unsafe_allow_html=True)
+    
+    final_gym_html = (
+        '<div class="mp-card card-badge" style="padding:0 !important; overflow:hidden; border-radius: 28px; border-top: 6px solid #FFCB05;">'
+        '<div class="badge-case" style="background: linear-gradient(160deg, #2d3436 0%, #000000 100%); border:none; border-radius:0; padding: 40px;">'
+        '<div class="badge-case-title" style="color: #FFCB05;">LEAGUE CHAMPION · GYM BADGES</div>'
+        '<div class="badge-case-grid" style="grid-template-columns: repeat(4, 1fr); gap: 30px 10px;">'
+        f'{gym_slots_html}'
+        '</div>'
+        f'<div class="badge-case-footer" style="color: #FFCB05 !important; border-color: #FFCB05; margin-top:30px; background: rgba(255,203,5,0.1);">{gym_footer}</div>'
+        '</div></div>'
+    )
+    st.markdown(final_gym_html, unsafe_allow_html=True)
+
 
     # Game Performance
     st.markdown('<div class="mp-section-title">Game Performance</div>', unsafe_allow_html=True)

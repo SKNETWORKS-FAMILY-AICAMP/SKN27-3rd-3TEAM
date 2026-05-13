@@ -60,7 +60,16 @@ if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
 embeddings = OpenAIEmbeddings()
-tavily     = TavilySearchResults(max_results=3)
+
+# Tavily API 키가 없을 경우를 대비한 예외 처리
+try:
+    if not os.environ.get("TAVILY_API_KEY"):
+        # 키가 없으면 더미 키를 잠시 넣어 초기화 에러 방지 (실제 호출 시에만 에러 발생)
+        os.environ["TAVILY_API_KEY"] = "dummy_for_startup"
+    tavily = TavilySearchResults(max_results=3)
+except Exception as e:
+    print(f"⚠️ Tavily 초기화 실패 (웹 검색 기능 제한): {e}")
+    tavily = None
 
 MODELS = {
     "gpt-4o-mini": lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
@@ -220,6 +229,8 @@ def web_search(query: str) -> str:
     최신 게임 정보, DB 미보유 포켓몬, 공식 이벤트 등에만 사용하세요.
     """
     try:
+        if not tavily:
+            return "웹 검색 API 키가 설정되지 않아 검색을 수행할 수 없습니다."
         results  = tavily.invoke(query + " 포켓몬")
         web_text = "\n\n".join([r["content"] for r in results])
         return f"✅ 웹 검색 결과:\n{web_text}"

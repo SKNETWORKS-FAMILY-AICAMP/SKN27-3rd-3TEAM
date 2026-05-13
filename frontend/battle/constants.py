@@ -47,3 +47,4 @@ STAT_STAGE_MAP = {
     "evasion": "evasion_stage",
     "critical": "critical_stage"
 }
+

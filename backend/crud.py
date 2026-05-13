@@ -3,6 +3,7 @@ from sqlalchemy import or_, and_
 from fastapi import HTTPException
 import models
 import schemas
+import json
 from typing import List, Optional
 
 def get_pokemon_list(
@@ -280,22 +281,41 @@ def get_user_stats(db: Session, user_id: int):
     stats = {
         "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
         "memory": {"total": 0, "correct": 0, "hint_used": 0},
+        "gym_badges": [],
         "collected_pokemon_ids": []
     }
     
     collected_ids = set()
+    gym_badges = set()
+    
     for log in logs:
         g_type = log.game_type
-        if g_type in stats:
+        
+        # 퀴즈/메모리 게임 통계
+        if g_type in ["silhouette", "memory"]:
             stats[g_type]["total"] += 1
             if log.is_correct:
                 stats[g_type]["correct"] += 1
-                if log.pokemon_id:
-                    collected_ids.add(log.pokemon_id)
             if log.hint_used:
                 stats[g_type]["hint_used"] += 1
+        
+        # 도감 수집 목록 (정답 맞힌 경우)
+        if log.is_correct and log.pokemon_id:
+            collected_ids.add(log.pokemon_id)
+            
+        # 체육관 관장 승리 뱃지
+        if g_type == "gym_battle" and log.is_correct and log.log_data:
+            try:
+                # log_data가 문자열(Text)인 경우 파싱
+                data = json.loads(log.log_data)
+                leader = data.get("leader")
+                if leader:
+                    gym_badges.add(leader)
+            except Exception as e:
+                print(f"DEBUG: Error parsing gym_battle log_data: {e}")
     
     stats["collected_pokemon_ids"] = sorted(list(collected_ids))
+    stats["gym_badges"] = list(gym_badges)
     return stats
 
 
@@ -303,3 +323,27 @@ def get_user_logs(db: Session, user_id: int, limit: int = 10):
     """최근 게임 로그를 조회합니다."""
     return db.query(models.GameLog).filter(models.GameLog.user_id == user_id)\
              .order_by(models.GameLog.created_at.desc()).limit(limit).all()
+
+
+def save_user_battle_team(db: Session, user_id: int, team_data: list):
+    """사용자의 커스텀 배틀 팀을 저장합니다."""
+    db_team = db.query(models.UserBattleTeam).filter(models.UserBattleTeam.user_id == user_id).first()
+    
+    if db_team:
+        db_team.team_data = team_data
+    else:
+        db_team = models.UserBattleTeam(user_id=user_id, team_data=team_data)
+        db.add(db_team)
+        
+    try:
+        db.commit()
+        db.refresh(db_team)
+        return db_team
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+def get_user_battle_team(db: Session, user_id: int):
+    """사용자의 커스텀 배틀 팀을 조회합니다."""
+    return db.query(models.UserBattleTeam).filter(models.UserBattleTeam.user_id == user_id).first()

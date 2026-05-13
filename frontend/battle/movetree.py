@@ -375,7 +375,7 @@ class MoveProcessor:
         return self.messages
 
 
-def process_turn(user_pokemon: dict, bot_pokemon: dict, user_move: dict, bot_move: dict) -> list:
+def run_battle_logic(user_pokemon: dict, bot_pokemon: dict, user_move: dict, bot_move: dict) -> list:
     """
     양측의 포켓몬과 선택한 기술을 받아 1턴을 진행하고 로그 메시지 리스트를 반환합니다.
     (스피드와 우선도에 따른 선후공 결정 포함)

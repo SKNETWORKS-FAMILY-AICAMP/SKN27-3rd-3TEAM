@@ -46,7 +46,7 @@ def inject_common_ui(spacer=False, show_header=True, hide_sidebar=True):
 <div class="nav-right">{nav_right_content}</div>
 </nav>
         """).strip()
-        if spacer: nav_html += '<div style="height:90px; width:100%;"></div>'
+        if spacer: nav_html += '<div style="height:50px; width:100%;"></div>'
     else: header_css = ".top-nav { display: none !important; }"
 
     splash_html = f'<div id="splash-screen"><div class="splash-content">{POKEBALL_SVG}<div class="splash-text">LOADING</div></div></div>'
