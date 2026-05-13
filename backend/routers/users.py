@@ -42,3 +42,16 @@ def get_user_stats(user_id: int, db: Session = Depends(get_db)):
 def get_user_logs(user_id: int, db: Session = Depends(get_db), limit: int = 10):
     """유저의 최근 미니게임 플레이 로그를 조회합니다."""
     return crud.get_user_logs(db, user_id, limit)
+
+@router.post("/{user_id}/battle-team", response_model=schemas.UserBattleTeamResponse)
+def save_battle_team(user_id: int, team_data: schemas.UserBattleTeamCreate, db: Session = Depends(get_db)):
+    """유저의 커스텀 배틀 팀을 저장합니다."""
+    return crud.save_user_battle_team(db, user_id, team_data.team_data)
+
+@router.get("/{user_id}/battle-team", response_model=schemas.UserBattleTeamResponse)
+def get_battle_team(user_id: int, db: Session = Depends(get_db)):
+    """유저의 커스텀 배틀 팀을 조회합니다."""
+    db_team = crud.get_user_battle_team(db, user_id)
+    if not db_team:
+        raise HTTPException(status_code=404, detail="Saved battle team not found")
+    return db_team

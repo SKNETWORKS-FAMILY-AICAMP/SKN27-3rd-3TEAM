@@ -2276,7 +2276,7 @@
     "min_turns": null,
     "stat_chance": 0,
     "stat_changes": [],
-    "target": "all-other-pokemon"
+    "target": "selected-pokemon"
   },
   {
     "id": 90,
@@ -21088,7 +21088,7 @@
     "power": 55,
     "accuracy": 100,
     "pp": 20,
-    "priority": 0,
+    "priority": 1,
     "effect_text": "지면에 미끄러지듯 상대를 공격한다. 그래스필드일 때 반드시 선제공격할 수 있다.",
     "ailment": "none",
     "ailment_chance": 0,

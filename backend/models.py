@@ -140,6 +140,19 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     game_logs = relationship("GameLog", back_populates="user")
+    battle_team = relationship("UserBattleTeam", back_populates="user", uselist=False)
+
+
+class UserBattleTeam(Base):
+    __tablename__ = "user_battle_teams"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), unique=True)
+    team_data = Column(JSONB, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = relationship("User", back_populates="battle_team")
 
 
 class GameLog(Base):
