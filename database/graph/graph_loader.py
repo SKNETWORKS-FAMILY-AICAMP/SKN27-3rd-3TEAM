@@ -748,24 +748,42 @@ def create_pokemon_can_know_relationships(conn: Neo4jConnection) -> None:
         learn_method와 level_learned_at을 관계 속성으로 둡니다.
     """
     rows = [
-        {
-            "pokemon_id": row["pokemon_id"],
-            "move_id": row["move_id"],
-            "learn_method": row.get("learn_method"),
-            "level_learned_at": row.get("level_learned_at"),
-        }
-        for row in load_json("pokemon_moves.json")
+    {
+        'pokemon_id': pm_map.get('pokemon_id'),
+        'move_id': pm_map.get('move_id'),
+        'learn_method': pm_map.get('learn_method')
+    }
+    for pm_map in load_json("pokemon_moves.json")
     ]
-
+    
     query = """
     UNWIND $rows AS row
+    WITH DISTINCT row
     MATCH (p:Pokemon {pokemon_id: row.pokemon_id})
     MATCH (m:Move {move_id: row.move_id})
     MERGE (p)-[r:CAN_KNOW {
-        learn_method: row.learn_method,
-        level_learned_at: row.level_learned_at
+        learn_method: row.learn_method
     }]->(m)
     """
+    # rows = [
+    #     {
+    #         "pokemon_id": row["pokemon_id"],
+    #         "move_id": row["move_id"],
+    #         "learn_method": row.get("learn_method"),
+    #         "level_learned_at": row.get("level_learned_at"),
+    #     }
+    #     for row in load_json("pokemon_moves.json")
+    # ]
+    #
+    # query = """
+    # UNWIND $rows AS row
+    # MATCH (p:Pokemon {pokemon_id: row.pokemon_id})
+    # MATCH (m:Move {move_id: row.move_id})
+    # MERGE (p)-[r:CAN_KNOW {
+    #     learn_method: row.learn_method,
+    #     level_learned_at: row.level_learned_at
+    # }]->(m)
+    # """
     run_batched(conn, query, rows, "Pokemon CAN_KNOW relationships")
 
 

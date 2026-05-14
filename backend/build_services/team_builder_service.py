@@ -118,11 +118,15 @@ def _build_candidate_score(
     # move_type_count는 후보가 배울 수 있는 기술 타입의 다양성을 의미합니다.
     move_type_count = len(candidate_move_types)
 
-    # duplicate_type_count는 후보 타입이 현재 팀과 얼마나 겹치는지 의미합니다.
-    duplicate_type_count = sum(
-        team_type_counts.get(type_row["type_id"], 0)
+    # duplicate_type_count는 후보 타입이 현재 팀과 겹치는 "종류" 수를 의미합니다.
+    # 팀에 같은 타입이 여러 번 있어도 후보 입장에서는 해당 타입 1종류가 겹친 것으로 봅니다.
+    team_type_ids = {type_id for type_id, count in team_type_counts.items() if count > 0}
+    duplicate_type_ids = {
+        type_row["type_id"]
         for type_row in candidate_types
-    )
+        if type_row.get("type_id") in team_type_ids
+    }
+    duplicate_type_count = len(duplicate_type_ids)
 
     # useful_move_notes는 RAG와 프론트 카드에서 사용할 대표 기술 설명 목록입니다.
     useful_move_notes = _build_useful_move_notes(useful_moves, candidate_types)
@@ -130,14 +134,15 @@ def _build_candidate_score(
     # defensive_score는 약점을 보완하는 정도를 가장 크게 반영합니다.
     defensive_score = len(defensive_covers) * 25
 
-    # stat_score는 기본 능력치 합계를 100점대 점수에 섞기 위해 완만하게 반영합니다.
-    stat_score = min(base_total / 10, 70)
+    # stat_score는 기본 능력치를 추천의 보조 기준으로만 반영하기 위해 최대 5점으로 제한합니다.
+    stat_score = round(min(base_total / 140, 5), 2)
 
     # coverage_score는 후보가 다양한 타입 기술을 배울수록 조금 더 높게 줍니다.
     coverage_score = min(move_type_count * 1.5, 20)
 
-    # duplicate_penalty는 이미 팀에 많은 타입과 겹치면 점수를 조금 낮추기 위한 값입니다.
-    duplicate_penalty = duplicate_type_count * 4
+    # duplicate_penalty는 6번째 포켓몬의 타입 다양성을 강하게 유도하기 위한 감점입니다.
+    # 후보 타입 1종류가 현재 팀과 겹치면 20점, 2종류가 겹치면 최대 40점까지 감점합니다.
+    duplicate_penalty = min(duplicate_type_count * 20, 40)
 
     # total_score는 추천 정렬에 사용할 최종 점수입니다.
     total_score = round(
@@ -148,13 +153,13 @@ def _build_candidate_score(
     # reasons는 프론트엔드와 이후 RAG 설명에 전달할 추천 근거 목록입니다.
     reasons = [
         _build_defensive_reason(defensive_covers),
-        f"기본 능력치 합계가 {base_total}입니다.",
+        f"기본 능력치 합계가 {base_total}이며 능력치 보조 점수는 {stat_score}점입니다.",
         _build_move_reason(useful_move_notes),
         f"{move_type_count}개 타입의 기술을 배울 수 있어 기술 선택 폭이 넓습니다.",
     ]
 
     if duplicate_type_count:
-        reasons.append(f"현재 팀과 겹치는 타입이 {duplicate_type_count}개 있어 감점했습니다.")
+        reasons.append(f"현재 팀과 겹치는 타입 종류가 {duplicate_type_count}개 있어 감점했습니다.")
 
     return {
         "pokemon_id": candidate["pokemon_id"],

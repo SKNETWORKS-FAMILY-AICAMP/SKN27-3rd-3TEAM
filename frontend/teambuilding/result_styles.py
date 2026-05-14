@@ -10,6 +10,14 @@ RESULT_CSS = """
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
 }
+[data-testid="stAppViewContainer"] .block-container,
+[data-testid="stMain"] .block-container,
+.stApp .main .block-container {
+    max-width: 1280px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 1.5rem 5rem 5rem !important;
+}
 
 /* ── Hero ────────────────────────────────────────────────────────── */
 .tr-hero {

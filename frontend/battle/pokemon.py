@@ -63,7 +63,7 @@ class PokemonDB:
             
             # 3. Fetch Moves
             move_query = """
-            MATCH (p:Pokemon {pokemon_id: $id})-[r:CAN_KNOW]->(m:Move)
+            MATCH (p:Pokemon {pokemon_id: $id})-[r:CAN_KNOW {learn_method: 'level-up'}]->(m:Move)
             RETURN DISTINCT m.name as name, m.move_id as id, m.type_id as type_id, 
                    m.power as power, m.accuracy as accuracy, m.damage_class as damage_class,
                    m.effect_text as effect_text, m.target as target,

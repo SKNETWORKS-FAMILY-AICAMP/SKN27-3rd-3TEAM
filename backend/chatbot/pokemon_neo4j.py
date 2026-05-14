@@ -52,6 +52,24 @@ except ImportError:
 
 
 # ══════════════════════════════════════════════════════════
+# Phase 4-B: 알려진 진화 조건 fallback 맵 (Neo4j 데이터 미수록분)
+# ══════════════════════════════════════════════════════════
+
+KNOWN_EVO_CONDITIONS: dict[str, str] = {
+    "에스피온":   "낮에 친밀도 MAX",
+    "블래키":     "밤에 친밀도 MAX",
+    "글레이시아":  "아이템: 얼음의돌",
+    "리피아":     "아이템: 이끼의돌",
+    "님피아":     "아이템: 요정의돌 또는 낮에 친밀도 MAX + 페어리기술 습득",
+    "에브이":     "친밀도 MAX",
+    "루카리오":   "낮에 친밀도 MAX",
+    "가디안":     "친밀도 MAX",
+    "해피너스":   "친밀도 MAX",
+    "또가스(갈라르)": "친밀도 MAX",
+}
+
+
+# ══════════════════════════════════════════════════════════
 # Agent Tools
 # ══════════════════════════════════════════════════════════
 
@@ -85,6 +103,9 @@ def search_evolution_chain(pokemon_name: str) -> str:
                 WHERE targetP.name CONTAINS $name
                 WITH targetP LIMIT 1
                 MATCH path = (targetP)-[:EVOLVES_TO*1..3]->(nextP:Pokemon)
+                WHERE NOT nextP.name CONTAINS '메가'
+                  AND NOT nextP.name CONTAINS '거다이맥스'
+                  AND NOT nextP.name CONTAINS 'Mega'
                 RETURN DISTINCT length(path) AS depth,
                        nextP.name   AS evolved_name,
                        [r IN relationships(path) | {
@@ -141,7 +162,9 @@ def search_evolution_chain(pokemon_name: str) -> str:
                         name = item_name_map.get(c["trigger_item_id"], f"아이템ID:{c['trigger_item_id']}")
                         cond_parts.append(f"아이템: {name}")
                     else:
-                        cond_parts.append("조건 미상")
+                        # Phase 4-B: 알려진 진화 조건 fallback
+                        known = KNOWN_EVO_CONDITIONS.get(r["evolved_name"])
+                        cond_parts.append(known if known else "조건 미상")
                 depth_arrow = " → " * r["depth"]
                 lines.append(
                     f"  {pokemon_name}{depth_arrow}{r['evolved_name']}"
@@ -232,7 +255,33 @@ def search_type_relations(type_name: str) -> str:
                 LIMIT 5
             """, name=type_name).data()
 
-        if not strong and not weak and not vulnerable and not immune_types:
+            # 이 타입 포켓몬이 방어할 때 저항하는 공격 타입 (0 < mult <= 0.5)
+            resistant_def = session.run("""
+                MATCH (defType:Type)
+                WHERE defType.name CONTAINS $name
+                MATCH (p:Pokemon)-[:HAS_TYPE]->(defType)
+                WHERE size([(p)-[:HAS_TYPE]->() | 1]) = 1
+                MATCH (p)-[r:AGAINST]->(attackType:Type)
+                WHERE r.multiplier > 0.0 AND r.multiplier <= 0.5
+                WITH attackType.name AS attacker, min(r.multiplier) AS factor
+                RETURN attacker, factor
+                ORDER BY factor ASC, attacker
+            """, name=type_name).data()
+
+            # 이 타입 포켓몬이 방어할 때 면역인 공격 타입 (0배)
+            immune_def = session.run("""
+                MATCH (defType:Type)
+                WHERE defType.name CONTAINS $name
+                MATCH (p:Pokemon)-[:HAS_TYPE]->(defType)
+                WHERE size([(p)-[:HAS_TYPE]->() | 1]) = 1
+                MATCH (p)-[r:AGAINST]->(attackType:Type)
+                WHERE r.multiplier = 0.0
+                WITH attackType.name AS attacker
+                RETURN DISTINCT attacker
+                ORDER BY attacker
+            """, name=type_name).data()
+
+        if not strong and not weak and not vulnerable and not immune_types and not resistant_def:
             return f"{type_name} 타입 정보를 찾을 수 없습니다."
 
         def fmt(factor: float) -> str:
@@ -257,6 +306,14 @@ def search_type_relations(type_name: str) -> str:
         if vulnerable:
             names = ", ".join([f"{r['attacker']}({fmt(r['factor'])})" for r in vulnerable])
             lines.append(f"⚠️  이 타입의 약점 (당할 때): {names}")
+
+        if immune_def:
+            names = ", ".join([r["attacker"] for r in immune_def])
+            lines.append(f"✨ 이 타입의 면역 (당할 때 0배): {names}")
+
+        if resistant_def:
+            names = ", ".join([f"{r['attacker']}({fmt(r['factor'])})" for r in resistant_def])
+            lines.append(f"🛡️  이 타입의 저항 (당할 때 절반-): {names}")
 
         if weak_pokemon:
             names = ", ".join([r["name"] for r in weak_pokemon])
