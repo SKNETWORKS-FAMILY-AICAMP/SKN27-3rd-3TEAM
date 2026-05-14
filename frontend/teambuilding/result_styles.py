@@ -10,32 +10,19 @@ RESULT_CSS = """
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
 }
-[data-testid="stAppViewContainer"] .block-container,
-[data-testid="stMain"] .block-container,
-.stApp .main .block-container {
-    max-width: 1280px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding: 1.5rem 5rem 5rem !important;
-}
-
-/* ── Back button ─────────────────────────────────────────────────── */
-.element-container:has(.tr-back-btn) + .element-container button {
-    background: rgba(255,255,255,0.75) !important;
-    border: 1px solid rgba(203,213,225,0.8) !important;
-    color: #64748b !important;
-    border-radius: 10px !important;
-    font-family: 'Outfit', sans-serif !important;
-    font-weight: 700 !important;
-    height: 42px !important;
-    backdrop-filter: blur(12px) !important;
-    margin-bottom: 16px !important;
-}
 
 /* ── Hero ────────────────────────────────────────────────────────── */
 .tr-hero {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
     text-align: center;
-    padding: 44px 0 32px;
+    padding: 60px 20px 40px;
+    margin-top: -1.5rem;
+    margin-bottom: 40px;
 }
 .tr-hero-tag {
     display: inline-block;
