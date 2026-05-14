@@ -313,13 +313,101 @@ def show():
                 st.markdown('<div style="height: 1px;"></div>', unsafe_allow_html=True)
 
         if not msgs and not is_loading:
+            # Modern Welcome Screen
             st.markdown("""
-            <div class="cb-welcome">
-                <div class="cb-welcome-ball"></div>
-                <div class="cb-welcome-title">포켓몬 박사에게 물어보세요!</div>
-                <div class="cb-welcome-sub">
-                    타입 상성 · 스탯 · 진화 경로 · 도감 설명<br>
-                    무엇이든 답해드립니다
+            <style>
+                .welcome-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    min-height: 50vh;
+                    text-align: center;
+                    padding: 0 20px;
+                    animation: fadeIn 0.8s ease-out;
+                }
+                .welcome-icon {
+                    font-size: 48px;
+                    margin-bottom: 16px;
+                    filter: drop-shadow(0 4px 12px rgba(238, 21, 21, 0.3));
+                    animation: float 3s ease-in-out infinite;
+                }
+                .welcome-title {
+                    font-size: 28px;
+                    font-weight: 800;
+                    color: #1e293b;
+                    margin-bottom: 12px;
+                    letter-spacing: -0.5px;
+                }
+                .welcome-subtitle {
+                    font-size: 15px;
+                    color: #64748b;
+                    margin-bottom: 40px;
+                    line-height: 1.6;
+                    max-width: 400px;
+                }
+                .chip-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 12px;
+                    width: 100%;
+                    max-width: 600px;
+                }
+                .suggestion-chip {
+                    background: #ffffff;
+                    border: 1px solid rgba(226, 232, 240, 0.8);
+                    border-radius: 16px;
+                    padding: 16px;
+                    text-align: left;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+                    transition: all 0.2s ease;
+                    cursor: pointer;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                .suggestion-chip:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+                    border-color: #cbd5e1;
+                }
+                .chip-icon {
+                    font-size: 20px;
+                }
+                .chip-text {
+                    font-size: 14px;
+                    color: #334155;
+                    font-weight: 600;
+                }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+            </style>
+            
+            <div class="welcome-container">
+                <div class="welcome-icon">⚡</div>
+                <div class="welcome-title">오박사님의 포켓몬 연구소</div>
+                <div class="welcome-subtitle">
+                    타입 상성부터 능력치 비교, 진화 경로까지<br>포켓몬에 관한 모든 지식을 물어보세요.
+                </div>
+                
+                <div class="chip-grid">
+                    <div class="suggestion-chip">
+                        <span class="chip-icon">📊</span>
+                        <span class="chip-text">피카츄와 라이츄의 능력치 비교해줘</span>
+                    </div>
+                    <div class="suggestion-chip">
+                        <span class="chip-icon">🔥</span>
+                        <span class="chip-text">불꽃 타입의 가장 큰 약점은 뭐야?</span>
+                    </div>
+                    <div class="suggestion-chip">
+                        <span class="chip-icon">🧬</span>
+                        <span class="chip-text">이브이의 진화 경로를 모두 알려줘</span>
+                    </div>
+                    <div class="suggestion-chip">
+                        <span class="chip-icon">📖</span>
+                        <span class="chip-text">잠만보에 대한 도감 설명을 읽어줄래?</span>
+                    </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -328,3 +416,4 @@ def show():
         st.session_state.messages.append({"role": "user", "content": prompt, "used_tools": []})
         st.session_state.is_loading = True
         st.rerun()
+
