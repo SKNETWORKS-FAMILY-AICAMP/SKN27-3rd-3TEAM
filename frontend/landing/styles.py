@@ -64,15 +64,15 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 }}
 
 /* ── Section Backgrounds ── */
-.sec-hero        {{ background: url('{bg["main"]}')        center/cover no-repeat fixed; }}
-.sec-grass       {{ background: url('{bg["pokedex"]}')     center/cover no-repeat fixed; }}
-.sec-fire        {{ background: url('{bg["battle"]}')      center/cover no-repeat fixed; }}
-.sec-psychic     {{ background: url('{bg["chatbot"]}')     center/cover no-repeat fixed; }}
+.sec-hero        {{ background: url('{bg["main"]}')         center/cover no-repeat fixed; }}
+.sec-grass       {{ background: url('{bg["pokedex"]}')      center/cover no-repeat fixed; }}
+.sec-fire        {{ background: url('{bg["battle"]}')       center/cover no-repeat fixed; }}
+.sec-psychic     {{ background: url('{bg["chatbot"]}')      center/cover no-repeat fixed; }}
 .sec-ghost       {{ background: url('{bg["teambuilding"]}') center/cover no-repeat fixed; }}
-.sec-water       {{ background: url('{bg["login"]}')       center/cover no-repeat fixed; }}
-.sec-electric    {{ background: url('{bg["game1"]}')       center/cover no-repeat fixed; }}
-.sec-dragon      {{ background: url('{bg["game2"]}')       center/cover no-repeat fixed; }}
-.sec-pipigo      {{ background: url('{bg["pipigo"]}')      center/cover no-repeat fixed; }}
+.sec-water       {{ background: url('{bg["login"]}')        center/cover no-repeat fixed; }}
+.sec-electric    {{ background: url('{bg["game1"]}')        center/cover no-repeat fixed; }}
+.sec-dragon      {{ background: url('{bg["game2"]}')        center/cover no-repeat fixed; }}
+.sec-pipigo      {{ background: url('{bg["pipigo"]}')       center/cover no-repeat fixed; }}
 
 /* ── Holographic Card ── */
 .section-inner {{
@@ -91,7 +91,7 @@ html, body, [data-testid="stAppViewContainer"], .stApp {{
 .reverse .section-inner {{ flex-direction: row-reverse; }}
 
 /* ── Typography ── */
-.text-box  {{ flex: 1.2; z-index: 2; }}
+.text-box   {{ flex: 1.2; z-index: 2; }}
 .visual-box {{ flex: 1; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }}
 
 .sec-badge {{

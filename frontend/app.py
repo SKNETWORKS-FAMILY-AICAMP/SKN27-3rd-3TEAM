@@ -1,8 +1,8 @@
 import streamlit as st
 from utils.ui import inject_common_ui
 from utils.images import load_backgrounds, load_characters
-from styles.landing import get_landing_css
-from components.home_sections import get_home_html, get_home_js
+from landing.styles import get_landing_css
+from landing.sections import get_home_html, get_home_js
 
 st.set_page_config(
     page_title="포켓몬 비공식 사이트",
