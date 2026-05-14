@@ -1,8 +1,13 @@
 import streamlit as st
+from .styles import get_base64_img
 
 ART_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
 
 def show_selector():
+    # 이미지 로드
+    char1 = get_base64_img("game1.png")
+    char2 = get_base64_img("minigame2.png")
+
     st.markdown('<div class="game-container">', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="header-card">
@@ -16,7 +21,7 @@ def show_selector():
     with col1:
         st.markdown(f"""
         <div class="game-card">
-            <img src="{ART_URL}/25.png" style="filter: brightness(0);">
+            <img src="{char1}" style="filter: brightness(0);">
             <div class="game-title">실루엣 퀴즈</div>
             <div class="game-desc">그림자만 보고 어떤 포켓몬인지 맞혀보세요!<br>포켓몬 박사라면 식은 죽 먹기죠?</div>
         </div>
@@ -27,12 +32,12 @@ def show_selector():
     with col2:
         st.markdown(f"""
         <div class="game-card">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png">
-            <div class="game-title">포켓몬 랩배틀</div>
-            <div class="game-desc">포켓몬들의 찰진 디스전!<br>상성과 설정을 이용한 영혼의 랩 배틀을 감상하세요.</div>
+            <img src="{char2}">
+            <div class="game-title">메모리 게임</div>
+            <div class="game-desc">카드 뒷면의 포켓몬을 맞혀보세요!<br>기억력을 시험해 보세요!</div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Start Battle", key="start_battle"):
+        if st.button("Start Memory", key="start_memory"):
             st.switch_page("pages/game_2.py")
     
     st.markdown('</div>', unsafe_allow_html=True)

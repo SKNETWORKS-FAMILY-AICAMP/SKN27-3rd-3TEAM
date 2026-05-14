@@ -152,7 +152,7 @@ def handle_logged_out_view():
 {POKEBALL_SVG}
 <h1 class="login-title">트레이너 인증</h1>
 <p class="login-subtitle">포켓몬 월드의 정식 트레이너가 되어<br>나만의 팀과 기록을 관리하세요.</p>
-<a href="{auth_url}" target="_self" class="github-btn">
+<a href="{auth_url}" target="_top" class="github-btn">
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="24" style="filter:invert(1); margin-right:10px;">
 GitHub 계정으로 시작하기
 </a>
