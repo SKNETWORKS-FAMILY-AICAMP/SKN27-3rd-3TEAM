@@ -104,9 +104,10 @@ def create_neo4j_client_from_env() -> Neo4jClient:
     if "/" in neo4j_auth:
         auth_user, auth_password = neo4j_auth.split("/", 1)
 
-    uri = os.getenv("GRAPH_DB_URI", "bolt://neo4j:7687")
-    user = os.getenv("GRAPH_DB_USER", auth_user)
-    password = os.getenv("GRAPH_DB_PASSWORD", auth_password)
+    # 1. GRAPH_DB_* 우선, 2. NEO4J_* 차선, 3. 기본값 순으로 읽어옴
+    uri = os.getenv("GRAPH_DB_URI") or os.getenv("NEO4J_URI") or "bolt://neo4j:7687"
+    user = os.getenv("GRAPH_DB_USER") or os.getenv("NEO4J_USER") or auth_user
+    password = os.getenv("GRAPH_DB_PASSWORD") or os.getenv("NEO4J_PASSWORD") or auth_password
 
     return Neo4jClient(uri=uri, user=user, password=password)
 
