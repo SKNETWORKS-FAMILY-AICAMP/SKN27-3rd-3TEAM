@@ -30,13 +30,13 @@ def ensure_schema_up_to_date(cursor):
             -- moves 테이블에 damage_class 추가
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='damage_class') THEN
-                ALTER TABLE moves ADD COLUMN damage_class VARCHAR(20);
+                ALTER TABLE moves ADD COLUMN damage_class VARCHAR(50);
             END IF;
 
             -- moves 테이블에 나머지 컬럼들 추가 (존재하지 않을 경우)
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='ailment') THEN
-                ALTER TABLE moves ADD COLUMN ailment VARCHAR(10);
+                ALTER TABLE moves ADD COLUMN ailment VARCHAR(50);
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='ailment_chance') THEN
@@ -44,7 +44,7 @@ def ensure_schema_up_to_date(cursor):
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='category') THEN
-                ALTER TABLE moves ADD COLUMN category VARCHAR(20);
+                ALTER TABLE moves ADD COLUMN category VARCHAR(50);
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='crit_rate') THEN
@@ -84,18 +84,18 @@ def ensure_schema_up_to_date(cursor):
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='stat_changes') THEN
-                ALTER TABLE moves ADD COLUMN stat_changes VARCHAR(100);
+                ALTER TABLE moves ADD COLUMN stat_changes TEXT;
             ELSE
-                -- 이미 존재한다면 길이 확장
-                ALTER TABLE moves ALTER COLUMN stat_changes TYPE VARCHAR(100);
+                -- 이미 존재한다면 타입 변경 (JSON 데이터이므로 TEXT가 안전)
+                ALTER TABLE moves ALTER COLUMN stat_changes TYPE TEXT;
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='target') THEN
-                ALTER TABLE moves ADD COLUMN target VARCHAR(20);
+                ALTER TABLE moves ADD COLUMN target VARCHAR(50);
             END IF;
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                            WHERE table_name='moves' AND column_name='fixed_damage') THEN
-                ALTER TABLE moves ADD COLUMN fixed_damage VARCHAR(30);
+                ALTER TABLE moves ADD COLUMN fixed_damage VARCHAR(50);
             END IF;
 
             -- abilities 테이블에 embedding 추가

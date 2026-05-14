@@ -292,6 +292,7 @@ def get_user_stats(db: Session, user_id: int):
     stats = {
         "silhouette": {"total": 0, "correct": 0, "hint_used": 0},
         "memory": {"total": 0, "correct": 0, "hint_used": 0},
+        "battle": {"total": 0},
         "gym_badges": [],
         "collected_pokemon_ids": []
     }
@@ -309,6 +310,10 @@ def get_user_stats(db: Session, user_id: int):
                 stats[g_type]["correct"] += 1
             if log.hint_used:
                 stats[g_type]["hint_used"] += 1
+        
+        # 배틀 참여 통계
+        if g_type == "gym_battle":
+            stats["battle"]["total"] += 1
         
         # 도감 수집 목록 (정답 맞힌 경우)
         if log.is_correct and log.pokemon_id:

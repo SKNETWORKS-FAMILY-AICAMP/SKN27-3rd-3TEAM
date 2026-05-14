@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS moves (
     min_hits        INTEGER,
     min_turns       INTEGER,
     stat_chance     INTEGER,
-    stat_changes    VARCHAR(100),
+    stat_changes    TEXT,
     target          VARCHAR(50),
     fixed_damage    VARCHAR(50),
     effect_text     TEXT,

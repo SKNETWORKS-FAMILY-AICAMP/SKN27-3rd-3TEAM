@@ -1,4 +1,4 @@
-﻿"""팀 분석·추천 결과 전용 페이지 — 포켓몬 디테일 페이지 스타일 기반."""
+"""팀 분석·추천 결과 전용 페이지 — 포켓몬 디테일 페이지 스타일 기반."""
 
 from __future__ import annotations
 
@@ -130,23 +130,14 @@ def _render_insights(insights: Dict[str, Any]) -> None:
     )
 
 
-def _render_rag_answer(result: Dict[str, Any]) -> None:
+def _render_rag_answer(result: Dict[str, Any], title: str = "AI 종합 의견") -> None:
     rag = result.get("rag_answer") or result.get("final_answer", "")
     if not rag:
         return
 
-    parts = str(rag).split("\n\n", 1)
-    conclusion = escape(parts[0].strip())
-    body = _clean_body(parts[1]) if len(parts) > 1 else f"<p>{conclusion}</p>"
-
-    st.markdown(
-        f"""<div class="tr-glass tr-rag-card">
-            <div class="tr-rag-label">AI 종합 의견</div>
-            <div class="tr-rag-conclusion">{conclusion}</div>
-            <div class="tr-rag-body">{body}</div>
-        </div>""",
-        unsafe_allow_html=True,
-    )
+    with st.container(border=True):
+        st.markdown(f"#### {title}")
+        st.markdown(rag)
 
 
 def _render_detail_cards(
@@ -274,7 +265,6 @@ def main() -> None:
 
     if not result_type:
         st.error("결과 데이터가 없습니다. 팀 빌더로 돌아가세요.")
-        st.markdown('<div class="tr-back-btn"></div>', unsafe_allow_html=True)
         if st.button("← 팀 빌더로 돌아가기", key="back_btn_err"):
             st.switch_page("pages/teambuilding.py")
         return
@@ -291,41 +281,39 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    # Back button
-    st.markdown('<div class="tr-back-btn"></div>', unsafe_allow_html=True)
-    if st.button("← 팀 빌더로 돌아가기", key="back_btn"):
-        st.switch_page("pages/teambuilding.py")
-
-    # ── Analysis section ──────────────────────────────────────────────────
-    analysis_result: Dict[str, Any] = st.session_state.get("analysis_result") or {}
-    if analysis_result:
-        analysis = analysis_result.get("graph_result", analysis_result)
-
-        _render_selected_team(analysis.get("selected_pokemon", []))
-        _render_insights(analysis.get("insights", {}))
-        _render_rag_answer(analysis_result)
-
-        weaknesses = sorted(
-            analysis.get("weak_types", analysis.get("weaknesses", [])),
-            key=lambda x: x.get("score", 0), reverse=True,
-        )
-        resistances = sorted(
-            analysis.get("resistant_types", analysis.get("resistances", [])),
-            key=lambda x: x.get("score", 0), reverse=True,
-        )
-        move_coverage = sorted(
-            analysis.get("move_type_coverage", []),
-            key=lambda x: x.get("move_count", 0), reverse=True,
-        )
-        _render_detail_cards(weaknesses, resistances, move_coverage)
-
-    # ── Recommendation section ────────────────────────────────────────────
-    rec_result: Dict[str, Any] = st.session_state.get("recommendation_result") or {}
-    if rec_result:
-        st.markdown("<hr style='border-color:rgba(255,255,255,0.07);margin:8px 0 4px'>", unsafe_allow_html=True)
-        _render_rag_answer(rec_result)
-        reranked = rec_result.get("reranked_result", rec_result.get("graph_result", rec_result))
-        _render_recommendation_cards(reranked.get("recommendations", []))
+    _, center_col, _ = st.columns([1, 10, 1])
+    
+    with center_col:
+        # ── Analysis section ──────────────────────────────────────────────────
+        analysis_result: Dict[str, Any] = st.session_state.get("analysis_result") or {}
+        if analysis_result:
+            analysis = analysis_result.get("graph_result", analysis_result)
+    
+            _render_selected_team(analysis.get("selected_pokemon", []))
+            _render_insights(analysis.get("insights", {}))
+            _render_rag_answer(analysis_result)
+    
+            weaknesses = sorted(
+                analysis.get("weak_types", analysis.get("weaknesses", [])),
+                key=lambda x: x.get("score", 0), reverse=True,
+            )
+            resistances = sorted(
+                analysis.get("resistant_types", analysis.get("resistances", [])),
+                key=lambda x: x.get("score", 0), reverse=True,
+            )
+            move_coverage = sorted(
+                analysis.get("move_type_coverage", []),
+                key=lambda x: x.get("move_count", 0), reverse=True,
+            )
+            _render_detail_cards(weaknesses, resistances, move_coverage)
+    
+        # ── Recommendation section ────────────────────────────────────────────
+        rec_result: Dict[str, Any] = st.session_state.get("recommendation_result") or {}
+        if rec_result:
+            st.markdown("<hr style='border-color:rgba(255,255,255,0.07);margin:8px 0 4px'>", unsafe_allow_html=True)
+            _render_rag_answer(rec_result)
+            reranked = rec_result.get("reranked_result", rec_result.get("graph_result", rec_result))
+            _render_recommendation_cards(reranked.get("recommendations", []))
 
 
 main()
