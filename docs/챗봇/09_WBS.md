@@ -20,9 +20,9 @@ gantt
 
     section Phase 2: 핵심 엔진 개발
         PGVector 임베딩 파이프라인     :active,  p2-1, 2025-05-13, 1d
-        Neo4j 그래프 로더 개발         :active,  p2-2, 2025-05-05, 9d
-        Tool 함수 개발 (5종)           :         p2-3, 2025-05-05, 9d
-        LangGraph Agent 구성          :         p2-4, 2025-05-05, 9d
+        Neo4j 그래프 로더 개발         :active,  p2-2, 2025-05-08, 9d
+        Tool 함수 개발 (5종)           :         p2-3, 2025-05-08, 9d
+        LangGraph Agent 구성          :         p2-4, 2025-05-08, 9d
         멀티턴 세션 DB 모듈            :         p2-5, 2025-05-13, 1d
 
     section Phase 3: 품질 및 배포
