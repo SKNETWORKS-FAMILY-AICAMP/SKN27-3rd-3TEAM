@@ -37,7 +37,7 @@ def inject_common_ui(spacer=False, show_header=True, hide_sidebar=True):
 <nav class="top-nav">
 <div class="nav-left"><a href="/" target="_self"><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" class="nav-brand-img"></a></div>
 <div class="nav-center">
-<a href="/battle2" target="_self" class="nav-item"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"><span>배틀</span></a>
+<a href="/battle" target="_self" class="nav-item"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"><span>배틀</span></a>
 <a href="/pokedex" target="_self" class="nav-item"><img src="https://i.namu.wiki/i/FN4gFeempIO4XLhMWDyRSdgwt1cZqjhLoKWd9LWeuCYZDxtms3KI2SYFGu0aums30_gue9mPnRmKkO_K8v1mDQ.webp"><span>도감</span></a>
 <a href="/chatbot" target="_self" class="nav-item"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/exp-share.png"><span>AI 박사</span></a>
 <a href="/teambuilding" target="_self" class="nav-item"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png"><span>팀 빌더</span></a>
