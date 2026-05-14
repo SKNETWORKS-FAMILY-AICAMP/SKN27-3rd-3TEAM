@@ -7,10 +7,9 @@ BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL")
 API_V1_STR = "/api/v1/pokemon"
 LOG_API_STR = "/api/v1/users/game-log"
 
+@st.cache_data(ttl=3600)
 def load_pokemon_data():
-    """포켓몬 목록을 세션당 1회만 로드해서 캐시합니다."""
-    if "_pokemon_data" in st.session_state:
-        return st.session_state["_pokemon_data"]
+    """포켓몬 목록을 API에서 로드하여 캐시합니다."""
     try:
         resp = requests.get(
             f"{BACKEND_URL}{API_V1_STR}/",
@@ -25,13 +24,12 @@ def load_pokemon_data():
                 if 1 <= item["id"] <= 1025 and item.get("name")
             ]
             if data:
-                st.session_state["_pokemon_data"] = data
                 return data
     except Exception:
         pass
-    fallback = [{"id": 25, "name": "피카츄", "types": [{"slot": 1, "type_": {"id": 13, "name": "전기"}}]}]
-    st.session_state["_pokemon_data"] = fallback
-    return fallback
+    
+    # Fallback data if API fails
+    return [{"id": 25, "name": "피카츄", "types": [{"slot": 1, "type_": {"id": 13, "name": "전기"}}]}]
 
 def save_game_log(game_type, pokemon_id, is_correct, hint_used=False, wrong_answer_name=None, log_data=None):
     user = st.session_state.get("user")
