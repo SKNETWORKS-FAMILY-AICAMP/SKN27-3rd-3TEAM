@@ -380,14 +380,14 @@ def show():
     gym_badges_owned = stats.get("gym_badges", []) if stats else []
     
     GYM_LEADERS = [
-        {"id": "웅이", "glow": "#a0aec0"},
-        {"id": "이슬이", "glow": "#63b3ed"},
-        {"id": "아이리스", "glow": "#9f7aea"},
-        {"id": "민화", "glow": "#68d391"},
-        {"id": "풍란", "glow": "#4fd1c5"},
-        {"id": "채두", "glow": "#f6ad55"},
-        {"id": "순무", "glow": "#fc8181"},
-        {"id": "지우", "glow": "#FFCB05"},
+        {"id": "웅이", "label": "하드코딩", "glow": "#a0aec0"},
+        {"id": "이슬이", "label": "스트리밍", "glow": "#63b3ed"},
+        {"id": "순무", "label": "번아웃", "glow": "#fc8181"},
+        {"id": "민화", "label": "브랜치", "glow": "#68d391"},
+        {"id": "풍란", "label": "서버리스", "glow": "#4fd1c5"},
+        {"id": "채두", "label": "런타임", "glow": "#f6ad55"},
+        {"id": "아이리스", "label": "파라미터", "glow": "#9f7aea"},
+        {"id": "지우", "label": "오리진", "glow": "#FFCB05"},
     ]
 
     gym_slot_parts = []
@@ -395,12 +395,13 @@ def show():
         img_path = f"img/badge/battle/{g['id']}_뱃지.png"
         b64 = _b64_img(img_path)
         glow = g["glow"]
+        label = g["label"]
         unlocked = g["id"] in gym_badges_owned
         
         if unlocked:
-            html = f'<div class="badge-slot"><div class="badge-circle unlocked" style="box-shadow:0 0 18px {glow}55, 0 0 40px {glow}22; border-color:{glow}88;"><img src="{b64}" class="badge-img-unlock" alt="{g["id"]}"></div><div class="badge-slot-name done">{g["id"]}</div><div class="badge-slot-mission done">CLEARED</div></div>'
+            html = f'<div class="badge-slot"><div class="badge-circle unlocked" style="box-shadow:0 0 18px {glow}55, 0 0 40px {glow}22; border-color:{glow}88;"><img src="{b64}" class="badge-img-unlock" alt="{label}"></div><div class="badge-slot-name done">{label}</div><div class="badge-slot-mission done">CLEARED</div></div>'
         else:
-            html = f'<div class="badge-slot"><div class="badge-circle locked" style="opacity: 0.6;"><img src="{b64}" class="badge-img-lock" alt="{g["id"]}"></div><div class="badge-slot-name">{g["id"]}</div><div class="badge-slot-mission">LOCKED</div></div>'
+            html = f'<div class="badge-slot"><div class="badge-circle locked" style="opacity: 0.6;"><img src="{b64}" class="badge-img-lock" alt="{label}"></div><div class="badge-slot-name">{label}</div><div class="badge-slot-mission">LOCKED</div></div>'
         gym_slot_parts.append(html)
 
     gym_slots_html = "".join(gym_slot_parts)
