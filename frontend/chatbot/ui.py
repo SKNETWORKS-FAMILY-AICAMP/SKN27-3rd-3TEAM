@@ -190,38 +190,71 @@ def show():
                                  use_container_width=True, disabled=btn_disabled):
                         show_delete_dialog(selected_chat_id, chat_format(selected_chat_id))
 
-    # [핵심] 화면 허얘짐 방지 및 강력한 자동 스크롤 옵저버 주입
+    # [핵심] 화면 허얘짐 방지 CSS
     st.markdown("""
         <style>
             /* 로딩 중 흐려짐 방지 */
             div[data-testid="stStatusWidget"] { display: none !important; }
             .stApp { opacity: 1 !important; }
-            /* 스크롤바 숨기기 (선택 사항) */
-            div[data-testid="stScrollableContainer"] { scroll-behavior: smooth; }
         </style>
-        <script>
-            // 브라우저 측에서 스크롤을 감시하는 옵저버
-            const observer = new MutationObserver(() => {
-                const containers = window.parent.document.querySelectorAll('div[data-testid="stScrollableContainer"]');
-                containers.forEach(el => {
-                    // 채팅창 높이가 고정된 컨테이너(700px 등)를 찾아 바닥으로 보냄
-                    if (el.scrollHeight > el.clientHeight) {
-                        el.scrollTop = el.scrollHeight;
-                    }
-                });
-            });
-            // 렌더링이 완료될 때까지 반복 시도
-            const setupObserver = () => {
-                const target = window.parent.document.querySelector('.main');
-                if (target) {
-                    observer.observe(target, { childList: true, subtree: true });
-                } else {
-                    setTimeout(setupObserver, 500);
-                }
-            };
-            setupObserver();
-        </script>
     """, unsafe_allow_html=True)
+    
+    # [핵심] 강력한 자동 스크롤 옵저버 주입 (iframe에서 상위 DOM 제어)
+    import streamlit.components.v1 as components
+    components.html("""
+        <script>
+            const setupObserver = () => {
+                const parent = window.parent.document;
+                const target = parent.querySelector('.main');
+                if (!target) {
+                    setTimeout(setupObserver, 500);
+                    return;
+                }
+                
+                const scrollToBottom = () => {
+                    // 고정 높이 컨테이너에서 스크롤을 잡기 위한 다양한 타겟 설정
+                    const selectors = [
+                        'div[data-testid="stVerticalBlockBorderWrapper"] > div',
+                        'div[data-testid="stScrollableContainer"]',
+                        '.stScrollableContainer'
+                    ];
+                    
+                    let scrolled = false;
+                    selectors.forEach(selector => {
+                        const containers = parent.querySelectorAll(selector);
+                        containers.forEach(el => {
+                            if (el.scrollHeight > el.clientHeight) {
+                                el.scrollTop = el.scrollHeight;
+                                scrolled = true;
+                            }
+                        });
+                    });
+                    
+                    // 만약 특정 컨테이너 스크롤에 실패했다면 전체 화면을 내림
+                    if (!scrolled) {
+                        const mainContainer = parent.querySelector('.main .block-container');
+                        if (mainContainer) {
+                            mainContainer.scrollTop = mainContainer.scrollHeight;
+                        }
+                        parent.defaultView.scrollTo(0, parent.document.body.scrollHeight);
+                    }
+                };
+
+                // 초기 1회 실행
+                setTimeout(scrollToBottom, 300);
+
+                // DOM 변화 감지 시 실행
+                const observer = new MutationObserver(() => {
+                    scrollToBottom();
+                });
+                
+                observer.observe(target, { childList: true, subtree: true, characterData: true });
+            };
+            
+            // 로드 대기 후 실행
+            setTimeout(setupObserver, 100);
+        </script>
+    """, height=0)
 
     with right_col:
         msgs = st.session_state.messages
@@ -265,9 +298,6 @@ def show():
                     render_user_bubble(msg["content"], USER_AVATAR)
                 else:
                     render_assistant_bubble(msg["content"], OAK_AVATAR, msg.get("used_tools"))
-
-            # 하단 여백 추가 (입력창에 가려지는 현상 방지)
-            st.markdown('<div style="height: 150px;"></div>', unsafe_allow_html=True)
 
             # 2. 스트리밍 처리 (내부에 JS 주입 제거하여 깜빡임 원천 차단)
             if is_loading:
