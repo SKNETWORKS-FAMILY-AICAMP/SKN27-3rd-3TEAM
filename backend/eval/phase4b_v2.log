@@ -1,0 +1,154 @@
+﻿�׽�Ʈ ���̽� 10�� �غ� �Ϸ�
+
+ê�� ������Ʈ �ε� ��...
+python.exe : C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\.venv\Lib\site-packages\langgraph\cache\base\__init__.py:8: 
+LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an exp
+licit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+At line:1 char:1
++ & "c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\.venv\Scripts\python ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\Playda...s this warning.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:67: LangChainDeprecationWarning: The cla
+ss `TavilySearchResults` was deprecated in LangChain 0.3.25 and will be removed in 1.0. An updated version of the class
+ exists in the `langchain-tavily package and should be used instead. To use it run `pip install -U `langchain-tavily` a
+nd import as `from `langchain_tavily import TavilySearch``.
+  tavily = TavilySearchResults(max_results=3)
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:89: LangChainPendingDeprecationWarning: 
+This class is pending deprecation and may be removed in a future version. You can swap to using the `PGVector` implemen
+tation in `langchain_postgres`. Please read the guidelines in the doc-string of this class to follow prior to migrating
+ as there are some differences between the implementations. See <https://github.com/langchain-ai/langchain-postgres> fo
+r details about the new implementation.
+  _vectorstore = PGVector(
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:89: LangChainPendingDeprecationWarning: 
+Please use JSONB instead of JSON for metadata. This change will allow for more efficient querying that involves filteri
+ng based on metadata. Please note that filtering operators have been changed when using JSONB metadata to be prefixed w
+ith a $ sign to avoid name collisions with columns. If you're using an existing database, you will need to create a db 
+migration for your metadata column to be JSONB and update your queries to use the new operators. 
+  _vectorstore = PGVector(
+������Ʈ �ε� �Ϸ�
+
+============================================================
+RAGAS �� ����
+============================================================
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing faithfulnes
+s from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Examp
+le: from ragas.metrics.collections import faithfulness
+  from ragas.metrics import (
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing answer_rele
+vancy from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. E
+xample: from ragas.metrics.collections import answer_relevancy
+  from ragas.metrics import (
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing LLMContextR
+ecall from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. E
+xample: from ragas.metrics.collections import LLMContextRecall
+  from ragas.metrics import (
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing LLMContextP
+recisionWithReference from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collect
+ions' instead. Example: from ragas.metrics.collections import LLMContextPrecisionWithReference
+  from ragas.metrics import (
+c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:107: DeprecationWarning: LangchainLLMWrapper i
+s deprecated and will be removed in a future version. Use llm_factory instead: from openai import OpenAI; from ragas.ll
+ms import llm_factory; llm = llm_factory('gpt-4o-mini', client=OpenAI(api_key='...'))
+  evaluator_llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4o-mini", temperature=0))
+
+[01/10] ��ī���� HP, ����, ���, Ư��, Ư��, ���ǵ� ������ �˷���...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_pokemon_db']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 227��
+
+[02/10] ���ݷ��� ���� ���� ���ϸ� 3������ ����?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_pokemon_db']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 229��
+
+[03/10] 1���� ���ϸ� �߿��� ��ȹ���� ���� ���� ���ϸ���?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_pokemon_db']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 53��
+
+[04/10] �Ҳ��� ������ �վ�� ������ ���ϸ��� ���� ���� ������� ��õ����...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_flavor_text']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 264��
+
+[05/10] ���� �ڰų� �ް� ���õ� ���ϸ��� � �� �־�?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_flavor_text']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 327��
+
+[06/10] �̺��̴� � ���ϸ����� ��ȭ��?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_evolution_chain']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 404��
+
+[07/10] ���α��� ���� ��ȭ�� ����?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_evolution_chain']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 275��
+
+[08/10] �巡�� Ÿ���� ������ ����?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_type_relations']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 368��
+
+[09/10] ��ö Ÿ���� � Ÿ�� ���ݿ� ������ �־�?...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_type_relations']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 1, �亯 ����: 379��
+
+[10/10] ��ī���� ���Ȱ� ���� Ÿ���� �Բ� �˷���...
+[gpt-4o-mini] Agent (��ȣ�� 0ȸ): ['search_pokemon_db', 'search_pokemon_weakness']
+[gpt-4o-mini] Agent (��ȣ�� 1ȸ): ���� �亯
+       ���ؽ�Ʈ ��: 2, �亯 ����: 416��
+
+10�� ���� ���� �Ϸ�. RAGAS �� ��...
+
+
+Evaluating:   0%|          | 0/40 [00:00<?, ?it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 
+generations.
+
+Evaluating:   2%|2         | 1/40 [00:01<01:11,  1.83s/it]LLM returned 1 generations instead of requested 3. Proceeding
+ with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:   5%|5         | 2/40 [00:02<00:48,  1.28s/it]LLM returned 1 generations instead of requested 3. Proceeding
+ with 1 generations.
+
+Evaluating:  32%|###2      | 13/40 [00:04<00:06,  4.17it/s]LLM returned 1 generations instead of requested 3. Proceedin
+g with 1 generations.
+
+Evaluating:  35%|###5      | 14/40 [00:04<00:06,  3.81it/s]LLM returned 1 generations instead of requested 3. Proceedin
+g with 1 generations.
+
+Evaluating:  38%|###7      | 15/40 [00:04<00:06,  3.84it/s]
+Evaluating:  50%|#####     | 20/40 [00:05<00:03,  5.96it/s]LLM returned 1 generations instead of requested 3. Proceedin
+g with 1 generations.
+
+Evaluating:  57%|#####7    | 23/40 [00:06<00:04,  3.68it/s]
+Evaluating:  60%|######    | 24/40 [00:07<00:04,  3.34it/s]
+Evaluating:  75%|#######5  | 30/40 [00:08<00:02,  3.58it/s]
+Evaluating:  78%|#######7  | 31/40 [00:11<00:04,  1.87it/s]
+Evaluating:  80%|########  | 32/40 [00:12<00:05,  1.54it/s]
+Evaluating:  82%|########2 | 33/40 [00:14<00:05,  1.28it/s]
+Evaluating:  85%|########5 | 34/40 [00:15<00:05,  1.09it/s]
+Evaluating:  88%|########7 | 35/40 [00:22<00:10,  2.04s/it]
+Evaluating:  90%|######### | 36/40 [00:22<00:06,  1.66s/it]
+Evaluating:  92%|#########2| 37/40 [00:26<00:06,  2.14s/it]
+Evaluating:  95%|#########5| 38/40 [00:31<00:05,  2.99s/it]
+Evaluating:  98%|#########7| 39/40 [00:32<00:02,  2.57s/it]
+Evaluating: 100%|##########| 40/40 [00:33<00:00,  2.16s/it]
+Evaluating: 100%|##########| 40/40 [00:33<00:00,  1.18it/s]
+
+============================================================
+RAGAS ��� ���
+============================================================
+
+
+
+
+
+��� ����: c:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_results.json

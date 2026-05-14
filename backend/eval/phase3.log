@@ -1,0 +1,121 @@
+테스트 케이스 10개 준비 완료
+
+챗봇 에이전트 로딩 중...
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\.venv\Lib\site-packages\langgraph\cache\base\__init__.py:8: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:67: LangChainDeprecationWarning: The class `TavilySearchResults` was deprecated in LangChain 0.3.25 and will be removed in 1.0. An updated version of the class exists in the `langchain-tavily package and should be used instead. To use it run `pip install -U `langchain-tavily` and import as `from `langchain_tavily import TavilySearch``.
+  tavily = TavilySearchResults(max_results=3)
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:89: LangChainPendingDeprecationWarning: This class is pending deprecation and may be removed in a future version. You can swap to using the `PGVector` implementation in `langchain_postgres`. Please read the guidelines in the doc-string of this class to follow prior to migrating as there are some differences between the implementations. See <https://github.com/langchain-ai/langchain-postgres> for details about the new implementation.
+  _vectorstore = PGVector(
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\chatbot\pokemon_agent.py:89: LangChainPendingDeprecationWarning: Please use JSONB instead of JSON for metadata. This change will allow for more efficient querying that involves filtering based on metadata. Please note that filtering operators have been changed when using JSONB metadata to be prefixed with a $ sign to avoid name collisions with columns. If you're using an existing database, you will need to create a db migration for your metadata column to be JSONB and update your queries to use the new operators. 
+  _vectorstore = PGVector(
+에이전트 로딩 완료
+
+============================================================
+RAGAS 평가 시작
+============================================================
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing faithfulness from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import faithfulness
+  from ragas.metrics import (
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing answer_relevancy from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import answer_relevancy
+  from ragas.metrics import (
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing LLMContextRecall from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import LLMContextRecall
+  from ragas.metrics import (
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:100: DeprecationWarning: Importing LLMContextPrecisionWithReference from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import LLMContextPrecisionWithReference
+  from ragas.metrics import (
+C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_eval.py:107: DeprecationWarning: LangchainLLMWrapper is deprecated and will be removed in a future version. Use llm_factory instead: from openai import OpenAI; from ragas.llms import llm_factory; llm = llm_factory('gpt-4o-mini', client=OpenAI(api_key='...'))
+  evaluator_llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4o-mini", temperature=0))
+
+[01/10] 피카츄의 HP, 공격, 방어, 특공, 특방, 스피드 스탯을 알려줘...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_pokemon_db']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 227자
+
+[02/10] 공격력이 가장 높은 포켓몬 3마리는 뭐야?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_pokemon_db']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 207자
+
+[03/10] 1세대 포켓몬 중에서 포획률이 가장 낮은 포켓몬은?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_pokemon_db']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 53자
+
+[04/10] 불꽃을 몸에서 뿜어내는 느낌의 포켓몬을 도감 설명 기반으로 추천해줘...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_flavor_text']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 336자
+
+[05/10] 잠을 자거나 꿈과 관련된 포켓몬은 어떤 게 있어?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_flavor_text']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 485자
+
+[06/10] 이브이는 어떤 포켓몬으로 진화해?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_evolution_chain']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 466자
+
+[07/10] 꼬부기의 최종 진화는 뭐야?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_evolution_chain']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 115자
+
+[08/10] 드래곤 타입의 약점은 뭐야?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_type_relations']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 364자
+
+[09/10] 강철 타입은 어떤 타입 공격에 저항이 있어?...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_type_relations']
+[gpt-4o-mini] Agent (툴호출 1회): 최종 답변
+       컨텍스트 수: 1, 답변 길이: 360자
+
+[10/10] 피카츄의 스탯과 약점 타입을 함께 알려줘...
+[gpt-4o-mini] Agent (툴호출 0회): ['search_pokemon_db', 'search_pokemon_weakness']
+[gpt-4o-mini] Agent (툴호출 1회): ['search_pokemon_db', 'search_pokemon_weakness']
+[gpt-4o-mini] Agent (툴호출 2회): ['search_pokemon_db', 'search_pokemon_weakness']
+[gpt-4o-mini] Agent (툴호출 3회): ['search_pokemon_db', 'search_pokemon_weakness']
+[gpt-4o-mini] Agent (툴호출 4회): 최종 답변
+       컨텍스트 수: 8, 답변 길이: 321자
+
+10개 샘플 수집 완료. RAGAS 평가 중...
+
+
+Evaluating:   0%|          | 0/40 [00:00<?, ?it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:   2%|2         | 1/40 [00:02<01:31,  2.36s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:   5%|5         | 2/40 [00:03<01:00,  1.59s/it]
+Evaluating:  35%|###5      | 14/40 [00:04<00:05,  4.75it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:  38%|###7      | 15/40 [00:05<00:06,  3.70it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:  40%|####      | 16/40 [00:05<00:07,  3.15it/s]
+Evaluating:  45%|####5     | 18/40 [00:06<00:06,  3.52it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:  55%|#####5    | 22/40 [00:06<00:03,  4.70it/s]
+Evaluating:  62%|######2   | 25/40 [00:07<00:03,  4.76it/s]
+Evaluating:  70%|#######   | 28/40 [00:07<00:01,  6.02it/s]
+Evaluating:  72%|#######2  | 29/40 [00:07<00:02,  5.39it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:  75%|#######5  | 30/40 [00:08<00:02,  4.15it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+
+Evaluating:  78%|#######7  | 31/40 [00:08<00:02,  3.39it/s]
+Evaluating:  88%|########7 | 35/40 [00:12<00:03,  1.53it/s]
+Evaluating:  90%|######### | 36/40 [00:16<00:04,  1.06s/it]
+Evaluating:  95%|#########5| 38/40 [00:17<00:01,  1.12it/s]
+Evaluating:  98%|#########7| 39/40 [00:17<00:00,  1.29it/s]
+Evaluating: 100%|##########| 40/40 [00:27<00:00,  2.63s/it]
+Evaluating: 100%|##########| 40/40 [00:27<00:00,  1.47it/s]
+
+============================================================
+RAGAS 결과 요약
+============================================================
+
+
+
+
+
+결과 저장: C:\Users\Playdata\dev\Project\SKN27-3rd-3TEAM\backend\eval\ragas_results.json

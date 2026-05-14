@@ -64,7 +64,7 @@ def get_gym_bg_base64(leader_name: str) -> str:
         return ""
     try:
         current_dir = Path(__file__).resolve().parent
-        path = current_dir.parent / "img" / "background" / file_name
+        path = current_dir.parent / "img" / "gym_background" / file_name
         if path.exists():
             with open(path, "rb") as f:
                 data = f.read()
