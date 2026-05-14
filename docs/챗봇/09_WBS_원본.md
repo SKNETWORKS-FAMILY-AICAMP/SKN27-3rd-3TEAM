@@ -48,7 +48,7 @@ gantt
     section Phase 5: 품질 및 배포 [타 담당자]
         RAG 평가 (RAGAS + 커스텀 지표) :         p5-1, 2025-07-05, 4d
         성능 최적화 (BM25·pg_trgm 튜닝):         p5-2, 2025-07-09, 3d
-    section Phase 5: 품질 및 배포 [본인]
+    section Phase 5: 품질 및 배포 [타 담당자]
         문서 정리 및 배포              :         p5-3, 2025-07-12, 4d
 ```
 
@@ -87,46 +87,41 @@ gantt
 
 | ID | 작업명 | 담당 | 기간 | 산출물 | 상태 |
 |----|--------|------|------|--------|------|
-| 3.1 | BM25 인덱스 빌드 (rank_bm25, 인메모리) | AI | 3일 | pokemon_agent.py | ✅ 완료 |
-| 3.2 | pg_trgm GIN 인덱스 설정 및 검색 통합 | DB/백엔드 | 2일 | pokemon_agent.py, schema.sql | ✅ 완료 |
-| 3.3 | RRF 결합 및 search_flavor_text 리팩터링 | AI | 3일 | pokemon_agent.py | ✅ 완료 |
-| 3.4 | Query Rewriting 구현 (`_rewrite_query`) | AI | 2일 | pokemon_agent.py | ✅ 완료 |
-| 3.5 | CRAG 노드 구현 (`crag_check_node`) | AI | 3일 | pokemon_agent.py | ✅ 완료 |
-| 3.6 | agent→tools→crag 3-노드 LangGraph 재구성 | AI | 1일 | pokemon_agent.py | ✅ 완료 |
-| 3.7 | KNOWN_EVO_CONDITIONS fallback 맵 완성 | AI | 2일 | pokemon_neo4j.py | ✅ 완료 |
-| 3.8 | 동점 처리 SQL 서브쿼리 패턴 검증 | QA | 2일 | 테스트 케이스 | ✅ 완료 |
-| 3.9 | System Prompt v1.2 개정 (핵심 규칙 신설) | AI | 2일 | 프롬프트 명세서 | ✅ 완료 |
-| 3.10 | MAX_TOOL_CALLS 5로 상향 및 회귀 테스트 | QA | 1일 | 테스트 결과서 | ✅ 완료 |
+| 3.1 | BM25 인덱스 빌드 (rank_bm25, 인메모리) | AI | 3일 | pokemon_agent.py | 🔄 진행 |
+| 3.2 | pg_trgm GIN 인덱스 설정 및 검색 통합 | DB/백엔드 | 2일 | pokemon_agent.py, schema.sql | 🔄 진행 |
+| 3.3 | RRF 결합 및 search_flavor_text 리팩터링 | AI | 3일 | pokemon_agent.py | 🔄 진행 |
+| 3.4 | Query Rewriting 구현 (`_rewrite_query`) | AI | 2일 | pokemon_agent.py | ⏳ 예정 |
+| 3.5 | CRAG 노드 구현 (`crag_check_node`) | AI | 3일 | pokemon_agent.py | ⏳ 예정 |
+| 3.6 | agent→tools→crag 3-노드 LangGraph 재구성 | AI | 1일 | pokemon_agent.py | ⏳ 예정 |
+| 3.7 | KNOWN_EVO_CONDITIONS fallback 맵 완성 | AI | 2일 | pokemon_neo4j.py | ⏳ 예정 |
+| 3.8 | 동점 처리 SQL 서브쿼리 패턴 검증 | QA | 2일 | 테스트 케이스 | ⏳ 예정 |
+| 3.9 | System Prompt v1.2 개정 (핵심 규칙 신설) | AI | 2일 | 프롬프트 명세서 | ⏳ 예정 |
+| 3.10 | MAX_TOOL_CALLS 5로 상향 및 회귀 테스트 | QA | 1일 | 테스트 결과서 | ⏳ 예정 |
 
-### Phase 4: API 및 UI 통합 (8주차) — 타 담당자
-
-| ID | 작업명 | 담당 | 기간 | 산출물 | 상태 |
-|----|--------|------|------|--------|------|
-| 4.1 | FastAPI 기본 구조 설정 | `[외부]` 백엔드 | 1일 | main.py | ✅ 완료 |
-| 4.2 | POST /chat 엔드포인트 구현 | `[외부]` 백엔드 | 2일 | routers/chat.py | ✅ 완료 |
-| 4.3 | GET/POST/DELETE /sessions 구현 | `[외부]` 백엔드 | 2일 | routers/sessions.py | ✅ 완료 |
-| 4.4 | Agent-API 통합 테스트 | `[외부]` QA | 3일 | 테스트 결과서 | ✅ 완료 |
-| 4.5 | 채팅 UI 메인 화면 개발 (SCR-01) | `[외부]` 프론트 | 3일 | ChatPage.tsx | ✅ 완료 |
-| 4.6 | 세션 사이드바 개발 (SCR-02) | `[외부]` 프론트 | 1일 | SessionSidebar.tsx | ✅ 완료 |
-| 4.7 | 툴 뱃지 + CRAG 재검색 표시 (SCR-04) | `[외부]` 프론트 | 1일 | ToolBadge.tsx | ✅ 완료 |
-| 4.8 | E2E 시나리오 테스트 (12개) | `[외부]` QA | 3일 | E2E 테스트 결과서 | ✅ 완료 |
-
-### Phase 5: 품질 및 배포 (9~10주차) — 타 담당자
+### Phase 4: API 및 UI 통합 (8주차)
 
 | ID | 작업명 | 담당 | 기간 | 산출물 | 상태 |
 |----|--------|------|------|--------|------|
-| 5.1 | RAG 평가 (RAGAS + Tool Routing + Dual-type 지표) | `[외부]` AI | 4일 | RAG 평가 보고서 | ✅ 완료 |
-| 5.2 | System Prompt 최종 튜닝 | `[외부]` AI | 2일 | 프롬프트 v1.2 Final | ✅ 완료 |
-| 5.3 | Hybrid Search 파라미터 최적화 (RRF k, MMR λ) | `[외부]` AI | 2일 | 성능 보고서 | ✅ 완료 |
-| 5.4 | CRAG 판정 임계값 조정 | `[외부]` AI | 1일 | CRAG 튜닝 기록 | ✅ 완료 |
-| 5.5 | 쿼리 응답 시간 측정 및 인덱스 최적화 | `[외부]` DB | 2일 | 성능 보고서 | ✅ 완료 |
-| 5.6 | Docker 이미지 빌드 및 배포 스크립트 | `[외부]` 인프라 | 2일 | Dockerfile, CI/CD | ✅ 완료 |
+| 4.1 | FastAPI 기본 구조 설정 | 백엔드 | 1일 | main.py | ⏳ 예정 |
+| 4.2 | POST /chat 엔드포인트 구현 | 백엔드 | 2일 | routers/chat.py | ⏳ 예정 |
+| 4.3 | GET/POST/DELETE /sessions 구현 | 백엔드 | 2일 | routers/sessions.py | ⏳ 예정 |
+| 4.4 | Agent-API 통합 테스트 | QA | 3일 | 테스트 결과서 | ⏳ 예정 |
+| 4.5 | 채팅 UI 메인 화면 개발 (SCR-01) | 프론트 | 3일 | ChatPage.tsx | ⏳ 예정 |
+| 4.6 | 세션 사이드바 개발 (SCR-02) | 프론트 | 1일 | SessionSidebar.tsx | ⏳ 예정 |
+| 4.7 | 툴 뱃지 + CRAG 재검색 표시 (SCR-04) | 프론트 | 1일 | ToolBadge.tsx | ⏳ 예정 |
+| 4.8 | E2E 시나리오 테스트 (12개) | QA | 3일 | E2E 테스트 결과서 | ⏳ 예정 |
 
-### Phase 5: 품질 및 배포 (9~10주차) — 본인
+### Phase 5: 품질 및 배포 (9~10주차)
 
 | ID | 작업명 | 담당 | 기간 | 산출물 | 상태 |
 |----|--------|------|------|--------|------|
-| 5.7 | 최종 문서 정리 (11개 문서 패키지) | **본인** | 2일 | 전체 문서 패키지 | ✅ 완료 |
+| 5.1 | RAG 평가 (RAGAS + Tool Routing + Dual-type 지표) | AI | 4일 | RAG 평가 보고서 | ⏳ 예정 |
+| 5.2 | System Prompt 최종 튜닝 | AI | 2일 | 프롬프트 v1.2 Final | ⏳ 예정 |
+| 5.3 | Hybrid Search 파라미터 최적화 (RRF k, MMR λ) | AI | 2일 | 성능 보고서 | ⏳ 예정 |
+| 5.4 | CRAG 판정 임계값 조정 | AI | 1일 | CRAG 튜닝 기록 | ⏳ 예정 |
+| 5.5 | 쿼리 응답 시간 측정 및 인덱스 최적화 | DB | 2일 | 성능 보고서 | ⏳ 예정 |
+| 5.6 | Docker 이미지 빌드 및 배포 스크립트 | 인프라 | 2일 | Dockerfile, CI/CD | ⏳ 예정 |
+| 5.7 | 최종 문서 정리 (11개 문서 패키지) | 전체 | 2일 | 전체 문서 패키지 | ⏳ 예정 |
 
 ---
 
