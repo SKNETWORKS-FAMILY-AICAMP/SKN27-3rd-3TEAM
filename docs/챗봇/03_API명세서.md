@@ -390,22 +390,3 @@ def search_pokemon_weakness(pokemon_name: str) -> str
 | 4배 이상 | 매우 약점 | 💀 4배 약점 |
 
 ---
-
-### 4.6 web_search
-
-```python
-def web_search(query: str) -> str
-```
-
-| 파라미터 | 타입 | 설명 |
-|---------|------|------|
-| `query` | str | 검색 키워드 |
-
-**반환 예시:**
-
-```
-✅ 웹 검색 결과:
-포켓몬 스칼렛/바이올렛에서 새롭게 추가된 ...
-```
-
-**제한:** Tavily API 키 필요, `max_results=3`
