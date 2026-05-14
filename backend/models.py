@@ -199,3 +199,5 @@ class TeamBuildLog(Base):
 
     # recommendation_conclusion은 추천 AI 종합 해설 중 "결론:" 문장만 따로 저장합니다.
     recommendation_conclusion = Column(Text, nullable=True)
+
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=True)

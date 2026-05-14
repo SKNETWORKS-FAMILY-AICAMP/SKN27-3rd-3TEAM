@@ -16,7 +16,7 @@ def get_pokedex_styles():
     /* ── Global Styles ────────────────────────────── */
     [data-testid="stAppViewContainer"] {
         background-color: var(--main-bg) !important;
-        background-image: 
+        background-image:
             radial-gradient(circle at 10% 20%, rgba(42, 117, 187, 0.03) 0%, transparent 40%),
             radial-gradient(circle at 90% 80%, rgba(255, 203, 5, 0.03) 0%, transparent 40%) !important;
         background-attachment: fixed !important;
@@ -55,7 +55,7 @@ def get_pokedex_styles():
         background-color: transparent !important;
         gap: 0.5rem !important;
     }
-    
+
     /* Search row & Slider vertical alignment */
     [data-testid="stVerticalBlock"]:has(> .element-container .dex-search-card) [data-testid="stHorizontalBlock"],
     [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"] {
@@ -128,7 +128,7 @@ def get_pokedex_styles():
     [data-testid="stWidgetLabel"] div,
     [data-testid="stWidgetLabel"],
     label p,
-    .dex-numrange-label, 
+    .dex-numrange-label,
     .dex-type-label,
     .dex-region-label {
         font-family: 'Outfit', sans-serif !important;
@@ -232,7 +232,7 @@ def get_pokedex_styles():
     [data-testid="stSlider"] > div,
     [data-testid="stSlider"] [data-baseweb="slider"] {
         overflow: visible !important;
-        padding: 10px 0px !important; /* 위아래 여백을 25px에서 10px로 축소 */
+        padding: 10px 0px !important;
     }
     /* 트랙 배경 */
     [data-testid="stSlider"] [role="slider"] ~ div {
@@ -284,7 +284,7 @@ def get_pokedex_styles():
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         min-height: 48px;
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         width: 100%;
         position: relative;
@@ -299,21 +299,21 @@ def get_pokedex_styles():
         outline-offset: 2px;
         box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
     }
-    .type-svg-wrap { 
-        width: 20px; 
-        height: 20px; 
+    .type-svg-wrap {
+        width: 20px;
+        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0; 
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); 
+        margin-bottom: 0;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
-    .type-icon-box span { 
-        color: #ffffff; 
-        font-size: 0.85rem; 
-        font-weight: 700; 
-        font-family: 'Inter', sans-serif; 
-        text-shadow: 0 1px 3px rgba(0,0,0,0.5); 
+    .type-icon-box span {
+        color: #ffffff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         line-height: 1;
     }
 
@@ -336,7 +336,7 @@ def get_pokedex_styles():
     .type-bg-steel    { background: #B7B7CE; }
     .type-bg-fairy    { background: #D685AD; }
     .type-bg-dark     { background: #705746; }
-    
+
     /* Hide Streamlit Button Overlay */
     div[data-testid="stColumn"]:has(.type-icon-box) [data-testid="stVerticalBlock"] {
         position: relative;
@@ -344,7 +344,7 @@ def get_pokedex_styles():
     div[data-testid="stColumn"]:has(.type-icon-box) .element-container:has(button) {
         position: absolute;
         top: 0; left: 0; right: 0;
-        height: 48px; /* Match icon box height */
+        height: 48px;
         z-index: 10;
         margin: 0 !important;
     }
@@ -358,7 +358,6 @@ def get_pokedex_styles():
     }
 
     /* ── Action Buttons (Slanted Design) ──────────────── */
-    /* Use :has() because the marker div and button are siblings in the same column */
     div[data-testid="stColumn"]:has(.dex-btn-search) button,
     div[data-testid="stColumn"]:has(.dex-btn-reset) button {
         border: none !important;
@@ -372,7 +371,7 @@ def get_pokedex_styles():
         align-items: center !important;
         justify-content: center !important;
     }
-    
+
     /* Button Text (Un-skew) */
     div[data-testid="stColumn"]:has(.dex-btn-search) button p,
     div[data-testid="stColumn"]:has(.dex-btn-reset) button p,
@@ -390,7 +389,7 @@ def get_pokedex_styles():
         margin: 0 !important;
         padding: 0 !important;
     }
-    
+
     div[data-testid="stColumn"]:has(.dex-btn-reset) button p,
     div[data-testid="stColumn"]:has(.dex-btn-reset) button div,
     div[data-testid="stColumn"]:has(.dex-btn-reset) button span {
@@ -398,7 +397,7 @@ def get_pokedex_styles():
     }
 
     div[data-testid="stColumn"]:has(.dex-btn-search) button {
-        background-color: #E33535 !important; /* Pokemon Red */
+        background-color: #E33535 !important;
         box-shadow: -5px 5px 0px rgba(227, 53, 53, 0.3) !important;
     }
     div[data-testid="stColumn"]:has(.dex-btn-reset) button {
@@ -416,14 +415,12 @@ def get_pokedex_styles():
         transform: skew(-20deg) translateY(-2px) !important;
         box-shadow: -8px 8px 0px rgba(0, 0, 0, 0.3) !important;
     }
-    
-    /* Add a gap between button columns */
+
     div[data-testid="stColumn"]:has(.dex-btn-search) + div[data-testid="stColumn"]:has(.dex-btn-reset) {
         margin-left: 15px !important;
     }
-    
-    /* Ensure Streamlit's internal div doesn't block the click or style */
-    div[data-testid="stColumn"]:has(.dex-btn-search) div, 
+
+    div[data-testid="stColumn"]:has(.dex-btn-search) div,
     div[data-testid="stColumn"]:has(.dex-btn-reset) div {
         background: transparent !important;
         border: none !important;

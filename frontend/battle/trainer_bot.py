@@ -61,7 +61,7 @@ class BattleBot:
         self.player_party = battle_state.player_party
         self.player_alive_other_pokemons = [pp for pp in self.player_party if pp.id != self.battle_player.id and pp.current_hp > 0]
 
-    def decide_action(self, strategy="random"):
+    def decide_action(self, strategy="llm"):
         """
         현재 배틀 상태를 기반으로 봇이 취할 행동을 결정합니다.
         """
@@ -100,15 +100,56 @@ class BattleBot:
     def _decide_llm(self):
         """
         LLM 기반으로 최적의 행동을 결정합니다.
-        (현재는 랜덤과 동일하게 동작)
+        (LangGraph 워크플로우를 통해 분석 후 결정)
         """
-        # TODO: LLM 기반 행동 결정 로직 구현 예정
-        return self._decide_random()
+        from battle.llm import get_llm_battle_decision
+        from dataclasses import asdict
+        
+        try:
+            # 1. 현재 배틀 상태를 딕셔너리로 변환
+            bot_dict = asdict(self.battle_bot)
+            player_dict = asdict(self.battle_player)
+            party_dicts = [asdict(p) for p in self.bot_party]
+            
+            # 2. LLM 의사결정 엔진 호출
+            decision = get_llm_battle_decision(bot_dict, player_dict, party_dicts)
+            
+            # 3. 결정 내용 처리
+            if decision.get('action_type') == 'switch':
+                # 교체 가능한 아군 포켓몬 리스트 재계산 (llm 노드와 동일한 기준)
+                alive_others = [p for p in self.bot_party if p.id != self.battle_bot.id and p.current_hp > 0]
+                
+                idx = decision.get('action_index', 0)
+                if idx < len(alive_others):
+                    target_bot = alive_others[idx]
+                    target_idx = self.bot_party.index(target_bot)
+                    
+                    bot_move = {
+                        "name": f"{target_bot.name}(으)로 교체",
+                        "category": "switch",
+                        "target_index": target_idx,
+                        "priority": 6,
+                        "is_bot": True
+                    }
+                    # 세션 상태 업데이트
+                    st.session_state.battle_bot = target_bot
+                    return bot_move
+            
+            # 기술 사용 결정 (또는 교체 실패 시 기본값)
+            move_name = decision.get('action_name')
+            selected_move = next((m for m in self.battle_bot.moves if m['name'] == move_name), None)
+            
+            # 만약 매칭되는 기술이 없으면 무작위 선택 (안전 장치)
+            return selected_move if selected_move else random.choice(self.battle_bot.moves)
+            
+        except Exception as e:
+            # 에러 발생 시 랜덤 전략으로 폴백
+            print(f"LLM Decision Error: {e}")
+            return self._decide_random()
 
     def _decide_rag(self):
         """
         RAG(지식 베이스) 기반으로 최적의 행동을 결정합니다.
-        (현재는 랜덤과 동일하게 동작)
+        (현재는 LLM 전략과 동일하게 동작하며 추후 RAG 로직 추가 예정)
         """
-        # TODO: RAG 기반 행동 결정 로직 구현 예정
-        return self._decide_random()
+        return self._decide_llm()

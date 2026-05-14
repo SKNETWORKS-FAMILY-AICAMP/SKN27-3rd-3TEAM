@@ -99,7 +99,7 @@ def process_turn(player_move):
     
     # =========================== 봇의 행동 결정 로직 =============================
     # 봇의 전략 결정 (세션 상태에서 가져오거나 기본값 'random' 사용)
-    bot_strategy = st.session_state.get("bot_strategy", "random")
+    bot_strategy = st.session_state.get("bot_strategy", "llm")
     trainer_bot = BattleBot(leader_name=st.session_state.leader_name)
     bot_move = trainer_bot.decide_action(strategy=bot_strategy)
     bot = st.session_state.battle_bot  # 교체되었을 수 있으므로 갱신
@@ -205,7 +205,6 @@ def show():
                 if len(st.session_state.player_team) > 0:
                     st.session_state.battle_stage = "battle"
                     start_custom_battle(st.session_state.player_team, leader_name=st.session_state.selected_leader)
-                    db.close()
                     st.rerun()
                 else:
                     st.warning("자신의 포켓몬을 선택해주세요!")
@@ -352,7 +351,6 @@ def show():
                     
                     st.session_state.battle_stage = "battle"
                     start_custom_battle(st.session_state.player_team, leader_name=st.session_state.selected_leader)
-                    db.close()
                     st.rerun()
                 
                 if st.button("⬅️ 메뉴로 돌아가기", use_container_width=True):

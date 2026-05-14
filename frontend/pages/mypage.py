@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import os
 import base64
 import math
@@ -6,6 +6,7 @@ import requests
 import json
 from datetime import datetime
 from utils.ui import inject_common_ui
+from mypage.styles import inject_mypage_styles
 
 _FRONTEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _ROOT_DIR = os.path.dirname(_FRONTEND_DIR)
@@ -43,6 +44,15 @@ def fetch_user_stats(user_id):
 def fetch_user_logs(user_id):
     try:
         resp = requests.get(f"{BACKEND_URL}/api/v1/users/{user_id}/logs?limit=8", timeout=5)
+        if resp.status_code == 200:
+            return resp.json()
+    except:
+        pass
+    return []
+
+def fetch_team_history(user_id):
+    try:
+        resp = requests.get(f"{BACKEND_URL}/api/v1/team-builder/history/{user_id}?limit=6", timeout=8)
         if resp.status_code == 200:
             return resp.json()
     except:
@@ -93,361 +103,6 @@ def fetch_github_details(username):
     return {"repos": repos, "followers": followers, "commits": commits, "stars": stars}
 
 
-MYPAGE_CSS = """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
-
-html, body, [data-testid="stAppViewContainer"], .stApp {
-    background-color: #000000 !important; /* 기본 배경을 검정으로 설정하여 이미지와 조화 */
-}
-[data-testid="stAppViewContainer"] {
-    background-image: var(--bg-img) !important;
-    background-size: cover !important;
-    background-attachment: fixed !important;
-    background-position: center top !important;
-}
-[data-testid="stHeader"], footer, [data-testid="stToolbar"] { display: none !important; }
-.block-container { 
-    padding: 0 !important; 
-    margin: 0 !important; 
-    max-width: 100% !important; 
-}
-
-.mp-wrap {
-    padding: 20px 0 10px;
-    font-family: 'Inter', sans-serif;
-    color: #2d3436;
-    min-height: 30vh;
-}
-.mp-container {
-    margin: 0 auto;
-    width: 75%;
-    max-width: 1000px;
-}
-
-/* ── Premium Glass Card ── */
-.mp-card {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border-radius: 28px;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
-    margin: 0 auto 40px;
-    width: 75%;
-    max-width: 1000px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    position: relative;
-    padding: 45px; /* 패딩 증가 */
-}
-.mp-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.55); box-shadow: 0 20px 55px rgba(0,0,0,0.2); }
-
-/* 섹션별 보더 컬러 포인트 */
-.card-profile { border-top: 6px solid #FFCB05; padding: 50px; }
-.card-actions { border-top: 6px solid #0984e3; }
-.card-dev     { border-top: 6px solid #6c5ce7; }
-.card-game    { border-top: 6px solid #ff4757; }
-.card-dex     { border-top: 6px solid #27ae60; }
-.card-badge   { border-top: 6px solid #fd9644; }
-.card-activity { border-top: 6px solid #b2bec3; padding: 20px 40px; }
-
-/* ── Labels / Badges ── */
-.mp-pill {
-    display: inline-block;
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    background: rgba(241, 242, 246, 0.8);
-    color: #2d3436;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.mp-pill-yellow { background: #FFCB05; color: #000; box-shadow: 0 0 15px rgba(255, 203, 5, 0.4); }
-
-/* ── Section Title (Minigame Style) ── */
-.mp-section-title {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 900;
-    font-size: 1.6rem;
-    color: #ffffff;
-    letter-spacing: -0.5px;
-    margin: 0 auto 25px;
-    width: 75%;
-    max-width: 1000px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-shadow: 0 2px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255, 203, 5, 0.3);
-}
-.mp-section-title::before {
-    content: ''; width: 8px; height: 24px; background: #FFCB05; border-radius: 4px;
-    box-shadow: 0 0 10px #FFCB05;
-}
-
-/* ── Profile Hero ── */
-.mp-hero {
-    padding: 40px 50px;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
-.mp-avatar {
-    width: 130px; height: 130px;
-    border-radius: 50%;
-    border: 4px solid #FFCB05;
-    object-fit: cover;
-    animation: mpfloat 6s ease-in-out infinite;
-    flex-shrink: 0;
-    box-shadow: 0 10px 30px rgba(255, 203, 5, 0.3);
-}
-@keyframes mpfloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-.mp-name {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 900;
-    font-size: 3rem;
-    color: #2d3436;
-    letter-spacing: -1px;
-    margin: 0;
-    text-shadow: 0 0 20px rgba(255,255,255,0.8);
-}
-.mp-handle { font-size: 1rem; color: #2d3436; margin-bottom: 15px; font-weight: 600; }
-
-/* ── Hero Creature & Friends Animation ── */
-.mp-hero-creature-wrap {
-    display: flex;
-    align-items: flex-end;
-    gap: 15px;
-    flex-shrink: 0;
-    margin-right: 20px;
-}
-.mp-hero-friends {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.mp-hero-friends img {
-    height: 80px;
-    object-fit: contain;
-    animation: mpfloat 5s ease-in-out infinite;
-    animation-delay: -1.5s;
-    opacity: 0.85;
-}
-.mp-hero-creature {
-    position: relative;
-    width: 200px;
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.mp-hero-creature img {
-    height: 160px;
-    object-fit: contain;
-    z-index: 2;
-    animation: mpfloat 4s ease-in-out infinite;
-    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.15));
-}
-.mp-creature-glow {
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle, rgba(255, 203, 5, 0.3) 0%, rgba(255, 203, 5, 0) 70%);
-    z-index: 1;
-    border-radius: 50%;
-    animation: mpglow 4s ease-in-out infinite;
-}
-@keyframes mpglow {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.2); opacity: 0.8; }
-}
-@media (max-width: 1100px) {
-    .mp-hero-friends { display: none; }
-}
-@media (max-width: 900px) {
-    .mp-hero-creature-wrap { display: none; }
-}
-
-/* ── Stats Box (Minigame Style) ── */
-.mp-stat-value {
-    font-family: 'Outfit', sans-serif;
-    font-size: 3rem;
-    font-weight: 900;
-    line-height: 1;
-    color: #2d3436;
-    text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.1);
-}
-.mp-stat-label {
-    font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #2d3436;
-    margin-bottom: 8px;
-    opacity: 0.8;
-}
-
-/* ── Activity Log (Premium Light) ── */
-.mp-log-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 22px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.2s;
-}
-.mp-log-item:hover { background: rgba(255,255,255,0.3); }
-.mp-log-icon {
-    width: 50px; height: 50px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 15px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 900; color: #2d3436; font-size: 0.85rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-.mp-log-main { 
-    font-weight: 800; font-size: 1.05rem; color: #2d3436;
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
-}
-.mp-log-sub { font-size: 0.9rem; color: #636e72; font-weight: 500; }
-.mp-tag {
-    padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-.mp-tag-ok { background: #e6fffa; color: #27ae60; border: 1px solid rgba(39, 174, 96, 0.2); }
-.mp-tag-fail { background: #fff5f5; color: #e53e3e; border: 1px solid rgba(229, 62, 62, 0.2); }
-
-/* ── Progress Bar ── */
-.mp-xp-track { background: #f1f2f6; border-radius: 99px; height: 8px; overflow: hidden; }
-.mp-xp-fill { height: 100%; background: linear-gradient(90deg, #FFCB05, #fd9644); border-radius: 99px; }
-
-.mp-logout {
-    padding: 10px 24px; border-radius: 100px; font-size: 0.85rem; font-weight: 800;
-    color: #2d3436 !important; text-decoration: none !important;
-    background: rgba(255, 255, 255, 0.7);
-    border: 2px solid #FFCB05; /* 포켓몬 골드 테두리 */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-}
-.mp-logout:hover { background: #FFCB05; color: #fff !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,203,5,0.4); }
-
-.badge-case-footer {
-    margin-top: 25px; padding: 12px;
-    background: #2d3436; /* 어두운 배경으로 변경 */
-    border: 2px solid #FFCB05;
-    border-radius: 12px;
-    font-weight: 900; color: #ffffff !important; font-size: 1.1rem;
-    text-align: center;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-@media (max-width: 768px) {
-    .mp-hero { flex-direction: column; text-align: center; padding: 30px; }
-}
-
-/* ── Kanto Badge Case ── */
-.badge-case {
-    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%);
-    border-radius: 24px;
-    padding: 32px;
-    border: 3px solid #e94560;
-    box-shadow:
-        0 0 40px rgba(233,69,96,0.12),
-        0 20px 60px rgba(0,0,0,0.55),
-        inset 0 1px 0 rgba(255,255,255,0.07);
-    width: 100%;
-    margin: 0;
-}
-.badge-case-title {
-    text-align: center;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 900;
-    font-size: 0.85rem;
-    color: #e94560;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    margin-bottom: 22px;
-    text-shadow: 0 0 20px rgba(233,69,96,0.5);
-}
-.badge-case-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-}
-.badge-slot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-}
-.badge-circle {
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    cursor: pointer;
-}
-.badge-circle.locked {
-    background: radial-gradient(circle, #1e2740, #111827);
-    border: 2px solid #2d3748;
-    box-shadow: inset 0 4px 14px rgba(0,0,0,0.7);
-}
-.badge-circle.unlocked {
-    background: radial-gradient(circle at 35% 35%, #2d3f5a, #1a2535);
-    border: 2px solid rgba(255,255,255,0.25);
-}
-.badge-circle.unlocked:hover { transform: scale(1.12); }
-.badge-circle img.badge-img-lock {
-    width: 90px; height: 90px;
-    object-fit: contain;
-    filter: grayscale(1) brightness(0.22);
-}
-.badge-circle img.badge-img-unlock {
-    width: 100px; height: 100px;
-    object-fit: contain;
-    filter: drop-shadow(0 3px 10px rgba(0,0,0,0.6));
-    transition: transform 0.25s ease;
-}
-.badge-slot-name {
-    font-size: 0.95rem;
-    font-weight: 900;
-    color: #718096;
-    text-align: center;
-    max-width: 110px;
-    line-height: 1.3;
-}
-.badge-slot-name.done { color: #e2e8f0; }
-.badge-slot-mission {
-    font-size: 0.8rem;
-    color: #4a5568;
-    text-align: center;
-    max-width: 110px;
-    line-height: 1.3;
-}
-.badge-slot-mission.done { color: #68d391; }
-.badge-case-footer {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: #4a5568;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-@keyframes badgePulse {
-    0%, 100% { opacity: 0.85; }
-    50%       { opacity: 1; }
-}
-</style>
-"""
 
 
 def show():
@@ -460,17 +115,7 @@ def show():
 
     # 배경 이미지 로드 및 CSS 주입 (최상단 배치로 레이아웃 밀림 방지)
     bg_b64 = _b64_img("img/mypage.png")
-    st.markdown(f"""
-    <style>
-    :root {{
-        --bg-img: url('{bg_b64}');
-    }}
-    /* 상단 공백 강제 제거 */
-    [data-testid="stAppViewBlockContainer"] {{ padding-top: 0 !important; }}
-    [data-testid="stVerticalBlock"] {{ gap: 0 !important; }}
-    </style>
-    """, unsafe_allow_html=True)
-    st.markdown(MYPAGE_CSS, unsafe_allow_html=True)
+    inject_mypage_styles(bg_b64)
 
     inject_common_ui(spacer=False)
 
@@ -501,13 +146,15 @@ def show():
             return gh
         return None
 
-    with ThreadPoolExecutor(max_workers=3) as ex:
-        f_gh    = ex.submit(_maybe_fetch_github)
-        f_stats = ex.submit(fetch_user_stats, user_id) if user_id else None
-        f_logs  = ex.submit(fetch_user_logs, user_id)  if user_id else None
-        gh      = f_gh.result()
-        stats   = f_stats.result() if f_stats else None
-        logs    = f_logs.result()  if f_logs  else []
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        f_gh      = ex.submit(_maybe_fetch_github)
+        f_stats   = ex.submit(fetch_user_stats, user_id)   if user_id else None
+        f_logs    = ex.submit(fetch_user_logs, user_id)    if user_id else None
+        f_history = ex.submit(fetch_team_history, user_id) if user_id else None
+        gh        = f_gh.result()
+        stats     = f_stats.result()   if f_stats   else None
+        logs      = f_logs.result()    if f_logs    else []
+        team_history = f_history.result() if f_history else []
 
     if gh:
         repos     = gh["repos"]
@@ -694,7 +341,7 @@ def show():
 
     slot_parts = []
     for b in KANTO_BADGES:
-        b64  = _b64_img(f"img/badge/{b['file']}")
+        b64  = _b64_img(f"img/badge/event/{b['file']}")
         glow = b["glow"]
         if b["unlocked"]:
             slot_parts.append(f'<div class="badge-slot"><div class="badge-circle unlocked" style="box-shadow:0 0 18px {glow}55,0 0 40px {glow}22,inset 0 2px 8px rgba(0,0,0,0.3);border-color:{glow}88;" title="{b["gym"]}"><img src="{b64}" class="badge-img-unlock" alt="{b["name"]}"></div><div class="badge-slot-name done">{b["name"]}</div><div class="badge-slot-mission done">✓ {b["mission"]}</div></div>')
@@ -733,7 +380,7 @@ def show():
 
     gym_slot_parts = []
     for g in GYM_LEADERS:
-        img_path = f"img/{g['id']}_뱃지.png"
+        img_path = f"img/badge/battle/{g['id']}_뱃지.png"
         b64 = _b64_img(img_path)
         glow = g["glow"]
         unlocked = g["id"] in gym_badges_owned
@@ -882,6 +529,83 @@ def show():
 
     activity_content = "".join(activity_items)
     st.markdown(f'<div class="mp-card card-activity">{activity_content}</div>', unsafe_allow_html=True)
+
+    # ══════════════════════════════════════════
+    # 6. Team Builder History
+    # ══════════════════════════════════════════
+    st.markdown('<div class="mp-section-title">Team Builder History</div>', unsafe_allow_html=True)
+
+    if not team_history:
+        st.markdown("""
+        <div class="mp-card card-history" style="text-align:center; padding: 60px;">
+            <div style="font-size: 3rem; margin-bottom: 20px;"></div>
+            <div style="font-weight: 800; color: #2d3436; font-size: 1.2rem;">팀 빌더 분석 기록이 없습니다.</div>
+            <div style="color: #636e72; margin-top: 10px;">팀을 구성하고 분석해보세요!</div>
+        </div>""", unsafe_allow_html=True)
+    else:
+        for log in team_history:
+            _, center, _ = st.columns([1, 8, 1])
+            with center:
+                sel_ids = log.get("selected_pokemon_ids", [])
+                rec_ids = log.get("recommended_pokemon_ids") or []
+
+                sel_imgs_html = "".join([
+                    f'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png" class="mp-hist-pkmn-img" alt="{pid}">'
+                    for pid in sel_ids[:5]
+                ])
+                rec_imgs_html = "".join([
+                    f'<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pid}.png" class="mp-hist-pkmn-img mp-hist-pkmn-rec" alt="{pid}">'
+                    for pid in rec_ids[:3]
+                ]) if rec_ids else '<span style="color:#a0aec0;font-size:0.75rem;">없음</span>'
+
+                created_at = log.get("created_at", "")
+                date_str = ""
+                if created_at:
+                    try:
+                        dt = datetime.fromisoformat(str(created_at).replace("Z", "+00:00"))
+                        date_str = dt.strftime("%m/%d %H:%M")
+                    except Exception:
+                        pass
+
+                conclusion = log.get("analysis_conclusion") or log.get("recommendation_conclusion") or ""
+                if len(conclusion) > 260:
+                    conclusion = conclusion[:260] + "…"
+
+                conclusion_html = (
+                    f'<div class="mp-hist-conclusion-h">{conclusion}</div>'
+                    if conclusion
+                    else '<div class="mp-hist-conclusion-h" style="color:#4a5568;font-style:italic;">분석 결과 텍스트 없음</div>'
+                )
+
+                card_html = (
+                    '<div class="mp-hist-card-h">'
+                    '<div class="mp-hist-team-block">'
+                    f'<div class="mp-hist-date">{date_str}</div>'
+                    '<div class="mp-hist-label">나의 팀</div>'
+                    f'<div class="mp-hist-row">{sel_imgs_html}</div>'
+                    '</div>'
+                    '<div class="mp-hist-sep"></div>'
+                    f'<div class="mp-hist-text-block">{conclusion_html}</div>'
+                    '<div class="mp-hist-sep"></div>'
+                    '<div class="mp-hist-rec-block">'
+                    '<div class="mp-hist-label">추천 포켓몬</div>'
+                    f'<div class="mp-hist-row">{rec_imgs_html}</div>'
+                    '</div>'
+                    '</div>'
+                )
+                st.markdown(card_html, unsafe_allow_html=True)
+
+                has_result = bool(log.get("analysis_result") or log.get("recommendation_result"))
+                if st.button(
+                    "결과 보기",
+                    key=f"hist_{log['id']}",
+                    disabled=not has_result,
+                    use_container_width=True,
+                ):
+                    st.session_state.analysis_result = log.get("analysis_result")
+                    st.session_state.recommendation_result = log.get("recommendation_result")
+                    st.session_state.team_result_type = "both"
+                    st.switch_page("pages/team_result.py")
 
     st.markdown('</div>', unsafe_allow_html=True) # mp-wrap
 
