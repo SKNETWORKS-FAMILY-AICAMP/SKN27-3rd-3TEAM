@@ -57,7 +57,11 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-embeddings = OpenAIEmbeddings()
+try:
+    embeddings = OpenAIEmbeddings()
+except Exception as e:
+    print(f"⚠️ OpenAIEmbeddings 초기화 실패: {e}")
+    embeddings = None
 
 # Tavily API 키가 없을 경우를 대비한 예외 처리
 try:
@@ -86,21 +90,26 @@ FLAVOR_TOP_N = 5
 # PGVector VectorStore 인스턴스
 # ══════════════════════════════════════════════════════════
 
-_vectorstore = PGVector(
-    connection_string=DB_CONN,
-    embedding_function=embeddings,
-    collection_name="flavor_text",
-)
-
-# MMR Retriever — 유사도 + 다양성 동시 고려
-_vector_retriever = _vectorstore.as_retriever(
-    search_type="mmr",
-    search_kwargs={
-        "k":           20,
-        "fetch_k":     50,
-        "lambda_mult": 0.7,
-    }
-)
+try:
+    if embeddings is None:
+        raise RuntimeError("embeddings 미초기화")
+    _vectorstore = PGVector(
+        connection_string=DB_CONN,
+        embedding_function=embeddings,
+        collection_name="flavor_text",
+    )
+    _vector_retriever = _vectorstore.as_retriever(
+        search_type="mmr",
+        search_kwargs={
+            "k":           20,
+            "fetch_k":     50,
+            "lambda_mult": 0.7,
+        }
+    )
+except Exception as e:
+    print(f"⚠️ PGVector 초기화 실패 (도감 벡터 검색 비활성화): {e}")
+    _vectorstore = None
+    _vector_retriever = None
 
 
 # ══════════════════════════════════════════════════════════
@@ -277,7 +286,10 @@ def search_flavor_text(query: str) -> str:
     """
     # 1. Vector search (MMR) → PGVector content는 "species_id: version 설명" 형식
     #    species_id 파싱 후 DB 조회로 포켓몬 이름 부착
-    vector_docs     = _vector_retriever.invoke(query)
+    if _vector_retriever is None:
+        vector_docs = []
+    else:
+        vector_docs = _vector_retriever.invoke(query)
     vector_contents: list[str] = []
     if vector_docs:
         try:
