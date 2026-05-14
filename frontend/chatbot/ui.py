@@ -92,14 +92,10 @@ def show():
         if _sessions:
             st.session_state.chat_history = _sessions
             if st.session_state.current_chat_id is None:
-                # 백엔드 응답 데이터 구조 안전성 검사
-                if isinstance(_sessions, list) and len(_sessions) > 0 and "id" in _sessions[0]:
-                    _first_id = _sessions[0]["id"]
-                    st.session_state.current_chat_id = _first_id
-                    if not st.session_state.messages:
-                        st.session_state.messages = api_messages(_first_id)
-                else:
-                    st.error("⚠️ 백엔드 세션 데이터를 읽을 수 없습니다. [BACKEND_URL] 설정을 확인해주세요.")
+                _first_id = _sessions[0]["id"]
+                st.session_state.current_chat_id = _first_id
+                if not st.session_state.messages:
+                    st.session_state.messages = api_messages(_first_id)
 
     USER_AVATAR = (
         _user_info.get("avatar_url")
