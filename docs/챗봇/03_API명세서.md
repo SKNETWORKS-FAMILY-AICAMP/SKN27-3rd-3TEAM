@@ -1,9 +1,9 @@
 # API 명세서 (API Specification)
 
 **프로젝트명:** 포켓몬 AI 챗봇  
-**문서 버전:** v1.1  
+**문서 버전:** v1.2  
 **작성일:** 2025-05-14  
-**최종 수정:** 2025-05-14 (search_pokemon_weakness 툴 추가, search_type_relations / search_evolution_chain 변경사항 반영)  
+**최종 수정:** 2025-05-14 (web_search 제거, Hybrid Search 반영, MAX_TOOL_CALLS 5 반영, CRAG 추가)  
 **Base URL:** `http://localhost:8000/api/v1`
 
 ---
@@ -49,7 +49,7 @@ Accept: application/json
 | `DB_CONNECTION_ERROR` | 500 | PostgreSQL 연결 실패 |
 | `NEO4J_ERROR` | 500 | Neo4j 연결 또는 쿼리 실패 |
 | `LLM_API_ERROR` | 502 | OpenAI API 호출 실패 |
-| `TOOL_CALL_LIMIT` | 200 | 툴 호출 횟수 초과 (정상 응답) |
+| `TOOL_CALL_LIMIT` | 200 | 툴 호출 횟수 초과 (정상 응답, MAX=5) |
 
 ---
 
@@ -99,7 +99,7 @@ POST /chat
 |------|------|------|
 | `session_id` | integer | 생성 또는 재사용된 세션 ID |
 | `answer` | string | AI 답변 (마크다운 형식) |
-| `used_tools` | string[] | 실제 사용된 툴 이름 목록 |
+| `used_tools` | string[] | 실제 사용된 툴 이름 목록 (최대 5개) |
 | `model` | string | 사용된 모델명 |
 | `created_at` | ISO8601 | 응답 생성 시각 |
 
@@ -132,15 +132,9 @@ GET /sessions
         "title": "피카츄 진화 경로",
         "model": "gpt-4o-mini",
         "created_at": "2025-05-14T14:32:00Z"
-      },
-      {
-        "id": 2,
-        "title": "불꽃 타입 약점",
-        "model": "gpt-4o-mini",
-        "created_at": "2025-05-13T09:10:00Z"
       }
     ],
-    "total": 2
+    "total": 1
   },
   "error": null
 }
@@ -187,12 +181,6 @@ POST /sessions
 GET /sessions/{session_id}/messages
 ```
 
-**Path Parameters:**
-
-| 파라미터 | 타입 | 설명 |
-|---------|------|------|
-| `session_id` | integer | 조회할 세션 ID |
-
 **Response (200):**
 
 ```json
@@ -232,9 +220,7 @@ DELETE /sessions/{session_id}
 ```json
 {
   "success": true,
-  "data": {
-    "deleted_session_id": 1
-  },
+  "data": { "deleted_session_id": 1 },
   "error": null
 }
 ```
@@ -254,18 +240,17 @@ def search_pokemon_db(sql: str) -> str
 
 | 파라미터 | 타입 | 설명 |
 |---------|------|------|
-| `sql` | str | SELECT 문 (LIMIT 10 권장) |
+| `sql` | str | SELECT 문 (LIMIT 10 권장, 동점 처리 시 서브쿼리 사용) |
+
+**제한:**
+- SELECT 이외의 구문 차단 (INSERT / UPDATE / DELETE / DROP / TRUNCATE / ALTER)
+- 코드 블록(` ```sql ``` `) 자동 제거 후 실행
 
 **반환 예시:**
-
 ```
 ✅ 3개 결과:
 [{"name": "피카츄", "hp": 35, "attack": 55}, ...]
 ```
-
-**제한:**
-- SELECT 이외의 구문 차단
-- `INSERT / UPDATE / DELETE / DROP / TRUNCATE / ALTER` 포함 시 오류 반환
 
 ---
 
@@ -277,21 +262,30 @@ def search_flavor_text(query: str) -> str
 
 | 파라미터 | 타입 | 설명 |
 |---------|------|------|
-| `query` | str | 자연어 검색어 |
+| `query` | str | 자연어 검색어 (Query Rewriting 후 전달됨) |
+
+**내부 동작 — Hybrid Search (3-way RRF):**
+
+| 채널 | 방식 | 파라미터 |
+|------|------|---------|
+| ① Vector (MMR) | PGVector, 코사인 유사도 | k=20, fetch_k=50, lambda_mult=0.7 |
+| ② BM25 | rank_bm25, 단어 TF-IDF | 프로세스 메모리 상주, TOP 20 |
+| ③ pg_trgm | PostgreSQL 트라이그램 유사도 | similarity > 0.05, TOP 20 |
+| 🔀 RRF | k=60 | 3채널 결합 → 상위 5개 반환 |
+
+벡터 결과의 `species_id`를 파싱하여 포켓몬 이름을 DB에서 조회 후 부착한다.  
+채널 중 하나가 실패해도 나머지 채널로 RRF를 계속 수행한다.
 
 **반환 예시:**
-
 ```
 ✅ 관련 도감 설명:
 
-25: 레드 전기 주머니에 전기를 모아두고...
+피카츄: 전기 주머니에 전기를 모아두고...
 
 ---
 
-25: 블루 꼬리로 땅의 상태를 파악한다...
+라이츄: 꼬리로 땅을 찍어 전기를 방전한다...
 ```
-
-**검색 설정:** MMR, k=20, fetch_k=50, lambda_mult=0.7
 
 ---
 
@@ -305,11 +299,12 @@ def search_evolution_chain(pokemon_name: str) -> str
 |---------|------|------|
 | `pokemon_name` | str | 포켓몬 이름 (부분 일치, CONTAINS 매칭) |
 
-**내부 동작:** 진화 전 체인과 진화 후 체인(최대 3단계)을 별도 쿼리로 분리 조회.  
-`LIMIT 1` + `DISTINCT`로 여러 폼(form) 노드가 존재할 때 중복 경로 방지.
+**내부 동작:**
+- 진화 전 체인: `LIMIT 1`로 중복 폼 노드 방지
+- 진화 후 체인: `DISTINCT` + 메가/거다이맥스 폼 필터링
+- Neo4j 미수록 진화 조건 → `KNOWN_EVO_CONDITIONS` fallback 맵으로 보완
 
 **반환 예시:**
-
 ```
 🔗 [피카츄] 진화 체인 정보
 
@@ -332,25 +327,27 @@ def search_type_relations(type_name: str) -> str
 |---------|------|------|
 | `type_name` | str | 타입명 (부분 일치) |
 
-**내부 동작:** `ATTACK_EFFECTIVE` 관계 대신 `AGAINST` 관계를 기반으로 단일 타입 포켓몬을 필터링하여 순수 타입 배율을 추출. 무효 타입·약점 포켓몬 예시·면역 포켓몬 예시도 함께 반환.
+**내부 동작:** `AGAINST` 관계 + 단일 타입 포켓몬 필터로 순수 배율 추출.  
+공격 효율(강함/약함/무효) + 방어 특성(약점/면역/저항) + 포켓몬 예시를 통합 반환.
 
 **반환 예시:**
-
 ```
 ⚔️  [불꽃] 타입 상성
 
 ✅ 공격 시 효과적 (2배+): 풀(2배), 얼음(2배), 벌레(2배), 강철(2배)
 ❌ 공격 시 비효과적 (절반-): 불꽃(0.5배), 물(0.5배), 바위(0.5배), 드래곤(0.5배)
-🚫 공격 시 무효 (0배): 바위
+🚫 공격 시 무효 (0배): (해당 없음)
 ⚠️  이 타입의 약점 (당할 때): 물(2배), 바위(2배), 땅(2배)
+✨ 이 타입의 면역 (당할 때 0배): (해당 없음)
+🛡️  이 타입의 저항 (당할 때 절반-): 풀, 벌레, 강철, 불꽃, 페어리
 
-📋 약점 포켓몬 예시: 이상해씨, 파이리, 꼬부기, ...
-🛡️  면역 포켓몬 예시: 가디, ...
+📋 약점 포켓몬 예시: 이상해씨, 파이리, ...
+🛡️  면역 포켓몬 예시: (해당 없음)
 ```
 
 ---
 
-### 4.5 search_pokemon_weakness ✨ NEW
+### 4.5 search_pokemon_weakness
 
 ```python
 def search_pokemon_weakness(pokemon_name: str) -> str
@@ -358,35 +355,65 @@ def search_pokemon_weakness(pokemon_name: str) -> str
 
 | 파라미터 | 타입 | 설명 |
 |---------|------|------|
-| `pokemon_name` | str | 포켓몬 이름 (부분 일치, CONTAINS 매칭) |
+| `pokemon_name` | str | 포켓몬 이름 (부분 일치) |
 
-**설명:** 포켓몬 이름이 주어졌을 때 해당 포켓몬의 실제 방어 배율을 반환한다.  
-`AGAINST` 관계에 저장된 복합 배율을 직접 읽어 듀얼 타입의 4배/0.25배 등을 정확히 반영한다.  
-`search_type_relations`가 타입 개념 수준의 상성을 반환하는 것과 달리, 이 툴은 **포켓몬 개체 수준**의 상성을 반환한다.
+**내부 동작:** `AGAINST` 관계에서 전체 공격 타입 배율을 직접 읽어 버킷 분류.  
+`search_type_relations`와 달리 **포켓몬 개체 수준** 배율 (듀얼 타입 복합 포함).
 
-**Agent 우선순위:** 질문에 포켓몬 이름이 명시된 경우 `search_type_relations` 대신 이 툴을 우선 사용한다.
+| 배율 | 버킷 | 표시 |
+|------|------|------|
+| 0배 | immune | ✨ 면역 |
+| 0 < m ≤ 0.25 | very_resistant | 🛡️ 0.25배 저항 |
+| 0.5배 | resistant | 🛡️ 0.5배 저항 |
+| 1배 | normal | (생략) |
+| 2배 | weak | ⚠️ 2배 약점 |
+| ≥ 4배 | very_weak | 💀 4배 약점 |
 
 **반환 예시:**
-
 ```
 🔍 [리자몽] 타입 상성 (보유 타입: 불꽃, 비행)
 
 💀 4배 약점: 바위(4배)
 ⚠️  2배 약점: 물(2배), 전기(2배)
 🛡️  0.5배 저항: 풀, 벌레, 강철, 불꽃, 페어리
-🛡️  0.25배 저항: (해당 없음)
 ✨ 면역: 땅
 ```
 
-**배율 분류 기준:**
-
-| 배율 | 분류 | 표시 |
-|------|------|------|
-| 0배 | 면역 | ✨ 면역 |
-| 0.25배 이하 | 매우 저항 | 🛡️ 0.25배 저항 |
-| 0.5배 | 저항 | 🛡️ 0.5배 저항 |
-| 1배 | 보통 | (생략) |
-| 2배 | 약점 | ⚠️ 2배 약점 |
-| 4배 이상 | 매우 약점 | 💀 4배 약점 |
-
 ---
+
+## 5. 내부 헬퍼 함수 명세
+
+### 5.1 _rewrite_query (Query Rewriting)
+
+```python
+def _rewrite_query(query: str) -> str
+```
+
+Agent의 첫 번째 툴 호출 직전에 실행되는 전처리 함수.  
+`gpt-4o-mini`를 호출하여 사용자 질문에서 불필요한 표현을 제거하고 검색 키워드를 명확히 한다.  
+실패 시 원본 질문을 그대로 반환한다 (fallback 보장).
+
+### 5.2 crag_check_node (CRAG)
+
+```python
+def crag_check_node(state: AgentState) -> AgentState
+```
+
+`ToolNode` 실행 직후 호출되는 LangGraph 노드.  
+`gpt-4o-mini`로 툴 결과 관련성을 평가하고, 관련 없으면 재검색 유도 `SystemMessage`를 삽입한다.  
+`tool_call_count >= MAX_TOOL_CALLS - 1` (4회 이상)이면 평가를 생략하여 무한 루프를 방지한다.
+
+| 판정 결과 | 삽입 메시지 |
+|---------|-----------|
+| YES (관련 있음) | 메시지 없음 (통과) |
+| 빈 결과 / "찾을 수 없음" | "검색어를 바꾸거나 다른 툴로 재시도하세요." |
+| NO (전혀 무관) | "⚠️ 직전 결과가 질문과 무관합니다. 재검색하세요." |
+
+### 5.3 _reciprocal_rank_fusion
+
+```python
+def _reciprocal_rank_fusion(rankings: list[list[str]], k: int = 60) -> list[str]
+```
+
+여러 검색 채널의 순위 목록을 입력받아 RRF 점수로 통합 정렬된 단일 목록을 반환한다.  
+점수 계산: `score(doc) += 1 / (k + rank + 1)`
