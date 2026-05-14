@@ -7,7 +7,11 @@
 
 from typing import Any, Dict, List
 
-from team_build_rag.scoring_policy import get_hybrid_weights
+from team_build_rag.scoring_policy import (
+    GRAPH_SCORE_MAX,
+    get_hybrid_weights,
+    normalize_graph_score,
+)
 from team_build_rag.state import HybridRagState, get_request_type
 from team_build_rag.vector_scorer import (
     score_analysis_evidence,
@@ -24,7 +28,15 @@ def _calculate_candidate_hybrid_score(
 
     # graph_score:
     # - 팀 약점 보완, 종족값, 기술 타입 커버리지로 계산된 기존 추천 점수입니다.
-    graph_score = float(candidate.get("graph_score", candidate.get("score", 0)) or 0)
+    # graph_raw_score는 Graph DB 추천 로직이 만든 원본 점수입니다.
+    # 원본 값은 디버깅/설명용으로 남기고, 하이브리드 계산에는 정규화 점수를 사용합니다.
+    graph_raw_score = float(candidate.get("graph_score", candidate.get("score", 0)) or 0)
+
+    # graph_score는 vector_score와 같은 0~100 기준으로 맞춘 Graph DB 점수입니다.
+    # graph_score:
+    # - raw graph_score는 최대 150점으로 설계했습니다.
+    # - 후보군 안의 상대 최고점이 아니라, 고정 최대값 150점을 기준으로 0~100으로 환산합니다.
+    graph_score = normalize_graph_score(graph_raw_score, GRAPH_SCORE_MAX)
 
     # vector_score:
     # - 후보 이름/타입/기술과 관련된 Vector DB 문서 근거 점수입니다.
@@ -39,6 +51,7 @@ def _calculate_candidate_hybrid_score(
 
     return {
         **candidate,
+        "graph_raw_score": round(graph_raw_score, 2),
         "graph_score": round(graph_score, 2),
         "vector_score": round(vector_score, 2),
         "hybrid_score": hybrid_score,
@@ -57,6 +70,7 @@ def _score_recommendations(state: HybridRagState) -> Dict[str, Any]:
     weights = get_hybrid_weights("recommendation")
 
     vector_score_map = score_recommendation_evidence(recommendations, vector_documents)
+    # 이번 추천 후보군의 최대 graph raw score를 기준으로 graph_score를 0~100으로 정규화합니다.
     scored_recommendations: List[Dict[str, Any]] = []
 
     for candidate in recommendations:
@@ -84,7 +98,10 @@ def _score_recommendations(state: HybridRagState) -> Dict[str, Any]:
         "request_type": "recommendation",
         "graph_weight": weights["graph"],
         "vector_weight": weights["vector"],
-        "score_fields": ["graph_score", "vector_score", "hybrid_score"],
+        "graph_score_normalized": True,
+        "graph_score_normalization": "fixed_design_max",
+        "graph_score_max": GRAPH_SCORE_MAX,
+        "score_fields": ["graph_raw_score", "graph_score", "vector_score", "hybrid_score"],
     }
 
     return {"reranked_result": reranked_result}
