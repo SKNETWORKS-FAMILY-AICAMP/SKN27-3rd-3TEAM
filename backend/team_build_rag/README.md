@@ -29,7 +29,7 @@ START
 | `scoring_policy.py` | Graph 점수와 Vector 점수를 합칠 가중치를 관리합니다. |
 | `hybrid_scorer.py` | `graph_score`와 `vector_score`를 합쳐 `hybrid_score`를 계산합니다. |
 | `hybrid_retriever.py` | Graph 결과와 Vector 문서를 LLM이 읽기 좋은 context로 묶습니다. |
-| `answer_generator.py` | OpenAI LLM을 호출해서 최종 AI 해설 문장을 생성합니다. |
+| `answer_generator.py` | Hugging Face Router 기반 Qwen 계열 모델을 호출해서 최종 AI 해설 문장을 생성합니다. |
 | `workflow.py` | LangGraph 워크플로우를 구성하고 컴파일합니다. |
 | `workflow_diagram.md` | 워크플로우 구조를 Mermaid 다이어그램으로 설명합니다. |
 
@@ -45,9 +45,9 @@ START
 
 | 요청 | Graph | Vector |
 | --- | ---: | ---: |
-| 덱 분석 | 60% | 40% |
-| 포켓몬 추천 | 70% | 30% |
-| AI 답변 생성 | 50% | 50% |
+| 덱 분석 | 70% | 30% |
+| 포켓몬 추천 | 80% | 20% |
+| AI 답변 생성 | 60% | 40% |
 
 가중치를 바꾸고 싶으면 `backend/team_build_rag/scoring_policy.py`만 수정하면 됩니다.
 

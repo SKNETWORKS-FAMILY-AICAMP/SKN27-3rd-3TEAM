@@ -102,8 +102,8 @@ flowchart TD
 | TB-024 | Hybrid RAG | Graph Tool 작성 | 분석/추천 요청에 따라 Graph DB 기반 계산 결과 생성 | `backend/team_build_rag/graph_tools.py` | 완료 |
 | TB-025 | Hybrid RAG | Vector Search 작성 | Graph 결과 기반 검색어로 Vector DB 문서 근거 검색 | `backend/team_build_rag/vector_search.py` | 완료 |
 | TB-026 | Hybrid RAG | Vector Score 작성 | 검색 근거 문서의 관련도를 점수화하는 로직 작성 | `backend/team_build_rag/vector_scorer.py` | 완료 |
-| TB-027 | Hybrid RAG | Hybrid Score 작성 | Graph Score와 Vector Score를 가중치 기반으로 결합 | `backend/team_build_rag/hybrid_scorer.py` | 완료 |
-| TB-028 | Hybrid RAG | 점수 정책 분리 | 분석, 추천, AI 해설 단계별 가중치 정책 정의 | `backend/team_build_rag/scoring_policy.py` | 완료 |
+| TB-027 | Hybrid RAG | Hybrid Score 작성 | Graph Score를 150점 기준으로 정규화한 뒤 Vector Score와 가중치 기반으로 결합 | `backend/team_build_rag/hybrid_scorer.py` | 완료 |
+| TB-028 | Hybrid RAG | 점수 정책 분리 | 분석 7:3, 추천 8:2, 해설 6:4 가중치와 graph_score 최대 150점 기준 정의 | `backend/team_build_rag/scoring_policy.py` | 완료 |
 | TB-029 | Hybrid RAG | 답변 생성기 작성 | 근거 기반 한국어 AI 해설 프롬프트 구성 및 Hugging Face Qwen 호출 | `backend/team_build_rag/answer_generator.py` | 완료 |
 | TB-030 | Hybrid RAG | RAG 구조 문서화 | 팀빌더 RAG 모듈 목적, 구성, 실행 흐름 문서화 | `backend/team_build_rag/README.md` | 완료 |
 | TB-031 | Hybrid RAG | 워크플로우 다이어그램 작성 | Graph Guided Hybrid RAG 흐름을 Mermaid 및 SVG로 시각화 | `backend/team_build_rag/workflow_diagram.md` | 완료 |
@@ -159,11 +159,11 @@ flowchart TD
 | Docker 환경 | 백엔드, 프론트엔드, PostgreSQL, Neo4j 컨테이너가 정상 실행되어야 합니다. |
 | Neo4j 데이터 | Graph DB 적재가 완료되어야 분석/추천 API가 정상 동작합니다. |
 | Vector DB 데이터 | Vector 검색 품질은 `pokemon_knowledge`, `flavor_text`, `moves`, `abilities` 등 저장 데이터 품질에 영향을 받습니다. |
-| LLM 호출 | Hugging Face Router 사용 시 계정 권한 또는 크레딧 상태에 따라 402 오류가 발생할 수 있습니다. |
+| LLM 호출 | Hugging Face Router 사용 시 토큰, 추론 크레딧, 모델 권한/설정에 따라 호출 오류가 발생할 수 있습니다. |
 | 저장 기능 | 추천 결과 저장은 PostgreSQL의 `team_build_logs` 테이블을 기준으로 확인합니다. |
 
 ## 9. 현재 WBS 기준 결론
 
 팀빌더 기능은 화면, API, Graph DB, Hybrid RAG, 결과 저장, 문서화까지 주요 구현 흐름이 구성된 상태입니다.
 
-다만 실제 실행 안정성은 Docker 환경, Neo4j 적재 상태, Vector DB 데이터 존재 여부, Hugging Face 호출 권한에 영향을 받으므로 배포 또는 시연 전에는 환경 검증이 필요합니다.
+다만 실제 실행 안정성은 Docker 환경, Neo4j 적재 상태, Vector DB 데이터 존재 여부, Hugging Face 토큰/크레딧 상태에 영향을 받으므로 배포 또는 시연 전에는 환경 검증이 필요합니다.

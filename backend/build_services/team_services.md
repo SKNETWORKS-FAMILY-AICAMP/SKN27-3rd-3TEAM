@@ -1,278 +1,340 @@
-# Team Builder Services 설명
+# Team Builder Build Services 설명서
 
-이 문서는 `backend/build_services` 안에서 팀 빌딩 기능에 직접 연결되는 5개 서비스 파일을 설명합니다.
+이 문서는 `backend/build_services` 안에서 팀 빌딩 기능에 직접 연결되는 서비스 파일 5개를 설명합니다.
 
-서비스 계층은 라우터와 데이터베이스 사이에서 실제 비즈니스 로직을 처리합니다.
+팀 빌더는 크게 두 층으로 나뉩니다.
 
----
+- `backend/build_services`: Graph DB 조회, 팀 분석, 추천 후보 계산처럼 **결정론적인 서비스 로직**을 담당합니다.
+- `backend/team_build_rag`: Vector Search, Hybrid Score, Prompt, LLM 해설처럼 **RAG 기반 설명 생성 로직**을 담당합니다.
 
-## 1. 전체 구조
-
-| 파일 | 핵심 역할 |
-| --- | --- |
-| `team_analysis_service.py` | 선택한 5마리 팀의 약점, 저항, 기술 커버리지 분석 |
-| `team_score_service.py` | 그래프 상성 데이터를 화면용 점수/등급/문구로 변환 |
-| `team_insight_service.py` | 팀 분석 결과를 사람이 읽기 좋은 규칙 기반 해설로 변환 |
-| `team_builder_service.py` | 부족한 1마리 추천 후보 계산과 점수화 |
-| `team_rag_service.py` | LangGraph 기반 팀 빌드 RAG 워크플로우 실행 |
+> `team_recommendation_score_slides.md`는 추천 점수 설명용 문서이며, 런타임 서비스 파일에는 포함하지 않습니다.
 
 ---
 
-## 2. 서비스 계층의 흐름
-
-일반 팀 분석은 다음 흐름으로 동작합니다.
+## 1. 전체 위치
 
 ```text
-team_builder router
-  -> team_analysis_service.analyze_team()
-  -> graph queries
-  -> team_score_service.build_type_matchup_items()
-  -> team_insight_service.build_team_insights()
+backend/
+  build_services/
+    team_analysis_service.py
+    team_builder_service.py
+    team_insight_service.py
+    team_rag_service.py
+    team_score_service.py
+
+  team_build_rag/
+    graph_tools.py
+    vector_search.py
+    vector_scorer.py
+    hybrid_scorer.py
+    scoring_policy.py
+    answer_generator.py
+    workflow.py
 ```
 
-일반 추천은 다음 흐름으로 동작합니다.
+---
+
+## 2. 서비스 파일 요약
+
+| 파일 | 핵심 역할 | 주요 사용 위치 |
+|---|---|---|
+| `team_analysis_service.py` | 선택한 5마리 팀의 약점, 저항, 타입 분포, 기술 타입 커버리지 분석 | 덱 분석, RAG 분석 |
+| `team_score_service.py` | 타입 상성 결과를 화면에 보여주기 좋은 점수/등급/문장으로 변환 | 덱 분석 결과 카드 |
+| `team_insight_service.py` | 분석 결과를 바탕으로 팀 성향, 핵심 위험, 강점, 추천 방향 생성 | 덱 분석 요약 |
+| `team_builder_service.py` | 6번째 포켓몬 추천 후보를 Graph DB 기반으로 계산 | 추천 후보 산출 |
+| `team_rag_service.py` | LangGraph Hybrid RAG 워크플로우 실행 래퍼 | RAG 분석, RAG 추천 |
+
+---
+
+## 3. 요청 흐름
+
+### 3.1 덱 분석 흐름
 
 ```text
-team_builder router
-  -> team_builder_service.recommend_team_member()
-  -> team_analysis_service.analyze_team()
-  -> graph queries
-  -> 추천 후보 점수 계산
-```
-
-RAG 분석/추천은 다음 흐름으로 동작합니다.
-
-```text
-team_builder router
-  -> team_rag_service.run_team_rag()
+frontend/pages/teambuilding.py
+  -> backend/routers/team_builder.py
+  -> backend/build_services/team_rag_service.py
   -> backend/team_build_rag/workflow.py
+  -> graph_tools.py
+  -> team_analysis_service.py
+  -> vector_search.py
+  -> hybrid_scorer.py
+  -> answer_generator.py
 ```
 
----
+덱 분석은 선택한 5마리의 방어 상성, 기술 타입 커버리지, 팀 타입 중복을 계산하고, 그 결과를 RAG 해설로 정리합니다.
 
-## 3. `team_analysis_service.py`
-
-### 목적
-
-선택한 5마리 포켓몬의 팀 상태를 그래프 DB 기준으로 분석합니다.
-
-이 파일은 팀 분석의 중심 파일입니다.
-
-### 주요 함수
-
-| 함수 | 설명 |
-| --- | --- |
-| `_validate_team_size()` | 포켓몬이 정확히 5마리인지, 중복이 없는지 검증 |
-| `analyze_team()` | 선택 팀의 포켓몬 정보, 약점, 저항, 기술 타입 커버리지 조회 |
-
-### 분석 데이터
-
-`analyze_team()`은 다음 데이터를 조합합니다.
-
-| 데이터 | 설명 |
-| --- | --- |
-| `selected_pokemon` | 선택한 포켓몬 이름, 이미지, 타입, 능력치 |
-| `weak_types` | 평균 배율이 1배보다 커서 주의가 필요한 타입 |
-| `neutral_types` | 평균 배율이 1배인 타입 |
-| `resistant_types` | 평균 배율이 1배보다 낮아 안정적인 타입 |
-| `team_type_distribution` | 선택 팀의 타입 분포 |
-| `move_type_coverage` | 팀 전체가 배울 수 있는 기술 타입 분포 |
-| `insights` | 팀 정체성, 위험 요약, 추천 방향 |
-
-### 설계 의도
-
-Neo4j에서 가져온 원본 상성 데이터는 화면에 바로 보여주기 어렵습니다.
-
-그래서 이 파일은 그래프 데이터를 모으고, `team_score_service.py`와 `team_insight_service.py`를 호출해 프론트가 쓰기 좋은 형태로 정리합니다.
-
----
-
-## 4. `team_score_service.py`
-
-### 목적
-
-Neo4j에서 가져온 타입 상성 값을 분석용 점수와 등급으로 바꿉니다.
-
-즉, 이 파일의 `score`는 추천 점수가 아니라 “분석 화면에서 위험도/안정성을 표현하기 위한 점수”입니다.
-
-### 주요 함수
-
-| 함수 | 설명 |
-| --- | --- |
-| `_get_matchup_grade()` | 평균 배율을 기준으로 `매우 위험`, `주의`, `보통`, `안정`, `매우 안정` 등급 생성 |
-| `_calculate_matchup_score()` | 평균 배율을 화면 표시용 점수로 변환 |
-| `_build_matchup_reason()` | 타입별 설명 문구 생성 |
-| `build_type_matchup_items()` | 약점/보통/저항 타입 리스트를 한 번에 생성 |
-
-### 점수 계산 방식
-
-평균 배율이 1보다 크면 위험 점수입니다.
+### 3.2 추천 흐름
 
 ```text
-score = (average_multiplier - 1) * 100
+frontend/pages/teambuilding.py
+  -> backend/routers/team_builder.py
+  -> backend/build_services/team_rag_service.py
+  -> backend/team_build_rag/workflow.py
+  -> graph_tools.py
+  -> team_builder_service.py
+  -> vector_search.py
+  -> hybrid_scorer.py
+  -> answer_generator.py
 ```
 
-예를 들어 평균 배율이 `1.8`이면 위험 점수는 `80`입니다.
+추천은 현재 팀의 약점을 보완할 수 있는 후보를 Graph DB에서 계산한 뒤, Vector DB 근거와 결합하여 최종 추천 이유를 생성합니다.
 
-평균 배율이 1보다 낮으면 안정 점수입니다.
+---
+
+## 4. 파일별 상세 설명
+
+## 4.1 `team_analysis_service.py`
+
+선택한 5마리 포켓몬을 기준으로 팀 전체를 분석하는 서비스입니다.
+
+### 주요 책임
+
+- 포켓몬 ID 5개가 유효한지 검증합니다.
+- 선택한 포켓몬의 이름, 이미지, 타입, 기본 능력치를 조회합니다.
+- 팀이 어떤 공격 타입에 약한지 계산합니다.
+- 팀이 어떤 공격 타입을 안정적으로 받아낼 수 있는지 계산합니다.
+- 팀이 보유한 기술 타입 커버리지를 계산합니다.
+- 분석 결과를 `team_insight_service.py`와 연결하여 요약 인사이트를 만듭니다.
+
+### 주요 함수
+
+| 함수 | 설명 |
+|---|---|
+| `_validate_team_size` | 선택 포켓몬 수가 5마리인지, 중복이 없는지 검증 |
+| `analyze_team` | 덱 분석의 메인 함수 |
+
+### 반환 데이터 예시
+
+```json
+{
+  "selected_pokemon": [],
+  "weak_types": [],
+  "resistant_types": [],
+  "neutral_types": [],
+  "team_type_distribution": [],
+  "move_type_coverage": [],
+  "insights": {}
+}
+```
+
+---
+
+## 4.2 `team_score_service.py`
+
+타입 상성 결과를 화면에 표시하기 좋은 형태로 가공하는 서비스입니다.
+
+### 주요 책임
+
+- 평균 데미지 배율을 기준으로 위험도/안정도를 계산합니다.
+- 화면에서 사용할 점수, 등급, 설명 문장을 만듭니다.
+- 덱 분석 화면의 `주의할 약점 타입`, `방어가 좋은 타입` 카드에 들어가는 데이터를 구성합니다.
+
+### 주의할 점
+
+`team_score_service.py`의 점수는 **덱 분석 표시용 점수**입니다.
+
+추천 후보 순위를 결정하는 `graph_score`와는 목적이 다릅니다.
 
 ```text
-score = (1 - average_multiplier) * 100
+team_score_service.py
+  -> 분석 화면에서 타입 위험도를 이해하기 쉽게 보여주는 점수
+
+team_builder_service.py
+  -> 추천 후보의 순위를 계산하는 graph_score
 ```
 
-예를 들어 평균 배율이 `0.6`이면 안정 점수는 `40`입니다.
+---
 
-### 설계 의도
+## 4.3 `team_insight_service.py`
 
-프론트엔드에서 단순히 `1.8배`, `0.6배`만 보여주면 의미가 약합니다.
+분석 결과를 사람이 읽기 좋은 팀 해석으로 바꾸는 서비스입니다.
 
-그래서 이 파일에서 배율을 등급, 점수, 설명으로 바꿔 화면에서 해석하기 쉽게 만들었습니다.
+### 주요 책임
+
+- 팀의 대표 성향을 만듭니다.
+- 핵심 위험 타입을 요약합니다.
+- 방어적으로 안정적인 타입을 요약합니다.
+- 6번째 포켓몬 추천 방향을 만듭니다.
+
+### 생성되는 인사이트
+
+| 항목 | 설명 |
+|---|---|
+| `team_identity` | 현재 팀을 한 문장으로 요약 |
+| `risk_summary` | 가장 조심해야 할 약점 |
+| `strength_summary` | 안정적으로 받아낼 수 있는 타입 |
+| `recommendation_direction` | 6번째 포켓몬이 보완해야 할 방향 |
+
+이 서비스는 LLM을 호출하지 않습니다. Graph DB 분석 결과를 규칙 기반으로 정리합니다.
 
 ---
 
-## 5. `team_insight_service.py`
+## 4.4 `team_builder_service.py`
 
-### 목적
+6번째 포켓몬 추천 후보를 계산하는 핵심 서비스입니다.
 
-숫자 중심의 분석 결과를 사람이 읽기 좋은 문장으로 바꿉니다.
+### 주요 책임
 
-RAG를 쓰지 않아도 최소한의 해설이 나오도록 만든 규칙 기반 해설 서비스입니다.
+- 현재 팀의 약점 타입을 가져옵니다.
+- 해당 약점 타입을 저항하거나 무효화할 수 있는 후보를 찾습니다.
+- 후보의 능력치, 기술 타입 다양성, 현재 팀과의 타입 중복을 반영해 `graph_score`를 계산합니다.
+- 추천 후보별 근거 문장을 생성합니다.
 
-### 주요 함수
+### Graph Score 구성
 
-| 함수 | 설명 |
-| --- | --- |
-| `_build_team_identity()` | 팀의 타입 중복, 평균 능력치, 팀 성향 요약 |
-| `_build_role_summary()` | 선택 포켓몬 각각의 역할 힌트 생성 |
-| `_build_risk_summary()` | 가장 위험한 약점 타입 중심으로 경고 문구 생성 |
-| `_build_strength_summary()` | 방어가 안정적인 타입과 기술 커버리지 요약 |
-| `_build_recommendation_direction()` | 6번째 포켓몬이 보완해야 할 방향 제안 |
-| `build_team_insights()` | 위 내용을 모아 최종 insights 생성 |
+현재 추천 후보의 원본 `graph_score`는 다음 항목을 합산해 계산합니다.
 
-### 반환 구조
+| 항목 | 계산 방식 | 최대/범위 | 의미 |
+|---|---:|---:|---|
+| `defensive_score` | `min(보완 약점 수, 5) * 25` | 최대 125 | 팀 약점을 얼마나 많이 막는지 |
+| `stat_score` | `min(base_total / 140, 5)` | 최대 5 | 기본 능력치 보정 |
+| `coverage_score` | `min(기술 타입 수 * 1.5, 20)` | 최대 20 | 배울 수 있는 기술 타입 폭 |
+| `duplicate_penalty` | `min(겹치는 타입 수 * 20, 40)` | 최대 -40 | 기존 팀과 타입이 겹칠 때 감점 |
 
-| 키 | 의미 |
-| --- | --- |
-| `team_identity` | 팀의 전체 성향 |
-| `summary` | 한 줄 요약 |
-| `risk_summary` | 위험 요약 |
-| `strength_summary` | 강점 요약 |
-| `role_summary` | 선택 포켓몬별 역할 |
-| `type_balance` | 타입 중복과 분포 |
-| `recommendation_direction` | 추천 방향 |
+설계상 감점 전 최대 점수는 다음과 같습니다.
 
-### 설계 의도
+```text
+graph_score 최대값 = defensive_score 125 + stat_score 5 + coverage_score 20
+                 = 150점
+```
 
-그래프 DB는 근거 데이터를 잘 찾지만, 그 자체로 자연스러운 설명을 만들지는 않습니다.
+### 점수 설계 의도
 
-이 파일은 그래프 분석 결과를 프론트에서 바로 보여줄 수 있는 “1차 해설”로 바꿉니다.
-
-RAG가 실패하거나 API 키가 없을 때도 최소한의 설명을 제공하는 안전장치 역할도 합니다.
+- 추천의 핵심은 6번째 포켓몬이 팀 약점을 보완하는 것이므로 `defensive_score`의 비중을 가장 크게 둡니다.
+- `stat_score`는 강한 포켓몬을 약간 우대하되, 약점 보완보다 앞서지 않도록 최대 5점으로 제한합니다.
+- `coverage_score`는 기술 선택 폭을 반영하지만, 단순히 기술 타입이 많은 포켓몬이 압도하지 않도록 최대 20점으로 제한합니다.
+- `duplicate_penalty`는 팀 타입 다양성을 확보하기 위한 감점이며, 지나친 감점을 막기 위해 최대 40점으로 제한합니다.
 
 ---
 
-## 6. `team_builder_service.py`
+## 4.5 `team_rag_service.py`
 
-### 목적
+팀 빌더 RAG 워크플로우를 실행하는 서비스입니다.
 
-선택한 5마리 포켓몬을 기준으로 부족한 1마리를 추천합니다.
+### 주요 책임
 
-추천의 핵심은 “현재 팀의 약점을 얼마나 잘 보완하는가”입니다.
+- API 요청 데이터를 LangGraph 워크플로우 입력 형태로 변환합니다.
+- `hybrid_rag_app.invoke()`를 호출합니다.
+- 응답에서 DB 연결 객체처럼 직렬화할 수 없는 값을 제거합니다.
+- 라우터가 그대로 반환할 수 있는 JSON 결과를 만듭니다.
 
-### 주요 함수
+### 실행 흐름
 
-| 함수 | 설명 |
-| --- | --- |
-| `_describe_defensive_relation()` | `RESISTANT_TO`, `VERY_RESISTANT_TO`, `IMMUNE_TO`를 한국어 설명으로 변환 |
-| `_build_defensive_reason()` | 후보가 어떤 약점 타입을 어떻게 막는지 설명 |
-| `_build_useful_move_notes()` | 후보가 배울 수 있는 대표 기술을 정리 |
-| `_build_move_reason()` | 추천 후보의 기술 활용 이유 생성 |
-| `_build_candidate_score()` | 후보별 추천 점수 계산 |
-| `recommend_team_member()` | 최종 추천 후보 리스트 생성 |
-
-### 추천 점수 기준
-
-| 기준 | 의미 |
-| --- | --- |
-| 약점 보완 점수 | 현재 팀의 약점 타입을 저항/무효로 받을 수 있는 정도 |
-| 능력치 점수 | 후보의 `base_total` 기준 점수 |
-| 기술 커버리지 점수 | 후보가 배울 수 있는 기술 타입 다양성 |
-| 타입 중복 패널티 | 기존 팀과 타입이 너무 겹칠 때 감점 |
-
-### 추천 결과에 들어가는 정보
-
-| 키 | 의미 |
-| --- | --- |
-| `pokemon_id` | 추천 후보 ID |
-| `name` | 추천 후보 이름 |
-| `image_url` | 포켓몬 이미지 |
-| `base_total` | 기본 능력치 총합 |
-| `score` | 추천 점수 |
-| `defensive_covers` | 어떤 약점 타입을 보완하는지 |
-| `move_types` | 배울 수 있는 기술 타입 |
-| `pokemon_types` | 후보 포켓몬 자체 타입 |
-| `useful_moves` | 대표적으로 활용 가능한 기술 |
-| `reasons` | 추천 이유 문장 목록 |
-
-### 설계 의도
-
-추천은 단순히 강한 포켓몬을 뽑는 기능이 아닙니다.
-
-현재 팀의 빈틈을 메우는 포켓몬을 찾는 것이 목표입니다.
-
-그래서 그래프 DB에서 약점 보완 관계를 찾고, 서비스 계층에서 능력치/기술/타입 중복을 함께 계산합니다.
+```text
+team_rag_service.run_team_rag
+  -> workflow.hybrid_rag_app.invoke
+  -> supervisor
+  -> select_graph_tool
+  -> execution_graph_tool
+  -> vector_search
+  -> evaluate_with_llm
+  -> hybrid_scorer
+  -> answer_generator
+```
 
 ---
 
-## 7. `team_rag_service.py`
+## 5. 점수 정책 위치
 
-### 목적
+점수 가중치와 정규화 정책은 `build_services`가 아니라 `team_build_rag` 쪽에 있습니다.
 
-팀 분석/추천 결과를 LangGraph 기반 RAG 워크플로우로 넘기는 진입점입니다.
+| 파일 | 역할 |
+|---|---|
+| `backend/team_build_rag/scoring_policy.py` | 분석/추천/답변 생성의 Graph DB와 Vector DB 가중치 정의 |
+| `backend/team_build_rag/hybrid_scorer.py` | Graph Score 정규화 및 Hybrid Score 계산 |
 
-라우터가 직접 LangGraph를 호출하지 않도록 중간 서비스 역할을 합니다.
+현재 기준은 다음과 같습니다.
 
-### 주요 함수
+| 목적 | Graph DB | Vector DB | 의미 |
+|---|---:|---:|---|
+| 덱 분석 계산 | 70% | 30% | 타입 상성 계산을 중심으로 하되 문서 근거를 보조 반영 |
+| 추천 순위 계산 | 80% | 20% | 추천 순위는 Graph DB 계산 결과를 더 강하게 신뢰 |
+| LLM 해설 생성 | 60% | 40% | 계산 근거를 우선하되 설명 품질을 위해 문서 근거도 충분히 반영 |
 
-| 함수 | 설명 |
-| --- | --- |
-| `run_team_rag()` | RAG 분석 또는 RAG 추천 워크플로우 실행 |
+### Graph Score 정규화
 
-### request type
+추천 후보의 원본 `graph_score`는 최대 150점 설계를 기준으로 0~100점으로 정규화됩니다.
 
-| 값 | 의미 |
-| --- | --- |
-| `analysis` | 선택한 팀 분석 해설 생성 |
-| `recommendation` | 6번째 포켓몬 추천 해설 생성 |
+```text
+normalized_graph_score = min(graph_score, 150) / 150 * 100
+```
 
-### 설계 의도
+정규화된 Graph Score와 Vector Score를 가중합하여 최종 `hybrid_score`를 계산합니다.
 
-RAG는 내부 단계가 많습니다.
-
-그래서 라우터가 직접 `workflow.py`를 다루지 않고, `team_rag_service.py`에서 상태를 만들고 실행하도록 분리했습니다.
-
-이 구조 덕분에 나중에 LangGraph 상태 구조가 바뀌어도 라우터 수정 범위를 줄일 수 있습니다.
-
----
-
-## 8. 서비스 간 책임 분리 요약
-
-| 질문 | 담당 파일 |
-| --- | --- |
-| 선택한 팀은 무엇에 약한가? | `team_analysis_service.py` |
-| 약점/저항 점수는 어떻게 표현할까? | `team_score_service.py` |
-| 분석을 문장으로 어떻게 요약할까? | `team_insight_service.py` |
-| 6번째 포켓몬은 누구를 추천할까? | `team_builder_service.py` |
-| RAG 해설은 어떻게 실행할까? | `team_rag_service.py` |
+```text
+hybrid_score = normalized_graph_score * graph_weight
+             + vector_score * vector_weight
+```
 
 ---
 
-## 9. 앞으로 개선할 수 있는 부분
+## 6. 서비스와 RAG의 책임 분리
 
-| 개선 포인트 | 설명 |
-| --- | --- |
-| 추천 점수 가중치 설정화 | 방어/능력치/기술 점수 비중을 설정 파일로 분리 |
-| 배틀 룰 반영 | 성격, 아이템, 특성, 기술 위력까지 반영 |
-| 후보 기술 품질 개선 | 단순 위력뿐 아니라 명중률, 타입 보완, 변화기 가치 반영 |
-| 역할 분류 | 물리 어태커, 특수 어태커, 탱커, 서포터 구분 |
-| RAG 근거 강화 | 추천 이유에 실제 기술명과 상성 근거를 더 많이 포함 |
+| 구분 | 담당 폴더 | 책임 |
+|---|---|---|
+| 팀 분석 계산 | `backend/build_services` | Neo4j 기반 타입 상성, 기술 커버리지, 팀 성향 계산 |
+| 추천 후보 계산 | `backend/build_services` | 후보 탐색, 원본 graph_score 계산 |
+| Vector 검색 | `backend/team_build_rag` | pgvector 기반 문서 근거 검색 |
+| Hybrid 점수 | `backend/team_build_rag` | Graph Score와 Vector Score 결합 |
+| AI 해설 | `backend/team_build_rag` | Prompt 구성 및 LLM 호출 |
+
+이렇게 분리한 이유는 계산 로직과 설명 생성 로직의 변경 주기가 다르기 때문입니다.
+
+- Graph DB 계산 로직은 추천 정확도에 직접 영향을 줍니다.
+- Vector/RAG 로직은 설명 품질과 근거 표현에 영향을 줍니다.
+- 두 영역을 분리하면 점수 정책, 프롬프트, 모델 교체를 비교적 안전하게 수정할 수 있습니다.
+
+---
+
+## 7. 수정 시 주의사항
+
+### 7.1 Graph DB 스키마가 바뀌는 경우
+
+Neo4j 관계명이나 노드 속성이 바뀌면 다음 파일을 함께 확인해야 합니다.
+
+```text
+backend/graph/queries.py
+backend/build_services/team_analysis_service.py
+backend/build_services/team_builder_service.py
+backend/team_build_rag/graph_tools.py
+```
+
+### 7.2 추천 점수 정책을 바꾸는 경우
+
+추천 후보의 원본 Graph Score는 `team_builder_service.py`에서 계산합니다.
+
+Hybrid Score 가중치와 정규화는 `team_build_rag`에서 처리합니다.
+
+```text
+backend/build_services/team_builder_service.py
+backend/team_build_rag/scoring_policy.py
+backend/team_build_rag/hybrid_scorer.py
+```
+
+### 7.3 화면 표시 문구를 바꾸는 경우
+
+화면에 바로 노출되는 카드 문구는 주로 다음 흐름에서 만들어집니다.
+
+```text
+team_score_service.py
+team_insight_service.py
+answer_generator.py
+frontend/pages/teambuilding.py
+```
+
+### 7.4 저장 로직을 바꾸는 경우
+
+팀 분석/추천 결과 저장은 서비스 계산 로직이 아니라 라우터와 CRUD 흐름에서 처리합니다.
+
+```text
+backend/routers/team_builder.py
+backend/crud.py
+backend/models.py
+```
+
+---
+
+## 8. 한 줄 요약
+
+`backend/build_services`는 팀 빌더의 계산 엔진이고, `backend/team_build_rag`는 계산 결과를 문서 근거와 결합해 설명 가능한 추천으로 만드는 RAG 엔진입니다.
