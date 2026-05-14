@@ -31,7 +31,7 @@ def get_base64_img(file_name):
     return ""
 
 
-bg_img = get_base64_img("game1_background.png")
+bg_img = get_base64_img("minigame_background.png")
 inject_common_ui(spacer=False)
 inject_game2_styles(bg_img)
 
