@@ -478,11 +478,12 @@ div[data-testid="stColumn"]:has(.hist-btn-marker) button:disabled {
 """
 
 
-def inject_mypage_styles(bg_b64: str) -> None:
+def inject_mypage_styles(bg_b64: str = "") -> None:
+    bg_style = f"--bg-img: url('{bg_b64}');" if bg_b64 else "--bg-img: none;"
     st.markdown(f"""
     <style>
     :root {{
-        --bg-img: url('{bg_b64}');
+        {bg_style}
     }}
     [data-testid="stAppViewBlockContainer"] {{ padding-top: 0 !important; }}
     [data-testid="stVerticalBlock"] {{ gap: 0 !important; }}
