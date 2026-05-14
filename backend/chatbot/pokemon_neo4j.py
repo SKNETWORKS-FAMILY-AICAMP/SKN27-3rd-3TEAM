@@ -42,13 +42,10 @@ try:
     driver = _client.driver
 except ImportError:
     from neo4j import GraphDatabase
-    driver = GraphDatabase.driver(
-        os.environ.get("GRAPH_DB_URI", "bolt://neo4j:7687"),
-        auth=(
-            os.environ.get("GRAPH_DB_USER", "neo4j"),
-            os.environ.get("GRAPH_DB_PASSWORD", "test1234"),
-        ),
-    )
+    uri = os.getenv("GRAPH_DB_URI") or os.getenv("NEO4J_URI") or "bolt://neo4j:7687"
+    user = os.getenv("GRAPH_DB_USER") or os.getenv("NEO4J_USER") or "neo4j"
+    password = os.getenv("GRAPH_DB_PASSWORD") or os.getenv("NEO4J_PASSWORD") or "test1234"
+    driver = GraphDatabase.driver(uri, auth=(user, password))
 
 
 # ══════════════════════════════════════════════════════════
