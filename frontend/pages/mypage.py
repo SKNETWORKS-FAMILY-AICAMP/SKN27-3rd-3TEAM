@@ -177,7 +177,8 @@ def show():
     s_correct = stats.get("silhouette", {}).get("correct", 0) if stats else 0
     m_total   = stats.get("memory", {}).get("total", 0)       if stats else 0
     m_correct = stats.get("memory", {}).get("correct", 0)     if stats else 0
-    total_games   = s_total + m_total
+    b_total   = stats.get("battle", {}).get("total", 0)       if stats else 0
+    total_games   = s_total + m_total + b_total
     total_correct = s_correct + m_correct
 
     s_rate = int(s_correct / s_total * 100) if s_total > 0 else 0
@@ -311,13 +312,13 @@ def show():
         },
         {
             "file": "골드배지.png",   "name": "썬더 배지",
-            "gym": "연분홍시티 · 덴류",
-            "mission": "번개 개발자",    "desc": f"GitHub 커밋 50+  ({commits}개)",
-            "glow": "#f6e05e",           "unlocked": commits >= 50,
+            "gym": "갈색시티 · 마티스",
+            "mission": "베테랑 퀴즈러",    "desc": f"퀴즈 정답 5회+  ({s_correct}회)",
+            "glow": "#f6e05e",           "unlocked": s_correct >= 5,
         },
         {
             "file": "무지개배지.png", "name": "레인보우 배지",
-            "gym": "무지개시티 · 마티스",
+            "gym": "무지개시티 · 민화",
             "mission": "도감 컬렉터",    "desc": f"포켓몬 10마리 수집  ({len(_collected_ids)}마리)",
             "glow": "#f687b3",           "unlocked": len(_collected_ids) >= 10,
         },
@@ -335,9 +336,9 @@ def show():
         },
         {
             "file": "오렌지배지.png", "name": "마쉬 배지",
-            "gym": "상록시티 · 사빈나",
-            "mission": "레포 빌더",      "desc": f"GitHub 레포 10+  ({repos}개)",
-            "glow": "#ed8936",           "unlocked": repos >= 10,
+            "gym": "노랑시티 · 초련",
+            "mission": "배틀 도전자",      "desc": f"배틀 참여 1회+  ({b_total}회)",
+            "glow": "#ed8936",           "unlocked": b_total >= 1,
         },
         {
             "file": "그린배지.png",   "name": "어스 배지",
