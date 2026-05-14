@@ -23,7 +23,7 @@ def get_base64_img(file_name):
 # 1. 배경 이미지 로드 (main_background 폴더 내)
 bg1 = get_base64_img("main_background.png")
 bg2 = get_base64_img("pokedex_background.png")
-bg3 = get_base64_img("bettle_background.png") # 파일명의 'bettle' 오타 반영
+bg3 = get_base64_img("battle_background.png")
 bg4 = get_base64_img("chatbot_background.png")
 bg5 = get_base64_img("teambuilding_background.png")
 bg6 = get_base64_img("login_background.png")
