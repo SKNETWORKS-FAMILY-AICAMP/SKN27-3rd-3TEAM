@@ -1,13 +1,22 @@
 import random
 
 from dataclasses import dataclass, field
-from .pokemon import PokemonDB
+from .pokemon import PokemonDB, BotPokemonDB
 
 def get_pokemon_data(id: int) -> dict:
     """
-    포켓몬 id를 통해 포켓몬의 데이터를 조회합니다.
+    [플레이어용] level-up 기술만 포함된 포켓몬 데이터를 조회합니다.
     """
     db = PokemonDB()
+    pokemon_data = db.get_pokemon_data(id)
+    db.close()
+    return pokemon_data
+
+def get_bot_pokemon_data(id: int) -> dict:
+    """
+    [봇용] 모든 learn_method 기술을 포함한 포켓몬 데이터를 조회합니다.
+    """
+    db = BotPokemonDB()
     pokemon_data = db.get_pokemon_data(id)
     db.close()
     return pokemon_data
@@ -98,5 +107,48 @@ class BattlePokemon:
         self.moves = [m for m in data['moves'] if normalize(m['name']) in normalized_targets]
         
         # 만약 기술이 하나도 매칭되지 않는다면 (DB 업데이트 등의 이유), 랜덤으로 4개 선택
+        if not self.moves:
+            self.moves = random.sample(data['moves'], min(4, len(data['moves'])))
+
+
+@dataclass
+class BotBattlePokemon(BattlePokemon):
+    """
+    봇 전용 배틀 포켓몬 클래스입니다.
+    BotPokemonDB를 사용하여 learn_method 제한 없이 모든 기술을 조회합니다.
+    """
+    def __post_init__(self):
+        """
+        봇 포켓몬 id를 기반으로 BotPokemonDB에서 추가 정보를 조회하여 초기화합니다.
+        """
+        data = get_bot_pokemon_data(self.id)
+        if not data:
+            raise ValueError(f"ID {self.id}에 해당하는 포켓몬 데이터를 찾을 수 없습니다.")
+
+        self.image_url = data['image_url']
+        self.types = data['types']
+        self.type_names = data['type_names']
+
+        if self.multiplier != 1.0:
+            base_stats = get_stats(data['stats'])
+            self.stats = {s: int(v * self.multiplier) for s, v in base_stats.items()}
+        else:
+            self.stats = get_stats(data['stats'])
+
+        self.max_hp = self.stats['hp']
+        self.current_hp = self.stats['hp']
+
+        # 전달받은 selected_moves에서 이름 추출
+        target_move_names = []
+        for mv in self.selected_moves:
+            if isinstance(mv, dict):
+                target_move_names.append(mv.get('name'))
+            else:
+                target_move_names.append(mv)
+
+        normalized_targets = [normalize(n) for n in target_move_names if n]
+        self.moves = [m for m in data['moves'] if normalize(m['name']) in normalized_targets]
+
+        # 매칭되는 기술이 없으면 랜덤 선택
         if not self.moves:
             self.moves = random.sample(data['moves'], min(4, len(data['moves'])))

@@ -113,6 +113,10 @@ def start_custom_battle(player_team_data, leader_name="웅이"):
         st.session_state.battle_started = True
         st.session_state.battle_over = False
         st.session_state.turn_count = 0
+        
+        # 4. 첫 턴의 봇 행동 미리 결정 (배틀 시작 직후, 플레이어 입력 대기 중에 계산)
+        st.session_state.pending_bot_move = None
+        prepare_bot_move()
 
 def find_player_action(text: str, player: BattlePokemon, player_party: list):
     normalized = re.sub(r"\s+", "", text.strip().lower())
@@ -131,9 +135,23 @@ def find_player_action(text: str, player: BattlePokemon, player_party: list):
             return move
     return None
 
+def prepare_bot_move():
+    """
+    [다음 턴을 위한 봇 행동 사전 결정]
+    현재 배틀 상태를 기반으로 봇의 행동을 미리 결정하여 세션에 저장합니다.
+    이 함수는 턴 종료 직후 호출되어야 하며, 플레이어 입력과 무관하게 독립적으로 실행됩니다.
+    """
+    bot_strategy = st.session_state.get("bot_strategy", "llm")
+    trainer_bot = BattleBot(leader_name=st.session_state.leader_name)
+    bot_move = trainer_bot.decide_action(strategy=bot_strategy)
+    # 교체가 발생했을 수 있으므로 갱신된 봇 상태도 반영
+    st.session_state.pending_bot_move = bot_move
+
 def process_turn(player_move):
     """
     [한 턴의 배틀 진행 처리]
+    봇의 행동은 이미 prepare_bot_move()를 통해 세션에 저장되어 있으며,
+    이 함수는 저장된 봇 행동을 가져와 배틀 로직을 실행합니다.
     """
     # 1. 플레이어 교체 처리 (턴 소모)
     if player_move.get("category") == "switch":
@@ -145,11 +163,20 @@ def process_turn(player_move):
     bot_party = st.session_state.bot_party
     
     # =========================== 봇의 행동 결정 로직 =============================
-    # 봇의 전략 결정 (세션 상태에서 가져오거나 기본값 'random' 사용)
-    bot_strategy = st.session_state.get("bot_strategy", "llm")
-    trainer_bot = BattleBot(leader_name=st.session_state.leader_name)
-    bot_move = trainer_bot.decide_action(strategy=bot_strategy)
-    bot = st.session_state.battle_bot  # 교체되었을 수 있으므로 갱신
+    # 미리 계산된 봇 행동을 가져옴. 없으면 즉시 계산 (안전망)
+    bot_move = st.session_state.pop("pending_bot_move", None)
+    if bot_move is None:
+        bot_strategy = st.session_state.get("bot_strategy", "llm")
+        trainer_bot = BattleBot(leader_name=st.session_state.leader_name)
+        bot_move = trainer_bot.decide_action(strategy=bot_strategy)
+
+    # 봇 교체 행동이라면 플레이어 입력 이후인 지금 시점에 battle_bot 갱신
+    # (prepare_bot_move에서는 결정만 하고 세션 상태를 변경하지 않음)
+    if bot_move and bot_move.get("category") == "switch" and bot_move.get("is_bot"):
+        target_idx = bot_move["target_index"]
+        st.session_state.battle_bot = st.session_state.bot_party[target_idx]
+
+    bot = st.session_state.battle_bot  # 갱신된 봇 참조
     # ===============================================================================
 
     # 객체를 딕셔너리로 변환
@@ -479,49 +506,78 @@ def show():
                         p_state = msg_event["player_state"]
                         b_state = msg_event["bot_state"]
                         
-                        if msg_event.get("bot_switch"):
+                        is_bot_switch = msg_event.get("bot_switch")
+                        
+                        if not is_bot_switch:
+                            # ── 일반 이벤트: 상태 갱신 → UI 갱신 → 메시지 출력 ──
+                            player.current_hp = p_state.get("current_hp", player.max_hp)
+                            player.attack_stage = p_state.get("attack_stage", 0)
+                            player.defense_stage = p_state.get("defense_stage", 0)
+                            player.sp_attack_stage = p_state.get("sp_attack_stage", 0)
+                            player.sp_defense_stage = p_state.get("sp_defense_stage", 0)
+                            player.speed_stage = p_state.get("speed_stage", 0)
+                            player.ailment = p_state.get("ailment")
+                            player.sleep_turns = p_state.get("sleep_turns", 0)
+
+                            bot.current_hp = b_state.get("current_hp", bot.max_hp)
+                            bot.attack_stage = b_state.get("attack_stage", 0)
+                            bot.defense_stage = b_state.get("defense_stage", 0)
+                            bot.sp_attack_stage = b_state.get("sp_attack_stage", 0)
+                            bot.sp_defense_stage = b_state.get("sp_defense_stage", 0)
+                            bot.speed_stage = b_state.get("speed_stage", 0)
+                            bot.ailment = b_state.get("ailment")
+                            bot.sleep_turns = b_state.get("sleep_turns", 0)
+                            
+                        # 2. UI 갱신
+                            with player_placeholder:
+                                render_pokemon_status("MY POKEMON", player)
+                            with bot_placeholder:
+                                render_pokemon_status(f"BOT ({leader_name})", bot, reveal_details=False)
+                            
+                        # 3. 메시지 출력
+                            with history_container:
+                                with st.chat_message("assistant"):
+                                    st.markdown(msg_text, unsafe_allow_html=True)
+                            st.session_state.battle_messages.append({"role": "assistant", "content": msg_text})
+                        
+                        else:
+                            # ── 봇 교체 이벤트: 메시지 먼저 출력 → 봇 교체 → UI 갱신 ──
+                            # 1) 교체 전 상태로 플레이어 HP바만 먼저 갱신
+                            player.current_hp = p_state.get("current_hp", player.max_hp)
+                            player.attack_stage = p_state.get("attack_stage", 0)
+                            player.defense_stage = p_state.get("defense_stage", 0)
+                            player.sp_attack_stage = p_state.get("sp_attack_stage", 0)
+                            player.sp_defense_stage = p_state.get("sp_defense_stage", 0)
+                            player.speed_stage = p_state.get("speed_stage", 0)
+                            player.ailment = p_state.get("ailment")
+                            player.sleep_turns = p_state.get("sleep_turns", 0)
+                            with player_placeholder:
+                                render_pokemon_status("MY POKEMON", player)
+                            
+                            # 2) 교체 메시지 출력
+                            with history_container:
+                                with st.chat_message("assistant"):
+                                    st.markdown(msg_text, unsafe_allow_html=True)
+                            st.session_state.battle_messages.append({"role": "assistant", "content": msg_text})
+                            
+                            # 3) 딜레이 후 봇 교체 + 이미지·HP바 갱신
+                            time.sleep(0.6)
                             next_idx = msg_event["bot_next_index"]
                             st.session_state.battle_bot = st.session_state.bot_party[next_idx]
                             bot = st.session_state.battle_bot
-                        
-                        player.current_hp = p_state.get("current_hp", player.max_hp)
-                        player.attack_stage = p_state.get("attack_stage", 0)
-                        player.defense_stage = p_state.get("defense_stage", 0)
-                        player.sp_attack_stage = p_state.get("sp_attack_stage", 0)
-                        player.sp_defense_stage = p_state.get("sp_defense_stage", 0)
-                        player.speed_stage = p_state.get("speed_stage", 0)
-                        player.ailment = p_state.get("ailment")
-                        player.sleep_turns = p_state.get("sleep_turns", 0)
-
-                        bot.current_hp = b_state.get("current_hp", bot.max_hp)
-                        bot.attack_stage = b_state.get("attack_stage", 0)
-                        bot.defense_stage = b_state.get("defense_stage", 0)
-                        bot.sp_attack_stage = b_state.get("sp_attack_stage", 0)
-                        bot.sp_defense_stage = b_state.get("sp_defense_stage", 0)
-                        bot.speed_stage = b_state.get("speed_stage", 0)
-                        bot.ailment = b_state.get("ailment")
-                        bot.sleep_turns = b_state.get("sleep_turns", 0)
-                        
-                        # 2. UI 갱신
-                        with player_placeholder:
-                            render_pokemon_status("MY POKEMON", player)
-                        with bot_placeholder:
-                            render_pokemon_status(f"BOT ({leader_name})", bot, reveal_details=False)
-                            
-                        # 3. 메시지 출력
-                        with history_container:
-                            with st.chat_message("assistant"):
-                                st.markdown(msg_text, unsafe_allow_html=True)
-                        st.session_state.battle_messages.append({"role": "assistant", "content": msg_text})
+                            with bot_placeholder:
+                                render_pokemon_status(f"BOT ({leader_name})", bot, reveal_details=False)
                         
                     st.session_state.pending_messages = []
                     
                     # 애니메이션 종료 후 상태 판별 (현재 player, bot은 최종 상태임)
+                    battle_continues = True
                     if bot.current_hp <= 0:
                         alive_bots = [bp for bp in st.session_state.bot_party if bp.current_hp > 0]
                         if not alive_bots:
                             st.session_state.battle_over = True
                             st.session_state.winner = "사용자"
+                            battle_continues = False
                             
                     if player.current_hp <= 0:
                         alive_players = [pp for pp in st.session_state.player_party if pp.current_hp > 0]
@@ -530,6 +586,12 @@ def show():
                         else:
                             st.session_state.battle_over = True
                             st.session_state.winner = st.session_state.get("leader_name", "관장")
+                            battle_continues = False
+                    
+                    # ─── 다음 턴 봇 행동 사전 결정 ───
+                    # 배틀이 아직 진행 중이고 플레이어 교체 대기 중이 아닐 때만 미리 계산
+                    if battle_continues and not st.session_state.get("waiting_for_switch", False):
+                        prepare_bot_move()
                             
                     st.rerun()
 
@@ -582,14 +644,38 @@ def show():
                             disabled = (p_obj.current_hp <= 0 or p_obj.id == player.id)
                             label = f"{p_obj.name} (HP {p_obj.current_hp})"
                             if st.button(label, disabled=disabled, use_container_width=True, key=f"force_switch_{i}"):
-                                st.session_state.battle_player = st.session_state.player_party[i]
+                                # 교체 실행 — 메시지를 pending_messages에 담아 화면 출력 흐름에 합류
+                                new_player = st.session_state.player_party[i]
+                                current_bot = st.session_state.battle_bot
+                                switch_msg = f"가라! {new_player.name}!"
+                                st.session_state.pending_messages = [{
+                                    "message": switch_msg,
+                                    "player_state": {
+                                        "current_hp": new_player.current_hp,
+                                        "attack_stage": new_player.attack_stage,
+                                        "defense_stage": new_player.defense_stage,
+                                        "sp_attack_stage": new_player.sp_attack_stage,
+                                        "sp_defense_stage": new_player.sp_defense_stage,
+                                        "speed_stage": new_player.speed_stage,
+                                        "ailment": new_player.ailment,
+                                        "sleep_turns": new_player.sleep_turns,
+                                    },
+                                    "bot_state": {
+                                        "current_hp": current_bot.current_hp,
+                                        "attack_stage": current_bot.attack_stage,
+                                        "defense_stage": current_bot.defense_stage,
+                                        "sp_attack_stage": current_bot.sp_attack_stage,
+                                        "sp_defense_stage": current_bot.sp_defense_stage,
+                                        "speed_stage": current_bot.speed_stage,
+                                        "ailment": current_bot.ailment,
+                                        "sleep_turns": current_bot.sleep_turns,
+                                    },
+                                }]
+                                st.session_state.battle_player = new_player
                                 st.session_state.waiting_for_switch = False
-                                
-                                new_player = st.session_state.battle_player
-                                st.session_state.battle_messages.append({
-                                    "role": "assistant", 
-                                    "content": f"가라! {new_player.name}!"
-                                })
+                                st.session_state.battle_messages.append({"role": "user", "content": switch_msg})
+                                # 교체 후 다음 턴 봇 행동 미리 계산
+                                prepare_bot_move()
                                 st.rerun()
                 else:
                     st.write("---")

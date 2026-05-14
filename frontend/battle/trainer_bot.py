@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 from battle.trainerbot import ROSTER_MAP
-from battle.utils import BattlePokemon
+from battle.utils import BattlePokemon, BotBattlePokemon
 
 class BattleBot:
     @classmethod
@@ -24,7 +24,7 @@ class BattleBot:
                 # 그 외 모든 관장의 포켓몬: 모든 능력치 1.1배 보정 (난이도 향상)
                 multiplier = 1.1
 
-            battle_pokemons.append(BattlePokemon(
+            battle_pokemons.append(BotBattlePokemon(
                 id=pokemon['id'], 
                 name=pokemon['name'], 
                 selected_moves=pokemon['moves'],
@@ -90,8 +90,7 @@ class BattleBot:
                 "priority": 6,
                 "is_bot": True
             }
-            # 상태 업데이트 (세션 상태에 반영)
-            st.session_state.battle_bot = target_bot
+            # 실제 세션 상태 갱신은 process_turn()에서 수행됩니다.
             return bot_move
         else:
             # 기술 사용 결정
@@ -131,8 +130,7 @@ class BattleBot:
                         "priority": 6,
                         "is_bot": True
                     }
-                    # 세션 상태 업데이트
-                    st.session_state.battle_bot = target_bot
+                    # 실제 세션 상태 갱신은 process_turn()에서 수행됩니다.
                     return bot_move
             
             # 기술 사용 결정 (또는 교체 실패 시 기본값)
