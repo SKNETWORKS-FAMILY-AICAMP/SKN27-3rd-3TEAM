@@ -141,9 +141,11 @@ flowchart TD
 
 | 목적 | Graph DB 비중 | Vector DB 비중 | 설계 근거 |
 |---|---:|---:|---|
-| 덱 분석 점수 | 60% | 40% | 타입 상성 계산은 Graph DB가 핵심이며, Vector DB는 설명 근거를 보강 |
-| 포켓몬 추천 점수 | 70% | 30% | 추천 순위는 약점 보완, 종족값, 기술 커버리지 등 Graph 계산 신뢰도가 중요 |
-| AI 해설 생성 | 50% | 50% | 해설은 계산 근거와 문서 근거를 균형 있게 반영해야 사용자가 납득하기 쉬움 |
+| 덱 분석 점수 | 70% | 30% | 타입 상성 계산은 Graph DB가 핵심이며, Vector DB는 설명 근거를 보강 |
+| 포켓몬 추천 점수 | 80% | 20% | 추천 순위는 약점 보완, 종족값, 기술 커버리지 등 Graph 계산 신뢰도가 가장 중요 |
+| AI 해설 생성 | 60% | 40% | 해설은 Graph 계산 근거를 우선하되, Vector 문서 근거로 설명의 풍부함을 보강 |
+
+포켓몬 추천의 원본 `graph_score`는 최대 150점을 기준으로 0~100점으로 정규화한 뒤 `vector_score`와 결합한다. 150점은 약점 보완 125점, 기본 능력치 5점, 기술 타입 커버리지 20점을 합산한 기준이다.
 
 ### 5.1 왜 Graph DB 비중이 높은가?
 
@@ -225,7 +227,7 @@ sequenceDiagram
 | Neo4j 연결 실패 | 분석/추천 계산 불가 | Docker Neo4j 상태와 `GRAPH_DB_*` 환경변수 확인 |
 | Graph DB 데이터 미적재 | 타입/기술 관계 계산 누락 | `database/graph/graph_loader.py` 재실행 |
 | Vector DB embedding 미적재 | 설명 근거 검색 품질 저하 | `database/postgre/utils/vectorizer.py` 실행 |
-| LLM 호출 실패 | AI 종합 해설 생성 실패 | Hugging Face 토큰, 모델 권한, 크레딧 상태 확인 |
+| LLM 호출 실패 | AI 종합 해설 생성 실패 | Hugging Face 토큰, 추론 크레딧, 모델 권한/설정 확인 |
 | PostgreSQL 저장 실패 | 화면 표시는 가능하나 히스토리 저장 실패 | `team_build_logs` 테이블과 DB 연결 확인 |
 
 ---

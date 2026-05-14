@@ -9,14 +9,17 @@ def reset_silhouette():
     st.session_state.sil_revealed = False
     st.session_state.sil_hint_count = 0
     st.session_state.sil_clear_input = True
-
+    
+    # load_pokemon_data는 @st.cache_data 덕분에 이제 매우 빠릅니다.
     pokemon_list = load_pokemon_data()
     st.session_state.sil_target = random.choice(pokemon_list)
 
 def show_game():
     # Session state init
-    if "sil_target" not in st.session_state:
-        st.session_state.sil_target = None
+    if "sil_target" not in st.session_state or st.session_state.sil_target is None:
+        reset_silhouette()
+        # st.rerun() 대신 즉시 다음 로직으로 진행하도록 하여 불필요한 재시작 방지
+    
     if "sil_revealed" not in st.session_state:
         st.session_state.sil_revealed = False
     if "sil_hint_count" not in st.session_state:
@@ -30,9 +33,7 @@ def show_game():
         st.session_state.sil_clear_input = False
 
     target = st.session_state.sil_target
-    if not target:
-        reset_silhouette()
-        st.rerun()
+    # 위에서 초기화했으므로 target은 항상 존재함
 
     _, col_main, _ = st.columns([1, 2.2, 1])
 
@@ -47,9 +48,7 @@ def show_game():
 
             if st.session_state.sil_revealed:
                 st.markdown(f"""<div style="text-align: center; margin-bottom: 10px;"><div style="background: rgba(227, 53, 53, 0.1); border: 3px solid #E33535; border-radius: 15px; padding: 10px;"><h2 style="color: #ffffff; margin: 0; font-family: 'Outfit'; font-size: 1.8rem;">정답! {target['name'].upper()}</h2></div></div>""", unsafe_allow_html=True)
-                time.sleep(2.0)
-                reset_silhouette()
-                st.rerun()
+                st.button("다음 문제 보러가기 ➔", on_click=reset_silhouette, use_container_width=True)
             else:
                 guess = st.text_input("포켓몬 이름 입력", placeholder="이름 입력 후 엔터...", key="guess_input", label_visibility="collapsed")
 

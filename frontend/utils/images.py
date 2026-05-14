@@ -24,8 +24,8 @@ def load_backgrounds() -> dict:
         ("chatbot",     "chatbot_background.png"),
         ("teambuilding","teambuilding_background.png"),
         ("login",       "login_background.png"),
-        ("game1",       "game1_background.png"),
-        ("game2",       "game2_background.png"),
+        ("game1",       "minigame1_background.png"),
+        ("game2",       "minigame2_background.png"),
         ("pipigo",      "pipigo_background.png"),
     ]
     return {k: get_base64_img(v) for k, v in keys}
@@ -36,5 +36,5 @@ def load_characters() -> dict:
         "obak":      get_base64_img("Obak.png"),
         "pipigo":    get_base64_img("pipigo.png"),
         "minigame1": get_base64_img("game1.png"),
-        "minigame2": get_base64_img("game2.png"),
+        "minigame2": get_base64_img("minigame2.png"),
     }

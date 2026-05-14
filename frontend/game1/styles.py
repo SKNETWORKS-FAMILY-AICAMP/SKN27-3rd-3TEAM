@@ -2,9 +2,13 @@ import os
 import base64
 import streamlit as st
 
+@st.cache_data
 def get_base64_img(file_name):
-    # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # 현재 파일(styles.py)의 위치: frontend/game1/
+    # base_dir은 frontend 폴더가 되어야 함
+    current_file_path = os.path.abspath(__file__)
+    base_dir = os.path.dirname(os.path.dirname(current_file_path))
+    
     subfolders = ["main_background", "main_character", ""]
     
     for sub in subfolders:
@@ -14,13 +18,16 @@ def get_base64_img(file_name):
             path = os.path.join(base_dir, "img", file_name)
             
         if os.path.exists(path):
-            with open(path, "rb") as f:
-                data = f.read()
-            return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+            try:
+                with open(path, "rb") as f:
+                    data = f.read()
+                return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+            except Exception:
+                continue
     return ""
 
 def inject_game_1_style():
-    bg_img = get_base64_img("minigame_background.png")
+    bg_img = get_base64_img("minigame2_background.png")
     st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@400;600;800&display=swap');
