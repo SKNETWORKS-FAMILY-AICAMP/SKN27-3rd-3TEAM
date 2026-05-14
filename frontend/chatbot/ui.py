@@ -227,8 +227,38 @@ def show():
         msgs = st.session_state.messages
         is_loading = st.session_state.get("is_loading", False)
 
-        # 1. 이전 메시지 렌더링
-        chat_container = st.container(height=700, border=False)
+        # 1. 채팅창 컨테이너 (위아래 명확한 분리)
+        st.markdown("""
+        <style>
+            /* 채팅창 컨테이너 스타일링 */
+            div[data-testid="stVerticalBlockBorderWrapper"] {
+                border-radius: 16px;
+                background-color: #f8fafc;
+                border: 1px solid #e2e8f0;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+                margin-bottom: 70px !important;
+            }
+            /* 하단 입력창 래퍼 여백 축소 */
+            div[data-testid="stBottom"] {
+                background: #ffffff;
+                padding-top: 0px !important;
+                padding-bottom: 0px !important;
+                z-index: 999;
+            }
+            div[data-testid="stBottom"] > div {
+                padding-bottom: 0px !important;
+                padding-top: 0px !important;
+            }
+            /* 실제 입력창 영역 여백 완전 제거 */
+            div[data-testid="stChatInput"] {
+                padding-bottom: 10px !important;
+                padding-top: 0px !important;
+                margin-bottom: 0px !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        chat_container = st.container(height=550, border=True)
         with chat_container:
             for msg in msgs:
                 if msg["role"] == "user":
