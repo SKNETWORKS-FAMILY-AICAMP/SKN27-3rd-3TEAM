@@ -18,8 +18,8 @@ gantt
         요구사항 분석 및 문서화         :done,    p1-1, 2025-05-01, 5d
         개발 환경 구성 (Docker)         :done,    p1-2, 2025-05-05, 3d
         PostgreSQL 스키마 설계 및 생성  :done,    p1-3, 2025-05-05, 3d
-        Neo4j 그래프 스키마 설계        :done,    p1-4, 2025-05-05, 3d
-        데이터 수집 및 적재 (PokéAPI)   :done,    p1-5, 2025-05-05, 3d
+        Neo4j 그래프 스키마 설계        :done,    p1-4, 2025-05-06, 3d
+        데이터 수집 및 적재 (PokéAPI)   :done,    p1-5, 2025-05-06, 3d
 
     section Phase 2: 기본 검색 엔진 개발
         search_pokemon_db Tool        :done,    p2-3, 2025-05-09, 1d
@@ -39,16 +39,15 @@ gantt
         동점 처리 SQL 패턴 검증        : done,        p3-7, 2025-05-14, 1d
         System Prompt v1.2 개정       :  done,       p3-8, 2025-05-14, 1d
 
-    section Phase 4: API 및 UI 통합 [타 담당자]
+    section Phase 4: API 및 UI 통합 
         FastAPI 서버 구현              :         p4-1, 2025-05-14, 4d
         Agent ↔ API 통합 테스트        :         p4-2, 2025-05-14, 3d
         채팅 UI 개발                   :         p4-3, 2025-05-14, 5d
         E2E 통합 테스트                :         p4-4, 2025-05-14, 3d
 
-    section Phase 5: 품질 및 배포 [타 담당자]
+    section Phase 5: 품질 및 배포 
         RAG 평가 (RAGAS + 커스텀 지표) :         p5-1, 2025-05-14, 4d
         성능 최적화 (BM25·pg_trgm 튜닝):         p5-2, 2025-05-14, 3d
-    section Phase 5: 품질 및 배포 [본인]
         문서 정리 및 배포              :         p5-3, 2025-05-14, 4d
 ```
 
