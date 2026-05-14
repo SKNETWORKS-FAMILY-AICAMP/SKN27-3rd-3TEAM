@@ -15,9 +15,8 @@ gantt
     dateFormat  YYYY-MM-DD
     section Phase 1: 환경 구성 및 데이터
         요구사항 분석 및 문서화         :done,    p1-1, 2025-05-01, 5d
-        개발 환경 구성 (Docker)         :done,    p1-2, 2025-05-06, 3d
-        PostgreSQL 스키마 설계 및 생성  :done,    p1-3, 2025-05-06, 3d
-        Neo4j 그래프 스키마 설계        :done,    p1-4, 2025-05-08, 2d
+        개발 환경 구성 (Docker)         :done,    p1-2, 2025-05-05, 3d
+        PostgreSQL 스키마 설계 및 생성  :done,    p1-3, 2025-05-05, 3d
 
     section Phase 2: 핵심 엔진 개발
         PGVector 임베딩 파이프라인     :active,  p2-1, 2025-05-13, 1d
