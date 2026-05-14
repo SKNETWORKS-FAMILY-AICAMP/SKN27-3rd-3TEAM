@@ -41,9 +41,9 @@ from langgraph.prebuilt import ToolNode
 
 # Neo4j 툴
 try:
-    from chatbot.pokemon_neo4j import search_evolution_chain, search_type_relations
+    from chatbot.pokemon_neo4j import search_evolution_chain, search_type_relations, search_pokemon_weakness
 except ImportError:
-    from pokemon_neo4j import search_evolution_chain, search_type_relations
+    from pokemon_neo4j import search_evolution_chain, search_type_relations, search_pokemon_weakness
 
 
 # ══════════════════════════════════════════════════════════
@@ -135,7 +135,8 @@ SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부
    - 수치/조건/비교 → `search_pokemon_db` (SELECT SQL 문 작성)
    - 느낌/묘사/성격/배경 → `search_flavor_text` (벡터 검색)
    - 진화 경로/조건 → `search_evolution_chain` (Neo4j 그래프)
-   - 타입 상성/약점 → `search_type_relations` (Neo4j 그래프)
+   - 특정 포켓몬의 약점/저항 → `search_pokemon_weakness` (Neo4j 그래프, 듀얼타입 배율 정확)
+   - 타입 자체의 공격·방어 상성 → `search_type_relations` (Neo4j 그래프)
 3. **DB에 없는 정보만** `web_search`를 사용하고, 사용 시 "웹에서 찾은 정보입니다"를 명시합니다.
 4. SQL 오류가 발생하면 오류 메시지를 분석해 SQL을 수정 후 재시도합니다.
 
@@ -231,7 +232,8 @@ def web_search(query: str) -> str:
 # ══════════════════════════════════════════════════════════
 
 tools      = [search_pokemon_db, search_flavor_text,
-              search_evolution_chain, search_type_relations,]
+              search_evolution_chain, search_type_relations,
+              search_pokemon_weakness,]
 _tool_node = ToolNode(tools)
 
 MAX_TOOL_CALLS = 2
