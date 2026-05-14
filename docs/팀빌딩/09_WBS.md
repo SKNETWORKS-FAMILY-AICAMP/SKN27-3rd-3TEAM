@@ -13,6 +13,7 @@
 | 문서 범위 | 팀빌더 기능 구현 및 문서화 작업 |
 | 제외 범위 | 배틀 기능, 일반 포켓몬 도감 기능, 미니게임 등 팀빌더 외 기능 |
 | 작성 기준 | 실제 생성 또는 수정된 산출물 기준 |
+| 일정 기준 | Git 커밋 이력과 주요 파일 수정 이력을 기준으로 산정 |
 | 상태 기준 | 완료, 검증 필요, 환경 의존 |
 | 주요 산출물 | Streamlit 화면, FastAPI 라우터, Neo4j 연동, Hybrid RAG, PostgreSQL 저장, Markdown 문서 |
 
@@ -56,7 +57,22 @@ flowchart TD
     H --> H6["프롬프트 명세"]
 ```
 
-## 4. WBS 상세
+## 4. 일정 기반 WBS
+
+| WBS ID | 작업 영역 | 작업명 | 시작일 | 완료일 | 주요 산출물 | 상태 |
+|---|---|---|---|---|---|---|
+| WBS-01 | Graph DB | 팀빌더용 Neo4j Graph DB 설계 및 적재 구조 작성 | 2026-05-07 | 2026-05-13 | `database/graph/graph_schema.md`, `database/graph/graph_loader.py`, `database/graph/constraints.cypher` | 완료 |
+| WBS-02 | Backend Graph | 백엔드 Neo4j 연결 코드 및 Cypher 조회 구조 작성 | 2026-05-07 | 2026-05-13 | `backend/graph/neo4j_client.py`, `backend/graph/queries.py`, `backend/graph/README.md` | 완료 |
+| WBS-03 | Backend API | 팀빌더 전용 FastAPI 라우터 및 엔드포인트 작성 | 2026-05-09 | 2026-05-14 | `backend/routers/team_builder.py`, `backend/main.py` | 완료 |
+| WBS-04 | Backend Service | 팀 분석, 추천, 점수, 인사이트, RAG 실행 서비스 작성 | 2026-05-11 | 2026-05-13 | `backend/build_services/*.py`, `backend/build_services/team_services.md` | 완료 |
+| WBS-05 | Hybrid RAG | LangGraph 기반 Graph + Vector Hybrid RAG 구조 작성 | 2026-05-12 | 2026-05-14 | `backend/team_build_rag/*.py`, `backend/team_build_rag/workflow_diagram.md` | 완료 |
+| WBS-06 | Frontend | Streamlit 팀빌더 화면 및 포켓몬 선택 UI 작성 | 2026-05-09 | 2026-05-14 | `frontend/pages/teambuilding.py` | 완료 |
+| WBS-07 | Frontend | 분석/추천 결과 UI 및 AI 해설 영역 개선 | 2026-05-12 | 2026-05-14 | `frontend/pages/teambuilding.py` | 완료 |
+| WBS-08 | PostgreSQL 저장 | 팀빌더 분석/추천 결과 저장 테이블 및 CRUD 작성 | 2026-05-13 | 2026-05-14 | `backend/models.py`, `backend/schemas.py`, `backend/crud.py`, `backend/routers/team_builder.py` | 완료 |
+| WBS-09 | Documentation | 요구사항, 시퀀스, ERD, 시스템 아키텍처 문서 작성 | 2026-05-13 | 2026-05-14 | `docs/팀빌딩/01_요구사항명세서.md`, `04_시퀀스다이어그램.md`, `05_ERD.md`, `06_시스템아키텍처구성도.md` | 완료 |
+| WBS-10 | Documentation | RAG/데이터 파이프라인, 프롬프트 명세서, WBS 작성 | 2026-05-14 | 2026-05-14 | `docs/팀빌딩/07_RAG_데이터파이프라인설계도.md`, `08_프롬프트명세서.md`, `09_WBS.md` | 완료 |
+
+## 5. 상세 산출물 목록
 
 | WBS ID | 작업 영역 | 작업명 | 주요 작업 내용 | 산출물 | 상태 |
 |---|---|---|---|---|---|
@@ -112,19 +128,19 @@ flowchart TD
 | TB-050 | Documentation | 프롬프트 명세서 작성 | 분석/추천 프롬프트 구성, 입력 근거, 답변 규칙 정리 | `docs/팀빌딩/08_프롬프트명세서.md` | 완료 |
 | TB-051 | Documentation | WBS 작성 | 팀빌더에서 실제 수행한 작업만 작업 분해 구조로 정리 | `docs/팀빌딩/09_WBS.md` | 완료 |
 
-## 5. 주요 마일스톤
+## 6. 주요 마일스톤
 
-| 마일스톤 | 완료 기준 | 관련 WBS |
-|---|---|---|
-| M1. Graph DB 기반 마련 | Neo4j에 팀빌더 분석/추천에 필요한 노드와 관계를 적재할 수 있다. | TB-001 ~ TB-008 |
-| M2. 백엔드 API 연결 | Swagger에서 팀빌더 API를 호출할 수 있다. | TB-009 ~ TB-015 |
-| M3. 분석/추천 서비스 구현 | 5마리 기준 분석 결과와 추천 후보를 계산할 수 있다. | TB-016 ~ TB-021 |
-| M4. Hybrid RAG 구현 | Graph 근거와 Vector 근거를 결합하여 AI 해설을 생성할 수 있다. | TB-022 ~ TB-031 |
-| M5. 팀빌더 화면 구현 | 사용자가 화면에서 포켓몬을 선택하고 분석/추천 결과를 확인할 수 있다. | TB-032 ~ TB-039 |
-| M6. 결과 저장 구현 | 추천 완료 시 PostgreSQL에 팀빌더 결과가 저장된다. | TB-040 ~ TB-044 |
-| M7. 산출 문서 작성 | 팀빌더 기준 요구사항, 시퀀스, ERD, 아키텍처, RAG, 프롬프트, WBS 문서가 존재한다. | TB-045 ~ TB-051 |
+| 마일스톤 | 완료 기준 | 시작일 | 완료일 | 관련 WBS |
+|---|---|---|---|---|
+| M1. Graph DB 기반 마련 | Neo4j에 팀빌더 분석/추천에 필요한 노드와 관계를 적재할 수 있다. | 2026-05-07 | 2026-05-13 | WBS-01 ~ WBS-02 |
+| M2. 백엔드 API 연결 | Swagger에서 팀빌더 API를 호출할 수 있다. | 2026-05-09 | 2026-05-14 | WBS-03 |
+| M3. 분석/추천 서비스 구현 | 5마리 기준 분석 결과와 추천 후보를 계산할 수 있다. | 2026-05-11 | 2026-05-13 | WBS-04 |
+| M4. Hybrid RAG 구현 | Graph 근거와 Vector 근거를 결합하여 AI 해설을 생성할 수 있다. | 2026-05-12 | 2026-05-14 | WBS-05 |
+| M5. 팀빌더 화면 구현 | 사용자가 화면에서 포켓몬을 선택하고 분석/추천 결과를 확인할 수 있다. | 2026-05-09 | 2026-05-14 | WBS-06 ~ WBS-07 |
+| M6. 결과 저장 구현 | 추천 완료 시 PostgreSQL에 팀빌더 결과가 저장된다. | 2026-05-13 | 2026-05-14 | WBS-08 |
+| M7. 산출 문서 작성 | 팀빌더 기준 요구사항, 시퀀스, ERD, 아키텍처, RAG, 프롬프트, WBS 문서가 존재한다. | 2026-05-13 | 2026-05-14 | WBS-09 ~ WBS-10 |
 
-## 6. 역할별 산출물
+## 7. 역할별 산출물
 
 | 구분 | 산출물 | 설명 |
 |---|---|---|
@@ -136,7 +152,7 @@ flowchart TD
 | PostgreSQL 저장 | `backend/models.py`, `backend/schemas.py`, `backend/crud.py` | 팀빌더 결과 저장 테이블, 스키마, CRUD |
 | Documentation | `docs/팀빌딩/*.md` | 팀빌더 기능 산출 문서 |
 
-## 7. 검증 및 주의사항
+## 8. 검증 및 주의사항
 
 | 항목 | 내용 |
 |---|---|
@@ -146,7 +162,7 @@ flowchart TD
 | LLM 호출 | Hugging Face Router 사용 시 계정 권한 또는 크레딧 상태에 따라 402 오류가 발생할 수 있습니다. |
 | 저장 기능 | 추천 결과 저장은 PostgreSQL의 `team_build_logs` 테이블을 기준으로 확인합니다. |
 
-## 8. 현재 WBS 기준 결론
+## 9. 현재 WBS 기준 결론
 
 팀빌더 기능은 화면, API, Graph DB, Hybrid RAG, 결과 저장, 문서화까지 주요 구현 흐름이 구성된 상태입니다.
 
