@@ -20,7 +20,7 @@ def get_base64_img(file_name):
     return ""
 
 def inject_game_1_style():
-    bg_img = get_base64_img("game1_background.png")
+    bg_img = get_base64_img("minigame_background.png")
     st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@400;600;800&display=swap');
