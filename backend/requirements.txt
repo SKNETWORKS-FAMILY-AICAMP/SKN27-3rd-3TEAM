@@ -16,7 +16,6 @@ langchain-community
 langchain-openai
 langchain-groq
 langgraph
-tavily-python
 
 # [AI Models & API]
 openai

@@ -23,10 +23,14 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import StateGraph, END
 from typing import TypedDict
 
-llm = ChatGroq(
-    model="openai/gpt-oss-120b",
-    temperature=0
-)
+try:
+    llm = ChatGroq(
+        model="llama-3.3-70b-versatile",
+        temperature=0
+    )
+except Exception as e:
+    print(f"⚠️ ChatGroq 초기화 실패 (GROQ_API_KEY 미설정?): {e}")
+    llm = None
 
 TYPE_MAP = {
     1: '노말', 2: '격투', 3: '비행', 4: '독', 5: '땅', 6: '바위', 7: '벌레',
@@ -84,6 +88,8 @@ def _fast_decision_node(state: BattleState) -> Dict[str, Any]:
         elif dmg_cls == 'status': dmg_cls = '변화'
         bot_moves_info.append(f"{m['name']}({t_name}/{dmg_cls}/위력:{pwr}/명중:{acc})")
 
+    if llm is None:
+        return {"analysis": "LLM 미설정", "decision": {"action_type": "move", "action_name": state['bot_pokemon']['moves'][0]['name']}}
     chain = prompt | llm
     response = chain.invoke({
         "bot_name": bot['name'],
