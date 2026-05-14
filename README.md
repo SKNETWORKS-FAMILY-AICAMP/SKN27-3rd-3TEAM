@@ -254,44 +254,37 @@ gantt
 
 ## 회고
 
-프로젝트를 마치며 각 팀원이 담당 기능 개발 경험, 기술적 도전, 배운 점을 정리했습니다.
-
 <table align="center">
   <tr>
     <td align="center" width="160">
-      <a href="../../wiki/재강">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
-        <b>재강</b>
-      </a><br>
-      <sub><a href="../../wiki/재강">회고 보기 →</a></sub>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
+      <b>재강</b><br>
+      <sub>회고를 작성해주세요</sub><br><br>
+      <a href="../../wiki/재강">📄 담당 기능 보기</a>
     </td>
     <td align="center" width="160">
-      <a href="../../wiki/필주">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
-        <b>필주</b>
-      </a><br>
-      <sub><a href="../../wiki/필주">회고 보기 →</a></sub>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
+      <b>필주</b><br>
+      <sub>회고를 작성해주세요</sub><br><br>
+      <a href="../../wiki/필주">📄 담당 기능 보기</a>
     </td>
     <td align="center" width="160">
-      <a href="../../wiki/재경">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
-        <b>재경</b>
-      </a><br>
-      <sub><a href="../../wiki/재경">회고 보기 →</a></sub>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
+      <b>재경</b><br>
+      <sub>회고를 작성해주세요</sub><br><br>
+      <a href="../../wiki/재경">📄 담당 기능 보기</a>
     </td>
     <td align="center" width="160">
-      <a href="../../wiki/재희">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
-        <b>재희</b>
-      </a><br>
-      <sub><a href="../../wiki/재희">회고 보기 →</a></sub>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
+      <b>재희</b><br>
+      <sub>회고를 작성해주세요</sub><br><br>
+      <a href="../../wiki/재희">📄 담당 기능 보기</a>
     </td>
     <td align="center" width="160">
-      <a href="../../wiki/송원">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
-        <b>송원</b>
-      </a><br>
-      <sub><a href="../../wiki/송원">회고 보기 →</a></sub>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
+      <b>송원</b><br>
+      <sub>회고를 작성해주세요</sub><br><br>
+      <a href="../../wiki/송원">📄 담당 기능 보기</a>
     </td>
   </tr>
 </table>
