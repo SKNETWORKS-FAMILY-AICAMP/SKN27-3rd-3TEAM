@@ -2,6 +2,7 @@ import os
 import base64
 import streamlit as st
 
+@st.cache_data
 def get_base64_img(file_name):
     # 탐색 우선 순위: 1. 배경폴더, 2. 캐릭터폴더, 3. 기본이미지폴더
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
