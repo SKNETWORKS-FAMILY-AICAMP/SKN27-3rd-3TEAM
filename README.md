@@ -1,9 +1,9 @@
-# 너로 정했다! — Pokemon World
+# 너로 정했다! LLM
 
-> **GitHub OAuth 로그인 · AI 챗봇 · 포켓덱스 · 팀 빌더 · 배틀 시뮬레이터 · 미니게임**  
+> **AI 챗봇 · 팀 빌더 · 배틀 시뮬레이터 · 포켓몬 도감 · GitHub OAuth 로그인 · 확장 프로그램 ·  미니게임**  
 > LangGraph 기반 하이브리드 RAG · Neo4j 그래프 DB · PostgreSQL pgvector
 
-**SKN27-3rd-3TEAM** · SKN AI 캠프 27기 3차 프로젝트 · 2025.04 ~ 2025.05
+**SKN27-3rd-3TEAM** · SKN AI 캠프 27기 3차 프로젝트 · 2025.04.30 ~ 2025.05.15
 
 ---
 
@@ -50,7 +50,6 @@
 | **AI / LLM** | LangChain · LangGraph · LangSmith |
 | **LLM 모델** | OpenAI GPT-4o-mini · Groq (Gemma) · Ollama |
 | **임베딩 / 검색** | sentence-transformers · pgvector · BM25 |
-| **웹 검색** | Tavily |
 | **관계형 DB** | PostgreSQL 16 + pgvector |
 | **그래프 DB** | Neo4j + APOC + Graph Data Science |
 | **인증** | GitHub OAuth 2.0 |
