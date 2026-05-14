@@ -19,9 +19,9 @@ gantt
         PostgreSQL 스키마 설계 및 생성  :done,    p1-3, 2025-05-05, 3d
 
     section Phase 2: 핵심 엔진 개발
-        Neo4j 그래프 로더 개발         :done,  p2-2, 2025-05-08, 9d
-        Tool 함수 개발 (5종)           :done,     p2-3, 2025-05-08, 9d
-        LangGraph Agent 구성          :done,        p2-4, 2025-05-08, 9d
+        Neo4j 그래프 로더 개발         :done,  p2-2, 2025-05-08, 6d
+        Tool 함수 개발 (5종)           :done,     p2-3, 2025-05-08, 6d
+        LangGraph Agent 구성          :done,        p2-4, 2025-05-08, 6d
         PGVector 임베딩 파이프라인     :done,  p2-1, 2025-05-13, 1d
         멀티턴 세션 DB 모듈            :done,p2-5, 2025-05-13, 1d
 
