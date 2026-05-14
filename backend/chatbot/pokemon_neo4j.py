@@ -69,8 +69,9 @@ def search_evolution_chain(pokemon_name: str) -> str:
             result_prev = session.run("""
                 MATCH (prevP:Pokemon)-[e:EVOLVES_TO]->(targetP:Pokemon)
                 WHERE targetP.name CONTAINS $name
+                WITH prevP, e, targetP LIMIT 1
                 OPTIONAL MATCH (triggerItem:Item {item_id: e.trigger_item_id})
-                RETURN prevP.name   AS from_pokemon,
+                RETURN DISTINCT prevP.name   AS from_pokemon,
                        targetP.name AS to_pokemon,
                        e.min_level  AS min_level,
                        triggerItem.name AS trigger_item
@@ -78,11 +79,13 @@ def search_evolution_chain(pokemon_name: str) -> str:
             prev_chain = result_prev.data()
 
             # ── 진화 후 체인 (최대 3단계) ───────────────────────────
+            # CONTAINS가 여러 폼 노드를 매칭할 수 있으므로 LIMIT 1로 중복 경로 방지
             result_next = session.run("""
                 MATCH (targetP:Pokemon)
                 WHERE targetP.name CONTAINS $name
+                WITH targetP LIMIT 1
                 MATCH path = (targetP)-[:EVOLVES_TO*1..3]->(nextP:Pokemon)
-                RETURN length(path) AS depth,
+                RETURN DISTINCT length(path) AS depth,
                        nextP.name   AS evolved_name,
                        [r IN relationships(path) | {
                            min_level:       r.min_level,
@@ -209,6 +212,18 @@ def search_type_relations(type_name: str) -> str:
                 LIMIT 5
             """, name=type_name).data()
 
+            # 이 타입 공격을 무효(0배)로 막는 방어 타입 (타입 레벨)
+            immune_types = session.run("""
+                MATCH (attackType:Type)
+                WHERE attackType.name CONTAINS $name
+                MATCH (p:Pokemon)-[r:AGAINST]->(attackType)
+                WHERE r.multiplier = 0.0
+                  AND size([(p)-[:HAS_TYPE]->() | 1]) = 1
+                MATCH (p)-[:HAS_TYPE]->(defType:Type)
+                RETURN DISTINCT defType.name AS target
+                ORDER BY target
+            """, name=type_name).data()
+
             # 이 타입에 면역인 포켓몬 예시 (IMMUNE_TO, 최대 5개)
             immune_pokemon = session.run("""
                 MATCH (p:Pokemon)-[:IMMUNE_TO]->(t:Type)
@@ -217,7 +232,7 @@ def search_type_relations(type_name: str) -> str:
                 LIMIT 5
             """, name=type_name).data()
 
-        if not strong and not weak and not vulnerable:
+        if not strong and not weak and not vulnerable and not immune_types:
             return f"{type_name} 타입 정보를 찾을 수 없습니다."
 
         def fmt(factor: float) -> str:
@@ -234,6 +249,10 @@ def search_type_relations(type_name: str) -> str:
         if weak:
             names = ", ".join([f"{r['target']}({fmt(r['factor'])})" for r in weak])
             lines.append(f"❌ 공격 시 비효과적 (절반-): {names}")
+
+        if immune_types:
+            names = ", ".join([r["target"] for r in immune_types])
+            lines.append(f"🚫 공격 시 무효 (0배): {names}")
 
         if vulnerable:
             names = ", ".join([f"{r['attacker']}({fmt(r['factor'])})" for r in vulnerable])
