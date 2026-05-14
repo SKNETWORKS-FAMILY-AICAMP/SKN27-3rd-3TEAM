@@ -358,21 +358,6 @@ def search_flavor_text(query: str) -> str:
     return "✅ 관련 도감 설명:\n\n" + "\n\n---\n\n".join(top)
 
 
-@tool
-def web_search(query: str) -> str:
-    """
-    DB에 없는 포켓몬 정보를 웹에서 검색합니다.
-    최신 게임 정보, DB 미보유 포켓몬, 공식 이벤트 등에만 사용하세요.
-    """
-    try:
-        if not tavily:
-            return "웹 검색 API 키가 설정되지 않아 검색을 수행할 수 없습니다."
-        results  = tavily.invoke(query + " 포켓몬")
-        web_text = "\n\n".join([r["content"] for r in results])
-        return f"✅ 웹 검색 결과:\n{web_text}"
-    except Exception as e:
-        return f"웹 검색 실패: {e}"
-
 
 # ══════════════════════════════════════════════════════════
 # Agent State & Graph (변경 없음)
