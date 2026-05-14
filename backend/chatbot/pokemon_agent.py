@@ -28,10 +28,7 @@ import operator
 load_dotenv()
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-try:
-    from langchain_ollama import ChatOllama
-except ImportError:
-    from langchain_community.chat_models import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
@@ -57,7 +54,11 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-embeddings = OpenAIEmbeddings()
+try:
+    embeddings = OpenAIEmbeddings()
+except Exception as e:
+    print(f"⚠️ OpenAIEmbeddings 초기화 실패: {e}")
+    embeddings = None
 
 # Tavily API 키가 없을 경우를 대비한 예외 처리
 try:
@@ -70,12 +71,8 @@ except Exception as e:
     tavily = None
 
 MODELS = {
-    "gpt-4o-mini": lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
-    "gemma4:e2b":  lambda: ChatOllama(
-        model="gemma4:e2b",
-        base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-        temperature=0,
-    ),
+    "gpt-4o-mini":              lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    "llama-3.3-70b-versatile":  lambda: ChatGroq(model="llama-3.3-70b-versatile", temperature=0),
 }
 DEFAULT_MODEL = "gpt-4o-mini"
 
@@ -87,6 +84,8 @@ FLAVOR_TOP_N = 5
 # ══════════════════════════════════════════════════════════
 
 try:
+    if embeddings is None:
+        raise RuntimeError("embeddings 미초기화")
     _vectorstore = PGVector(
         connection_string=DB_CONN,
         embedding_function=embeddings,

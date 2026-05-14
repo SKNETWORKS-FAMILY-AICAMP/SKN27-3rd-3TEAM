@@ -1,0 +1,27 @@
+# [Web Framework]
+fastapi
+uvicorn
+pydantic
+
+# [Database & ORM]
+sqlalchemy
+psycopg2-binary
+pgvector
+neo4j==5.28.2
+
+# [AI & LLM Orchestration]
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-groq
+langgraph
+tavily-python
+
+# [AI Models & API]
+openai
+
+# [Utilities]
+python-dotenv
+requests
+rank-bm25
