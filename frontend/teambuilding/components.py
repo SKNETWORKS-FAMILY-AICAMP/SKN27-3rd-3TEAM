@@ -15,7 +15,7 @@ from .filters import (
     toggle_team_type,
     get_available_abilities,
 )
-from .api import request_json
+from .api import request_json, get_current_user_id
 
 
 # ── Type badge helpers ────────────────────────────────────────────────────
