@@ -32,7 +32,7 @@ try:
     from langchain_ollama import ChatOllama
 except ImportError:
     from langchain_community.chat_models import ChatOllama
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_community.tools import TavilySearchResults
 from langchain_community.vectorstores import PGVector
@@ -104,6 +104,70 @@ _vector_retriever = _vectorstore.as_retriever(
 
 
 # ══════════════════════════════════════════════════════════
+# Phase 2/4B: Hybrid Search helpers
+# ══════════════════════════════════════════════════════════
+
+def _reciprocal_rank_fusion(rankings: list[list[str]], k: int = 60) -> list[str]:
+    """여러 순위 목록을 RRF로 합산해 단일 순위 반환."""
+    scores: dict[str, float] = {}
+    for ranking in rankings:
+        for rank, doc in enumerate(ranking):
+            scores[doc] = scores.get(doc, 0.0) + 1.0 / (k + rank + 1)
+    return sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
+
+
+# Phase 4-B: BM25 인덱스 (rank_bm25, 모듈 로드 시 1회 빌드)
+_bm25_index:   object      = None
+_bm25_docs:    list[str]   = []
+
+def _get_bm25():
+    """BM25 인덱스 초기화 — '포켓몬명: 도감설명' 형식으로 저장."""
+    global _bm25_index, _bm25_docs
+    if _bm25_index is None:
+        try:
+            from rank_bm25 import BM25Okapi
+            conn = psycopg2.connect(DB_CONN)
+            cur  = conn.cursor()
+            cur.execute(
+                "SELECT p.name || ': ' || ft.content "
+                "FROM flavor_text ft "
+                "JOIN species s ON ft.species_id = s.id "
+                "JOIN pokemon p ON s.pokemon_id = p.id "
+                "WHERE ft.content IS NOT NULL ORDER BY ft.id"
+            )
+            _bm25_docs  = [row[0] for row in cur.fetchall()]
+            conn.close()
+            tokenized   = [doc.split() for doc in _bm25_docs]
+            _bm25_index = BM25Okapi(tokenized)
+        except Exception as e:
+            print(f"BM25 인덱스 빌드 실패: {e}")
+            _bm25_index = False
+    return _bm25_index, _bm25_docs
+
+
+_rewriter_llm: object = None
+
+def _rewrite_query(query: str) -> str:
+    """사용자 질문에서 핵심 검색 키워드를 보존하며 최소한으로 재작성."""
+    global _rewriter_llm
+    try:
+        if _rewriter_llm is None:
+            _rewriter_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        prompt = (
+            "다음 포켓몬 질문의 핵심 의도를 유지하면서 검색 키워드를 명확히 하세요.\n"
+            "- 원본 질문의 의도를 절대 바꾸지 마세요\n"
+            "- 포켓몬 이름·타입·능력 등 구체적인 키워드를 보존하세요\n"
+            "- 불필요한 표현만 제거하고 한 문장으로 답하세요\n\n"
+            f"원본: {query}\n재작성 (한 문장, 의도 보존):"
+        )
+        result = _rewriter_llm.invoke(prompt)
+        rewritten = result.content.strip()
+        return rewritten if rewritten else query
+    except Exception:
+        return query
+
+
+# ══════════════════════════════════════════════════════════
 # SYSTEM_PROMPT
 # ══════════════════════════════════════════════════════════
 
@@ -127,24 +191,31 @@ SCHEMA = """
 컬럼: id, species_id(FK), version_name, content, embedding
 """
 
-SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 풍부하고 정확한 정보를 바탕으로 답변합니다.
+SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 정확한 데이터를 기반으로만 답변합니다.
 
-## 답변 원칙
-1. **항상 툴을 먼저 사용하세요.** 질문에 답하기 전에 반드시 관련 툴을 호출해 데이터를 확인합니다.
-2. **복합 질문은 여러 툴을 함께 활용하세요.**
-   - 수치/조건/비교 → `search_pokemon_db` (SELECT SQL 문 작성)
-   - 느낌/묘사/성격/배경 → `search_flavor_text` (벡터 검색)
-   - 진화 경로/조건 → `search_evolution_chain` (Neo4j 그래프)
-   - 특정 포켓몬의 약점/저항 → `search_pokemon_weakness` (Neo4j 그래프, 듀얼타입 배율 정확)
-   - 타입 자체의 공격·방어 상성 → `search_type_relations` (Neo4j 그래프)
-3. **DB에 없는 정보만** `web_search`를 사용하고, 사용 시 "웹에서 찾은 정보입니다"를 명시합니다.
-4. SQL 오류가 발생하면 오류 메시지를 분석해 SQL을 수정 후 재시도합니다.
+## 핵심 규칙 (반드시 준수)
+- **검색 결과에 없는 내용은 절대 생성하지 마세요.** 툴이 반환한 데이터에만 근거해 답변합니다.
+- **모른다고 솔직하게 말하는 것이 틀린 답변보다 낫습니다.** 검색 결과가 부족하면 "정보를 찾지 못했습니다"라고 답하세요.
+- **숫자·이름·진화 조건은 툴 결과를 그대로 인용하세요.** 절대 추측하거나 일반 지식으로 채우지 마세요.
+
+## 툴 선택 기준
+1. **항상 툴을 먼저 호출하고 결과를 확인한 뒤 답변하세요.**
+2. **복합 질문은 필요한 툴을 순서대로 모두 호출하세요 (최대 5회).**
+   - 수치/조건/비교/포획률/세대 → `search_pokemon_db` (SELECT SQL 작성)
+   - 느낌/묘사/성격/배경/분위기 → `search_flavor_text` (벡터 검색)
+   - 진화 경로·조건 → `search_evolution_chain` (Neo4j)
+   - 특정 포켓몬의 약점·저항·면역 → `search_pokemon_weakness` (Neo4j, 듀얼타입 정확 반영)
+   - 타입 자체의 공격·방어 상성 → `search_type_relations` (Neo4j)
+3. **복합 질문은 반드시 분해하세요.** "A와 B를 함께 알려줘" → A 툴 호출 → B 툴 호출 → 통합 답변.
+4. SQL 오류 발생 시 오류 메시지를 정확히 분석하고 컬럼명·조인 조건을 수정해 즉시 재시도하세요.
+5. 검색 결과가 질문과 관련 없거나 비어 있으면 검색어를 바꾸거나 다른 툴로 재시도하세요.
+6. **최솟값·최댓값 조건**: 동일한 값을 가진 포켓몬이 여럿일 수 있습니다. `ORDER BY ... LIMIT 1` 대신 서브쿼리 `WHERE col = (SELECT MIN/MAX(col) FROM ...)` 를 사용해 동점 결과를 모두 반환하세요.
 
 ## 답변 스타일
 - 친절하고 열정적으로 답변합니다.
 - 수치 데이터는 표 형태로 정리합니다.
 - 포켓몬의 특징을 생생하게 설명합니다.
-- 컨텍스트에 없는 내용은 절대 지어내지 않습니다.
+- 툴 결과 이외의 내용은 절대 추가하지 않습니다.
 
 ## DB 스키마
 {SCHEMA}
@@ -200,14 +271,90 @@ def search_flavor_text(query: str) -> str:
     """
     포켓몬 도감 설명(flavor_text)에서 의미 기반으로 검색합니다.
     "귀여운 포켓몬", "바다 느낌", "불꽃에서 사는 포켓몬" 같은 분위기·묘사·성격 질문에 사용하세요.
+    BM25·pg_trgm 키워드 검색과 벡터 검색을 RRF로 결합해 정확도를 높입니다.
     """
-    docs = _vector_retriever.invoke(query)
+    # 1. Vector search (MMR) → PGVector content는 "species_id: version 설명" 형식
+    #    species_id 파싱 후 DB 조회로 포켓몬 이름 부착
+    vector_docs     = _vector_retriever.invoke(query)
+    vector_contents: list[str] = []
+    if vector_docs:
+        try:
+            parsed: list[tuple[int | None, str]] = []
+            for doc in vector_docs[:20]:
+                raw_c = doc.page_content
+                colon_idx = raw_c.find(': ')
+                if colon_idx > 0 and raw_c[:colon_idx].strip().isdigit():
+                    sid    = int(raw_c[:colon_idx].strip())
+                    rest   = raw_c[colon_idx + 2:]   # "version_name 실제설명"
+                    # version_name은 공백 기준 첫 단어; 실제 설명만 전달
+                    parts  = rest.split(' ', 1)
+                    actual = parts[1] if len(parts) > 1 else rest
+                    parsed.append((sid, actual))
+                else:
+                    parsed.append((None, raw_c))
 
-    if not docs:
+            valid_sids = list({p[0] for p in parsed if p[0] is not None})
+            sid_to_name: dict[int, str] = {}
+            if valid_sids:
+                conn = psycopg2.connect(DB_CONN)
+                cur  = conn.cursor()
+                cur.execute(
+                    "SELECT s.id, p.name "
+                    "FROM species s "
+                    "JOIN pokemon p ON s.pokemon_id = p.id "
+                    "WHERE s.id = ANY(%s)",
+                    (valid_sids,),
+                )
+                sid_to_name = {row[0]: row[1] for row in cur.fetchall()}
+                conn.close()
+
+            vector_contents = [
+                f"{sid_to_name[sid]}: {content}" if sid and sid in sid_to_name
+                else content
+                for sid, content in parsed
+            ]
+        except Exception:
+            vector_contents = [doc.page_content for doc in vector_docs[:20]]
+
+    # 2. BM25 (rank_bm25 — 단어 단위 TF-IDF, 이미 '이름: 내용' 형식)
+    bm25_contents: list[str] = []
+    try:
+        bm25, docs = _get_bm25()
+        if bm25 and docs:
+            tokens        = query.split()
+            scores        = bm25.get_scores(tokens)
+            top_idx       = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:20]
+            bm25_contents = [docs[i] for i in top_idx if scores[i] > 0]
+    except Exception:
+        pass
+
+    # 3. pg_trgm 유사도 검색 — '포켓몬명: 내용' 형식으로 반환
+    trgm_contents: list[str] = []
+    try:
+        conn = psycopg2.connect(DB_CONN)
+        cur  = conn.cursor()
+        cur.execute(
+            "SELECT p.name || ': ' || ft.content "
+            "FROM flavor_text ft "
+            "JOIN species s ON ft.species_id = s.id "
+            "JOIN pokemon p ON s.pokemon_id = p.id "
+            "WHERE similarity(ft.content, %s) > 0.05 "
+            "ORDER BY similarity(ft.content, %s) DESC LIMIT 20",
+            (query, query),
+        )
+        trgm_contents = [row[0] for row in cur.fetchall()]
+        conn.close()
+    except Exception:
+        pass
+
+    # 4. RRF 3-way fusion
+    channels = [c for c in [vector_contents, bm25_contents, trgm_contents] if c]
+    merged   = _reciprocal_rank_fusion(channels) if len(channels) > 1 else (channels[0] if channels else [])
+
+    if not merged:
         return "검색 결과가 없습니다."
 
-    top = [doc.page_content for doc in docs[:FLAVOR_TOP_N]]
-
+    top = merged[:FLAVOR_TOP_N]
     return "✅ 관련 도감 설명:\n\n" + "\n\n---\n\n".join(top)
 
 
@@ -236,7 +383,7 @@ tools      = [search_pokemon_db, search_flavor_text,
               search_pokemon_weakness,]
 _tool_node = ToolNode(tools)
 
-MAX_TOOL_CALLS = 2
+MAX_TOOL_CALLS = 5
 
 class AgentState(TypedDict):
     messages:        Annotated[List, operator.add]
@@ -247,11 +394,21 @@ def build_agent(model_name: str):
     llm_with_tools = MODELS[model_name]().bind_tools(tools)
 
     def agent_node(state: AgentState) -> AgentState:
-        messages = state["messages"]
+        messages = list(state["messages"])
+        count = state.get("tool_call_count", 0)
+
+        # Phase 2: Query Rewriting — 첫 번째 호출 시에만 마지막 HumanMessage 재작성
+        if count == 0:
+            for i in range(len(messages) - 1, -1, -1):
+                if isinstance(messages[i], HumanMessage):
+                    rewritten = _rewrite_query(messages[i].content)
+                    if rewritten and rewritten != messages[i].content:
+                        messages[i] = HumanMessage(content=rewritten)
+                    break
+
         if not any(isinstance(m, SystemMessage) for m in messages):
             messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
 
-        count = state.get("tool_call_count", 0)
         if count >= MAX_TOOL_CALLS:
             messages = messages + [SystemMessage(content=(
                 "지금까지 검색한 정보를 바탕으로 최선의 답변을 지금 바로 작성하세요. "
@@ -273,6 +430,57 @@ def build_agent(model_name: str):
         result = _tool_node.invoke(state)
         return {**result, "tool_call_count": state.get("tool_call_count", 0) + 1}
 
+    _grader = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+    def crag_check_node(state: AgentState) -> AgentState:
+        """Phase 3 CRAG: 툴 결과 관련성 평가 → 낮으면 재검색 가이드."""
+        messages = state["messages"]
+        count    = state.get("tool_call_count", 0)
+
+        if count >= MAX_TOOL_CALLS - 1:
+            return {"messages": [], "tool_call_count": count}
+
+        original = next(
+            (m.content for m in messages if isinstance(m, HumanMessage)), ""
+        )
+        last_tool = next(
+            (m for m in reversed(messages) if isinstance(m, ToolMessage)), None
+        )
+
+        if not last_tool or not last_tool.content:
+            return {"messages": [], "tool_call_count": count}
+
+        content = last_tool.content
+        if content.startswith("오류") or content.startswith("SQL 오류"):
+            return {"messages": [], "tool_call_count": count}
+
+        if "검색 결과가 없습니다" in content or "찾을 수 없습니다" in content:
+            return {
+                "messages": [SystemMessage(content=(
+                    "검색 결과가 없었습니다. 검색어를 바꾸거나 다른 툴로 재시도하세요."
+                ))],
+                "tool_call_count": count,
+            }
+
+        # 완화된 판정: 조금이라도 관련 정보 포함 시 통과
+        judgment = _grader.invoke(
+            f"검색 결과가 질문 답변에 조금이라도 도움이 되는 정보를 포함하면 YES, "
+            f"전혀 무관하면 NO로만 답하세요.\n"
+            f"질문: {original[:150]}\n"
+            f"검색 결과: {content[:400]}"
+        ).content.strip().upper()
+
+        if "NO" in judgment and "YES" not in judgment:
+            return {
+                "messages": [SystemMessage(content=(
+                    "⚠️ 직전 검색 결과가 질문과 전혀 관련이 없습니다. "
+                    "검색 키워드를 바꾸거나 다른 툴을 사용해 재검색하세요."
+                ))],
+                "tool_call_count": count,
+            }
+
+        return {"messages": [], "tool_call_count": count}
+
     def should_continue(state: AgentState) -> str:
         last  = state["messages"][-1]
         count = state.get("tool_call_count", 0)
@@ -283,9 +491,11 @@ def build_agent(model_name: str):
     workflow = StateGraph(AgentState)
     workflow.add_node("agent", agent_node)
     workflow.add_node("tools", tools_node_wrapper)
+    workflow.add_node("crag",  crag_check_node)
     workflow.add_edge(START, "agent")
     workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
-    workflow.add_edge("tools", "agent")
+    workflow.add_edge("tools", "crag")
+    workflow.add_edge("crag",  "agent")
     return workflow.compile()
 
 
