@@ -681,11 +681,12 @@ def render_team_side_panel(
                 payload["user_id"] = _uid
             return request_json("POST", "/api/v1/team-builder/rag-recommend", json=payload)
 
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            f_analyze = pool.submit(_analyze)
-            f_recommend = pool.submit(_recommend)
-            st.session_state.analysis_result = f_analyze.result()
-            st.session_state.recommendation_result = f_recommend.result()
+        # ThreadPoolExecutor를 제거하고 순차 실행합니다.
+        # 이유:
+        # 1. 백그라운드 스레드에서 st.session_state 접근 시 Streamlit Thread Context 예외가 발생하여 화면이 무한 로딩에 빠집니다.
+        # 2. _recommend() 내부(api.py)에서 DB 저장을 위해 직전의 analysis_result를 필요로 하므로 _analyze()가 먼저 완료되어야 합니다.
+        st.session_state.analysis_result = _analyze()
+        st.session_state.recommendation_result = _recommend()
 
         st.session_state.team_result_type = "both"
         st.switch_page("pages/team_result.py")
