@@ -58,7 +58,11 @@ def api_chat_stream(query, history, model, session_id=None, user_id=None):
 def api_sessions(user_id=None):
     try:
         params = {"user_id": user_id} if user_id else {}
-        return _get("/api/v1/chatbot/sessions", params=params).json()
+        resp = _get("/api/v1/chatbot/sessions", params=params)
+        if not resp.ok:
+            return []
+        result = resp.json()
+        return result if isinstance(result, list) else []
     except Exception:
         return []
 
