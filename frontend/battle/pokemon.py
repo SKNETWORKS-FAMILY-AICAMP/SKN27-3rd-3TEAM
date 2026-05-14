@@ -138,6 +138,18 @@ class PokemonDB:
             for record in result:
                 efficacy[(record["attacker_id"], record["defender_id"])] = float(record["factor"])
             return efficacy
+    
+    def get_all_pokemon_names(self) -> List[Dict[str, Any]]:
+        """Fetch list of all Pokemon IDs and names for selection."""
+        query = """
+        MATCH (p:Pokemon)
+        WHERE p.is_default = true
+        RETURN p.pokemon_id as id, p.name as name
+        ORDER BY p.pokemon_id
+        """
+        with self.driver.session() as session:
+            result = session.run(query)
+            return [dict(record) for record in result]
 
 
 class PlayerPokemonDB(PokemonDB):
@@ -178,19 +190,6 @@ class BotPokemonDB(PokemonDB):
                m.healing as healing, m.priority as priority,
                m.flinch_chance as flinch_chance, m.crit_rate as crit_rate
         """
-
-
-    def get_all_pokemon_names(self) -> List[Dict[str, Any]]:
-        """Fetch list of all Pokemon IDs and names for selection."""
-        query = """
-        MATCH (p:Pokemon)
-        WHERE p.is_default = true
-        RETURN p.pokemon_id as id, p.name as name
-        ORDER BY p.pokemon_id
-        """
-        with self.driver.session() as session:
-            result = session.run(query)
-            return [dict(record) for record in result]
 
 # Streamlit integration for efficient database usage
 if "streamlit" in globals() or "st" in globals() or os.getenv("STREAMLIT_SERVER_PORT"):

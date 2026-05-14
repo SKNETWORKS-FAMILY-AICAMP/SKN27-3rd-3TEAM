@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 from battle.trainerbot import ROSTER_MAP
-from battle.utils import BattlePokemon, BotBattlePokemon
+from battle.utils import BotBattlePokemon
 
 class BattleBot:
     @classmethod
