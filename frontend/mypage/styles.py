@@ -354,29 +354,39 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     50%       { opacity: 1; }
 }
 
-/* ── Team Builder History (Horizontal Cards) ── */
-.card-history { border-top: 6px solid #a29bfe; }
+/* ── Team Builder History (Streamlit Container Hack) ── */
+[data-testid="stVerticalBlock"]:has(> .element-container .history-marker) {
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08) !important;
+    margin: 0 auto 40px !important;
+    width: 75% !important;
+    max-width: 1000px !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    border-top: 6px solid #a29bfe !important;
+    padding: 30px !important;
+}
+
+.history-marker {
+    position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none;
+}
+
 .mp-hist-card-h {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px) saturate(150%);
-    -webkit-backdrop-filter: blur(15px) saturate(150%);
-    border-radius: 18px;
-    padding: 22px 28px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    margin-bottom: 8px;
-    gap: 0;
-    min-height: 110px;
+    background: transparent;
+    padding: 10px 5px;
+    min-height: 90px;
 }
 .mp-hist-team-block {
-    flex: 0 0 220px;
+    flex: 0 0 200px;
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 .mp-hist-rec-block {
-    flex: 0 0 160px;
+    flex: 0 0 150px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -384,27 +394,27 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 .mp-hist-text-block {
     flex: 1;
     min-width: 0;
-    padding: 0 4px;
+    padding: 0 10px;
 }
 .mp-hist-sep {
     width: 1px;
     align-self: stretch;
-    background: rgba(255, 255, 255, 0.12);
-    margin: 0 22px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 0 20px;
     flex-shrink: 0;
 }
 .mp-hist-date {
-    font-size: 0.63rem;
-    font-weight: 700;
-    color: #a0aec0;
-    letter-spacing: 1.2px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 .mp-hist-label {
-    font-size: 0.6rem;
-    font-weight: 800;
-    color: #718096;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #475569;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     margin-bottom: 5px;
@@ -412,51 +422,57 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 .mp-hist-row {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     flex-wrap: wrap;
 }
 .mp-hist-pkmn-img {
-    width: 40px; height: 40px;
+    width: 42px; height: 42px;
     object-fit: contain;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0,0,0,0.06);
     border-radius: 8px;
+    padding: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
 .mp-hist-pkmn-rec {
-    width: 36px; height: 36px;
-    opacity: 0.9;
+    width: 38px; height: 38px;
 }
 .mp-hist-conclusion-h {
-    font-size: 0.8rem;
-    color: #cbd5e0;
-    line-height: 1.65;
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.6;
+    font-weight: 650;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: keep-all;
 }
-/* 히스토리 결과 보기 버튼 */
-.stButton > button {
+.hist-row-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 5px 0;
+}
+div[data-testid="stColumn"]:has(.hist-btn-marker) button {
     background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%) !important;
     color: #ffffff !important;
     border: none !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.3px !important;
-    transition: opacity 0.2s, transform 0.2s !important;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.35) !important;
+    border-radius: 50px !important;
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    margin-top: 28px !important;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
 }
-.stButton > button:hover {
-    opacity: 0.88 !important;
-    transform: translateY(-1px) !important;
+div[data-testid="stColumn"]:has(.hist-btn-marker) button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(108, 92, 231, 0.45) !important;
 }
-.stButton > button:disabled {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #718096 !important;
-    cursor: not-allowed !important;
+div[data-testid="stColumn"]:has(.hist-btn-marker) button:disabled {
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
     box-shadow: none !important;
-    opacity: 0.5 !important;
+    transform: none !important;
 }
 </style>
 """
