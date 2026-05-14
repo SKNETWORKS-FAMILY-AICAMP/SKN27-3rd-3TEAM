@@ -57,7 +57,11 @@ DB_CONN = os.environ.get(
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
 
-embeddings = OpenAIEmbeddings()
+try:
+    embeddings = OpenAIEmbeddings()
+except Exception as e:
+    print(f"⚠️ OpenAIEmbeddings 초기화 실패: {e}")
+    embeddings = None
 
 # Tavily API 키가 없을 경우를 대비한 예외 처리
 try:
@@ -87,6 +91,8 @@ FLAVOR_TOP_N = 5
 # ══════════════════════════════════════════════════════════
 
 try:
+    if embeddings is None:
+        raise RuntimeError("embeddings 미초기화")
     _vectorstore = PGVector(
         connection_string=DB_CONN,
         embedding_function=embeddings,
