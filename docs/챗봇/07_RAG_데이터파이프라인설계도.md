@@ -24,7 +24,6 @@ flowchart TB
         R1["SQL Retrieval\n(정형 데이터)"]
         R2["Vector Retrieval\n(비정형 텍스트)"]
         R3["Graph Retrieval\n(관계 데이터)"]
-        R4["Web Retrieval\n(최신 정보)"]
     end
 
     subgraph AUGMENT["📚 Augmentation"]
@@ -39,7 +38,6 @@ flowchart TB
     AGENT -->|search_pokemon_db| R1
     AGENT -->|search_flavor_text| R2
     AGENT -->|"search_evolution_chain\nsearch_type_relations\nsearch_pokemon_weakness ✨"| R3
-    AGENT -->|web_search| R4
 
     R1 & R2 & R3 & R4 --> CTX
     CTX --> GEN

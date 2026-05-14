@@ -65,12 +65,11 @@ gantt
 | 2.5 | search_flavor_text Tool 개발 | 백엔드 | 1일 | pokemon_agent.py | ⏳ 예정 |
 | 2.6 | search_evolution_chain Tool 개발 | 백엔드 | 2일 | pokemon_neo4j.py | ⏳ 예정 |
 | 2.7 | search_type_relations Tool 개발 | 백엔드 | 1일 | pokemon_neo4j.py | ⏳ 예정 |
-| 2.8 | web_search Tool 개발 (Tavily) | 백엔드 | 1일 | pokemon_agent.py | ⏳ 예정 |
-| 2.9 | LangGraph AgentState 설계 | AI | 2일 | pokemon_agent.py | ⏳ 예정 |
-| 2.10 | Agent 노드 (agent_node, tools_node) 구현 | AI | 2일 | pokemon_agent.py | ⏳ 예정 |
-| 2.11 | 툴 호출 제한 로직 (MAX_TOOL_CALLS=2) | AI | 1일 | pokemon_agent.py | ⏳ 예정 |
-| 2.12 | chat_history.py — 세션 CRUD 구현 | 백엔드 | 2일 | chat_history.py | ⏳ 예정 |
-| 2.13 | System Prompt 초안 작성 및 튜닝 | AI | 2일 | 프롬프트 명세서 | ⏳ 예정 |
+| 2.8 | LangGraph AgentState 설계 | AI | 2일 | pokemon_agent.py | ⏳ 예정 |
+| 2.9 | Agent 노드 (agent_node, tools_node) 구현 | AI | 2일 | pokemon_agent.py | ⏳ 예정 |
+| 2.10 | 툴 호출 제한 로직 (MAX_TOOL_CALLS=2) | AI | 1일 | pokemon_agent.py | ⏳ 예정 |
+| 2.11 | chat_history.py — 세션 CRUD 구현 | 백엔드 | 2일 | chat_history.py | ⏳ 예정 |
+| 2.12 | System Prompt 초안 작성 및 튜닝 | AI | 2일 | 프롬프트 명세서 | ⏳ 예정 |
 
 ### Phase 3: 통합 및 API (6~7주차)
 
