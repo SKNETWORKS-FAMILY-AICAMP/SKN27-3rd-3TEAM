@@ -419,14 +419,14 @@ content_html = f"""
     </div>
 </div>
 
-<!-- Section 7: Rap Battle (Mini-game 2) -->
+<!-- Section 7: Memory Game (Mini-game 2) -->
 <div class="full-section sec-dragon observer-target">
     <div class="section-inner">
         <div class="text-box reveal-left">
-            <div class="sec-badge">Rap Battle</div>
-            <h2 class="sec-title">포켓몬<br><b>랩 배틀</b></h2>
-            <p class="sec-desc">포켓몬들의 치열한 언어 대결! AI가 만들어내는 랩 가사로 배틀을 펼쳐보세요.<br>누가 더 강렬한 라임을 뱉을 수 있을까요?</p>
-            <a href="/game_2" target="_self" class="cta-btn">배틀 참전하기</a>
+            <div class="sec-badge">Memory Game</div>
+            <h2 class="sec-title">포켓몬<br><b>메모리 게임</b></h2>
+            <p class="sec-desc">카드를 뒤집어 같은 포켓몬 짝을 찾아보세요!<br>난이도를 선택하고 숨겨진 포켓몬을 모두 찾아보세요.</p>
+            <a href="/game_2" target="_self" class="cta-btn">게임 시작하기</a>
         </div>
         <div class="visual-box reveal-right">
             <img src="{minigame2_img}" class="main-artwork">
