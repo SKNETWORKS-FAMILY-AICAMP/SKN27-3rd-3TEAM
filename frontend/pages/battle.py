@@ -8,7 +8,6 @@ BACKEND_URL = os.environ.get("BACKEND_URL") or os.environ.get("BACKEND_API_URL")
 from battle.battle import display_battle
 from battle.build_team import display_builder
 from battle.menu import display_menu
-from battle.pokemon import PokemonDB
 from battle.ui import inject_battle_styles
 from utils.ui import inject_common_ui
 
@@ -22,9 +21,6 @@ st.set_page_config(
 
 inject_common_ui(spacer=True)
 inject_battle_styles()
-
-# streamlit 페이지에서 DB 연결 (팀빌딩 화면용)
-db = PokemonDB()
 
 def show():
     if "player_team" not in st.session_state:

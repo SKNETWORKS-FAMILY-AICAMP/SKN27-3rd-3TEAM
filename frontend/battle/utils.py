@@ -10,6 +10,12 @@ from .pokemon import PokemonDB, BotPokemonDB
 import os
 BACKEND_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http://localhost:8000"
 
+def get_all_pokemon_names():
+    db = PokemonDB()
+    pokemon_list = db.get_all_pokemon_names()
+    db.close()
+    return pokemon_list
+
 def get_pokemon_data(id: int) -> dict:
     """
     [플레이어용] level-up 기술만 포함된 포켓몬 데이터를 조회합니다.

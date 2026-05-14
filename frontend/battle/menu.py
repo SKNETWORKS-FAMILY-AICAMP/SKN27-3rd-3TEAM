@@ -5,10 +5,7 @@ BACKEND_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http:
 import streamlit as st
 
 from .constants import GYM_NAME_MAP, LEADERS
-from .pokemon import PokemonDB
-from .utils import start_custom_battle
-
-db = PokemonDB()
+from .utils import start_custom_battle, get_pokemon_data
 
 def display_menu():
     st.markdown(
@@ -41,7 +38,7 @@ def display_menu():
         st.caption(f"**{selected_leader}({selected_gym})의 엔트리:**")
         cols = st.columns(len(leader_roster))
         for idx, p in enumerate(leader_roster):
-            pokemon_data = db.get_pokemon_data(p['id'])
+            pokemon_data = get_pokemon_data(p['id'])
             with cols[idx]:
                 img_url = pokemon_data['image_url']
                 st.image(img_url, use_container_width=True)

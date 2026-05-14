@@ -5,11 +5,8 @@ BACKEND_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http:
 
 import streamlit as st
 
-from .pokemon import PokemonDB
-from .utils import start_custom_battle, BattlePokemon
+from .utils import BattlePokemon, start_custom_battle, get_pokemon_data, get_all_pokemon_names
 from .ui import render_pokemon_status
-
-db = PokemonDB()
 
 def display_builder():
     st.markdown(
@@ -22,7 +19,7 @@ def display_builder():
             unsafe_allow_html=True,
     )
         
-    pokemon_list = db.get_all_pokemon_names()
+    pokemon_list = get_all_pokemon_names()
     pokemon_options = {p['name']: p['id'] for p in pokemon_list}
     
     col1, col2 = st.columns([1, 1.2])
@@ -45,7 +42,7 @@ def display_builder():
         if selected_name:
             pokemon_id = pokemon_options[selected_name]
             if "selected_pokemon_data" not in st.session_state or st.session_state.get("last_selected_id") != pokemon_id:
-                st.session_state.selected_pokemon_data = db.get_pokemon_data(pokemon_id)
+                st.session_state.selected_pokemon_data = get_pokemon_data(pokemon_id)
                 st.session_state.last_selected_id = pokemon_id
                 st.session_state.selected_moves = []
 
@@ -60,7 +57,7 @@ def display_builder():
         if st.session_state.player_team:
             team_cols = st.columns(len(st.session_state.player_team))
             for i, pt in enumerate(st.session_state.player_team):
-                pokemon_data = db.get_pokemon_data(pt['id'])
+                pokemon_data = get_pokemon_data(pt['id'])
                 with team_cols[i]:
                     img_url = pokemon_data['image_url']
                     st.image(img_url, use_container_width=True)
@@ -126,7 +123,7 @@ def display_builder():
             party_cols = st.columns(3)
             for idx, p in enumerate(st.session_state.player_team):
                 with party_cols[idx]:
-                    p_data = db.get_pokemon_data(p['id'])
+                    p_data = get_pokemon_data(p['id'])
                     st.image(p_data['image_url'], use_container_width=True)
                     st.markdown(f"<div style='text-align: center; font-weight: bold;'>{p['name']}</div>", unsafe_allow_html=True)
                     moves_text = ", ".join([m['name'] for m in p['moves']])
