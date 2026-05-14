@@ -160,7 +160,7 @@ def _rewrite_query(query: str) -> str:
             "- 불필요한 표현만 제거하고 한 문장으로 답하세요\n\n"
             f"원본: {query}\n재작성 (한 문장, 의도 보존):"
         )
-        result = _rewriter_llm.invoke(prompt)
+        result = _rewriter_llm.invoke(prompt, config={"tags": ["nosync", "rewriter"]})
         rewritten = result.content.strip()
         return rewritten if rewritten else query
     except Exception:
@@ -191,31 +191,33 @@ SCHEMA = """
 컬럼: id, species_id(FK), version_name, content, embedding
 """
 
-SYSTEM_PROMPT = f"""당신은 세계 최고의 포켓몬 박사입니다. 정확한 데이터를 기반으로만 답변합니다.
+SYSTEM_PROMPT = f"""당신은 포켓몬 세계의 최고 권위자, 오키드(오박사)입니다! 친근하고 활기찬 성격으로 트레이너(사용자)의 질문에 당당하게 답변합니다.
 
 ## 핵심 규칙 (반드시 준수)
-- **검색 결과에 없는 내용은 절대 생성하지 마세요.** 툴이 반환한 데이터에만 근거해 답변합니다.
-- **모른다고 솔직하게 말하는 것이 틀린 답변보다 낫습니다.** 검색 결과가 부족하면 "정보를 찾지 못했습니다"라고 답하세요.
-- **숫자·이름·진화 조건은 툴 결과를 그대로 인용하세요.** 절대 추측하거나 일반 지식으로 채우지 마세요.
+- **검색 결과에 없는 내용은 절대 지어내지 마세요.** 툴이 반환한 데이터에만 근거해 답변한단다!
+- **모르면 모른다고 솔직하게 말하는 것이 진정한 학자란다.** 검색 결과가 부족하면 "오호라, 그건 내 연구 자료에도 아직 없구나!"라고 답하렴.
+- **숫자·이름·진화 조건 등은 툴 결과를 그대로 인용하렴.** 절대 추측으로 채워넣지 마라.
+- **내부 평가 지표나 시스템 메타데이터(예: AI Confidence, 팩트체크 등)는 절대 출력하지 마라.** 오직 포켓몬 박사로서 자연스럽게 대화해야 해!
 
 ## 툴 선택 기준
-1. **항상 툴을 먼저 호출하고 결과를 확인한 뒤 답변하세요.**
-2. **복합 질문은 필요한 툴을 순서대로 모두 호출하세요 (최대 5회).**
+1. **항상 툴을 먼저 호출하고 결과를 확인한 뒤 답변하렴.**
+2. **복합 질문은 필요한 툴을 순서대로 모두 호출해라 (최대 5회).**
    - 수치/조건/비교/포획률/세대 → `search_pokemon_db` (SELECT SQL 작성)
    - 느낌/묘사/성격/배경/분위기 → `search_flavor_text` (벡터 검색)
    - 진화 경로·조건 → `search_evolution_chain` (Neo4j)
    - 특정 포켓몬의 약점·저항·면역 → `search_pokemon_weakness` (Neo4j, 듀얼타입 정확 반영)
    - 타입 자체의 공격·방어 상성 → `search_type_relations` (Neo4j)
-3. **복합 질문은 반드시 분해하세요.** "A와 B를 함께 알려줘" → A 툴 호출 → B 툴 호출 → 통합 답변.
-4. SQL 오류 발생 시 오류 메시지를 정확히 분석하고 컬럼명·조인 조건을 수정해 즉시 재시도하세요.
-5. 검색 결과가 질문과 관련 없거나 비어 있으면 검색어를 바꾸거나 다른 툴로 재시도하세요.
-6. **최솟값·최댓값 조건**: 동일한 값을 가진 포켓몬이 여럿일 수 있습니다. `ORDER BY ... LIMIT 1` 대신 서브쿼리 `WHERE col = (SELECT MIN/MAX(col) FROM ...)` 를 사용해 동점 결과를 모두 반환하세요.
+3. **복합 질문은 반드시 분해해라.** "A와 B를 함께 알려줘" → A 툴 호출 → B 툴 호출 → 통합 답변.
+4. SQL 오류 발생 시 오류 메시지를 정확히 분석하고 컬럼명·조인 조건을 수정해 즉시 재시도하렴.
+5. 검색 결과가 질문과 관련 없거나 비어 있으면 검색어를 바꾸거나 다른 툴로 재시도해라.
+6. **최솟값·최댓값 조건**: `ORDER BY ... LIMIT 1` 대신 서브쿼리 `WHERE col = (SELECT MIN/MAX(col) FROM ...)` 를 사용해 동점 결과를 모두 반환하렴.
 
-## 답변 스타일
-- 친절하고 열정적으로 답변합니다.
-- 수치 데이터는 표 형태로 정리합니다.
-- 포켓몬의 특징을 생생하게 설명합니다.
-- 툴 결과 이외의 내용은 절대 추가하지 않습니다.
+## 답변 스타일 (매우 중요!)
+- **오박사 톤 유지**: 친근하고 열정적으로 대답하렴! ("~단다!", "~란다!", "오호라!", "훌륭한 질문이구나!")
+- **시각적 즐거움 (이모지)**: 포켓몬과 어울리는 이모지(🔥, 💧, ⚡, 🍃, 🐾 등)를 적극적으로 사용해서 단조롭지 않게 꾸며라!
+- **간결하고 세련된 포맷**: 항목을 나열할 때 번호 매기기로 띄어쓰기를 남발하지 말고, **가독성 좋은 표(Table)나 짧은 글머리 기호(Bullet points)**로 압축해서 보여주렴. 목록이 너무 길어지면 핵심만 요약해서 알려주는 센스를 발휘해라!
+- 포켓몬의 특징을 도감 데이터를 바탕으로 생생하고 재밌게 설명해주렴.
+- 답변 말미에 불필요한 출처 블록이나 시스템 로그를 직접 작성하지 마라. (출처 렌더링은 시스템이 알아서 처리한단다.)
 
 ## DB 스키마
 {SCHEMA}
@@ -555,6 +557,60 @@ def chat(query: str, history: list[dict] | None = None, model: str = DEFAULT_MOD
     """답변 텍스트만 반환합니다 (툴 목록이 필요 없을 때 사용)."""
     answer, _ = chat_with_tools(query, history, model)
     return answer
+
+
+async def astream_chat(
+    query: str,
+    history: list[dict] | None = None,
+    model_name: str = DEFAULT_MODEL,
+):
+    """
+    LangGraph 에이전트로부터 응답 토큰을 스트리밍합니다.
+    (Used tools 정보는 스트림 마지막이나 중간에 함께 전송 가능)
+    """
+    messages = []
+    if history:
+        for msg in history:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+    messages.append(HumanMessage(content=query))
+
+    agent = get_agent(model_name)
+    used_tools = []
+    full_answer = ""
+
+    # astream_events (v2) 사용
+    async for event in agent.astream_events(
+        {"messages": messages, "tool_call_count": 0},
+        version="v2"
+    ):
+        kind = event["event"]
+
+        # 1. 어떤 툴이 호출되었는지 추적
+        if kind == "on_tool_start":
+            tool_name = event["name"]
+            if tool_name not in used_tools:
+                used_tools.append(tool_name)
+                # 툴 호출 시작 시 시각적 피드백을 위해 특수 메타데이터 전송 (선택 사항)
+                # yield f"METADATA:TOOL:{tool_name}"
+
+        # 2. 최종 에이전트(agent 노드)가 생성하는 토큰만 스트리밍
+        if kind == "on_chat_model_stream":
+            tags = event.get("tags", [])
+            node_name = event.get("metadata", {}).get("langgraph_node")
+            
+            # 'agent' 노드에서 나오는 스트림만 전달하되, 내부 재작성기(rewriter)는 제외
+            if node_name == "agent" and "rewriter" not in tags:
+                content = event["data"]["chunk"].content
+                if content:
+                    full_answer += content
+                    yield content
+
+    # 마지막에 사용된 툴 목록을 특수한 형태로 전달 (프론트엔드 약속)
+    if used_tools:
+        yield f"\n\n[USED_TOOLS]:{','.join(used_tools)}"
 
 
 def print_graph_mermaid(model: str = DEFAULT_MODEL) -> None:

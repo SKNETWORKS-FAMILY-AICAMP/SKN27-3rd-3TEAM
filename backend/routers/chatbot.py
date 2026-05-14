@@ -1,11 +1,11 @@
 import asyncio
+import json
 from typing import Optional
-from fastapi import Query
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from chatbot.pokemon_agent import chat_with_tools, MODELS, DEFAULT_MODEL
+from chatbot.pokemon_agent import chat_with_tools, astream_chat, MODELS, DEFAULT_MODEL
 from chatbot.chat_history import (
     init_tables, create_session, save_message,
     load_sessions, load_messages, delete_session,
@@ -63,6 +63,37 @@ async def chat(req: ChatRequest):
     save_message(session_id, "assistant", answer, used_tools)
 
     return ChatResponse(answer=answer, used_tools=used_tools, session_id=session_id)
+
+
+@router.post("/chat/stream")
+async def chat_stream(req: ChatRequest):
+    if req.model not in MODELS:
+        raise HTTPException(status_code=400, detail=f"지원하지 않는 모델: {req.model}")
+
+    session_id = req.session_id
+    if session_id is None:
+        session_id = create_session(req.query, req.model, user_id=req.user_id)
+
+    save_message(session_id, "user", req.query)
+
+    async def event_generator():
+        import json
+        full_answer = ""
+        used_tools = []
+        
+        async for chunk in astream_chat(req.query, req.history, req.model):
+            if chunk.startswith("\n\n[USED_TOOLS]:"):
+                tools_str = chunk.replace("\n\n[USED_TOOLS]:", "")
+                used_tools = tools_str.split(",")
+                yield f"data: {json.dumps({'type': 'tools', 'content': used_tools})}\n\n"
+            else:
+                full_answer += chunk
+                yield f"data: {json.dumps({'type': 'token', 'content': chunk})}\n\n"
+        
+        save_message(session_id, "assistant", full_answer, used_tools)
+        yield f"data: {json.dumps({'type': 'end', 'session_id': session_id})}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @router.get("/sessions")

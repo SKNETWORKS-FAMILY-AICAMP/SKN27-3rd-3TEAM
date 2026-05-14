@@ -3,7 +3,7 @@ import uuid
 import streamlit as st
 
 from chatbot.api import (
-    api_chat, api_sessions, api_messages,
+    api_chat, api_chat_stream, api_sessions, api_messages,
     api_delete_session, api_rename_session,
 )
 from chatbot.constants import MODELS_LIST, DEFAULT_MODEL, MODEL_DISPLAY_NAMES
@@ -171,7 +171,6 @@ def show():
                     format_func=chat_format,
                     index=current_idx,
                     label_visibility="collapsed",
-                    key="chat_history_select",
                 )
 
                 if selected_chat_id != st.session_state.current_chat_id:
@@ -191,9 +190,127 @@ def show():
                                  use_container_width=True, disabled=btn_disabled):
                         show_delete_dialog(selected_chat_id, chat_format(selected_chat_id))
 
+    # [핵심] 화면 허얘짐 방지 및 강력한 자동 스크롤 옵저버 주입
+    st.markdown("""
+        <style>
+            /* 로딩 중 흐려짐 방지 */
+            div[data-testid="stStatusWidget"] { display: none !important; }
+            .stApp { opacity: 1 !important; }
+            /* 스크롤바 숨기기 (선택 사항) */
+            div[data-testid="stScrollableContainer"] { scroll-behavior: smooth; }
+        </style>
+        <script>
+            // 브라우저 측에서 스크롤을 감시하는 옵저버
+            const observer = new MutationObserver(() => {
+                const containers = window.parent.document.querySelectorAll('div[data-testid="stScrollableContainer"]');
+                containers.forEach(el => {
+                    // 채팅창 높이가 고정된 컨테이너(700px 등)를 찾아 바닥으로 보냄
+                    if (el.scrollHeight > el.clientHeight) {
+                        el.scrollTop = el.scrollHeight;
+                    }
+                });
+            });
+            // 렌더링이 완료될 때까지 반복 시도
+            const setupObserver = () => {
+                const target = window.parent.document.querySelector('.main');
+                if (target) {
+                    observer.observe(target, { childList: true, subtree: true });
+                } else {
+                    setTimeout(setupObserver, 500);
+                }
+            };
+            setupObserver();
+        </script>
+    """, unsafe_allow_html=True)
+
     with right_col:
         msgs = st.session_state.messages
         is_loading = st.session_state.get("is_loading", False)
+
+        # 1. 이전 메시지 렌더링
+        chat_container = st.container(height=700, border=False)
+        with chat_container:
+            for msg in msgs:
+                if msg["role"] == "user":
+                    render_user_bubble(msg["content"], USER_AVATAR)
+                else:
+                    render_assistant_bubble(msg["content"], OAK_AVATAR, msg.get("used_tools"))
+
+            # 하단 여백 추가 (입력창에 가려지는 현상 방지)
+            st.markdown('<div style="height: 150px;"></div>', unsafe_allow_html=True)
+
+            # 2. 스트리밍 처리 (내부에 JS 주입 제거하여 깜빡임 원천 차단)
+            if is_loading:
+                with st.empty():
+                    full_answer = ""
+                    used_tools = []
+                    
+                    try:
+                        history = copy.deepcopy(msgs[:-1])
+                        response = api_chat_stream(
+                            query=msgs[-1]["content"],
+                            history=history,
+                            model=st.session_state.model,
+                            session_id=st.session_state.current_chat_id,
+                            user_id=USER_ID or None,
+                        )
+                        
+                        import json
+                        import re
+                        import time
+
+                        for line in response.iter_lines():
+                            if line:
+                                decoded = line.decode('utf-8')
+                                if decoded.startswith("data: "):
+                                    try:
+                                        data = json.loads(decoded[6:])
+                                    except:
+                                        continue
+                                    
+                                    if data["type"] == "token":
+                                        full_answer += data["content"]
+                                        display_text = re.sub(r'\n{3,}', '\n\n', full_answer)
+                                        render_assistant_bubble(display_text + " ▌", OAK_AVATAR)
+                                        
+                                        # 타이핑 속도감 조절
+                                        time.sleep(0.03)
+
+                                    elif data["type"] == "tools":
+                                        used_tools = data["content"]
+                                    
+                                    elif data["type"] == "end":
+                                        st.session_state.current_chat_id = data["session_id"]
+                                        break
+                        
+                        # 최종 답변 확정
+                        final_display = re.sub(r'\n{3,}', '\n\n', full_answer)
+                        render_assistant_bubble(final_display, OAK_AVATAR, used_tools)
+                        
+                        # 상태 업데이트
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": final_display,
+                            "used_tools": used_tools,
+                        })
+
+                        if st.session_state.current_chat_id not in {c["id"] for c in st.session_state.chat_history}:
+                            refreshed = api_sessions(user_id=USER_ID or None)
+                            if refreshed:
+                                st.session_state.chat_history = refreshed
+
+                    except Exception as e:
+                        error_msg = f"⚠️ 오류가 발생했어요 ({type(e).__name__}): {e}"
+                        render_assistant_bubble(error_msg, OAK_AVATAR)
+                        st.session_state.messages.append({
+                            "role": "assistant", "content": error_msg, "used_tools": []
+                        })
+                    
+                    st.session_state.is_loading = False
+                    st.rerun()
+
+            else:
+                st.markdown('<div style="height: 1px;"></div>', unsafe_allow_html=True)
 
         if not msgs and not is_loading:
             st.markdown("""
@@ -204,75 +321,8 @@ def show():
                     타입 상성 · 스탯 · 진화 경로 · 도감 설명<br>
                     무엇이든 답해드립니다
                 </div>
-                <div class="cb-welcome-chips">
-                    <span class="cb-chip">피카츄의 스탯은?</span>
-                    <span class="cb-chip">불꽃 타입 약점</span>
-                    <span class="cb-chip">물 타입 추천 포켓몬</span>
-                    <span class="cb-chip">파이리 진화 경로</span>
-                </div>
             </div>
             """, unsafe_allow_html=True)
-        else:
-            with st.container(height=700, border=False):
-                for msg in msgs:
-                    if msg["role"] == "user":
-                        render_user_bubble(msg["content"], USER_AVATAR)
-                    else:
-                        render_assistant_bubble(msg["content"], OAK_AVATAR, msg.get("used_tools"))
-
-                st.markdown('<div style="height: 200px;"></div>', unsafe_allow_html=True)
-
-                if is_loading:
-                    st.markdown(
-                        f'<div style="display:flex;justify-content:flex-start;align-items:flex-start;'
-                        f'gap:12px;padding:12px 16px;margin-bottom:12px;">'
-                        f'<img src="{OAK_AVATAR}" style="width:48px;height:48px;border-radius:50%;'
-                        f'flex-shrink:0;object-fit:contain;border:2px solid #e2e8f0;background:#fff;">'
-                        f'<div style="flex:1;">'
-                        f'<div class="cb-thinking-bubble">'
-                        f'    <div class="cb-thinking-dot"></div>'
-                        f'    <div class="cb-thinking-dot"></div>'
-                        f'    <div class="cb-thinking-dot"></div>'
-                        f'</div>'
-                        f'<span class="cb-thinking-label">포켓몬 박사가 생각 중...</span>'
-                        f'</div></div>',
-                        unsafe_allow_html=True,
-                    )
-
-                    history = copy.deepcopy(msgs[:-1])
-                    try:
-                        result = api_chat(
-                            query=msgs[-1]["content"],
-                            history=history,
-                            model=st.session_state.model,
-                            session_id=st.session_state.current_chat_id,
-                            user_id=USER_ID or None,
-                        )
-                        answer = result["answer"]
-                        used_tools = result.get("used_tools", [])
-                        new_sid = result["session_id"]
-
-                        st.session_state.current_chat_id = new_sid
-
-                        if new_sid not in {c["id"] for c in st.session_state.chat_history}:
-                            refreshed = api_sessions(user_id=USER_ID or None)
-                            if refreshed:
-                                st.session_state.chat_history = refreshed
-                            else:
-                                first_q = msgs[0]["content"][:30] if msgs else f"대화 #{new_sid}"
-                                st.session_state.chat_history.insert(0, {"id": new_sid, "title": first_q})
-
-                    except Exception as e:
-                        answer = f"⚠️ 오류가 발생했어요 ({type(e).__name__}): {e}"
-                        used_tools = []
-
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": answer,
-                        "used_tools": used_tools,
-                    })
-                    st.session_state.is_loading = False
-                    st.rerun()
 
     if prompt := st.chat_input("포켓몬에 대해 무엇이든 물어보세요..."):
         st.session_state.messages.append({"role": "user", "content": prompt, "used_tools": []})

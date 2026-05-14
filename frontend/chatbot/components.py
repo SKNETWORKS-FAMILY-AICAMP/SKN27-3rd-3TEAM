@@ -53,13 +53,20 @@ def render_user_bubble(content: str, avatar_url: str) -> None:
 def render_assistant_bubble(content: str, avatar_url: str, used_tools: list = None) -> None:
     tool_html = ""
     if used_tools:
-        badges = [
-            f'<span style="background:#f1f5f9;color:#475569;font-size:11px;'
-            f'padding:3px 8px;border-radius:6px;border:1px solid #e2e8f0;'
-            f'font-weight:600;">🛠️ {t}</span>'
-            for t in used_tools
-        ]
-        tool_html = f'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">{"".join(badges)}</div>'
+        from chatbot.constants import _TOOL_LABELS
+        
+        ref_items = []
+        for t in used_tools:
+            label = _TOOL_LABELS.get(t, t)
+            # Make it look like a reference block
+            ref_items.append(f'<div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">▪️ {label} ({t})</div>')
+            
+        tool_html = (
+            f'<div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #cbd5e1;">'
+            f'<div style="font-size: 12px; font-weight: 800; color: #94a3b8; margin-bottom: 8px;">REFERENCES</div>'
+            f'{"".join(ref_items)}'
+            f'</div>'
+        )
 
     st.markdown(
         f'<div style="display:flex;justify-content:flex-start;align-items:flex-start;'
@@ -68,9 +75,9 @@ def render_assistant_bubble(content: str, avatar_url: str, used_tools: list = No
         f'flex-shrink:0;object-fit:contain;border:2px solid #e2e8f0;background:#fff;">'
         f'<div style="flex:1;max-width:85%;">'
         f'<div style="background:#f8fafc;color:#1e293b;padding:16px 20px;'
-        f'border-radius:4px 22px 22px 22px;font-size:14.5px;line-height:1.85;'
+        f'border-radius:4px 22px 22px 22px;font-size:14.5px;line-height:1.6;'
         f'font-family:Inter,sans-serif;border:1px solid #e2e8f0;'
-        f'box-shadow:0 2px 10px rgba(0,0,0,0.03);white-space:pre-wrap;">{content}</div>'
-        f'{tool_html}</div></div>',
+        f'box-shadow:0 2px 10px rgba(0,0,0,0.03);">{content}{tool_html}</div>'
+        f'</div></div>',
         unsafe_allow_html=True,
     )
