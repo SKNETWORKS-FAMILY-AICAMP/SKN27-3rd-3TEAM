@@ -40,6 +40,21 @@ def api_chat(query, history, model, session_id=None, user_id=None):
     return r.json()
 
 
+def api_chat_stream(query, history, model, session_id=None, user_id=None):
+    r = requests.post(
+        f"{BACKEND_URL}/api/v1/chatbot/chat/stream",
+        json={
+            "query": query, "history": history,
+            "model": model, "session_id": session_id,
+            "user_id": user_id,
+        },
+        stream=True,
+        timeout=180
+    )
+    r.raise_for_status()
+    return r
+
+
 def api_sessions(user_id=None):
     try:
         params = {"user_id": user_id} if user_id else {}
