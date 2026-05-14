@@ -1,0 +1,1 @@
+# battle.common package
