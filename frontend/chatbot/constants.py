@@ -3,8 +3,8 @@ from chatbot.api import fetch_models
 MODELS_LIST, DEFAULT_MODEL = fetch_models()
 
 MODEL_DISPLAY_NAMES = {
-    "gpt-4o-mini": "빠른 모델",
-    "gemma4:e2b":  "사고 모델",
+    "gpt-4o-mini":             "빠른 모델",
+    "llama-3.3-70b-versatile": "스마트 모델",
 }
 
 _TOOL_COLORS = {
