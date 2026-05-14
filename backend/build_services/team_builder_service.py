@@ -132,7 +132,13 @@ def _build_candidate_score(
     useful_move_notes = _build_useful_move_notes(useful_moves, candidate_types)
 
     # defensive_score는 약점을 보완하는 정도를 가장 크게 반영합니다.
-    defensive_score = len(defensive_covers) * 25
+    # defensive_score:
+    # - 6번째 포켓몬 추천의 핵심 기준은 "현재 팀 약점 보완"입니다.
+    # - 단, 보완 타입 수가 6개 이상이어도 점수가 무한히 커지지 않도록 최대 5개까지만 점수화합니다.
+    # - 5개 * 25점 = 125점이 defensive_score의 설계상 최대값입니다.
+    defensive_cover_count = len(defensive_covers)
+    scored_defensive_cover_count = min(defensive_cover_count, 5)
+    defensive_score = scored_defensive_cover_count * 25
 
     # stat_score는 기본 능력치를 추천의 보조 기준으로만 반영하기 위해 최대 5점으로 제한합니다.
     stat_score = round(min(base_total / 140, 5), 2)
@@ -168,6 +174,15 @@ def _build_candidate_score(
         "base_total": base_total,
         "graph_score": total_score,
         "score": total_score,
+        "score_breakdown": {
+            "defensive_score": defensive_score,
+            "defensive_cover_count": defensive_cover_count,
+            "scored_defensive_cover_count": scored_defensive_cover_count,
+            "stat_score": stat_score,
+            "coverage_score": coverage_score,
+            "duplicate_penalty": duplicate_penalty,
+            "graph_score_max": 150,
+        },
         "defensive_covers": defensive_covers,
         "move_types": candidate_move_types,
         "pokemon_types": candidate_types,
