@@ -9,13 +9,35 @@
 
 ## 팀 구성
 
-| 이름 | 역할 |
-|---|---|
-| 이준혁 (EJ-pro) | 팀장 · 팀 빌더 · 마이페이지 · 전체 UI/UX |
-| 팀원 2 | 포켓덱스 · 배틀 시뮬레이터 |
-| 팀원 3 | AI 챗봇 · RAG 파이프라인 |
-| 팀원 4 | 미니게임 · 로그인 · DB 설계 |
-| 팀원 5 | 인프라 · Docker · 데이터 수집 |
+<table align="center">
+  <tr>
+    <td align="center" width="160">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="90" height="90"/><br>
+      <b>재강</b><br>
+      <sub>역할</sub>
+    </td>
+    <td align="center" width="160">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="90" height="90"/><br>
+      <b>필주</b><br>
+      <sub>역할</sub>
+    </td>
+    <td align="center" width="160">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="90" height="90"/><br>
+      <b>재경</b><br>
+      <sub>역할</sub>
+    </td>
+    <td align="center" width="160">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="90" height="90"/><br>
+      <b>재희</b><br>
+      <sub>역할</sub>
+    </td>
+    <td align="center" width="160">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="90" height="90"/><br>
+      <b>송원</b><br>
+      <sub>역할</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -227,3 +249,49 @@ gantt
 ```
 
 → [요구사항 명세 · 테스트 체크리스트 · RAG 품질 지표](../../wiki/Requirements-and-Testing)
+
+---
+
+## 회고
+
+프로젝트를 마치며 각 팀원이 담당 기능 개발 경험, 기술적 도전, 배운 점을 정리했습니다.
+
+<table align="center">
+  <tr>
+    <td align="center" width="160">
+      <a href="../../wiki/재강">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
+        <b>재강</b>
+      </a><br>
+      <sub><a href="../../wiki/재강">회고 보기 →</a></sub>
+    </td>
+    <td align="center" width="160">
+      <a href="../../wiki/필주">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
+        <b>필주</b>
+      </a><br>
+      <sub><a href="../../wiki/필주">회고 보기 →</a></sub>
+    </td>
+    <td align="center" width="160">
+      <a href="../../wiki/재경">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
+        <b>재경</b>
+      </a><br>
+      <sub><a href="../../wiki/재경">회고 보기 →</a></sub>
+    </td>
+    <td align="center" width="160">
+      <a href="../../wiki/재희">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
+        <b>재희</b>
+      </a><br>
+      <sub><a href="../../wiki/재희">회고 보기 →</a></sub>
+    </td>
+    <td align="center" width="160">
+      <a href="../../wiki/송원">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
+        <b>송원</b>
+      </a><br>
+      <sub><a href="../../wiki/송원">회고 보기 →</a></sub>
+    </td>
+  </tr>
+</table>
