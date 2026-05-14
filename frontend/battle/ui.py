@@ -1,7 +1,6 @@
 import streamlit as st
 import base64
-import os
-from .data import BattlePokemon
+from .utils import BattlePokemon
 
 def fmt_player(name: str) -> str:
     return f"<span class='player-text'>{name}</span>"
@@ -14,41 +13,7 @@ def fmt_move(name: str) -> str:
 
 from pathlib import Path
 
-LEADER_IMAGE_MAP = {
-    "웅이": "웅이_이미지.png",
-    "이슬이": "이슬_이미지.png",
-    "아이리스": "아이리스_이미지.png",
-    "민화": "민화_이미지.png",
-    "풍란": "풍란_이미지.png",
-    "채두": "채두_이미지.png",
-    "순무": "순무_이미지.png",
-    "지우": "지우_이미지.png",
-    "N": "N_이미지.png"
-}
-
-GYM_NAME_MAP = {
-    "웅이": "1. 콘스탄트(Constant) 체육관",
-    "이슬이": "2. 데이터 레이크(Data Lake) 체육관",
-    "순무": "3. 오버클럭(Overclock) 체육관",
-    "민화": "4. 랜덤 포레스트(Random Forest) 체육관",
-    "풍란": "5. 클라우드(Cloud) 체육관",
-    "채두": "6. 포스(force) 체육관",
-    "아이리스": "7. 딥러닝(Deep Learning) 체육관",
-    "지우": "8. 자율 에이전트(Autonomous Agent) 리그",
-    "N": "Final. 플라스마단(Team Plasma) 성"
-}
-
-GYM_BG_MAP = {
-    "웅이": "웅이_체육관.png",
-    "이슬이": "이슬_체육관.png",
-    "아이리스": "아이리스_체육관.png",
-    "민화": "민화_체육관.png",
-    "풍란": "풍란_체육관.png",
-    "채두": "채두_체육관.png",
-    "순무": "순무_체육관.png",
-    "지우": "지우_체육관.png",
-    "N": "N_체육관.png"
-}
+from .constants import LEADER_IMAGE_MAP, GYM_BG_MAP
 
 def get_gym_bg_base64(leader_name: str) -> str:
     if not leader_name:
