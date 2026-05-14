@@ -46,7 +46,7 @@ gantt
         E2E 통합 테스트                :done,         p4-4, 2025-05-14, 1d
 
     section Phase 5: 품질 및 배포 
-        RAG 평가 (RAGAS + 커스텀 지표) : done,,        p5-1, 2025-05-14, 4d
+        RAG 평가 (RAGAS + 커스텀 지표) : done,        p5-1, 2025-05-14, 4d
         성능 최적화 (BM25·pg_trgm 튜닝): done,        p5-2, 2025-05-14, 3d
         문서 정리 및 배포              :done,         p5-3, 2025-05-14, 4d
 ```
