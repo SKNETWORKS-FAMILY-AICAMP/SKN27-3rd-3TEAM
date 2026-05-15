@@ -142,7 +142,7 @@ flowchart TD
 | 포켓몬 도감 | 1,025마리 · 타입/특성/번호 복합 필터 · 분기 진화 트리 · [상세](../../wiki/Features) |
 | AI 챗봇 | SQL · Vector · Graph · 웹 검색 멀티툴 · 멀티턴 히스토리 · [상세](../../wiki/AI-Pipeline) |
 | 팀 빌더 | 5마리 선택 → LangGraph Hybrid RAG 분석 → 6번째 추천 · [상세](../../wiki/TeamBuilder) |
-| 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · LLM 전략 봇 · AI 랩 배틀 (스트리밍) · [상세](../../wiki/Battle) |
+| 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · LLM 전략 봇 · [상세](../../wiki/Battle) |
 | 미니게임 | 실루엣 퀴즈 · 메모리 카드 · 플레이 로그 저장 · [상세](../../wiki/Features) |
 | 마이페이지 | GitHub 프로필 · 배지 시스템 · 팀 빌더 히스토리 · [상세](../../wiki/Mypage) |
 | 피피고 | Chrome 확장 · LLaMA 3.1 번역봇 · 포켓몬 가상 펫 · [상세](../../wiki/Pipigo) |
@@ -578,8 +578,6 @@ sequenceDiagram
 | POST | `/api/v1/users/` | GitHub OAuth 사용자 생성/갱신 |
 | GET | `/api/v1/users/{id}/stats` | 사용자 통계/로그 |
 | POST | `/api/v1/users/game-log` | 미니게임 결과 기록 |
-| POST | `/api/v1/chat/rap-battle` | AI 랩 배틀 단일 응답 |
-| POST | `/api/v1/chat/rap-battle/stream` | AI 랩 배틀 스트리밍 |
 
 → 파라미터 · 요청/응답 스키마 전체 명세: [wiki/API-Reference](../../wiki/API-Reference)
 
