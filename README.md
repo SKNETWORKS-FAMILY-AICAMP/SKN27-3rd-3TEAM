@@ -193,7 +193,7 @@ PokeAPI JSON
 flowchart LR
     A["사용자 팀 (5마리)"] --> B["Neo4j\n타입 분석"]
     B --> C["pgvector MMR 검색\nk=20, fetch_k=50"]
-    C --> D["Hybrid Score\n분析 70/30 · 추천 80/20 · 해설 60/40"]
+    C --> D["Hybrid Score\n분류 70/30 · 추천 80/20 · 해설 60/40"]
     D --> E["LLM\n한국어 답변 생성"]
 ```
 
