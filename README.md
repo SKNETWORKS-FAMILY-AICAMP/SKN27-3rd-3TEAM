@@ -682,3 +682,4 @@ gantt
 | 박송원 | ... |
 
 
+<p align="center">© 2025 SKN27-3rd-3TEAM. All Rights Reserved.</p>
