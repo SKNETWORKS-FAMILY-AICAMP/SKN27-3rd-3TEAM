@@ -17,7 +17,7 @@
       <sub>Neo4j 포켓몬 관계망 구축</sub><br>
       <sub>하이브리드 RAG 추천 엔진</sub><br>
       <sub>FastAPI 기반 API 및 DB 구현</sub><br><br>
-      <a href="../../wiki/재강.md">📄 담당 기능</a>
+      <a href="../../wiki/재강">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
@@ -25,14 +25,14 @@
       <sub>LangGraph 기반 챗봇 구축</sub><br>
       <sub>CRAG·하이브리드 검색 최적화</sub><br>
       <sub>SSE 스트리밍 및 출처 렌더링</sub><br><br>
-      <a href="../../wiki/필주.md">📄 담당 기능</a>
+      <a href="../../wiki/필주">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
       <b>재경</b><br>
       <sub>기술데이터 전처리 및 구조화</sub><br>
       <sub>LLM 기반 턴제 배틀 엔진 개발</sub><br><br>
-      <a href="../../wiki/재경.md">📄 담당 기능</a>
+      <a href="../../wiki/재경">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
