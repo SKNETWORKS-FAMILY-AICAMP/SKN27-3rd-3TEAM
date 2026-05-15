@@ -25,19 +25,24 @@ def get_pokemon_list(
         query = query.filter(or_(*filters))
         
     if type_names and len(type_names) > 0:
-        query = query.join(models.Pokemon.types).join(models.PokemonType.type_)
-        # OR logic for types
-        query = query.filter(models.Type.name.in_(type_names))
-        
+        for type_name in type_names:
+            type_subq = (
+                db.query(models.PokemonType.pokemon_id)
+                .join(models.Type)
+                .filter(models.Type.name == type_name)
+                .subquery()
+            )
+            query = query.filter(models.Pokemon.id.in_(type_subq))
+
     if min_id is not None:
         query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
         query = query.filter(models.Pokemon.species_id <= max_id)
-        
+
     if ability:
         query = query.join(models.Pokemon.abilities).join(models.PokemonAbility.ability)
         query = query.filter(models.Ability.name == ability)
-        
+
     return query.order_by(models.Pokemon.species_id, models.Pokemon.id).offset(skip).limit(limit).all()
 
 
@@ -58,18 +63,24 @@ def get_pokemon_count(
         query = query.filter(or_(*filters))
         
     if type_names and len(type_names) > 0:
-        query = query.join(models.Pokemon.types).join(models.PokemonType.type_)
-        query = query.filter(models.Type.name.in_(type_names))
-        
+        for type_name in type_names:
+            type_subq = (
+                db.query(models.PokemonType.pokemon_id)
+                .join(models.Type)
+                .filter(models.Type.name == type_name)
+                .subquery()
+            )
+            query = query.filter(models.Pokemon.id.in_(type_subq))
+
     if min_id is not None:
         query = query.filter(models.Pokemon.species_id >= min_id)
     if max_id is not None:
         query = query.filter(models.Pokemon.species_id <= max_id)
-        
+
     if ability:
         query = query.join(models.Pokemon.abilities).join(models.PokemonAbility.ability)
         query = query.filter(models.Ability.name == ability)
-        
+
     return query.count()
 
 

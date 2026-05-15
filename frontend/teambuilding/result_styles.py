@@ -10,13 +10,20 @@ RESULT_CSS = """
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
 }
+[data-testid="stAppViewContainer"] .block-container,
+[data-testid="stMain"] .block-container,
+.stApp .main .block-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 1.5rem 5rem 5rem !important;
+}
 
 /* ── Hero ────────────────────────────────────────────────────────── */
 .tr-hero {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-left: -5rem;
+    margin-right: -5rem;
+    width: calc(100% + 10rem);
     background: #ffffff;
     border-bottom: 1px solid #e2e8f0;
     text-align: center;
@@ -460,6 +467,7 @@ RESULT_CSS = """
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
     .stApp > .main > .block-container { padding: 1.5rem 2.5rem 4rem !important; }
+    .tr-hero { margin-left: -2.5rem; margin-right: -2.5rem; width: calc(100% + 5rem); }
     .tr-team-grid    { grid-template-columns: repeat(3, 1fr); }
     .tr-insight-grid { grid-template-columns: 1fr; }
     .tr-detail-grid  { grid-template-columns: 1fr; }
@@ -467,6 +475,7 @@ RESULT_CSS = """
 }
 @media (max-width: 720px) {
     .stApp > .main > .block-container { padding: 1rem 1.2rem 3rem !important; }
+    .tr-hero { margin-left: -1.2rem; margin-right: -1.2rem; width: calc(100% + 2.4rem); }
     .tr-rec-grid { grid-template-columns: 1fr; }
 }
 </style>

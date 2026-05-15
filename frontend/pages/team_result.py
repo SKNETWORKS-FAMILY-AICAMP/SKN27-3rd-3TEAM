@@ -281,39 +281,36 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
-    _, center_col, _ = st.columns([1, 10, 1])
-    
-    with center_col:
-        # ── Analysis section ──────────────────────────────────────────────────
-        analysis_result: Dict[str, Any] = st.session_state.get("analysis_result") or {}
-        if analysis_result:
-            analysis = analysis_result.get("graph_result", analysis_result)
-    
-            _render_selected_team(analysis.get("selected_pokemon", []))
-            _render_insights(analysis.get("insights", {}))
-            _render_rag_answer(analysis_result)
-    
-            weaknesses = sorted(
-                analysis.get("weak_types", analysis.get("weaknesses", [])),
-                key=lambda x: x.get("score", 0), reverse=True,
-            )
-            resistances = sorted(
-                analysis.get("resistant_types", analysis.get("resistances", [])),
-                key=lambda x: x.get("score", 0), reverse=True,
-            )
-            move_coverage = sorted(
-                analysis.get("move_type_coverage", []),
-                key=lambda x: x.get("move_count", 0), reverse=True,
-            )
-            _render_detail_cards(weaknesses, resistances, move_coverage)
-    
-        # ── Recommendation section ────────────────────────────────────────────
-        rec_result: Dict[str, Any] = st.session_state.get("recommendation_result") or {}
-        if rec_result:
-            st.markdown("<hr style='border-color:rgba(255,255,255,0.07);margin:8px 0 4px'>", unsafe_allow_html=True)
-            _render_rag_answer(rec_result)
-            reranked = rec_result.get("reranked_result", rec_result.get("graph_result", rec_result))
-            _render_recommendation_cards(reranked.get("recommendations", []))
+    # ── Analysis section ──────────────────────────────────────────────────
+    analysis_result: Dict[str, Any] = st.session_state.get("analysis_result") or {}
+    if analysis_result:
+        analysis = analysis_result.get("graph_result", analysis_result)
+
+        _render_selected_team(analysis.get("selected_pokemon", []))
+        _render_insights(analysis.get("insights", {}))
+        _render_rag_answer(analysis_result)
+
+        weaknesses = sorted(
+            analysis.get("weak_types", analysis.get("weaknesses", [])),
+            key=lambda x: x.get("score", 0), reverse=True,
+        )
+        resistances = sorted(
+            analysis.get("resistant_types", analysis.get("resistances", [])),
+            key=lambda x: x.get("score", 0), reverse=True,
+        )
+        move_coverage = sorted(
+            analysis.get("move_type_coverage", []),
+            key=lambda x: x.get("move_count", 0), reverse=True,
+        )
+        _render_detail_cards(weaknesses, resistances, move_coverage)
+
+    # ── Recommendation section ────────────────────────────────────────────
+    rec_result: Dict[str, Any] = st.session_state.get("recommendation_result") or {}
+    if rec_result:
+        st.markdown("<hr style='border-color:rgba(255,255,255,0.07);margin:8px 0 4px'>", unsafe_allow_html=True)
+        _render_rag_answer(rec_result)
+        reranked = rec_result.get("reranked_result", rec_result.get("graph_result", rec_result))
+        _render_recommendation_cards(reranked.get("recommendations", []))
 
 
 main()

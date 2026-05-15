@@ -36,49 +36,30 @@ if DB_CONN.startswith("postgres://"):
 embeddings = OpenAIEmbeddings()
 
 
-# def ingest_embeddings():
-#     conn = psycopg2.connect(DB_CONN)
-#     cur  = conn.cursor()
-
-
-#     # ── flavor_text 임베딩 ───────────────────────────────────────
-#     cur.execute("""
-#         SELECT ft.id, p.name, ft.version_name, ft.content
-#         FROM flavor_text ft
-#         JOIN species s ON ft.species_id = s.id
-#         JOIN pokemon p ON s.pokemon_id  = p.id
-#         WHERE ft.embedding IS NULL AND ft.content IS NOT NULL
-#     """)
-#     flavor_rows = cur.fetchall()
-#     print(f"flavor_text 임베딩 대상: {len(flavor_rows)}개")
-
-#     for ft_id, name, version, content in flavor_rows:
-#         text   = f"포켓몬: {name} (버전: {version})\n{content}"
-#         vector = embeddings.embed_query(text)
-#         cur.execute("UPDATE flavor_text SET embedding = %s WHERE id = %s", (vector, ft_id))
-
-#     # ── pokemon_knowledge 임베딩 ─────────────────────────────────
-#     # ctid로 행을 개별 식별 — pokemon_id가 PK가 아니라 중복 행이 있을 수 있음
-#     cur.execute("""
-#         SELECT pk.ctid, p.name, pk.content
-#         FROM pokemon_knowledge pk
-#         JOIN pokemon p ON pk.pokemon_id = p.id
-#         WHERE pk.embedding IS NULL AND pk.content IS NOT NULL
-#     """)
-#     knowledge_rows = cur.fetchall()
-#     print(f"pokemon_knowledge 임베딩 대상: {len(knowledge_rows)}개")
-
-#     for row_ctid, name, content in knowledge_rows:
-#         text   = f"포켓몬: {name}\n{content}"
-#         vector = embeddings.embed_query(text)
-#         cur.execute(
-#             "UPDATE pokemon_knowledge SET embedding = %s WHERE ctid = %s::tid",
-#             (vector, row_ctid)
-#         )
-
-#     conn.commit()
-#     conn.close()
-#     print(f"✅ 임베딩 완료 — flavor_text {len(flavor_rows)}개 / knowledge {len(knowledge_rows)}개")
+def init_db_extensions():
+    """필요한 DB 확장 모듈(vector, pg_trgm)을 활성화합니다."""
+    try:
+        conn = psycopg2.connect(DB_CONN)
+        conn.autocommit = True
+        cur = conn.cursor()
+        print("🔧 DB 확장 모듈 활성화 중 (vector, pg_trgm)...")
+        cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+        cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+        
+        # ↓ 추가
+        print("🔧 pg_trgm 인덱스 생성 중...")
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS idx_flavor_text_trgm
+            ON flavor_text USING GIN (content gin_trgm_ops)
+        """)
+        print("✅ pg_trgm 인덱스 생성 완료")
+        # ↑ 추가
+        
+        cur.close()
+        conn.close()
+        print("✅ DB 확장 모듈 활성화 완료")
+    except Exception as e:
+        print(f"⚠️ DB 확장 모듈 활성화 실패: {e}")
 
 
 def index_vectorstore():
@@ -112,5 +93,6 @@ def index_vectorstore():
 
 
 if __name__ == "__main__":
+    init_db_extensions()  # DB 확장 모듈 먼저 활성화
     #ingest_embeddings()
     index_vectorstore()
