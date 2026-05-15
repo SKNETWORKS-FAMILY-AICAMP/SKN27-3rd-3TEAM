@@ -862,9 +862,13 @@ def create_evolution_relationships(conn: Neo4jConnection) -> None:
         evolutions.json
 
     설명:
-        evolutions.json은 species_id 기준으로 들어오므로 Pokemon.species_id로 실제 포켓몬 노드를 찾습니다.
-        진화에 필요한 아이템 정보는 현재 그래프 관계로 만들지 않습니다.
+        evolutions.json은 species_id 기준으로 들어옵니다.
+        일반 진화는 기본 폼끼리만 연결합니다.
+        메가진화, 거다이맥스처럼 같은 species_id를 공유하는 비기본 폼은
+        대표 기본 폼에서 갈라지는 폼 진화 관계로 따로 연결합니다.
     """
+    conn.execute_write("MATCH ()-[r:EVOLVES_TO]->() DELETE r")
+
     rows = [
         {
             "from_species_id": row["from_species_id"],
@@ -879,12 +883,39 @@ def create_evolution_relationships(conn: Neo4jConnection) -> None:
     UNWIND $rows AS row
     MATCH (fromPokemon:Pokemon {species_id: row.from_species_id})
     MATCH (toPokemon:Pokemon {species_id: row.to_species_id})
+    WHERE fromPokemon.is_default = true
+      AND toPokemon.is_default = true
     MERGE (fromPokemon)-[r:EVOLVES_TO]->(toPokemon)
     SET r.min_level = row.min_level,
-        r.trigger_item_id = row.trigger_item_id
+        r.trigger_item_id = row.trigger_item_id,
+        r.evolution_kind = "species"
     """
 
     run_batched(conn, evolution_query, rows, "Pokemon EVOLVES_TO relationships")
+
+    form_rows = [
+        {
+            "pokemon_id": row["id"],
+            "species_id": row.get("species_id"),
+        }
+        for row in load_json("pokemon.json")
+        if row.get("species_id") is not None and not row.get("is_default", True)
+    ]
+
+    form_query = """
+    UNWIND $rows AS row
+    MATCH (basePokemon:Pokemon {species_id: row.species_id})
+    MATCH (formPokemon:Pokemon {pokemon_id: row.pokemon_id})
+    WHERE basePokemon.is_default = true
+      AND formPokemon.is_default = false
+      AND basePokemon.pokemon_id <> formPokemon.pokemon_id
+    MERGE (basePokemon)-[r:EVOLVES_TO]->(formPokemon)
+    SET r.min_level = null,
+        r.trigger_item_id = null,
+        r.evolution_kind = "form"
+    """
+
+    run_batched(conn, form_query, form_rows, "Pokemon form EVOLVES_TO relationships")
 
 def create_move_effect_relationships(conn: Neo4jConnection) -> None:
     """
@@ -1420,17 +1451,19 @@ def build_pokemon_defense_rows() -> List[Dict[str, Any]]:
 
 def create_against_relationships(conn: Neo4jConnection, rows: List[Dict[str, Any]]) -> None:
     """
-    Pokemon - AGAINST -> Type 관계를 생성합니다.
+    Type - AGAINST -> Pokemon 관계를 생성합니다.
 
     설명:
         multiplier 속성 하나로 모든 방어 상성을 표현합니다.
+        방향은 공격 타입에서 방어 포켓몬으로 향하게 두어
+        Neo4j Browser에서 공격 흐름처럼 읽히도록 합니다.
         팀 약점 점수 계산에서 가장 기본이 되는 관계입니다.
     """
     query = """
     UNWIND $rows AS row
     MATCH (p:Pokemon {pokemon_id: row.pokemon_id})
     MATCH (t:Type {type_id: row.type_id})
-    MERGE (p)-[r:AGAINST]->(t)
+    MERGE (t)-[r:AGAINST]->(p)
     SET r.multiplier = row.multiplier
     """
     run_batched(conn, query, rows, "Pokemon AGAINST relationships")
@@ -1467,7 +1500,7 @@ def create_named_defense_relationships(conn: Neo4jConnection, rows: List[Dict[st
         UNWIND $rows AS row
         MATCH (p:Pokemon {{pokemon_id: row.pokemon_id}})
         MATCH (t:Type {{type_id: row.type_id}})
-        MERGE (p)-[r:{relation_type}]->(t)
+        MERGE (t)-[r:{relation_type}]->(p)
         SET r.multiplier = row.multiplier
         """
         run_batched(conn, query, relation_rows, f"Pokemon {relation_type} relationships")
@@ -1478,10 +1511,10 @@ def create_pokemon_defense_relationships(conn: Neo4jConnection) -> None:
     포켓몬별 방어 상성 파생 관계를 생성합니다.
 
     생성 관계:
-        Pokemon - AGAINST -> Type
-        Pokemon - WEAK_AGAINST -> Type
-        Pokemon - RESISTANT_TO -> Type
-        Pokemon - IMMUNE_TO -> Type
+        Type - AGAINST -> Pokemon
+        Type - WEAK_AGAINST -> Pokemon
+        Type - RESISTANT_TO -> Pokemon
+        Type - IMMUNE_TO -> Pokemon
         기타 multiplier별 편의 관계
     """
     rows = build_pokemon_defense_rows()

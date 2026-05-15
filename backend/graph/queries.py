@@ -33,7 +33,7 @@ ORDER BY type
 # 선택한 포켓몬 5마리의 방어 약점을 타입별로 합산합니다.
 # score가 높을수록 팀 전체가 해당 공격 타입에 약하다는 의미입니다.
 TEAM_WEAKNESS_SUMMARY = """
-MATCH (p:Pokemon)-[a:AGAINST]->(attackType:Type)
+MATCH (attackType:Type)-[a:AGAINST]->(p:Pokemon)
 WHERE p.pokemon_id IN $selected_pokemon_ids
 RETURN attackType.type_id AS type_id,
        attackType.name AS type_name,
@@ -45,7 +45,7 @@ ORDER BY weakness_score DESC
 # 팀의 약점 타입 목록을 기준으로, 해당 타입에 저항하거나 무효인 후보를 찾습니다.
 # candidate.is_default = true 조건은 메가진화/특수 폼을 추천 후보에서 제외하기 위한 조건입니다.
 DEFENSIVE_CANDIDATES_BY_WEAK_TYPES = """
-MATCH (candidate:Pokemon)-[r:RESISTANT_TO|VERY_RESISTANT_TO|IMMUNE_TO]->(weakType:Type)
+MATCH (weakType:Type)-[r:RESISTANT_TO|VERY_RESISTANT_TO|IMMUNE_TO]->(candidate:Pokemon)
 WHERE weakType.type_id IN $weak_type_ids
 AND candidate.is_default = true
 AND NOT candidate.pokemon_id IN $selected_pokemon_ids
@@ -124,7 +124,7 @@ RETURN candidate.pokemon_id AS pokemon_id,
 # ============================================
 # 특정 포켓몬이 특정 공격 타입에 몇 배 데미지를 받는지 조회합니다.
 BATTLE_DEFENSE_MULTIPLIER = """
-MATCH (defender:Pokemon)-[a:AGAINST]->(attackType:Type)
+MATCH (attackType:Type)-[a:AGAINST]->(defender:Pokemon)
 WHERE defender.pokemon_id = $defender_pokemon_id
 AND attackType.type_id = $attack_type_id
 RETURN defender.pokemon_id AS defender_pokemon_id,
