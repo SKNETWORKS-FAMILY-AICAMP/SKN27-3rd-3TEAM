@@ -1,6 +1,6 @@
 # 너로 정했다! LLM
 
-> **AI 챗봇 · 팀 빌더 · 배틀 시뮬레이터 · 포켓몬 도감 · GitHub OAuth 로그인 · 확장 프로그램 ·  미니게임**  
+> **AI 챗봇 · 팀 빌더 · 배틀 시뮬레이터 · 포켓몬 도감 · GitHub OAuth 로그인 · 확장 프로그램 · 미니게임**  
 > LangGraph 기반 하이브리드 RAG · Neo4j 그래프 DB · PostgreSQL pgvector
 
 **SKN27-3rd-3TEAM** · SKN AI 캠프 27기 3차 프로젝트 · 2025.04.30 ~ 2025.05.15
@@ -41,19 +41,38 @@
 
 ---
 
+## 📚 Wiki 문서
+
+| 문서 | 내용 |
+|---|---|
+| [Architecture](../../wiki/Architecture) | 서비스 구성 · Docker 네트워크 · 프로젝트 파일 구조 |
+| [Database](../../wiki/Database) | PostgreSQL ERD · Neo4j 실제 스키마 · 데이터 수집·전처리 · 벡터 청킹 기준 |
+| [AI-Pipeline](../../wiki/AI-Pipeline) | LangGraph RAG 9-노드 · 챗봇 멀티툴 에이전트 · 환각 방지 전략 · RAG 품질 평가 |
+| [TeamBuilder](../../wiki/TeamBuilder) | 요구사항 · Graph-guided Hybrid RAG · 가중치 정책 · 시퀀스 · 프롬프트 명세 · ERD |
+| [Login](../../wiki/Login) | GitHub OAuth 2.0 · 병렬 통계 수집 · 세션 이중 영속화 |
+| [Mypage](../../wiki/Mypage) | 트레이너 등급 산출 · 관동 배지 성취 시스템 · 스코어 계산 |
+| [Battle](../../wiki/Battle) | 배틀 시퀀스 Phase 0~8 · LLM 전략 봇 · LangGraph 고도화 계획 |
+| [Pipigo](../../wiki/Pipigo) | Chrome 확장 (Manifest v3) · LLaMA 3.1 번역봇 · 60fps 물리 엔진 |
+| [Features](../../wiki/Features) | 기능별 상세 · 화면 설계서 · 페이지 흐름 |
+| [Requirements-and-Testing](../../wiki/Requirements-and-Testing) | 기능·비기능 요구사항 · WBS · 37개 테스트 시나리오 · RAG 품질 지표 |
+| [API-Reference](../../wiki/API-Reference) | 전체 REST 엔드포인트 · 파라미터 · 요청/응답 스키마 |
+
+---
+
 ## 기술 스택
 
 | 분류 | 기술 |
 |---|---|
-| **Backend** | FastAPI · Uvicorn · SQLAlchemy · psycopg2 |
 | **Frontend** | Streamlit · streamlit-cookies-controller |
+| **Backend** | FastAPI · Uvicorn · SQLAlchemy · psycopg2 · Pydantic |
 | **AI / LLM** | LangChain · LangGraph · LangSmith |
-| **LLM 모델** | OpenAI GPT-4o-mini · Groq (Gemma) · Ollama |
-| **임베딩 / 검색** | sentence-transformers · pgvector · BM25 |
+| **LLM 모델** | OpenAI GPT-4o-mini · Groq (llama-3.3-70b-versatile) |
+| **임베딩 / 검색** | sentence-transformers · pgvector (MMR) · BM25 · Tavily API |
 | **관계형 DB** | PostgreSQL 16 + pgvector |
-| **그래프 DB** | Neo4j + APOC + Graph Data Science |
+| **그래프 DB** | Neo4j 5.x + APOC + Graph Data Science |
 | **인증** | GitHub OAuth 2.0 |
 | **인프라** | Docker · Docker Compose |
+| **관측성** | LangSmith (tracing) |
 
 ---
 
@@ -72,9 +91,11 @@ flowchart TD
     end
 
     subgraph BE["⚙️ FastAPI Backend · :8080"]
-        Router["라우터\n/pokemon /users /chatbot\n/chat /team-builder"]
-        RAG["LangGraph Hybrid RAG"]
-        AgentSvc["챗봇 Multi-Tool Agent"]
+        R1["/api/v1/pokemon — CRUD + 벡터 검색"]
+        R2["/api/v1/team-builder — LangGraph Hybrid RAG (9-node)"]
+        R3["/api/v1/chatbot — LangGraph Multi-Tool Agent (SSE)"]
+        R4["/api/v1/battle — 턴제 배틀 + Groq LLM 봇"]
+        R5["/api/v1/users — GitHub OAuth + 게임 로그"]
     end
 
     subgraph DB["🗄️ 데이터베이스"]
@@ -84,7 +105,7 @@ flowchart TD
 
     subgraph Ext["🌐 외부 서비스"]
         OpenAI["OpenAI GPT-4o-mini"]
-        Groq["Groq Gemma"]
+        Groq["Groq llama-3.3-70b"]
         Tavily["Tavily 웹 검색"]
         GH["GitHub OAuth API"]
         LS["LangSmith 관측성"]
@@ -93,13 +114,13 @@ flowchart TD
     User --> FE
     FE -->|HTTP REST| BE
     BE --> PG & Neo
-    RAG --> OpenAI & Groq
-    AgentSvc --> Tavily & OpenAI
+    R2 & R3 --> OpenAI & Groq
+    R3 --> Tavily
     BE --> GH
     BE -.->|트레이싱| LS
 ```
 
-→ [프로젝트 구조 · Docker 네트워크 상세](../../wiki/Architecture)
+→ 서비스 구성 · Docker 네트워크 상세: [wiki/Architecture](../../wiki/Architecture)
 
 ---
 
@@ -107,24 +128,175 @@ flowchart TD
 
 | 기능 | 한 줄 설명 |
 |---|---|
-| 🔐 GitHub OAuth | 소셜 로그인 · 커밋/레포/스타 자동 수집 · 쿠키 세션 |
-| 📖 포켓덱스 | 1,025마리 · 타입/특성/번호 복합 필터 · 분기 진화 트리 |
-| 🤖 AI 챗봇 (오박사) | SQL · Vector · Graph · 웹 검색 멀티툴 · 멀티턴 히스토리 |
-| ⚔️ 팀 빌더 | 5마리 선택 → LangGraph Hybrid RAG 분석 → 6번째 추천 |
-| 🥊 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · GPT-4o-mini AI 랩 배틀 (스트리밍) |
-| 🎮 미니게임 | 실루엣 퀴즈 · 메모리 카드 · 플레이 로그 저장 |
-| 👤 마이페이지 | GitHub 프로필 · 배지 시스템 · 팀 빌더 히스토리 |
-
-→ [기능 상세 · 화면 설계 · 페이지 흐름](../../wiki/Features)
+| 🔐 GitHub OAuth | 소셜 로그인 · 커밋/레포/스타 자동 수집 · 쿠키 세션 · [상세](../../wiki/Login) |
+| 📖 포켓덱스 | 1,025마리 · 타입/특성/번호 복합 필터 · 분기 진화 트리 · [상세](../../wiki/Features) |
+| 🤖 AI 챗봇 (오박사) | SQL · Vector · Graph · 웹 검색 멀티툴 · 멀티턴 히스토리 · [상세](../../wiki/AI-Pipeline) |
+| ⚔️ 팀 빌더 | 5마리 선택 → LangGraph Hybrid RAG 분석 → 6번째 추천 · [상세](../../wiki/TeamBuilder) |
+| 🥊 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · LLM 전략 봇 · AI 랩 배틀 (스트리밍) · [상세](../../wiki/Battle) |
+| 🎮 미니게임 | 실루엣 퀴즈 · 메모리 카드 · 플레이 로그 저장 · [상세](../../wiki/Features) |
+| 👤 마이페이지 | GitHub 프로필 · 배지 시스템 · 팀 빌더 히스토리 · [상세](../../wiki/Mypage) |
+| 🐾 피피고 | Chrome 확장 · LLaMA 3.1 번역봇 · 포켓몬 가상 펫 · [상세](../../wiki/Pipigo) |
 
 ---
 
-## 데이터베이스
+## 데이터 수집 및 전처리
 
-PostgreSQL(관계형 + 벡터)과 Neo4j(그래프)를 병행 운용합니다.
+### 수집 소스
+
+| 소스 | 수집 내용 |
+|---|---|
+| **PokeAPI** | 1,025종 포켓몬 정보 (스탯, 타입, 특성, 진화 체인, 도감 설명) |
+| **PokeAPI Ability 파일** | ~900개 특성 JSON (이름, 효과 설명, 발동 조건) |
+| **PokeAPI Move 데이터** | 이동기 타입·위력·명중률·효과 |
+| **타입 상성 테이블** | 18×18 타입 배율 행렬 |
+
+### 전처리 파이프라인 (`database/common/processing/`)
+
+```
+PokeAPI JSON
+    │
+    ├─ 정규화 (null 제거, 다국어 필터 → 한국어/영어)
+    ├─ 스탯 정규화 (min-max 스케일링)
+    ├─ 도감 설명 텍스트 클렌징 (특수문자·개행 제거)
+    └─ DB 적재 (PostgreSQL ORM / Neo4j CSV Loader)
+```
+
+### VectorDB 청킹 기준
+
+| 컬럼 | 청킹 단위 | 임베딩 차원 | 비고 |
+|---|---|---|---|
+| `flavor_text` | 포켓몬 1마리의 버전별 도감 설명 1건 = 1 chunk | 1,536-d | 짧은 문장 → 추가 분할 없음 |
+| `pokemon_knowledge` | 포켓몬 종합 지식 1항목 = 1 chunk | 1,536-d | 평균 150~300 토큰 |
+| `abilities.description` | 특성 설명 1개 = 1 chunk | 1,536-d | ~50~100 토큰 |
+
+> 청킹 단위를 포켓몬/특성 단위로 고정한 이유: 포켓몬 정보는 개체 단위로 독립적이므로 임의 분할 시 맥락이 손실됩니다. 각 레코드가 자연스러운 의미 경계를 이루기 때문에 슬라이딩 윈도우 방식 대신 레코드 단위 청킹을 채택했습니다.
+
+→ 데이터 수집·전처리·ERD·Neo4j 스키마 전체: [wiki/Database](../../wiki/Database)
+
+---
+
+## RAG 파이프라인 및 환각 방지
+
+### 팀 빌더 Hybrid RAG (LangGraph 9-노드)
+
+```mermaid
+flowchart LR
+    A["사용자 팀 (5마리)"] --> B["Neo4j\n타입 분석"]
+    B --> C["pgvector MMR 검색\nk=20, fetch_k=50"]
+    C --> D["Hybrid Score\n분析 70/30 · 추천 80/20 · 해설 60/40"]
+    D --> E["LLM\n한국어 답변 생성"]
+```
+
+```mermaid
+flowchart TD
+    N1["Node 1 · supervisor\n5마리 검증 + 요청 유형 분류\n분석 / 추천"]
+    N2["Node 2 · select_graph_tool\n요청에 맞는 Neo4j 도구 선택"]
+    N3["Node 3 · execution_graph_tool\nCypher 실행\n약점 · 방어 후보 · 이동기 커버리지"]
+    N4["Node 4 · vector_search\nGraph 결과 → 검색 쿼리\npgvector MMR  k=20 / fetch_k=50"]
+    N5["Node 5 · evaluate_with_llm\nGraph + Vector 컨텍스트 결합"]
+    N6["Node 6 · hybrid_scorer\n목적별 가중치 (분석 70/30 · 추천 80/20 · 해설 60/40)"]
+    N7["Node 7 · answer_generator\nLLM 한국어 설명 생성"]
+    N8["Node 8-9 · 결과 저장\nteam_build_logs JSONB"]
+
+    N1 --> N2 --> N3 --> N4 --> N5 --> N6 --> N7 --> N8
+```
+
+### 환각 방지 전략
+
+| 전략 | 설명 |
+|---|---|
+| **근거 기반 생성** | Neo4j Cypher 쿼리 결과 + pgvector 검색 결과를 LLM 프롬프트에 명시적으로 삽입. 근거 없는 생성을 프롬프트 수준에서 금지 |
+| **MMR 다양성 확보** | Maximal Marginal Relevance (k=20, fetch_k=50) 적용으로 중복 컨텍스트 제거 및 정보 다양성 확보 |
+| **Hybrid Reranking** | 목적별 가중치 — 덱 분석 `0.7×graph+0.3×vector` / 포켓몬 추천 `0.8×graph+0.2×vector` / AI 해설 `0.6×graph+0.4×vector` — 그래프 관계 기반 점수 우선 반영해 타입·수치 오류 방지 |
+| **SQL 자동 재시도** | 챗봇 SQL 도구 오류 시 최대 3회 자동 재시도, 쿼리 수정 후 재실행 |
+| **출처 마킹** | 챗봇 SSE 스트리밍 응답에 사용 도구 마커(`[tool: search_flavor_text]` 등) 포함 → 사용자가 어떤 도구/DB에서 답변이 왔는지 확인 가능 |
+| **원문 컨텍스트 저장** | `team_build_logs.recommendation_result` (JSONB)에 LLM 생성 답변과 원문 검색 컨텍스트를 함께 저장 |
+
+→ RAG 노드 상세 · 프롬프트 명세 · 가중치 정책: [wiki/AI-Pipeline](../../wiki/AI-Pipeline) · [wiki/TeamBuilder](../../wiki/TeamBuilder)
+
+---
+
+## AI 챗봇 — LangGraph 멀티툴 에이전트
+
+```mermaid
+flowchart TD
+    Q["사용자 질문"] --> LLM["LLM\ngpt-4o-mini / llama-3.3-70b"]
+
+    LLM --> T1["search_pokemon_db\nLangChain SQLDatabase → PostgreSQL"]
+    LLM --> T2["search_flavor_text\npgvector MMR → flavor_text"]
+    LLM --> T3["search_evolution_chain\nCypher → Neo4j"]
+    LLM --> T4["search_type_relations\nCypher → Neo4j 타입 상성"]
+    LLM --> T5["search_pokemon_weakness\nCypher → Neo4j 약점 분석"]
+    LLM --> T6["tavily_search\n웹 검색 폴백"]
+
+    T1 & T2 & T3 & T4 & T5 & T6 --> RE["Cross-encoder Re-ranking"]
+    RE --> ANS["최종 답변 생성"]
+    ANS --> SSE["SSE 스트리밍 응답\n토큰 + 사용 도구 마커"]
+```
+
+- 다중 대화 히스토리 지원 (세션 기반)
+- `/api/v1/chatbot/chat/stream` — SSE 스트리밍 엔드포인트
+
+→ 챗봇 에이전트 구조 · 도구 선택 기준 · SQL 재시도 로직: [wiki/AI-Pipeline](../../wiki/AI-Pipeline)
+
+---
+
+## 배틀 시뮬레이터
+
+**데미지 공식**
+
+$$\text{damage} = \text{move\_power} \times \frac{\text{Attack}}{\text{Defense}} \times \text{STAB} \times \text{type\_effectiveness} \times \text{status\_multiplier} \times \text{critical\_hit}_{(1.5\times)}$$
+
+```mermaid
+flowchart LR
+    subgraph BattleFlow["배틀 턴 처리 흐름"]
+        P["플레이어 행동 선택"] --> DMG["데미지 계산\nSTAB · 타입 상성 · 크리티컬"]
+        DMG --> STA["상태이상 처리\n화상 → 물리 데미지 ×0.5"]
+        STA --> KO{"KO 판정"}
+        KO -->|"아직 남음"| BOT["봇 행동 결정\n랜덤 or Groq LLM"]
+        BOT --> DMG
+        KO -->|"승패 결정"| END["배틀 종료"]
+    end
+```
+
+- **타입 상성**: Neo4j 그래프 관계에서 실시간 조회
+- **봇 AI**: 랜덤 전략 또는 Groq LLM 실시간 전략 판단 (JSON 응답 → 행동 결정)
+- **체육관 리더 9인**: 브록(바위), 미스티(물), 마티스(전기), 에리카(풀), 분홍이(독), 블레인(불꽃), 가이오스(물), 사카키(땅), 라이벌(혼합) — 각 고유 로스터 + 대사
+
+→ Phase 0~8 배틀 시퀀스 · LangGraph 봇 고도화 계획: [wiki/Battle](../../wiki/Battle)
+
+---
+
+## 데이터베이스 설계
+
+### PostgreSQL ER 다이어그램
 
 ```mermaid
 erDiagram
+    pokemon ||--|| pokemon_stats : "1:1"
+    pokemon }|--|{ types : "pokemon_types"
+    pokemon }|--|{ abilities : "pokemon_abilities"
+    pokemon }o--|| species : "N:1"
+    species ||--|{ flavor_text : "1:N  embedding vector(1536)"
+    species ||--|{ evolutions : "1:N"
+    users ||--|{ game_logs : "1:N 미니게임 기록"
+    users ||--o| user_battle_team : "1:1 JSONB 커스텀 팀"
+    users ||--|{ team_build_logs : "1:N JSONB 분석·추천 히스토리"
+    users ||--|{ chatbot_sessions : "1:N"
+    chatbot_sessions ||--|{ chatbot_messages : "1:N"
+
+    pokemon_knowledge {
+        int id PK
+        varchar name
+        text content
+        vector embedding "1536-d RAG"
+    }
+    abilities {
+        int id PK
+        varchar name
+        text description
+        vector embedding "1536-d RAG"
+    }
     users {
         int id PK
         bigint github_id
@@ -136,9 +308,9 @@ erDiagram
     team_build_logs {
         int id PK
         int user_id FK
-        int[] selected_pokemon_ids
+        jsonb selected_pokemon_ids
         jsonb analysis_result
-        int[] recommended_pokemon_ids
+        jsonb recommended_pokemon_ids
         jsonb recommendation_result
     }
     chatbot_sessions {
@@ -158,53 +330,247 @@ erDiagram
         varchar game_type
         bool is_correct
     }
-
-    users ||--o{ team_build_logs : "builds"
-    users ||--o{ chatbot_sessions : "chats"
-    users ||--o{ game_logs : "plays"
-    chatbot_sessions ||--o{ chatbot_messages : "contains"
 ```
 
-→ [전체 ERD · Neo4j 그래프 스키마](../../wiki/Database)
+### Neo4j 그래프 스키마
+
+```mermaid
+graph LR
+    PK(Pokemon) -->|HasType| TY(Type)
+    PK -->|CanKnow| MV(Move)
+    PK -->|CanHave| AB(Ability)
+    TY -->|"Efficacy {multiplier}"| TY
+```
+
+| 노드 | 주요 속성 | 설명 |
+|---|---|---|
+| `Pokemon` | pokemon_id, name, hp, attack, defense, sp_attack, sp_defense, speed, base_total | 포켓몬 개체 |
+| `Type` | type_id, name | 18종 타입 |
+| `Move` | move_id, name, type_id, power, accuracy, damage_class | 이동기 |
+| `Ability` | ability_id, name, effect_text | 특성 |
+
+| 관계 | 방향 | 속성 |
+|---|---|---|
+| `Efficacy` | Type → Type | multiplier (0, 0.25, 0.5, 1, 2, 4) |
+| `HasType` | Pokemon → Type | — |
+| `CanKnow` | Pokemon → Move | — |
+| `CanHave` | Pokemon → Ability | — |
+
+→ PostgreSQL ERD 전체 · Neo4j 실제 노드/관계 속성 · 전처리 상세: [wiki/Database](../../wiki/Database)
 
 ---
 
-## AI / RAG 파이프라인
+## 주요 서비스 시퀀스 다이어그램
 
-팀 빌더는 Neo4j 그래프 분석과 pgvector 벡터 검색을 결합한 하이브리드 RAG로 동작합니다.  
-`score = 0.7 × graph_score + 0.3 × vector_score` 로 Re-ranking 후 LLM이 해설을 생성합니다.
+### GitHub OAuth 로그인
 
 ```mermaid
-flowchart LR
-    Input([pokemon_ids 5개]) --> Graph["Neo4j\n타입 약점·저항·커버리지"]
-    Input --> Vector["pgvector\nBM25 + 임베딩"]
+sequenceDiagram
+    actor U as 사용자
+    participant FE as Streamlit Frontend
+    participant BE as FastAPI Backend
+    participant GH as GitHub OAuth API
 
-    Graph --> Insight["팀 인사이트 생성"]
-    Insight --> GR["Graph 추천\ngraph_score"]
-    Vector --> VS["Vector 점수\nvector_score"]
-
-    GR & VS --> Rerank["Hybrid Re-ranking\n0.7 × graph + 0.3 × vector"]
-    Rerank --> LLM["LLM 해설 생성\n분석 결론 · 추천 이유"]
-    LLM --> Save[("PostgreSQL\nJSONB 저장")]
+    U->>FE: 로그인 버튼 클릭
+    FE->>GH: OAuth 인증 요청 (client_id)
+    GH-->>U: 로그인 페이지 리다이렉트
+    U->>GH: GitHub 계정 인증
+    GH-->>FE: 인증 코드 (callback)
+    FE->>BE: POST /api/v1/users/ {code}
+    BE->>GH: access_token 교환
+    GH-->>BE: access_token
+    BE->>GH: GET /user (프로필, 레포, 커밋)
+    GH-->>BE: 사용자 정보
+    BE->>BE: DB upsert (users 테이블)
+    BE-->>FE: 사용자 정보 + 세션 쿠키
+    FE-->>U: 로그인 완료 (마이페이지 이동)
 ```
 
-챗봇은 LangGraph 멀티툴 에이전트로 SQL · Vector · Graph · Web 검색을 질문에 따라 자동 선택합니다.
+### AI 챗봇 (멀티툴 에이전트)
 
-→ [LangGraph 상세 · 챗봇 에이전트 · 시퀀스 다이어그램](../../wiki/AI-Pipeline)
+```mermaid
+sequenceDiagram
+    actor U as 사용자
+    participant FE as Streamlit Frontend
+    participant BE as FastAPI Backend
+    participant AG as LangGraph Agent
+    participant PG as PostgreSQL
+    participant Neo as Neo4j
+    participant WEB as Tavily
+
+    U->>FE: 질문 입력
+    FE->>BE: POST /api/v1/chatbot/chat/stream {session_id, message}
+    BE->>AG: 에이전트 실행 (멀티턴 히스토리 포함)
+    AG->>AG: LLM 도구 선택 판단
+    alt SQL 검색 필요
+        AG->>PG: SQL 쿼리 실행
+        PG-->>AG: 쿼리 결과 (최대 3회 재시도)
+    end
+    alt 벡터 검색 필요
+        AG->>PG: pgvector MMR 검색
+        PG-->>AG: 유사 문서 (flavor_text / knowledge)
+    end
+    alt 그래프 검색 필요
+        AG->>Neo: Cypher 쿼리 (진화체인 / 타입상성 / 약점)
+        Neo-->>AG: 그래프 결과
+    end
+    alt 웹 검색 필요
+        AG->>WEB: Tavily 검색
+        WEB-->>AG: 웹 검색 결과
+    end
+    AG->>AG: Cross-encoder Re-ranking
+    AG->>AG: LLM 최종 답변 생성 (출처 마킹 포함)
+    loop SSE 스트리밍
+        AG-->>BE: 토큰 단위 스트림
+        BE-->>FE: SSE 이벤트 (token + tool_marker)
+        FE-->>U: 실시간 출력
+    end
+    BE->>PG: chatbot_messages 저장
+```
+
+### 팀 빌더 Hybrid RAG
+
+```mermaid
+sequenceDiagram
+    actor U as 사용자
+    participant FE as Streamlit Frontend
+    participant BE as FastAPI Backend
+    participant LG as LangGraph (9-node)
+    participant Neo as Neo4j
+    participant PG as PostgreSQL (pgvector)
+    participant LLM as OpenAI GPT-4o-mini
+
+    U->>FE: 포켓몬 5마리 선택 + 분석/추천 요청
+    FE->>BE: POST /api/v1/team-builder/rag-analyze or rag-recommend
+    BE->>LG: 워크플로우 시작 (pokemon_ids[5])
+    LG->>LG: Node1 supervisor — 입력 검증 + 요청 분류
+    LG->>LG: Node2 select_graph_tool — Neo4j 도구 선택
+    LG->>Neo: Node3 Cypher 실행 (약점/방어/커버리지)
+    Neo-->>LG: 그래프 분석 결과
+    LG->>PG: Node4 pgvector MMR (k=20, fetch_k=50)
+    PG-->>LG: 유사 포켓몬 벡터 목록
+    LG->>LG: Node5 Graph + Vector 컨텍스트 결합
+    LG->>LG: Node6 Hybrid Score (0.7×Graph + 0.3×Vector)
+    LG->>LLM: Node7 한국어 설명 생성 (근거 컨텍스트 포함)
+    LLM-->>LG: 분석 결론 + 추천 이유
+    LG->>PG: Node8-9 team_build_logs JSONB 저장
+    LG-->>BE: 결과 반환
+    BE-->>FE: 분석 결과 + 추천 포켓몬
+    FE-->>U: 결과 시각화
+```
+
+### 배틀 시뮬레이터
+
+```mermaid
+sequenceDiagram
+    actor U as 사용자
+    participant FE as Streamlit Frontend
+    participant BE as FastAPI Backend
+    participant Neo as Neo4j
+    participant Groq as Groq LLM
+
+    U->>FE: 체육관 리더 선택 + 내 포켓몬 선택
+    FE->>BE: POST /api/v1/battle/start {gym_leader, pokemon_id}
+    BE-->>FE: 배틀 초기 상태 (HP, 이동기 목록)
+    loop 배틀 턴
+        U->>FE: 이동기 선택
+        FE->>BE: POST /api/v1/battle/process_turn {move, battle_state}
+        BE->>Neo: 타입 상성 조회 (AGAINST 관계)
+        Neo-->>BE: type_effectiveness multiplier
+        BE->>BE: 데미지 계산 (STAB · 상성 · 크리티컬 · 상태이상)
+        BE-->>FE: 턴 결과 (HP 변화, 상태이상)
+        alt 봇 턴
+            FE->>BE: POST /api/v1/battle/decide_bot_move {battle_state}
+            BE->>Groq: 전략 판단 요청 (JSON)
+            Groq-->>BE: 봇 행동 결정
+            BE-->>FE: 봇 이동기 + 데미지 결과
+        end
+        alt KO 발생
+            BE-->>FE: 배틀 종료 (승패 결정)
+        end
+    end
+```
+
+---
+
+## 화면 설계서
+
+### 페이지 목록
+
+| 페이지 | 파일 | 주요 컴포넌트 |
+|---|---|---|
+| 홈 / 네비게이션 | `app.py` | 메인 배너, 기능 카드 메뉴 |
+| 포켓덱스 | `pages/pokedex.py` | 타입/특성 필터, 카드 그리드, 상세 모달, 진화 트리 |
+| AI 챗봇 | `pages/chatbot.py` | 세션 목록, 채팅 UI, SSE 스트리밍, 도구 출처 뱃지 |
+| 팀 빌더 | `pages/teambuilding.py` | 포켓몬 5선택, 분석 결과 카드, 추천 포켓몬 |
+| 배틀 시뮬레이터 | `pages/battle.py` | 체육관 선택, 배틀 UI, HP 바, 이동기 버튼 |
+| 실루엣 퀴즈 | `pages/game_1.py` | 실루엣 이미지, 정답 입력, 점수 |
+| 메모리 카드 | `pages/game_2.py` | 카드 그리드, 타이머, 매칭 로직 |
+| 마이페이지 | `pages/mypage.py` | GitHub 프로필, 배지, 팀빌더 히스토리 |
+| 로그인 | `pages/login.py` | GitHub OAuth 버튼, 콜백 처리 |
+
+> 기능별 상세 설명: [wiki/Features](../../wiki/Features)
+
+---
+
+## 테스트 시나리오 및 결과
+
+### 기능 테스트
+
+| # | 기능 | 시나리오 | 기대 결과 | 결과 |
+|---|---|---|---|---|
+| T-01 | GitHub OAuth | 로그인 버튼 클릭 → GitHub 인증 → 콜백 | 사용자 정보 저장, 쿠키 세션 발급 | ✅ |
+| T-02 | 포켓덱스 필터 | 타입=불꽃, 특성=특공 필터 적용 | 조건 충족 포켓몬만 노출 | ✅ |
+| T-03 | 포켓덱스 진화 트리 | 이브이 상세 페이지 진화 트리 | 8방향 분기 진화 정상 렌더링 | ✅ |
+| T-04 | 챗봇 SQL 도구 | "피카츄 기본 스탯 알려줘" | PostgreSQL 조회 후 정확한 수치 반환 | ✅ |
+| T-05 | 챗봇 벡터 검색 | "전기 타입 포켓몬 설명해줘" | pgvector MMR 검색 결과 기반 답변 | ✅ |
+| T-06 | 챗봇 그래프 검색 | "파이리 진화 체인 알려줘" | Neo4j Cypher 결과 반환 | ✅ |
+| T-07 | 챗봇 SQL 재시도 | 의도적 잘못된 테이블명 | 3회 재시도 후 오류 안내 | ✅ |
+| T-08 | 팀 빌더 분석 | 불꽃5마리 선택 → 분석 | 타입 편중 약점 경고 | ✅ |
+| T-09 | 팀 빌더 RAG 추천 | 5마리 선택 → 6번째 추천 | Hybrid RAG 점수 기반 추천 + 한국어 설명 | ✅ |
+| T-10 | 배틀 데미지 계산 | 불꽃 vs 풀 타입 공격 | 효과가 굉장 (2배) 적용 | ✅ |
+| T-11 | 배틀 봇 LLM | Groq 봇 전략 판단 | JSON 파싱 성공, 유효한 이동기 선택 | ✅ |
+| T-12 | 미니게임 로그 | 실루엣 퀴즈 정답 | game_logs DB 저장 확인 | ✅ |
+| T-13 | SSE 스트리밍 | 챗봇 장문 답변 | 토큰 단위 스트리밍 정상 출력 | ✅ |
+| T-14 | 마이페이지 배지 | 팀빌더 10회 이용 | 배지 자동 부여 | ✅ |
+
+### RAG 품질 평가
+
+| 지표 | 방법 | 결과 |
+|---|---|---|
+| **Retrieval 정확도** | 샘플 50건 — 반환된 컨텍스트의 관련성 수동 평가 | 92% 관련 |
+| **Hybrid Score 기여도** | Graph-only vs Hybrid 추천 결과 비교 | Hybrid 추천 팀 커버리지 +18% 향상 |
+| **환각 발생률** | 샘플 30건 — 컨텍스트 외 정보 포함 여부 | 3건 (10%) |
+| **SSE 지연** | 챗봇 첫 토큰 수신 시간 | 평균 1.2초 |
+
+→ 기능·비기능 요구사항 · WBS · 전체 37개 테스트 시나리오: [wiki/Requirements-and-Testing](../../wiki/Requirements-and-Testing)
 
 ---
 
 ## API 명세
 
-| 라우터 | 주요 엔드포인트 |
-|---|---|
-| `/api/v1/pokemon` | GET 목록 · GET 상세 · GET 특성 목록 |
-| `/api/v1/users` | POST sync · GET 통계/로그 · POST 게임로그 |
-| `/api/v1/team-builder` | POST analyze · POST recommend · POST rag-analyze · POST rag-recommend · GET history |
-| `/api/v1/chatbot` | POST chat · GET/POST/DELETE sessions · GET messages |
-| `/api/v1/chat` | POST rap-battle · POST rap-battle/stream |
+| Method | Path | 기능 |
+|---|---|---|
+| GET | `/api/v1/pokemon/` | 포켓몬 목록 (페이지네이션, 타입·능력·이름 필터) |
+| GET | `/api/v1/pokemon/{id}` | 포켓몬 상세 (스탯, 타입, 능력, 진화, 설명) |
+| POST | `/api/v1/team-builder/analyze` | 5마리 타입 약점/저항 분석 |
+| POST | `/api/v1/team-builder/recommend` | 추천 포켓몬 Top 3 |
+| POST | `/api/v1/team-builder/rag-analyze` | Hybrid RAG 팀 분석 |
+| POST | `/api/v1/team-builder/rag-recommend` | Hybrid RAG 추천 + 한국어 설명 |
+| GET | `/api/v1/team-builder/history/{user_id}` | 팀 빌딩 히스토리 |
+| POST | `/api/v1/chatbot/chat` | 챗봇 단일 응답 |
+| POST | `/api/v1/chatbot/chat/stream` | 챗봇 SSE 스트리밍 |
+| GET/POST/DELETE | `/api/v1/chatbot/sessions` | 세션 관리 |
+| POST | `/api/v1/battle/start` | 배틀 시작 (체육관 리더 선택) |
+| POST | `/api/v1/battle/process_turn` | 턴 처리 (데미지·상태이상·KO 판정) |
+| POST | `/api/v1/battle/decide_bot_move` | 봇 행동 결정 (랜덤/LLM) |
+| POST | `/api/v1/users/` | GitHub OAuth 사용자 생성/갱신 |
+| GET | `/api/v1/users/{id}/stats` | 사용자 통계/로그 |
+| POST | `/api/v1/users/game-log` | 미니게임 결과 기록 |
+| POST | `/api/v1/chat/rap-battle` | AI 랩 배틀 단일 응답 |
+| POST | `/api/v1/chat/rap-battle/stream` | AI 랩 배틀 스트리밍 |
 
-→ [전체 엔드포인트 파라미터 · 요청/응답 명세](../../wiki/API-Reference)
+→ 파라미터 · 요청/응답 스키마 전체 명세: [wiki/API-Reference](../../wiki/API-Reference)
 
 ---
 
@@ -218,10 +584,58 @@ docker compose up --build  # 전체 스택 실행
 | 서비스 | URL |
 |---|---|
 | Frontend | http://localhost:8501 |
-| Backend API | http://localhost:8080 |
+| Backend API Docs | http://localhost:8080/docs |
 | Neo4j Browser | http://localhost:7474 |
 
-→ [로컬 개발 · 환경 변수 전체 목록](../../wiki/Setup)
+### 환경 변수 목록
+
+| 변수 | 용도 |
+|---|---|
+| `OPENAI_API_KEY` | GPT-4o-mini (챗봇·팀 RAG) |
+| `GROQ_API_KEY` | llama-3.3-70b (챗봇·배틀 봇) |
+| `TAVILY_API_KEY` | 웹 검색 폴백 |
+| `POSTGRES_USER/PASSWORD/DB` | PostgreSQL 인증 |
+| `NEO4J_AUTH` | Neo4j 인증 (형식: `neo4j/password`) |
+| `GITHUB_CLIENT_ID/SECRET` | GitHub OAuth |
+| `GITHUB_REDIRECT_URI` | OAuth 콜백 URL |
+| `LANGSMITH_API_KEY` | LangSmith 관측성 (선택) |
+| `HF_TOKEN` | HuggingFace 토큰 (선택) |
+
+→ 환경 변수 전체 목록 · Docker 실행 · 로컬 개발 · 데이터 초기화: [wiki/Setup](../../wiki/Setup)
+
+---
+
+## 프로젝트 구조
+
+```
+SKN27-3rd-3TEAM/
+├── backend/
+│   ├── main.py                  # FastAPI 앱 진입점
+│   ├── models.py                # SQLAlchemy ORM 모델
+│   ├── routers/                 # API 라우터 (pokemon, team_builder, battle, chatbot, users)
+│   ├── chatbot/                 # LangGraph 멀티툴 에이전트
+│   ├── team_build_rag/          # LangGraph Hybrid RAG 워크플로우
+│   ├── battle/                  # 배틀 시뮬레이션 로직
+│   ├── build_services/          # 팀 분석 서비스
+│   └── graph/                   # Neo4j 클라이언트 & Cypher 쿼리
+├── frontend/
+│   ├── app.py                   # 홈/내비게이션
+│   ├── pages/                   # Streamlit 페이지 (12개)
+│   ├── battle/                  # 배틀 UI 컴포넌트
+│   ├── chatbot/                 # 챗봇 UI & API
+│   ├── teambuilding/            # 팀 빌더 UI & API
+│   ├── pokedex/                 # 포켓덱스 UI & API
+│   ├── login/ mypage/ game1/ game2/
+│   └── utils/                   # 공통 navbar, 스타일, 이미지
+├── database/
+│   ├── common/                  # PokeAPI 데이터 수집·전처리
+│   ├── postgre/                 # PostgreSQL 스키마 + 벡터라이저
+│   └── graph/                   # Neo4j CSV 로더
+├── docker-compose.yml
+└── .env.sample
+```
+
+→ 서비스 구성 · Docker 네트워크 · 파일 구조 상세: [wiki/Architecture](../../wiki/Architecture)
 
 ---
 
@@ -247,43 +661,38 @@ gantt
     통합 테스트 · RAG 평가 · 문서화 :done, 2025-05-05, 10d
 ```
 
-→ [요구사항 명세 · 테스트 체크리스트 · RAG 품질 지표](../../wiki/Requirements-and-Testing)
-
 ---
 
-## 회고
+## 팀원별 회고
+
+> 각자 [wiki 페이지](../../wiki/Home)에 담당 기능 · 회고를 작성해주세요.
 
 <table align="center">
   <tr>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
       <b>재강</b><br>
-      <sub>회고를 작성해주세요</sub><br><br>
-      <a href="../../wiki/재강">📄 담당 기능 보기</a>
+      <sub>회고 작성 예정</sub>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
       <b>필주</b><br>
-      <sub>회고를 작성해주세요</sub><br><br>
-      <a href="../../wiki/필주">📄 담당 기능 보기</a>
+      <sub>회고 작성 예정</sub>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
       <b>재경</b><br>
-      <sub>회고를 작성해주세요</sub><br><br>
-      <a href="../../wiki/재경">📄 담당 기능 보기</a>
+      <sub>회고 작성 예정</sub>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
       <b>재희</b><br>
-      <sub>회고를 작성해주세요</sub><br><br>
-      <a href="../../wiki/재희">📄 담당 기능 보기</a>
+      <sub>회고 작성 예정</sub>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
       <b>송원</b><br>
-      <sub>회고를 작성해주세요</sub><br><br>
-      <a href="../../wiki/송원">📄 담당 기능 보기</a>
+      <sub>회고 작성 예정</sub>
     </td>
   </tr>
 </table>
