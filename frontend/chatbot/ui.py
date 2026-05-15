@@ -199,63 +199,6 @@ def show():
         </style>
     """, unsafe_allow_html=True)
     
-    # [핵심] 강력한 자동 스크롤 옵저버 주입 (iframe에서 상위 DOM 제어)
-    import streamlit.components.v1 as components
-    components.html("""
-        <script>
-            const setupObserver = () => {
-                const parent = window.parent.document;
-                const target = parent.querySelector('.main');
-                if (!target) {
-                    setTimeout(setupObserver, 500);
-                    return;
-                }
-                
-                const scrollToBottom = () => {
-                    // 고정 높이 컨테이너에서 스크롤을 잡기 위한 다양한 타겟 설정
-                    const selectors = [
-                        'div[data-testid="stVerticalBlockBorderWrapper"] > div',
-                        'div[data-testid="stScrollableContainer"]',
-                        '.stScrollableContainer'
-                    ];
-                    
-                    let scrolled = false;
-                    selectors.forEach(selector => {
-                        const containers = parent.querySelectorAll(selector);
-                        containers.forEach(el => {
-                            if (el.scrollHeight > el.clientHeight) {
-                                el.scrollTop = el.scrollHeight;
-                                scrolled = true;
-                            }
-                        });
-                    });
-                    
-                    // 만약 특정 컨테이너 스크롤에 실패했다면 전체 화면을 내림
-                    if (!scrolled) {
-                        const mainContainer = parent.querySelector('.main .block-container');
-                        if (mainContainer) {
-                            mainContainer.scrollTop = mainContainer.scrollHeight;
-                        }
-                        parent.defaultView.scrollTo(0, parent.document.body.scrollHeight);
-                    }
-                };
-
-                // 초기 1회 실행
-                setTimeout(scrollToBottom, 300);
-
-                // DOM 변화 감지 시 실행
-                const observer = new MutationObserver(() => {
-                    scrollToBottom();
-                });
-                
-                observer.observe(target, { childList: true, subtree: true, characterData: true });
-            };
-            
-            // 로드 대기 후 실행
-            setTimeout(setupObserver, 100);
-        </script>
-    """, height=0)
-
     with right_col:
         msgs = st.session_state.messages
         is_loading = st.session_state.get("is_loading", False)

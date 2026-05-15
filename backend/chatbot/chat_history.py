@@ -22,7 +22,7 @@ if DB_CONN.startswith("postgres://"):
 
 
 def _connect():
-    return psycopg2.connect(DB_CONN)
+    return psycopg2.connect(DB_CONN, connect_timeout=10)
 
 
 def init_tables() -> None:
