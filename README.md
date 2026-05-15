@@ -14,7 +14,9 @@
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1015.png" width="150" height="150"/><br>
       <b>재강</b><br>
-      <sub>담당 기능 작성 예정</sub><br><br>
+      <sub>Neo4j 포켓몬 관계망 구축</sub><br>
+      <sub>하이브리드 RAG 추천 엔진</sub><br>
+      <sub>FastAPI 기반 API 및 DB 구현</sub><br><br>
       <a href="../../wiki/재강.md">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
