@@ -12,29 +12,34 @@
 <table align="center">
   <tr>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="90" height="90"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
       <b>재강</b><br>
-      <sub>역할</sub>
+      <sub>담당 기능 작성 예정</sub><br>
+      <a href="./wiki/재강.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="90" height="90"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
       <b>필주</b><br>
-      <sub>역할</sub>
+      <sub>담당 기능 작성 예정</sub><br>
+      <a href="./wiki/필주.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="90" height="90"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
       <b>재경</b><br>
-      <sub>역할</sub>
+      <sub>담당 기능 작성 예정</sub><br>
+      <a href="./wiki/재경.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="90" height="90"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
       <b>재희</b><br>
-      <sub>역할</sub>
+      <sub>UI/UX 서비스 설계 · 인증 · 확장 프로그램 · 배포</sub><br>
+      <a href="./wiki/재희.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="90" height="90"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
       <b>송원</b><br>
-      <sub>역할</sub>
+      <sub>담당 기능 작성 예정</sub><br>
+      <a href="./wiki/송원.md">📄 담당 기능</a>
     </td>
   </tr>
 </table>
@@ -67,7 +72,7 @@
 | **Backend** | FastAPI · Uvicorn · SQLAlchemy · psycopg2 · Pydantic |
 | **AI / LLM** | LangChain · LangGraph · LangSmith |
 | **LLM 모델** | OpenAI GPT-4o-mini · Groq (llama-3.3-70b-versatile) |
-| **임베딩 / 검색** | sentence-transformers · pgvector (MMR) · BM25 · Tavily API |
+| **임베딩 / 검색** | sentence-transformers · pgvector (MMR) · BM25 |
 | **관계형 DB** | PostgreSQL 16 + pgvector |
 | **그래프 DB** | Neo4j 5.x + APOC + Graph Data Science |
 | **인증** | GitHub OAuth 2.0 |
@@ -79,45 +84,50 @@
 ## 시스템 아키텍처
 
 Streamlit 프론트엔드 → FastAPI 백엔드 → PostgreSQL + Neo4j 이중 DB 구조.  
-AI 기능은 LangGraph가 오케스트레이션하며 OpenAI · Groq · Tavily 외부 서비스를 연동합니다.
+AI 기능은 LangGraph가 오케스트레이션하며 OpenAI · Groq 외부 서비스를 연동합니다.
 
 ```mermaid
 flowchart TD
     User([👤 사용자])
-
-    subgraph FE["🖥️ Streamlit Frontend · :8501"]
-        App["app.py 네비게이션 허브"]
-        Pages["pages/ · 12개 페이지\n포켓덱스 · 챗봇 · 팀빌더\n배틀 · 미니게임 · 마이페이지"]
+    
+    subgraph FE["🖥️ Streamlit Frontend (Port: 8501)"]
+        UI["App Interface / Navigation"]
+        Pages["Pokedex · Chatbot · TeamBuilder\nBattle · Mini-Game · MyPage"]
     end
 
-    subgraph BE["⚙️ FastAPI Backend · :8080"]
-        R1["/api/v1/pokemon — CRUD + 벡터 검색"]
-        R2["/api/v1/team-builder — LangGraph Hybrid RAG (9-node)"]
-        R3["/api/v1/chatbot — LangGraph Multi-Tool Agent (SSE)"]
-        R4["/api/v1/battle — 턴제 배틀 + Groq LLM 봇"]
-        R5["/api/v1/users — GitHub OAuth + 게임 로그"]
+    subgraph BE["⚙️ FastAPI Backend (Port: 8080)"]
+        Router{"API Gateway / Router"}
+        
+        subgraph Orchestration["🧠 LangGraph Orchestration Layer"]
+            R2["Hybrid RAG (7-node)\nTeam Analysis/Recommend"]
+            R3["Multi-Tool Agent (SSE)\nChatbot Service"]
+        end
+        
+        R1["Pokemon Service\nCRUD + Vector Search"]
+        R4["Battle Service\nTurn-based + Groq LLM"]
+        R5["User Service\nGitHub OAuth + Log Tracking"]
     end
 
-    subgraph DB["🗄️ 데이터베이스"]
+    subgraph DB["🗄️ Persistence Layer"]
         PG[("PostgreSQL 16\n+ pgvector")]
-        Neo[("Neo4j\n+ APOC · GDS")]
+        Neo[("Neo4j Graph DB\n+ APOC · GDS")]
     end
 
-    subgraph Ext["🌐 외부 서비스"]
-        OpenAI["OpenAI GPT-4o-mini"]
-        Groq["Groq llama-3.3-70b"]
-        Tavily["Tavily 웹 검색"]
+    subgraph Ext["🌐 External AI & Cloud"]
+        AI["OpenAI GPT-4o-mini\nGroq Llama-3.3-70b"]
         GH["GitHub OAuth API"]
-        LS["LangSmith 관측성"]
+        LS["LangSmith (Observability)"]
     end
 
-    User --> FE
-    FE -->|HTTP REST| BE
-    BE --> PG & Neo
-    R2 & R3 --> OpenAI & Groq
-    R3 --> Tavily
-    BE --> GH
-    BE -.->|트레이싱| LS
+    User --> UI
+    UI --> Pages
+    Pages -->|HTTP REST / SSE| Router
+    Router --> R1 & R2 & R3 & R4 & R5
+    
+    R1 & R2 & R3 --> DB
+    R2 & R3 & R4 --> AI
+    R5 --> GH
+    BE -.->|Tracing| LS
 ```
 
 → 서비스 구성 · Docker 네트워크 상세: [wiki/Architecture](../../wiki/Architecture)
@@ -128,14 +138,14 @@ flowchart TD
 
 | 기능 | 한 줄 설명 |
 |---|---|
-| 🔐 GitHub OAuth | 소셜 로그인 · 커밋/레포/스타 자동 수집 · 쿠키 세션 · [상세](../../wiki/Login) |
-| 📖 포켓덱스 | 1,025마리 · 타입/특성/번호 복합 필터 · 분기 진화 트리 · [상세](../../wiki/Features) |
-| 🤖 AI 챗봇 (오박사) | SQL · Vector · Graph · 웹 검색 멀티툴 · 멀티턴 히스토리 · [상세](../../wiki/AI-Pipeline) |
-| ⚔️ 팀 빌더 | 5마리 선택 → LangGraph Hybrid RAG 분석 → 6번째 추천 · [상세](../../wiki/TeamBuilder) |
-| 🥊 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · LLM 전략 봇 · AI 랩 배틀 (스트리밍) · [상세](../../wiki/Battle) |
-| 🎮 미니게임 | 실루엣 퀴즈 · 메모리 카드 · 플레이 로그 저장 · [상세](../../wiki/Features) |
-| 👤 마이페이지 | GitHub 프로필 · 배지 시스템 · 팀 빌더 히스토리 · [상세](../../wiki/Mypage) |
-| 🐾 피피고 | Chrome 확장 · LLaMA 3.1 번역봇 · 포켓몬 가상 펫 · [상세](../../wiki/Pipigo) |
+| GitHub OAuth | 소셜 로그인 · 커밋/레포/스타 자동 수집 · 쿠키 세션 · [상세](../../wiki/Login) |
+| 포켓몬 도감 | 1,025마리 · 타입/특성/번호 복합 필터 · 분기 진화 트리 · [상세](../../wiki/Features) |
+| AI 챗봇 | SQL · Vector · Graph · 웹 검색 멀티툴 · 멀티턴 히스토리 · [상세](../../wiki/AI-Pipeline) |
+| 팀 빌더 | 5마리 선택 → LangGraph Hybrid RAG 분석 → 6번째 추천 · [상세](../../wiki/TeamBuilder) |
+| 배틀 시뮬레이터 | 1v1 타입 상성 배틀 · LLM 전략 봇 · [상세](../../wiki/Battle) |
+| 미니게임 | 실루엣 퀴즈 · 메모리 카드 · 플레이 로그 저장 · [상세](../../wiki/Features) |
+| 마이페이지 | GitHub 프로필 · 배지 시스템 · 팀 빌더 히스토리 · [상세](../../wiki/Mypage) |
+| 피피고 | Chrome 확장 · LLaMA 3.1 번역봇 · 포켓몬 가상 펫 · [상세](../../wiki/Pipigo) |
 
 ---
 
@@ -227,9 +237,8 @@ flowchart TD
     LLM --> T3["search_evolution_chain\nCypher → Neo4j"]
     LLM --> T4["search_type_relations\nCypher → Neo4j 타입 상성"]
     LLM --> T5["search_pokemon_weakness\nCypher → Neo4j 약점 분석"]
-    LLM --> T6["tavily_search\n웹 검색 폴백"]
 
-    T1 & T2 & T3 & T4 & T5 & T6 --> RE["Cross-encoder Re-ranking"]
+    T1 & T2 & T3 & T4 & T5 --> RE["Cross-encoder Re-ranking"]
     RE --> ANS["최종 답변 생성"]
     ANS --> SSE["SSE 스트리밍 응답\n토큰 + 사용 도구 마커"]
 ```
@@ -243,9 +252,16 @@ flowchart TD
 
 ## 배틀 시뮬레이터
 
-**데미지 공식**
+### 데미지 계산 로직 (Core Engine)
+본 프로젝트는 포켓몬 본가의 데미지 공식을 충실히 구현하여 배틀의 정밀도를 높였습니다.
 
-$$\text{damage} = \text{move\_power} \times \frac{\text{Attack}}{\text{Defense}} \times \text{STAB} \times \text{type\_effectiveness} \times \text{status\_multiplier} \times \text{critical\_hit}_{(1.5\times)}$$
+`base_damage = (((2 * level / 5 + 2) * power * (A / D)) / 50 + 2)`
+`final_damage = int(base_damage * stab * type_eff * burn_multiplier)`
+
+- **A/D (Atk/Def)**: 공격자의 공격력과 방어자의 방어력 비율
+- **STAB**: 자속 보정 (동일 타입 기술 사용 시 1.5배)
+- **Type_Eff**: 타입 상성 (Neo4j 그래프 DB에서 실시간 계산)
+
 
 ```mermaid
 flowchart LR
@@ -396,7 +412,6 @@ sequenceDiagram
     participant AG as LangGraph Agent
     participant PG as PostgreSQL
     participant Neo as Neo4j
-    participant WEB as Tavily
 
     U->>FE: 질문 입력
     FE->>BE: POST /api/v1/chatbot/chat/stream {session_id, message}
@@ -413,10 +428,6 @@ sequenceDiagram
     alt 그래프 검색 필요
         AG->>Neo: Cypher 쿼리 (진화체인 / 타입상성 / 약점)
         Neo-->>AG: 그래프 결과
-    end
-    alt 웹 검색 필요
-        AG->>WEB: Tavily 검색
-        WEB-->>AG: 웹 검색 결과
     end
     AG->>AG: Cross-encoder Re-ranking
     AG->>AG: LLM 최종 답변 생성 (출처 마킹 포함)
@@ -567,8 +578,6 @@ sequenceDiagram
 | POST | `/api/v1/users/` | GitHub OAuth 사용자 생성/갱신 |
 | GET | `/api/v1/users/{id}/stats` | 사용자 통계/로그 |
 | POST | `/api/v1/users/game-log` | 미니게임 결과 기록 |
-| POST | `/api/v1/chat/rap-battle` | AI 랩 배틀 단일 응답 |
-| POST | `/api/v1/chat/rap-battle/stream` | AI 랩 배틀 스트리밍 |
 
 → 파라미터 · 요청/응답 스키마 전체 명세: [wiki/API-Reference](../../wiki/API-Reference)
 
@@ -593,7 +602,6 @@ docker compose up --build  # 전체 스택 실행
 |---|---|
 | `OPENAI_API_KEY` | GPT-4o-mini (챗봇·팀 RAG) |
 | `GROQ_API_KEY` | llama-3.3-70b (챗봇·배틀 봇) |
-| `TAVILY_API_KEY` | 웹 검색 폴백 |
 | `POSTGRES_USER/PASSWORD/DB` | PostgreSQL 인증 |
 | `NEO4J_AUTH` | Neo4j 인증 (형식: `neo4j/password`) |
 | `GITHUB_CLIENT_ID/SECRET` | GitHub OAuth |
@@ -665,34 +673,12 @@ gantt
 
 ## 팀원별 회고
 
-> 각자 [wiki 페이지](../../wiki/Home)에 담당 기능 · 회고를 작성해주세요.
+| 이름 | 회고 |
+|---|---|
+| 이재강 | ... |
+| 김필주 | ... |
+| 문재경 | ... |
+| 이재희 | ... |
+| 박송원 | ... |
 
-<table align="center">
-  <tr>
-    <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
-      <b>재강</b><br>
-      <sub>회고 작성 예정</sub>
-    </td>
-    <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
-      <b>필주</b><br>
-      <sub>회고 작성 예정</sub>
-    </td>
-    <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
-      <b>재경</b><br>
-      <sub>회고 작성 예정</sub>
-    </td>
-    <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
-      <b>재희</b><br>
-      <sub>회고 작성 예정</sub>
-    </td>
-    <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
-      <b>송원</b><br>
-      <sub>회고 작성 예정</sub>
-    </td>
-  </tr>
-</table>
+
