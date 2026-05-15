@@ -37,12 +37,11 @@
       <a href="../../wiki/재희">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
-      <b>송원</b><br>
-      <sub>담당 기능 작성 예정</sub><br><br>
-      <!-- href 안에 순수 경로만 남깁니다 -->
-      <a href="../../wiki/송원">📄 담당 기능</a>
-    </td>
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
+    <b>송원</b><br>
+    <sub>도메인지식 · 배틀 엔진 로직</sub><br><sub>시뮬레이터 UI · Graph DB</sub><br><br>
+    <a href="../../wiki/송원">📄 담당 기능</a>
+  </td>
   </tr>
 </table>
 
