@@ -158,24 +158,16 @@ def show():
             "limit": st.session_state.pokemon_limit,
             "search": st.session_state.search_query or None,
             "ability": st.session_state.ability_filter if st.session_state.ability_filter != "전체" else None,
+            "min_id": st.session_state.dex_start,
+            "max_id": st.session_state.dex_end,
         }
+        if st.session_state.selected_types:
+            params["types"] = [EN_TO_KO[en] for en in st.session_state.selected_types]
         response = requests.get(f"{BACKEND_URL}{API_V1_STR}/", params=params)
         if response.status_code == 200:
             data = response.json()
             pokemon_list = data.get("items", [])
-            pokemon_list = [
-                p for p in pokemon_list
-                if st.session_state.dex_start <= (p.get("species_id") or p["id"]) <= st.session_state.dex_end
-            ]
-            if st.session_state.selected_types:
-                selected_ko = {EN_TO_KO[en] for en in st.session_state.selected_types}
-                pokemon_list = [
-                    p for p in pokemon_list
-                    if any(t.get("type_", {}).get("name") in selected_ko for t in p.get("types", []))
-                ]
-                display_total = 1025
-            else:
-                display_total = data.get("total", 0)
+            display_total = data.get("total", 0)
 
             if not pokemon_list:
                 st.warning("검색 결과가 없습니다.")
