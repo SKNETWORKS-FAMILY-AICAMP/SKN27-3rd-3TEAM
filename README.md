@@ -22,22 +22,24 @@
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
       <b>필주</b><br>
-      <sub>RAG 기반 AI 챗봇 구현</sub><br><sub>AI 성능 테스트</sub><br><br>
+      <sub>RAG 기반 AI 챗봇 구현</sub><br>
+      <sub>AI 성능 테스트</sub><br><br>
       <a href="../../wiki/필주.md">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
       <b>재경</b><br>
-      <sub>기술데이터 전처리 및 구조화</sub><br><sub>LLM 기반 턴제 배틀 엔진 개발</sub><br><br>
+      <sub>기술데이터 전처리 및 구조화</sub><br>
+      <sub>LLM 기반 턴제 배틀 엔진 개발</sub><br><br>
       <a href="../../wiki/재경.md">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
       <b>재희</b><br>
-      <sub>UI/UX 설계 및 렌더링 성능 최적화</sub><br>
+      <sub>UI/UX 설계 및 렌더링 최적화</sub><br>
       <sub>AI 크롬 확장 프로그램 개발</sub><br>
       <sub>데이터 파이프라인 및 서버 구축</sub><br><br>
-      <a href="../../wiki/재희">📄 담당 기능 상세 보기</a>
+      <a href="../../wiki/재희">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
@@ -45,7 +47,7 @@
       <sub>분기형 배틀 엔진 로직 구현</sub><br>
       <sub>턴제 시뮬레이터 구현</sub><br>
       <sub>상성 및 관계망 아키텍처 설계</sub><br><br>
-      <a href="../../wiki/송원">📄 담당 기능 상세 보기</a>
+      <a href="../../wiki/송원">📄 담당 기능</a>
     </td>
   </tr>
 </table>
