@@ -9,46 +9,56 @@
 
 ## 팀 구성
 
-<table align="center">
+<table align="center" width="100%">
   <tr>
-    <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1015.png" width="150" height="150"/><br>
+    <td align="center" width="20%">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1015.png" width="120" height="120"/><br>
       <b>재강</b><br>
-      <sub>Neo4j 포켓몬 관계망 구축</sub><br>
-      <sub>하이브리드 RAG 추천 엔진</sub><br>
-      <sub>FastAPI 기반 API 및 DB 구현</sub><br><br>
-      <a href="../../wiki/재강.md">📄 담당 기능</a>
+      <div style="font-size: 12px; word-break: keep-all;">
+        Neo4j 포켓몬 관계망 구축<br>
+        하이브리드 RAG 추천 엔진<br>
+        FastAPI 기반 API 및 DB 구현
+      </div><br>
+      <a href="../../wiki/재강.md" style="font-size: 12px;">📄 담당 기능</a>
     </td>
-    <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
+    <td align="center" width="20%">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="120" height="120"/><br>
       <b>필주</b><br>
-      <sub>LangGraph 기반 챗봇 구축</sub><br>
-      <sub>CRAG·하이브리드 검색 최적화</sub><br>
-      <sub>SSE 스트리밍 및 출처 렌더링</sub><br><br>
-      <a href="../../wiki/필주.md">📄 담당 기능</a>
+      <div style="font-size: 12px; word-break: keep-all;">
+        LangGraph 기반 챗봇 구축<br>
+        CRAG·하이브리드 검색 최적화<br>
+        SSE 스트리밍 및 출처 렌더링
+      </div><br>
+      <a href="../../wiki/필주.md" style="font-size: 12px;">📄 담당 기능</a>
     </td>
-    <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
+    <td align="center" width="20%">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="120" height="120"/><br>
       <b>재경</b><br>
-      <sub>기술데이터 전처리 및 구조화</sub><br>
-      <sub>LLM 기반 턴제 배틀 엔진 개발</sub><br><br>
-      <a href="../../wiki/재경.md">📄 담당 기능</a>
+      <div style="font-size: 12px; word-break: keep-all;">
+        기술데이터 전처리 및 구조화<br>
+        LLM 기반 턴제 배틀 엔진 개발<br>
+        &nbsp; </div><br>
+      <a href="../../wiki/재경.md" style="font-size: 12px;">📄 담당 기능</a>
     </td>
-    <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
+    <td align="center" width="20%">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="120" height="120"/><br>
       <b>재희</b><br>
-      <sub>UI/UX 설계 및 렌더링 최적화</sub><br>
-      <sub>AI 크롬 확장 프로그램 개발</sub><br>
-      <sub>데이터 파이프라인 및 서버 구축</sub><br><br>
-      <a href="../../wiki/재희">📄 담당 기능</a>
+      <div style="font-size: 12px; word-break: keep-all;">
+        UI/UX 설계 및 렌더링 최적화<br>
+        AI 크롬 확장 프로그램 개발<br>
+        데이터 파이프라인 및 서버 구축
+      </div><br>
+      <a href="../../wiki/재희" style="font-size: 12px;">📄 담당 기능</a>
     </td>
-    <td align="center" width="300">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
+    <td align="center" width="20%">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="120" height="120"/><br>
       <b>송원</b><br>
-      <sub>분기형 배틀 엔진 로직 구현</sub><br>
-      <sub>턴제 시뮬레이터 구현</sub><br>
-      <sub>상성 및 관계망 아키텍처 설계</sub><br><br>
-      <a href="../../wiki/송원">📄 담당 기능</a>
+      <div style="font-size: 12px; word-break: keep-all;">
+        분기형 배틀 엔진 로직 구현<br>
+        턴제 시뮬레이터 구현<br>
+        상성 및 관계망 아키텍처 설계
+      </div><br>
+      <a href="../../wiki/송원" style="font-size: 12px;">📄 담당 기능</a>
     </td>
   </tr>
 </table>
