@@ -26,7 +26,7 @@
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
       <b>재경</b><br>
-      <sub>담당 기능 작성 예정</sub><br><br>
+      <sub>턴제 배틀 엔진 구현 · LLM 기반 배틀 AI 개발</sub><sub>포켓몬 데이터 전처리 · 기술 메타데이터 구조화</sub><br><br>
       <a href="../../wiki/재경.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
