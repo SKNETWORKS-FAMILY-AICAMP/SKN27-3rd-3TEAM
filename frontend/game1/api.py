@@ -13,7 +13,7 @@ def load_pokemon_data():
     try:
         resp = requests.get(
             f"{BACKEND_URL}{API_V1_STR}/",
-            params={"limit": 2000, "max_id": 1025},
+            params={"limit": 2000, "max_id": 151},
             timeout=15,
         )
         if resp.status_code == 200:
@@ -21,7 +21,7 @@ def load_pokemon_data():
             data = [
                 {"id": item["id"], "name": item["name"], "types": item.get("types", [])}
                 for item in items
-                if 1 <= item["id"] <= 1025 and item.get("name")
+                if 1 <= item["id"] <= 151 and item.get("name")
             ]
             if data:
                 return data

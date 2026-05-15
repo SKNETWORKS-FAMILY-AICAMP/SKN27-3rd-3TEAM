@@ -94,8 +94,8 @@ def main():
     scripts = [
         # "database/common/processing/api_collector.py",
         # "database/common/processing/data_processor.py",
-        "database/postgre/utils/db_loader.py",
-        # "database/postgre/utils/vectorizer.py"
+        # "database/postgre/utils/db_loader.py",
+        "database/postgre/utils/vectorizer.py"
     ]
 
     for script in scripts:

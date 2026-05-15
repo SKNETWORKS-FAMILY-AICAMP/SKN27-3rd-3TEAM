@@ -15,7 +15,7 @@ import json
 import os
 from typing import Any, Dict, List, Optional
 
-import requests
+from langchain_openai import ChatOpenAI
 
 from team_build_rag.scoring_policy import get_answer_generation_weights
 from team_build_rag.state import HybridRagState, get_request_type
@@ -29,32 +29,20 @@ def _safe_json(data: Any) -> str:
     return json.dumps(data, ensure_ascii=False, indent=2, default=str)
 
 
-def _get_huggingface_config() -> Optional[Dict[str, Any]]:
-    """Hugging Face Router 호출에 필요한 설정을 읽는 함수입니다."""
-
-    # hf_token:
-    # - Hugging Face Inference Providers를 호출하기 위한 토큰입니다.
-    # - OPENAI_API_KEY는 사용하지 않고, HF_TOKEN 또는 HUGGINGFACEHUB_API_TOKEN만 읽습니다.
-    hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
-    if not hf_token:
-        return None
+def _get_llm_model() -> ChatOpenAI:
+    """OpenAI 모델을 초기화하는 함수입니다."""
 
     # model:
-    # - 기본 모델은 Hugging Face Router에서 비교적 안정적으로 잡히는 Qwen2.5-7B-Instruct입니다.
-    # - :fastest는 Hugging Face Router가 사용 가능한 provider 중 빠른 쪽을 고르게 하는 옵션입니다.
-    model = os.getenv("TEAM_BUILD_RAG_HF_MODEL", "Qwen/Qwen2.5-7B-Instruct:fastest")
+    # - 기본적으로 가성비와 속도가 좋은 gpt-4o-mini를 사용합니다.
+    model_name = os.getenv("TEAM_BUILD_RAG_MODEL", "gpt-4o-mini")
+    temperature = float(os.getenv("TEAM_BUILD_RAG_TEMPERATURE", "0.2"))
+    max_tokens = int(os.getenv("TEAM_BUILD_RAG_MAX_TOKENS", "1200"))
 
-    return {
-        "endpoint": os.getenv(
-            "TEAM_BUILD_RAG_HF_ENDPOINT",
-            "https://router.huggingface.co/v1/chat/completions",
-        ),
-        "model": model,
-        "token": hf_token,
-        "temperature": float(os.getenv("TEAM_BUILD_RAG_TEMPERATURE", "0.2")),
-        "max_tokens": int(os.getenv("TEAM_BUILD_RAG_MAX_TOKENS", "900")),
-        "timeout": int(os.getenv("TEAM_BUILD_RAG_TIMEOUT", "60")),
-    }
+    return ChatOpenAI(
+        model=model_name,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
 
 
 def _build_evidence_context(state: HybridRagState) -> str:
@@ -176,51 +164,25 @@ def _build_recommendation_prompt(state: HybridRagState, reranked_result: Dict[st
 
 
 def _call_llm(prompt: str) -> str:
-    """LLM을 호출해서 RAG 답변을 생성하는 함수입니다."""
-
-    # config:
-    # - Hugging Face Router를 통해 Qwen2.5-7B-Instruct를 호출하기 위한 설정입니다.
-    # - 토큰이 없으면 조용히 넘어가지 않고, 화면에서 바로 원인을 알 수 있도록 에러를 냅니다.
-    config = _get_huggingface_config()
-    if config is None:
-        raise RuntimeError(
-            "Hugging Face 토큰이 설정되지 않았습니다. .env에 HF_TOKEN 또는 HUGGINGFACEHUB_API_TOKEN을 넣어 주세요."
-        )
+    """OpenAI를 호출해서 RAG 답변을 생성하는 함수입니다."""
 
     try:
-        # payload:
-        # - Hugging Face Router의 chat completions 형식에 맞춘 요청 본문입니다.
-        # - messages 안의 user content에 RAG 프롬프트 전체를 넣어 답변을 생성합니다.
-        payload = {
-            "model": config["model"],
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": config["temperature"],
-            "max_tokens": config["max_tokens"],
-        }
-
-        # response:
-        # - requests를 직접 쓰면 langchain-openai/openai 패키지에 의존하지 않고 HF만 사용할 수 있습니다.
-        response = requests.post(
-            config["endpoint"],
-            headers={
-                "Authorization": f"Bearer {config['token']}",
-                "Content-Type": "application/json",
-            },
-            json=payload,
-            timeout=config["timeout"],
-        )
-        response.raise_for_status()
-        data = response.json()
+        # model:
+        # - langchain_openai의 ChatOpenAI를 사용하여 invoke를 수행합니다.
+        # - 내부적으로 .env의 OPENAI_API_KEY를 자동으로 참조합니다.
+        model = _get_llm_model()
+        response = model.invoke(prompt)
 
         # content:
-        # - OpenAI-compatible 응답 구조에서 실제 AI 답변 텍스트만 꺼냅니다.
-        content = data["choices"][0]["message"]["content"]
+        # - AI의 최종 답변 텍스트를 추출합니다.
+        content = response.content
         if not content:
-            raise RuntimeError("LLM API 응답에 content가 없습니다.")
+            raise RuntimeError("OpenAI API 응답에 content가 없습니다.")
+
         return str(content).strip()
     except Exception as exc:
-        # 대체 답변을 쓰면 API 키/모델/네트워크 문제가 화면에서 숨겨질 수 있으므로 그대로 실패시킵니다.
-        raise RuntimeError(f"Hugging Face Qwen 호출에 실패했습니다: {exc}") from exc
+        # API 키 부족, 할당량 초과, 네트워크 오류 등이 발생할 수 있습니다.
+        raise RuntimeError(f"OpenAI gpt-4o-mini 호출에 실패했습니다: {exc}") from exc
 
 
 def generate_answer(state: HybridRagState) -> Dict[str, str]:
@@ -229,15 +191,27 @@ def generate_answer(state: HybridRagState) -> Dict[str, str]:
     # request_type:
     # - analysis면 덱 분석 RAG 프롬프트, recommendation이면 추천 RAG 프롬프트를 사용합니다.
     request_type = get_request_type(state)
-
+    
     # result:
     # - recommendation은 hybrid_scorer를 거친 reranked_result를 우선 사용합니다.
     # - analysis는 graph_result가 그대로 최종 분석 결과입니다.
     result = state.get("reranked_result", state.get("graph_result", {}))
 
-    if request_type == "recommendation":
-        prompt = _build_recommendation_prompt(state, result)
-        return {"final_answer": _call_llm(prompt)}
+    # 데이터가 아예 없는 경우에 대한 방어 로직
+    if not result or (request_type == "recommendation" and not result.get("recommendations")):
+        print(f"[DEBUG] No graph results found for {request_type}. Skipping LLM.")
+        return {"final_answer": "분석할 수 있는 데이터가 부족하여 AI 해설을 생성할 수 없습니다. Neo4j 연결 상태나 선택한 포켓몬을 확인해 주세요."}
 
-    prompt = _build_analysis_prompt(state, result)
-    return {"final_answer": _call_llm(prompt)}
+    try:
+        if request_type == "recommendation":
+            prompt = _build_recommendation_prompt(state, result)
+        else:
+            prompt = _build_analysis_prompt(state, result)
+        
+        print(f"[DEBUG] Calling OpenAI for {request_type}...")
+        answer = _call_llm(prompt)
+        return {"final_answer": answer}
+        
+    except Exception as e:
+        print(f"[ERROR] LLM generation failed: {e}")
+        return {"final_answer": f"AI 해설 생성 중 오류가 발생했습니다: {str(e)}"}

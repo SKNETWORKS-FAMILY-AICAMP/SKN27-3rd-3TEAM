@@ -482,10 +482,21 @@ def render_recommendation_cards(recommendations: List[Dict[str, Any]]) -> None:
 
 def render_analysis_result(result: Dict[str, Any]) -> None:
     st.subheader("포켓몬 덱 분석")
+    if not result:
+        st.warning("분석 결과 데이터가 없습니다.")
+        return
+
     analysis = result.get("graph_result", result)
-    render_team_insights(analysis.get("insights", {}))
+    if not analysis or (isinstance(analysis, dict) and not analysis.get("insights")):
+        st.info("Graph DB 분석 결과를 불러오지 못했습니다. Neo4j 상태를 확인해 주세요.")
+    else:
+        render_team_insights(analysis.get("insights", {}))
+        
     render_rag_final_answer(result)
-    render_selected_team_cards(analysis.get("selected_pokemon", []))
+    
+    selected_pkmn = analysis.get("selected_pokemon", [])
+    if selected_pkmn:
+        render_selected_team_cards(selected_pkmn)
 
     weaknesses = sorted(
         analysis.get("weak_types", analysis.get("weaknesses", [])),
@@ -499,16 +510,22 @@ def render_analysis_result(result: Dict[str, Any]) -> None:
         analysis.get("move_type_coverage", []),
         key=lambda x: x.get("move_count", 0), reverse=True,
     )
-    render_analysis_detail_cards(weaknesses, resistances, move_coverage)
+    if weaknesses or resistances or move_coverage:
+        render_analysis_detail_cards(weaknesses, resistances, move_coverage)
 
 
 def render_recommendation_result(result: Dict[str, Any]) -> None:
     st.subheader("포켓몬 추천")
+    if not result:
+        st.warning("추천 결과 데이터가 없습니다.")
+        return
+
     rec = result.get("reranked_result", result.get("graph_result", result))
     render_rag_final_answer(result)
+    
     recommendations = rec.get("recommendations", [])
     if not recommendations:
-        st.info("추천 결과가 아직 없어요.")
+        st.info("조건에 맞는 추천 포켓몬을 찾지 못했습니다. (Neo4j 데이터 확인 필요)")
         return
     render_recommendation_cards(recommendations)
 

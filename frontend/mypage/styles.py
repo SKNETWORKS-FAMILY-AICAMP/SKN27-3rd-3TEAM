@@ -5,7 +5,7 @@ MYPAGE_CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Inter:wght@300;400;600;700&display=swap');
 
 html, body, [data-testid="stAppViewContainer"], .stApp {
-    background-color: #000000 !important; /* 기본 배경을 검정으로 설정하여 이미지와 조화 */
+    background-color: #f0f2f6 !important; /* 배경을 회색으로 설정 */
 }
 [data-testid="stAppViewContainer"] {
     background-image: var(--bg-img) !important;
@@ -80,7 +80,7 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     font-family: 'Outfit', sans-serif;
     font-weight: 900;
     font-size: 1.6rem;
-    color: #ffffff;
+    color: #2d3436;
     letter-spacing: -0.5px;
     margin: 0 auto 25px;
     width: 75%;
@@ -88,7 +88,6 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
     display: flex;
     align-items: center;
     gap: 10px;
-    text-shadow: 0 2px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255, 203, 5, 0.3);
 }
 .mp-section-title::before {
     content: ''; width: 8px; height: 24px; background: #FFCB05; border-radius: 4px;
