@@ -22,8 +22,9 @@
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
       <b>필주</b><br>
-      <sub>RAG 기반 AI 챗봇 구현</sub><br>
-      <sub>AI 성능 테스트</sub><br><br>
+      <sub>LangGraph 기반 RAG 챗봇 아키텍처 구축</sub><br>
+      <sub>CRAG 및 하이브리드 검색 알고리즘 최적화</sub><br>
+      <sub>SSE 스트리밍 응답 및 동적 출처 렌더링</sub><br><br>
       <a href="../../wiki/필주.md">📄 담당 기능</a>
     </td>
     <td align="center" width="300">
