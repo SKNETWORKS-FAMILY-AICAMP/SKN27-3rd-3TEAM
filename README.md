@@ -15,31 +15,33 @@
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1015.png" width="150" height="150"/><br>
       <b>재강</b><br>
       <sub>담당 기능 작성 예정</sub><br><br>
-      <a href="./wiki/재강.md">📄 담당 기능</a>
+      <a href="../../wiki/재강.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
       <b>필주</b><br>
       <sub>RAG 기반 AI 챗봇 구현</sub><br><sub>AI 성능 테스트</sub><br><br>
-      <a href="./wiki/필주.md">📄 담당 기능</a>
+      <a href="../../wiki/필주.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
       <b>재경</b><br>
       <sub>담당 기능 작성 예정</sub><br><br>
-      <a href="./wiki/재경.md">📄 담당 기능</a>
+      <a href="../../wiki/재경.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
       <b>재희</b><br>
       <sub>UI/UX 서비스 설계 · 인증</sub><sub>확장 프로그램 · 배포</sub><br><br>
-      <a href="[wiki/재희](../../wiki/재희)">📄 담당 기능</a>
+      <!-- href 안에 순수 경로만 남깁니다 -->
+      <a href="../../wiki/재희">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
       <b>송원</b><br>
       <sub>담당 기능 작성 예정</sub><br><br>
-      <a href="[wiki/송원](../../wiki/송원)">📄 담당 기능</a>
+      <!-- href 안에 순수 경로만 남깁니다 -->
+      <a href="../../wiki/송원">📄 담당 기능</a>
     </td>
   </tr>
 </table>
