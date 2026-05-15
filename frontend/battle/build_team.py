@@ -9,14 +9,18 @@ from .utils import BattlePokemon, start_custom_battle, get_pokemon_data, get_all
 from .ui import render_pokemon_status
 
 def display_builder():
+    selected_leader = st.session_state.get("selected_leader", "웅이")
+
+    # ── 헤더 ──
     st.markdown(
-            """
-            <div class="battle-header">
-                <h1>포켓몬 검색 및 팀 구성</h1>
-                <p>원하는 포켓몬을 검색하고, 4가지 기술을 선택하여 배틀을 준비하세요.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        f"""
+        <div class="battle-header">
+            <h1>팀 구성</h1>
+            <p>포켓몬을 고르고, 4가지 기술을 선택해 파티를 완성하세요.&nbsp;
+            <span style="color:rgba(56,189,248,0.9); font-weight:900;">상대: {selected_leader}</span></p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
         
     pokemon_list = get_all_pokemon_names()
@@ -24,21 +28,22 @@ def display_builder():
     
     col1, col2 = st.columns([1, 1.2])
 
+    # ── STEP 1: 포켓몬 선택 ──
     with col1:
-        st.markdown("<hr>", unsafe_allow_html=True)
-        if "selected_leader" not in st.session_state:
-            st.session_state.selected_leader = "웅이"
-        st.info(f"현재 선택된 상대: **{st.session_state.selected_leader}**")
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.subheader("포켓몬 선택")
+        st.markdown(
+            '<div class="battle-section-title" style="font-size:0.95rem;">STEP 1 &nbsp;—&nbsp; 포켓몬 선택</div>',
+            unsafe_allow_html=True,
+        )
         selected_name = st.selectbox(
-            "포켓몬 이름을 검색하세요",
+            "포켓몬 검색",
             options=list(pokemon_options.keys()),
-            index=None,                placeholder="포켓몬 이름 입력..."
+            index=None,
+            placeholder="이름을 입력하세요...",
+            label_visibility="collapsed",
         )
 
-        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown('<div style="margin-top:12px;"></div>', unsafe_allow_html=True)
+
         if selected_name:
             pokemon_id = pokemon_options[selected_name]
             if "selected_pokemon_data" not in st.session_state or st.session_state.get("last_selected_id") != pokemon_id:
@@ -48,10 +53,21 @@ def display_builder():
 
             pokemon_data = st.session_state.selected_pokemon_data
             preview = BattlePokemon(
-                id=pokemon_data['id'], name=pokemon_data['name'], selected_moves=st.session_state.selected_moves
+                id=pokemon_data["id"],
+                name=pokemon_data["name"],
+                selected_moves=st.session_state.selected_moves,
             )
-            render_pokemon_status("PLAYER PREVIEW", preview, show_moves=False)
+            render_pokemon_status("PREVIEW", preview, show_moves=False)
+        else:
+            st.markdown(
+                '<div class="search-placeholder-card">'
+                '<div class="placeholder-icon">🔍</div>'
+                '<div class="placeholder-text">포켓몬을 검색하면<br>프리뷰가 표시됩니다</div>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
 
+    # ── STEP 2: 기술 선택 ──
     with col2:
         st.subheader(f"내 파티 ({len(st.session_state.player_team)}/3)")
         if st.session_state.player_team:
@@ -71,41 +87,54 @@ def display_builder():
         if selected_name:
             st.subheader("기술 선택")
             pokemon_data = st.session_state.selected_pokemon_data
-            if "selected_moves" not in st.session_state:
-                st.session_state.selected_moves = []
-            
             selected_move_names = st.session_state.selected_moves
-            
-            st.write(f"**선택된 기술 ({len(selected_move_names)}/4)**")
-            if selected_move_names:
-                cols = st.columns(4)
-                for i in range(4):
-                    if i < len(selected_move_names):
-                        cols[i].info(selected_move_names[i])
-                    else:
-                        cols[i].write("Empty")
-            
-            st.write("---")
-            move_cols = st.columns(4)
-            for i, move in enumerate(pokemon_data['moves']):
-                m_name = move['name']
-                is_selected = m_name in selected_move_names
-                b_type = "primary" if is_selected else "secondary"
-                if move_cols[i % 4].button(m_name, key=f"mv_{m_name}", use_container_width=True, type=b_type):
-                    if is_selected:
-                        st.session_state.selected_moves.remove(m_name)
-                    elif len(st.session_state.selected_moves) < 4:
-                        st.session_state.selected_moves.append(m_name)
-                    st.rerun()
 
-            st.write("---")
+            # 선택 현황 뱃지
+            badges = ""
+            for j in range(4):
+                if j < len(selected_move_names):
+                    badges += f'<span class="move-selected-badge">✓ {selected_move_names[j]}</span> '
+                else:
+                    badges += f'<span class="move-empty-badge">슬롯 {j + 1}</span> '
+            st.markdown(
+                f'<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">{badges}</div>',
+                unsafe_allow_html=True,
+            )
+
+            # 기술 버튼 — 2컬럼 그리드 (넓은 버튼)
+            mv_col1, mv_col2 = st.columns(2)
+            for i, move in enumerate(pokemon_data["moves"]):
+                m_name = move["name"]
+                is_selected = m_name in selected_move_names
+                target_col = mv_col1 if i % 2 == 0 else mv_col2
+                with target_col:
+                    btn_type = "primary" if is_selected else "secondary"
+                    if st.button(
+                        f"{'✓ ' if is_selected else ''}{m_name}",
+                        key=f"mv_{m_name}",
+                        use_container_width=True,
+                        type=btn_type,
+                    ):
+                        if is_selected:
+                            st.session_state.selected_moves.remove(m_name)
+                        elif len(st.session_state.selected_moves) < 4:
+                            st.session_state.selected_moves.append(m_name)
+                        st.rerun()
+
+            # 4개 완성 → 파티 추가 버튼
             if len(selected_move_names) == 4:
-                st.success("모든 기술 선택 완료!")
-                if len(st.session_state.player_team) < 3:
-                    if st.button("➕ 엔트리에 추가하기", use_container_width=True, type="secondary"):
-                        four_moves = [m for m in pokemon_data['moves'] if m['name'] in selected_move_names]
-                        player_custom = {"id": pokemon_data['id'], "name": pokemon_data['name'], "moves": four_moves}
-                        st.session_state.player_team.append(player_custom)
+                st.markdown('<div class="battle-divider"></div>', unsafe_allow_html=True)
+                if len(party) < 3:
+                    if st.button(
+                        "➕ 파티에 추가",
+                        use_container_width=True,
+                        type="primary",
+                        key="add_to_party",
+                    ):
+                        four_moves = [m for m in pokemon_data["moves"] if m["name"] in selected_move_names]
+                        st.session_state.player_team.append(
+                            {"id": pokemon_data["id"], "name": pokemon_data["name"], "moves": four_moves}
+                        )
                         st.session_state.selected_moves = []
                         st.session_state.last_selected_id = None
                         st.rerun()
@@ -140,18 +169,24 @@ def display_builder():
                 if user and user.get("db_id"):
                     try:
                         payload = {"team_data": st.session_state.player_team}
-                        resp = requests.post(f"{BACKEND_URL}/api/v1/users/{user['db_id']}/battle-team", json=payload, timeout=3)
+                        resp = requests.post(
+                            f"{BACKEND_URL}/api/v1/users/{user['db_id']}/battle-team",
+                            json=payload,
+                            timeout=3,
+                        )
                         if resp.status_code == 200:
-                            st.success("팀이 성공적으로 저장되었습니다!")
+                            st.toast("팀이 저장되었습니다!", icon="💾")
                         else:
                             st.warning("팀 저장에 실패했습니다.")
                     except Exception as e:
-                        st.warning(f"팀을 저장하는 중 오류가 발생했습니다: {e}")
-                
-                if start_custom_battle(st.session_state.player_team, leader_name=st.session_state.selected_leader):
+                        st.warning(f"팀 저장 중 오류: {e}")
+
+                if start_custom_battle(st.session_state.player_team, leader_name=selected_leader):
                     st.session_state.battle_stage = "battle"
                     st.rerun()
-            
-            if st.button("⬅️ 메뉴로 돌아가기", use_container_width=True):
-                st.session_state.battle_stage = "menu"
-                st.rerun()
+        else:
+            st.markdown(
+                '<div style="color:#000000; font-size:0.82rem; font-weight:700; '
+                'text-align:center; padding:10px;">파티에 포켓몬을 추가하면 배틀을 시작할 수 있습니다</div>',
+                unsafe_allow_html=True,
+            )

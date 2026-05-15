@@ -1,5 +1,6 @@
 import os
 import requests
+
 BACKEND_URL = os.getenv("BACKEND_URL") or os.getenv("BACKEND_API_URL") or "http://localhost:8000"
 
 import streamlit as st
@@ -8,23 +9,21 @@ from .constants import GYM_NAME_MAP, LEADERS
 from .utils import start_custom_battle, get_pokemon_data
 
 def display_menu():
+    # ── 헤더 ──
     st.markdown(
-            """
-            <div class="battle-header" style="text-align:center; padding: 40px 0;">
-                <h1>포켓몬 배틀 아레나</h1>
-                <p>나만의 팀을 구성하거나 즉시 배틀을 시작하세요.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        
-    st.subheader("관장 선택")
-    # 체육관 이름을 선택지에 노출
+        """
+        <div class="battle-header" style="text-align:center; padding:32px 0 28px;">
+            <h1>포켓몬 배틀 아레나</h1>
+            <p>관장을 선택하고, 팀을 구성한 뒤 배틀에 도전하세요!</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ── 체육관 / 관장 매핑 ──
     gym_options = list(GYM_NAME_MAP.values())
-    # 역매핑 (체육관 이름 -> 관장 이름)
     GYM_TO_LEADER = {v: k for k, v in GYM_NAME_MAP.items()}
-    
-    # 현재 세션의 선택된 관장에 해당하는 체육관 이름 찾기
+
     current_leader = st.session_state.get("selected_leader", "웅이")
     current_gym = GYM_NAME_MAP.get(current_leader, gym_options[0])
     default_idx = gym_options.index(current_gym) if current_gym in gym_options else 0

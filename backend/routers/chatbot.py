@@ -77,23 +77,62 @@ async def chat_stream(req: ChatRequest):
     save_message(session_id, "user", req.query)
 
     async def event_generator():
-        import json
         full_answer = ""
         used_tools = []
-        
-        async for chunk in astream_chat(req.query, req.history, req.model):
-            if chunk.startswith("\n\n[USED_TOOLS]:"):
-                tools_str = chunk.replace("\n\n[USED_TOOLS]:", "")
-                used_tools = tools_str.split(",")
-                yield f"data: {json.dumps({'type': 'tools', 'content': used_tools})}\n\n"
-            else:
-                full_answer += chunk
-                yield f"data: {json.dumps({'type': 'token', 'content': chunk})}\n\n"
-        
+
+        # 즉시 keepalive 전송 — Railway 프록시가 첫 바이트 없으면 502 반환하는 문제 방지
+        yield ": keepalive\n\n"
+
+        queue: asyncio.Queue = asyncio.Queue()
+
+        async def produce():
+            try:
+                async for chunk in astream_chat(req.query, req.history, req.model):
+                    await queue.put(("chunk", chunk))
+            except Exception as e:
+                await queue.put(("error", str(e)))
+            finally:
+                await queue.put(("done", None))
+
+        task = asyncio.create_task(produce())
+        try:
+            while True:
+                try:
+                    kind, value = await asyncio.wait_for(queue.get(), timeout=10.0)
+                except asyncio.TimeoutError:
+                    # 처리 중 keepalive — 30s 프록시 타임아웃 방지
+                    yield ": keepalive\n\n"
+                    continue
+
+                if kind == "done":
+                    break
+                elif kind == "error":
+                    yield f"data: {json.dumps({'type': 'error', 'content': value})}\n\n"
+                    break
+                else:
+                    chunk = value
+                    if chunk.startswith("\n\n[USED_TOOLS]:"):
+                        tools_str = chunk.replace("\n\n[USED_TOOLS]:", "")
+                        used_tools = tools_str.split(",")
+                        yield f"data: {json.dumps({'type': 'tools', 'content': used_tools})}\n\n"
+                    else:
+                        full_answer += chunk
+                        yield f"data: {json.dumps({'type': 'token', 'content': chunk})}\n\n"
+        finally:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+
         save_message(session_id, "assistant", full_answer, used_tools)
         yield f"data: {json.dumps({'type': 'end', 'session_id': session_id})}\n\n"
 
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={"X-Accel-Buffering": "no"},  # nginx/Railway 프록시 버퍼링 비활성화
+    )
 
 
 @router.get("/sessions")

@@ -11,7 +11,6 @@ from battle.menu import display_menu
 from battle.ui import inject_battle_styles
 from utils.ui import inject_common_ui
 
-# 페이지 설정
 st.set_page_config(
     page_title="Battle - Pokemon World",
     page_icon="https://pokemonkorea.co.kr/img/_con.ico",
@@ -28,16 +27,13 @@ def show():
     if "battle_stage" not in st.session_state:
         st.session_state.battle_stage = "menu"
 
-    gym_leaders = ["웅이", "이슬이", "아이리스", "민화", "풍란", "채두", "순무", "지우", "N"]
-
     if st.session_state.battle_stage == "menu":
         display_menu()
-
     elif st.session_state.battle_stage == "teambuilding":
         display_builder()
-    
     elif st.session_state.battle_stage == "battle":
         display_battle()
+
 
 if __name__ == "__main__":
     show()
