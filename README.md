@@ -32,27 +32,17 @@
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
       <b>재희</b><br>
-      <div align="left" style="padding-left: 20px;">
-        <sub>• UI/UX 총괄 (랜딩·도감·대시보드·미니게임)</sub><br>
-        <sub>• GitHub OAuth 2.0 소셜 인증 및 세션 영속화</sub><br>
-        <sub>• 데이터 청킹 및 무한 스크롤 렌더링 최적화</sub><br>
-        <sub>• Groq AI 연동 가상 펫 크롬 확장(Pipigo) 개발</sub><br>
-        <sub>• PokeAPI 데이터 수집 자동화 파이프라인 구축</sub><br>
-        <sub>• Railway 클라우드 플랫폼 기반 시스템 배포</sub>
-      </div><br>
+      <sub>UI/UX 설계 및 렌더링 성능 최적화</sub><br>
+      <sub>AI 크롬 확장 프로그램 개발</sub><br>
+      <sub>데이터 파이프라인 및 서버 구축</sub><br><br>
       <a href="../../wiki/재희">📄 담당 기능 상세 보기</a>
     </td>
     <td align="center" width="300">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
       <b>송원</b><br>
-      <div align="left" style="padding-left: 20px;">
-        <sub>• 데미지 유무 기반 분기형 배틀 코어 로직 설계</sub><br>
-        <sub>• 포켓몬 상성 및 특징 관계망 Graph DB 구축</sub><br>
-        <sub>• 우선도·상태이상을 고려한 턴제 시뮬레이터 구현</sub><br>
-        <sub>• 배틀 시뮬레이터 직관적 프론트엔드 UI 개발</sub><br>
-        <sub>• 체육관 관장 NPC 로스터 기획 및 메타데이터 연결</sub><br>
-        <sub>• 도메인 지식 기반 기술/상성 예외 엣지 케이스 처리</sub>
-      </div><br>
+      <sub>분기형 배틀 엔진 로직 구현</sub><br>
+      <sub>턴제 시뮬레이터 구현</sub><br>
+      <sub>상성 및 관계망 아키텍처 설계</sub><br><br>
       <a href="../../wiki/송원">📄 담당 기능 상세 보기</a>
     </td>
   </tr>
