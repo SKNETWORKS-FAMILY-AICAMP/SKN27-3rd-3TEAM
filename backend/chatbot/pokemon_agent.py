@@ -31,7 +31,6 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
-from langchain_community.tools import TavilySearchResults
 from langchain_community.vectorstores import PGVector
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
@@ -53,6 +52,9 @@ DB_CONN = os.environ.get(
 )
 if DB_CONN.startswith("postgres://"):
     DB_CONN = DB_CONN.replace("postgres://", "postgresql://", 1)
+# psycopg2 연결 타임아웃 추가 (배포 시 hang 방지)
+if "connect_timeout" not in DB_CONN:
+    DB_CONN += ("&" if "?" in DB_CONN else "?") + "connect_timeout=10"
 
 try:
     embeddings = OpenAIEmbeddings()
@@ -60,15 +62,6 @@ except Exception as e:
     print(f"⚠️ OpenAIEmbeddings 초기화 실패: {e}")
     embeddings = None
 
-# Tavily API 키가 없을 경우를 대비한 예외 처리
-try:
-    if not os.environ.get("TAVILY_API_KEY"):
-        # 키가 없으면 더미 키를 잠시 넣어 초기화 에러 방지 (실제 호출 시에만 에러 발생)
-        os.environ["TAVILY_API_KEY"] = "dummy_for_startup"
-    tavily = TavilySearchResults(max_results=3)
-except Exception as e:
-    print(f"⚠️ Tavily 초기화 실패 (웹 검색 기능 제한): {e}")
-    tavily = None
 
 MODELS = {
     "gpt-4o-mini":              lambda: ChatOpenAI(model="gpt-4o-mini", temperature=0),
@@ -80,29 +73,37 @@ FLAVOR_TOP_N = 5
 
 
 # ══════════════════════════════════════════════════════════
-# PGVector VectorStore 인스턴스
+# PGVector VectorStore — lazy initialization (배포 시 hang 방지)
 # ══════════════════════════════════════════════════════════
 
-try:
-    if embeddings is None:
-        raise RuntimeError("embeddings 미초기화")
-    _vectorstore = PGVector(
-        connection_string=DB_CONN,
-        embedding_function=embeddings,
-        collection_name="flavor_text",
-    )
-    _vector_retriever = _vectorstore.as_retriever(
-        search_type="mmr",
-        search_kwargs={
-            "k":           20,
-            "fetch_k":     50,
-            "lambda_mult": 0.7,
-        }
-    )
-except Exception as e:
-    print(f"⚠️ PGVector 초기화 실패 (도감 벡터 검색 비활성화): {e}")
-    _vectorstore = None
-    _vector_retriever = None
+_vectorstore = None
+_vector_retriever = None
+_pgvector_ready = False
+
+
+def _get_vector_retriever():
+    global _vectorstore, _vector_retriever, _pgvector_ready
+    if _pgvector_ready:
+        return _vector_retriever
+    _pgvector_ready = True
+    try:
+        if embeddings is None:
+            raise RuntimeError("embeddings 미초기화")
+        vs = PGVector(
+            connection_string=DB_CONN,
+            embedding_function=embeddings,
+            collection_name="flavor_text",
+        )
+        _vectorstore = vs
+        _vector_retriever = vs.as_retriever(
+            search_type="mmr",
+            search_kwargs={"k": 20, "fetch_k": 50, "lambda_mult": 0.7},
+        )
+    except Exception as e:
+        print(f"⚠️ PGVector 초기화 실패 (도감 벡터 검색 비활성화): {e}")
+        _vectorstore = None
+        _vector_retriever = None
+    return _vector_retriever
 
 
 # ══════════════════════════════════════════════════════════
@@ -279,10 +280,11 @@ def search_flavor_text(query: str) -> str:
     """
     # 1. Vector search (MMR) → PGVector content는 "species_id: version 설명" 형식
     #    species_id 파싱 후 DB 조회로 포켓몬 이름 부착
-    if _vector_retriever is None:
+    retriever = _get_vector_retriever()
+    if retriever is None:
         vector_docs = []
     else:
-        vector_docs = _vector_retriever.invoke(query)
+        vector_docs = retriever.invoke(query)
     vector_contents: list[str] = []
     if vector_docs:
         try:
@@ -364,21 +366,6 @@ def search_flavor_text(query: str) -> str:
     top = merged[:FLAVOR_TOP_N]
     return "✅ 관련 도감 설명:\n\n" + "\n\n---\n\n".join(top)
 
-
-@tool
-def web_search(query: str) -> str:
-    """
-    DB에 없는 포켓몬 정보를 웹에서 검색합니다.
-    최신 게임 정보, DB 미보유 포켓몬, 공식 이벤트 등에만 사용하세요.
-    """
-    try:
-        if not tavily:
-            return "웹 검색 API 키가 설정되지 않아 검색을 수행할 수 없습니다."
-        results  = tavily.invoke(query + " 포켓몬")
-        web_text = "\n\n".join([r["content"] for r in results])
-        return f"✅ 웹 검색 결과:\n{web_text}"
-    except Exception as e:
-        return f"웹 검색 실패: {e}"
 
 
 # ══════════════════════════════════════════════════════════
