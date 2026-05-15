@@ -12,33 +12,33 @@
 <table align="center">
   <tr>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" width="70" height="70"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1015.png" width="150" height="150"/><br>
       <b>재강</b><br>
-      <sub>담당 기능 작성 예정</sub><br>
+      <sub>담당 기능 작성 예정</sub><br><br>
       <a href="./wiki/재강.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png" width="70" height="70"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/287.png" width="150" height="150"/><br>
       <b>필주</b><br>
-      <sub>담당 기능 작성 예정</sub><br>
+      <sub>RAG 기반 AI 챗봇 구현</sub><br><sub>AI 성능 테스트</sub><br><br>
       <a href="./wiki/필주.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" width="70" height="70"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/185.png" width="150" height="150"/><br>
       <b>재경</b><br>
-      <sub>담당 기능 작성 예정</sub><br>
+      <sub>담당 기능 작성 예정</sub><br><br>
       <a href="./wiki/재경.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" width="70" height="70"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" width="150" height="150"/><br>
       <b>재희</b><br>
-      <sub>UI/UX 서비스 설계 · 인증 · 확장 프로그램 · 배포</sub><br>
+      <sub>UI/UX 서비스 설계 · 인증</sub><sub>확장 프로그램 · 배포</sub><br><br>
       <a href="./wiki/재희.md">📄 담당 기능</a>
     </td>
     <td align="center" width="160">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" width="70" height="70"/><br>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/453.png" width="150" height="150"/><br>
       <b>송원</b><br>
-      <sub>담당 기능 작성 예정</sub><br>
+      <sub>담당 기능 작성 예정</sub><br><br>
       <a href="./wiki/송원.md">📄 담당 기능</a>
     </td>
   </tr>
@@ -193,7 +193,7 @@ PokeAPI JSON
 flowchart LR
     A["사용자 팀 (5마리)"] --> B["Neo4j\n타입 분석"]
     B --> C["pgvector MMR 검색\nk=20, fetch_k=50"]
-    C --> D["Hybrid Score\n분析 70/30 · 추천 80/20 · 해설 60/40"]
+    C --> D["Hybrid Score\n분석 70/30 · 추천 80/20 · 해설 60/40"]
     D --> E["LLM\n한국어 답변 생성"]
 ```
 
@@ -682,3 +682,4 @@ gantt
 | 박송원 | ... |
 
 
+<p align="center">© 2025 SKN27-3rd-3TEAM. All Rights Reserved.</p>
