@@ -45,6 +45,16 @@ def init_db_extensions():
         print("🔧 DB 확장 모듈 활성화 중 (vector, pg_trgm)...")
         cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
         cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+        
+        # ↓ 추가
+        print("🔧 pg_trgm 인덱스 생성 중...")
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS idx_flavor_text_trgm
+            ON flavor_text USING GIN (content gin_trgm_ops)
+        """)
+        print("✅ pg_trgm 인덱스 생성 완료")
+        # ↑ 추가
+        
         cur.close()
         conn.close()
         print("✅ DB 확장 모듈 활성화 완료")
