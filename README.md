@@ -515,19 +515,47 @@ sequenceDiagram
 
 ## 화면 설계서
 
-### 페이지 목록
+### 1. 메인 홈 (`app.py`)
+![메인페이지](docs/images/메인페이지.png)
+- **주요 기능**: 풀스크린 랜딩 배너, 주요 서비스(포켓덱스, 챗봇, 팀빌더, 배틀)로의 직관적인 내비게이션 및 인터랙티브 UI 제공.
 
-| 페이지 | 파일 | 주요 컴포넌트 |
-|---|---|---|
-| 홈 / 네비게이션 | `app.py` | 메인 배너, 기능 카드 메뉴 |
-| 포켓덱스 | `pages/pokedex.py` | 타입/특성 필터, 카드 그리드, 상세 모달, 진화 트리 |
-| AI 챗봇 | `pages/chatbot.py` | 세션 목록, 채팅 UI, SSE 스트리밍, 도구 출처 뱃지 |
-| 팀 빌더 | `pages/teambuilding.py` | 포켓몬 5선택, 분석 결과 카드, 추천 포켓몬 |
-| 배틀 시뮬레이터 | `pages/battle.py` | 체육관 선택, 배틀 UI, HP 바, 이동기 버튼 |
-| 실루엣 퀴즈 | `pages/game_1.py` | 실루엣 이미지, 정답 입력, 점수 |
-| 메모리 카드 | `pages/game_2.py` | 카드 그리드, 타이머, 매칭 로직 |
-| 마이페이지 | `pages/mypage.py` | GitHub 프로필, 배지, 팀빌더 히스토리 |
-| 로그인 | `pages/login.py` | GitHub OAuth 버튼, 콜백 처리 |
+### 2. 로그인 (`pages/login.py`)
+![로그인](docs/images/로그인.png)
+- **주요 기능**: GitHub OAuth 2.0 기반 소셜 로그인, 깃허브 활동 통계(커밋, 레포, 스타 수) 수집 및 트레이너 등급 연동.
+
+### 3. 포켓덱스 및 상세 조회 (`pages/pokedex.py`, `pages/pokemon_detail.py`)
+![도감페이지](docs/images/도감페이지.png)
+- **주요 기능**: 전국 도감 1,025마리 무한 스크롤, 복합 필터링(타입, 특성, 지방 등) 및 개체별 스탯 레이더 차트, 분기 진화 트리 제공.
+
+### 4. AI 챗봇 (`pages/chatbot.py`)
+![챗봇](docs/images/챗봇.png)
+- **주요 기능**: 오박사 페르소나의 멀티툴 AI 챗봇. 실시간 SSE 스트리밍 및 응답 생성에 사용된 도구·출처 마커 표시.
+
+### 5. 팀 빌더 (`pages/teambuilding.py`, `pages/team_result.py`)
+#### 팀 구성 및 분석 요청
+![팀빌더 분석](docs/images/팀빌더_분석.png)
+#### 하이브리드 RAG 분석 및 추천 결과
+![팀빌더 결과](docs/images/팀빌더_결과.png)
+- **주요 기능**: 5마리 선택 시 약점 및 저항 상성 분석, Neo4j Graph + pgvector Vector 기반 하이브리드 Reranking으로 6번째 최적 멤버 추천.
+
+### 6. 배틀 시뮬레이터 (`pages/battle.py`)
+#### 파티 구성 및 체육관 리더 선택
+![배틀 선택페이지](docs/images/배틀_선택페이지.png)
+#### 실시간 턴제 배틀 진행
+![배틀 진행페이지](docs/images/배틀_진행페이지.png)
+- **주요 기능**: 체육관 리더와의 1v1 턴제 배틀, 본가 데미지 공식 완벽 구현 및 Groq LLM 기반 실시간 AI 봇 전략 판단.
+
+### 7. 미니게임 허브 (`pages/mini_game.py`)
+![미니게임](docs/images/미니게임.png)
+#### 실루엣 퀴즈 (`game_1.py`)
+![미니게임 실루엣](docs/images/미니게임_실루엣.png)
+#### 메모리 카드 게임 (`game_2.py`)
+![미니게임 메모리](docs/images/미니게임_메모리.png)
+- **주요 기능**: 포켓몬 실루엣 맞추기 퀴즈 및 짝 맞추기 메모리 게임을 통해 몰입도 향상 및 활동 점수·배지 획득 지원.
+
+### 8. 마이페이지 (`pages/mypage.py`)
+![마이페이지](docs/images/마이페이지.png)
+- **주요 기능**: 트레이너 프로필 카드, 깃허브 통계 연동 등급, 관동 8개 체육관 배지 성취 현황 및 팀 빌더 히스토리 복원 기능.
 
 > 기능별 상세 설명: [wiki/Features](../../wiki/Features)
 
