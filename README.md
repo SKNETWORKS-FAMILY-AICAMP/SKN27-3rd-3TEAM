@@ -3,7 +3,7 @@
 > **AI 챗봇 · 팀 빌더 · 배틀 시뮬레이터 · 포켓몬 도감 · GitHub OAuth 로그인 · 확장 프로그램 · 미니게임**  
 > LangGraph 기반 하이브리드 RAG · Neo4j 그래프 DB · PostgreSQL pgvector
 
-**SKN27-3rd-3TEAM** · SKN AI 캠프 27기 3차 프로젝트 · 2025.04.30 ~ 2025.05.15
+**SKN27-3rd-3TEAM** · SKN AI 캠프 27기 3차 프로젝트 · 2026.04.30 ~ 2026.05.15
 
 ---
 
